@@ -1,0 +1,31 @@
+# Validação obrigatória no Studio
+
+1. Instale Rojo CLI e plugin. Na raiz: `rojo build -o Feras.rbxlx`. Abra o arquivo no Studio. Alternativa: `rojo serve` e conectar plugin. Não colar módulos em locais diferentes do default.project.json.
+2. Publique uma experiência PRIVADA DE TESTE. Habilite Game Settings → Security → Enable Studio Access to API Services somente nela. Não teste sobre dados comerciais. Áudio e produtos permanecem zero/vazios.
+3. F5: conferir Output sem erros; novo jogador inicia com 100 ouro, 5 gemas, cinzelo/bolhinho e Brasa. Coletar, alimentar, comprar ovo, cruzar, aguardar 30–480s, chocar. Reconectar e verificar recursos/IDs.
+4. Legado: usar perfil v1 com u99 e nextId=3; carregar e chocar deve criar u100 sem substituir u99. Dados com v maior que 2 ou creatures não-tabela devem recusar entrada, não sobrescrever.
+5. Dois servidores com a mesma chave de teste: segundo deve recusar lease ativo. Após saída normal permite entrar. Após encerramento abrupto aguardar até 180s. Servidor velho nunca deve sobrescrever token novo. Simular falhas de UpdateAsync: avisos no Output, reconexão preserva último save. Lease expirado bloqueia ações.
+6. Start Server com dois clientes: cada um só alimenta/move UID próprio; chamadas Get retornam cópias sem receipts/_session. Spammar remotes, usar tables/Instances/NaN/strings gigantes/IDs ausentes: sem alteração de recursos nem crash.
+7. Desafiar outro jogador: primeira ação não deve dar ouro/troféu. Rival deve clicar Desafiar no nome do remetente em 30s. Convite expirado não luta. Rival que saiu não luta; cooldown limita recompensas.
+8. Inspecionar seis biomas, pontes, spawn e trajetos em celular via Device Emulator. Confirmar decoração não impede navegação e criaturas apoiadas no chão. Medir FPS/Parts no MicroProfiler com dois clientes e inventários cheios. Verificar idle de Bird/Serpent/Insect e pausa à distância.
+9. Testar alimentar até 7/15/20, habitat cheio, incubadora com três ovos, inventário com 60, ilhas sem ouro, resgatar missão/diária duas vezes, acelerar ovo pronto. Nada deve consumir indevidamente ou duplicar recompensa.
+10. Produtos continuam DESATIVADOS. Antes de ativar: testes de recibo repetido, falha no save, desconexão durante compra e duas callbacks simultâneas. Revisar regras atuais do Roblox e permissões de áudio. Não usar compra paga aleatória sem revisão específica.
+
+Limitações: nenhum teste acima foi executado neste ambiente. Não há garantia de FPS, resultado visual ou comportamento de DataStore sem validação no Studio.
+
+## Design e coleção (nova entrega)
+- Abrir cada uma das 29 espécies nos níveis 1/7/15; conferir silhuetas, olhos, apoio no chão, bounding box e frente da criatura na batalha. Conferir especialmente Colossodune (golem), Fênix Fuligem (ave), Aracnoflora (oito pernas) e Rei Nevoento (espírito).
+- Bestiário: rolar até o final e voltar, redimensionar janela, trocar abas 30 vezes. Verificar filtros, silhuetas desconhecidas e ausência de crescimento contínuo de instâncias/conexões. Modelos fora da lista visível devem ser destruídos.
+- Chocar ovo: modelo e nome correto; Continuar fecha. Alimentar de 6→7 e 14→15 mostra evolução uma única vez. Fechar automaticamente após 20s. Alimentação comum não abre evolução.
+- Cliques rápidos durante combate não iniciam segunda requisição; falha de conexão libera interação. Conferir asas/pernas/caudas sem deslocamento acumulado após 5 minutos.
+- Device Emulator 360px e controle: conferir área dos sete botões, textos de stats e fechamento da apresentação. Medir FPS antes/depois com 60 criaturas de dois jogadores. Nenhum desses testes visuais foi executado aqui.
+
+## Versão 3 — teste integrado da chocadeira
+1. Escolher cinzelo/bolhinho. Ver duas prévias, resultados possíveis e chances; custo 50 ouro. Confirmar híbrido vaporino entre os resultados. Não cobrar antes de clicar Cruzar.
+2. Acumular três ovos: tentativa adicional recusa e não desconta. Sem 50 ouro: prévia desabilita cruzamento; chamada direta também recusa.
+3. Enquanto incuba: Chocar desabilitado; custo de Acelerar muda conforme o tempo. Ao chegar a zero: Chocar ativo/Acelerar inativo. Conferir regra no servidor alterando relógio do cliente.
+4. Chocar dois ovos rapidamente: inFlight impede sobreposição; ovo só removido depois do sucesso, UID único e descoberta registrada. Inventário 60: ovo permanece intacto.
+5. Desconectar/reconectar durante incubação: tempo usa ready do servidor e segue correndo offline. Eclosão mostra modelo correto; raro/épico tem título apropriado.
+6. Confirmar que contagem não destrói e recria ViewportFrames a cada segundo. Abrir/fechar aba Ovos 50 vezes, inspecionar memória. Testar duas fileiras em Device Emulator e gamepad.
+7. Mercado não mostra Robux. Remote Buy deve recusar mesmo após configuração de IDs. Não realizar compras reais nesta versão.
+8. Gerar os 87 modelos com DesignChecks.run(). Rodar DataStore e testes de dois servidores da seção anterior antes de publicar.
