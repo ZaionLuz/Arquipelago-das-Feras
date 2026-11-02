@@ -25,6 +25,11 @@ local function settle(p)
 end
 G.Actions={}
 local A=G.Actions
+function A.CraftSeal(p)
+ local d=Data.get(p)
+ if d.seals>=10000 or d.gold<25 then return fail("Precisa de 25 ouro ou atingiu o limite de selos") end
+ d.gold-=25;d.seals+=1;return ok(p,"+1 Selo de Vínculo")
+end
 function A.Get(p) return ok(p) end
 function A.Collect(p) local g=settle(p);bump(Data.get(p),"collect");return ok(p,"+"..g.." ouro") end
 function A.Feed(p,uid)
@@ -33,7 +38,7 @@ function A.Feed(p,uid)
 	if cr.lv>=MAXLV then return fail("Nível máximo") end
 	settle(p);local cost=cr.lv*20
 	if d.gold<cost then return fail("Ouro insuficiente ("..cost..")") end
-	d.gold-=cost;cr.lv+=1;bump(d,"feed");World.refresh(p);return ok(p,"Subiu para o nível "..cr.lv..(C.stage(cr.lv)>C.stage(cr.lv-1) and " — EVOLUIU!" or ""))
+	d.gold-=cost;cr.lv+=1;bump(d,"feed");World.refresh(p);return ok(p,"Subiu para o nível "..cr.lv..(C.stage(cr.lv,cr.id)>C.stage(cr.lv-1,cr.id) and " — EVOLUIU!" or ""))
 end
 function A.Place(p,uid,isl)
 	local d=Data.get(p);local def=I.ById[isl]

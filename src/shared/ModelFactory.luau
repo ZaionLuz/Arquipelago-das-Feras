@@ -5,7 +5,7 @@ local Designs=require(script.Parent.CreatureDesigns)
 local V,CF,T=Vector3.new,CFrame.new,Enum.PartType
 local function build(def,lv)
  local design=Designs[def.id];assert(design,"Espécie sem design: "..def.id)
- local stage=C.stage(lv);local scale=({.7,1,1.4})[stage]
+ local stage=C.stage(lv,def.id);local scale=({.7,1,1.4})[stage]
  local m=Instance.new("Model");m.Name=def.name
  m:SetAttribute("Family",def.shape);m:SetAttribute("Species",def.id);m:SetAttribute("Stage",stage)
  local col=E.Color[def.el];local dark=col:Lerp(Color3.new(0,0,0),.38)
@@ -62,6 +62,17 @@ local function build(def,lv)
  for i=1,design.pattern+stage do
   local angle=i*2.4
   p("Mark",T.Ball,V(.35,.4,.18),V(math.cos(angle)*1.35,y+math.sin(angle)*.7,1.15),accent,nil,stage==3)
+ end
+ -- Asas radiantes, cauda tripla e halo: a lendária não é recoloração de Fuligem.
+ if def.id=="fenix" then
+  local gold=Color3.fromRGB(255,206,78)
+  for _,side in {-1,1} do for feather=1,5 do
+   p("Wing",T.Ball,V(.5,1.1,4.2+feather*.25),V(side*(2+feather*.45),3+feather*.2,-.8),feather%2==0 and gold or col,CFrame.Angles(0,side*.3,side*.35),feather==5)
+  end end
+  for i=-1,1 do p("Tail",T.Ball,V(.55,.55,5.5),V(i*.8,1.5,-3.7),gold,CFrame.Angles(-.25,i*.18,0),true) end
+  for i=1,8 do local a=i*math.pi/4
+   p("SolarHalo",T.Ball,V(.25,.25,.25),V(math.cos(a)*1.5,headY+1.3+math.sin(a)*1.5,headZ-.5),gold,nil,true)
+  end
  end
  local crest=design.crest
  for i=1,stage+1 do

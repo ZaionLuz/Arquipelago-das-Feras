@@ -47,7 +47,7 @@ function UI.discovery(gui,def,lv,evolved)
  UI.preview(panel,def,lv,false)
  label(panel,evolved and "SUA FERA EVOLUIU!" or (def.rar>=3 and "ECLOSÃO EXTRAORDINÁRIA!" or "UMA FERA NASCEU!"),UDim2.fromScale(0,0),UDim2.fromScale(1,.12))
  label(panel,def.name.." • "..C.Rarity[def.rar].." • Nv."..lv,UDim2.fromScale(0,.68),UDim2.fromScale(1,.12))
- label(panel,"Vida "..def.hp.." • Ataque "..def.atk.." • Ouro/min base "..def.gpm.." • Estágio "..C.stage(lv),UDim2.fromScale(.05,.77),UDim2.fromScale(.9,.06)).TextSize=12
+ label(panel,"Vida "..def.hp.." • Ataque "..def.atk.." • Ouro/min base "..def.gpm.." • Estágio "..C.stage(lv,def.id),UDim2.fromScale(.05,.77),UDim2.fromScale(.9,.06)).TextSize=12
  local close=Instance.new("TextButton");close.Size=UDim2.fromScale(.8,.13);close.Position=UDim2.fromScale(.1,.84);close.Text="Continuar aventura";close.TextSize=18;close.Font=Enum.Font.GothamBold;close.BackgroundColor3=Color3.fromRGB(255,200,90);close.Parent=panel
  close.Selectable=true;close.Activated:Connect(function() overlay:Destroy() end)
  -- Segurança: nunca bloquear permanentemente por menu fechado ou controle perdido.

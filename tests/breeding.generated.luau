@@ -36,7 +36,14 @@ add("magmaterra","Magmaterra","Fogo",3,"Híbrido","Beast",{"Fogo","Terra"})
 add("tempestalia","Tempestália","Ar",3,"Híbrido","Bird",{"Ar","Água"})
 add("nevoamusgo","Névoamusgo","Sombra",3,"Híbrido","Beast",{"Sombra","Natureza"})
 add("cinzavento","Cinzavento","Fogo",4,"Híbrido","Dragon",{"Fogo","Ar"})
-function C.stage(lv) return lv>=15 and 3 or lv>=7 and 2 or 1 end
+-- Fênix é uma espécie adicional; Fênix Fuligem e seus IDs permanecem intactos.
+add("fenix","Fênix","Fogo",4,"Brasa","Bird")
+C.ById.fenix.minStage=3
+C.ById.fenix.futureStage={target=4,enabled=false,mechanic="Renascimento (futuro)"}
+function C.stage(lv,id)
+ local normal=lv>=15 and 3 or lv>=7 and 2 or 1
+ return math.max(normal,(id and C.ById[id] and C.ById[id].minStage) or 1)
+end
 return C
 
 end)()
@@ -110,4 +117,30 @@ assert(next(B.outcomes("invalido","cinzelo"))==nil)
 local n=0
 for _=1,20000 do local id=B.pick("cinzelo","bolhinho",rng);if C.ById[id].hybrid then n+=1 end end
 assert(math.abs(n/20000-.25)<.02,"Distribuição híbrida inesperada")
-print("PASS",pairsChecked,"pares; 25230 sorteios válidos; estágios; híbridos",n/20000)
+print("PASS",pairsChecked,"pares; sorteios",pairsChecked*30,"estágios; híbridos",n/20000)
+
+local Capture=(function()
+--!nonstrict
+local R={SealPrice=25,InitialSeals=5,MaxPerIsland=2,RespawnSeconds=25,MaxDistance=13}
+local base={.8,.5,.28,.12}
+function R.chance(rarity,level)
+ return math.clamp((base[rarity] or .1)-math.max(0,level-1)*.005,.05,.9)
+end
+-- Hábitos e peso compartilhados para inspeção; somente servidor sorteia.
+function R.species(def)
+ return {island=def.island,weight=1/(def.rar*def.rar),behavior=def.shape=="Bird" and "voador" or def.shape=="Serpent" and "reservado" or "curioso",max=def.rar==4 and 1 or 2}
+end
+return R
+
+end)()
+for lv=1,20 do
+ assert(C.stage(lv,"fenix")==3)
+ for rarity=1,4 do
+  local chance=Capture.chance(rarity,lv)
+  assert(chance>=.05 and chance<=.9)
+  if rarity>1 then assert(chance<=Capture.chance(rarity-1,lv)) end
+ end
+end
+assert(C.ById.fenix.futureStage.target==4 and not C.ById.fenix.futureStage.enabled)
+assert(C.ById.fenix.rar==4 and C.ById.fenix.shape=="Bird")
+print("PASS: Fênix adulta em todos os níveis; estágio 4 bloqueado; probabilidades de captura limitadas")

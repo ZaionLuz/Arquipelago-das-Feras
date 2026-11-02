@@ -4,13 +4,13 @@ local C=require(RS.Shared.Creatures);local I=require(RS.Shared.Islands)
 local M=require(RS.Shared.Missions)
 local store=DSS:GetDataStore("ArquipelagoV1")
 local D={};local profiles={}
-local VERSION=2
+local VERSION=3
 local sessions={}
 local Http=game:GetService("HttpService")
 local LEASE=180
 local function clone(t) local out={};for k,v in t do out[k]=typeof(v)=="table" and clone(v) or v end;return out end
 local function default()
-	return {v=VERSION,gold=100,gems=5,nextId=3,last=os.time(),wins=0,
+	return {v=VERSION,gold=100,gems=5,seals=5,nextId=3,last=os.time(),wins=0,
 		creatures={u1={id="cinzelo",lv=1,xp=0},u2={id="bolhinho",lv=1,xp=0}},eggs={},
 		stats={},claimed={},pass={},receipts={},dailyDay=0,streak=0,trophies=0,tut=false,habitat={Brasa={"u1","u2"}},unlocked={Brasa=true},discovered={cinzelo=true,bolhinho=true}}
 end
@@ -18,11 +18,12 @@ end
 function D.validate(raw)
 	local d=default();if typeof(raw)~="table" or typeof(raw.creatures)~="table" then return d end
 	local function num(x,f,mx) return (typeof(x)=="number" and x==x and x>=0 and x<=mx) and math.floor(x) or f end
+	d.seals=num(raw.seals,5,10000)
 	d.gold=num(raw.gold,d.gold,1e12);d.gems=num(raw.gems,d.gems,1e9);d.wins=num(raw.wins,0,1e9);d.nextId=num(raw.nextId,d.nextId,1e9)
 	d.last=math.min(num(raw.last,os.time(),1e12),os.time())
 	local cr,n={},0
 	for uid,c in raw.creatures do
-		if typeof(uid)=="string" and typeof(c)=="table" and C.ById[c.id] and n<60 then cr[uid]={id=c.id,lv=math.clamp(num(c.lv,1,20),1,20),xp=0};n+=1 end
+		if typeof(uid)=="string" and typeof(c)=="table" and C.ById[c.id] and n<60 then cr[uid]={id=c.id,lv=math.clamp(num(c.lv,1,20),1,20),xp=num(c.xp,0,1e9)};n+=1 end
 	end
 	if n==0 then return d end
 	for uid in cr do local n=tonumber(string.match(uid,"^u(%d+)$"));if n then d.nextId=math.max(d.nextId,n+1) end end

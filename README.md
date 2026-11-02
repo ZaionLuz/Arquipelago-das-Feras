@@ -30,3 +30,6 @@ Leia `AUDITORIA.md`, `PROGRESS.md` e `TESTES-STUDIO.md`. A versão de dados foi 
 
 ## Versão 3
 Abra primeiro `ABRIR-NO-STUDIO.md`. Melhorias da chocadeira, regras e limitações estão em PROGRESS.md. A interface do projeto é criada por código; não exige assets externos ou plugins além do fluxo Rojo. Assets de áudio continuam vazios. Não há monetização real habilitada.
+
+## V4
+30 espécies (29 originais + Fênix lendária), captura com Selos de Vínculo e HUD com gaveta fechada durante exploração. Consulte a seção V4 em PROGRESS.md para funcionalidades e limites reais. O estágio 4 da Fênix é apenas uma extensão futura bloqueada. Validação no Studio continua obrigatória.

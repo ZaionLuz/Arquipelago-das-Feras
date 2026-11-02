@@ -14,14 +14,17 @@ local bestiaryFilter="Todos"
 local Breeding=require(RS.Shared.Breeding)
 local Balance=require(RS.Shared.Economy)
 local Nursery=require(script.Parent.NurseryUI)
+local Journal=require(script.Parent.JournalUI)
 local function mk(cls,props,parent) local o=Instance.new(cls);for k,v in props do o[k]=v end;if cls=="TextButton" or cls=="Frame" or cls=="ScrollingFrame" then Instance.new("UICorner",o).CornerRadius=UDim.new(0,12) end
 	if (cls=="TextButton" or cls=="TextLabel") and o.TextScaled then Instance.new("UITextSizeConstraint",o).MaxTextSize=28 end
 	if cls=="TextButton" then local g=Instance.new("UIGradient",o);g.Rotation=90;g.Color=ColorSequence.new(Color3.new(1,1,1),Color3.fromRGB(180,180,190)) end
 	o.Parent=parent;return o end
 local WHITE=Color3.new(1,1,1)
-local top=mk("TextLabel",{Size=UDim2.new(1,-130,0,44),BackgroundColor3=Color3.fromRGB(40,30,70),TextColor3=WHITE,TextScaled=true,Font=Enum.Font.GothamBold},gui)
+local drawerOpen=false
+local top=mk("TextLabel",{Size=UDim2.new(.72,0,0,34),BackgroundColor3=Color3.fromRGB(40,30,70),TextColor3=WHITE,TextScaled=true,Font=Enum.Font.GothamBold},gui)
 local msg=mk("TextLabel",{Position=UDim2.new(0,0,0,46),Size=UDim2.new(1,0,0,28),BackgroundTransparency=1,TextColor3=Color3.fromRGB(255,240,150),TextStrokeTransparency=0.4,TextScaled=true,Font=Enum.Font.GothamBold},gui)
-local list=mk("ScrollingFrame",{Position=UDim2.fromScale(0,0.5),Size=UDim2.fromScale(1,0.34),BackgroundColor3=Color3.fromRGB(25,20,50),BackgroundTransparency=0.15,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y},gui)
+local list=mk("ScrollingFrame",{Visible=false,AnchorPoint=Vector2.new(1,0),Position=UDim2.new(1,-8,.22,0),Size=UDim2.new(.9,0,.66,-8),BackgroundColor3=Color3.fromRGB(25,20,50),BackgroundTransparency=0.15,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y},gui)
+mk("UISizeConstraint",{MaxSize=Vector2.new(440,1000)},list)
 mk("UIListLayout",{Padding=UDim.new(0,8),SortOrder=Enum.SortOrder.LayoutOrder},list)
 local muted=false
 local function sfx(n)
@@ -96,7 +99,7 @@ local function call(...)
    if r.ok and before and (act=="Hatch" or act=="Feed") then
     for uid,cr in S.creatures do
      local old=before.creatures[uid]
-     if (act=="Hatch" and not old) or (old and C.stage(cr.lv)>C.stage(old.lv)) then
+     if (act=="Hatch" and not old) or (old and C.stage(cr.lv,cr.id)>C.stage(old.lv,old.id)) then
       CollectionUI.discovery(gui,C.ById[cr.id],cr.lv,old~=nil);break
      end
     end
@@ -126,25 +129,13 @@ render=function()
 	for _,c in list:GetChildren() do if c:IsA("Frame") then c:Destroy() end end
 	if not S then return end
 	local n=0;for _ in S.discovered do n+=1 end
-	top.Text=("Ouro %d | Gemas %d | Bestiário %d/%d | Vitórias %d"):format(S.gold,S.gems,n,#C.List,S.wins)
+	top.Text=("● %d ouro  ◆ %d gemas  ◈ %d selos"):format(S.gold,S.gems,S.seals or 0)
 	if tab=="Feras" then
 		for uid,cr in S.creatures do
 			row(crText(cr),{{"Alimentar",function() call("Feed",uid) end},{"Pôr: "..isl,function() call("Place",uid,isl) end},{"Lutar",function() call("Battle",uid,isl) end}})
 		end
-	elseif tab=="Bestiário" then
-  local filters={"Todos","Descobertos","Misteriosos"}
-  for _,el in E.List do table.insert(filters,el) end
-  for _,name in filters do
-   row((bestiaryFilter==name and "✓ " or "")..name,{{"Filtrar",function() bestiaryFilter=name;render() end}})
-  end
-  for index,def in C.List do
-   local known=S.discovered[def.id]==true
-   if bestiaryFilter=="Todos" or (bestiaryFilter=="Descobertos" and known) or (bestiaryFilter=="Misteriosos" and not known) or def.el==bestiaryFilter then
-    local lv=1
-    for _,cr in S.creatures do if cr.id==def.id then lv=math.max(lv,cr.lv) end end
-    CollectionUI.card(list,def,lv,known,index)
-   end
-  end
+	 elseif tab=="Bestiário" then
+  Journal.render(list,S,function() render() end)
  elseif tab=="Arena" then
 		row("Troféus: "..S.trophies.." — ambos devem tocar Desafiar em até 30s",{})
 		local n=0
@@ -161,6 +152,7 @@ render=function()
 			row(("%s (%d/%d)"):format(m.text,math.min(pr,m.goal),m.goal),{{done and "✓" or (pr>=m.goal and "Resgatar" or "+"..m.gold.." ouro"),function() if not done and pr>=m.goal then call("Claim",m.id) end end}})
 		end
 	elseif tab=="Loja" then
+		row("Selos de Vínculo: "..(S.seals or 0),{{"Criar • 25 ouro",function() call("CraftSeal") end}})
 		row("Mercado de ovos — compras com ouro do jogo",{})
 		for _,def in I.List do
 			if S.unlocked[def.id] then row("Ovo de "..def.name.." — "..(80*def.idx).." ouro",{{"Comprar",function() call("BuyEgg",def.id) end}}) end
@@ -187,17 +179,41 @@ render=function()
 		end
 	end
 end
-local bar=mk("Frame",{Position=UDim2.fromScale(0,0.84),Size=UDim2.fromScale(1,0.16),BackgroundTransparency=1},gui)
+local bar=mk("Frame",{Visible=false,AnchorPoint=Vector2.new(1,0),Position=UDim2.new(1,-8,.1,0),Size=UDim2.new(.9,0,.12,-4),BackgroundTransparency=1},gui)
+mk("UISizeConstraint",{MaxSize=Vector2.new(440,160)},bar)
+local toggle=mk("TextButton",{Position=UDim2.new(1,-58,0,40),Size=UDim2.fromOffset(50,44),Text="Menu",TextSize=12,Font=Enum.Font.GothamBold,TextColor3=WHITE,BackgroundColor3=Color3.fromRGB(63,66,91)},gui)
+local function setDrawer(open)
+ drawerOpen=open;list.Visible=open;bar.Visible=open;toggle.Text=open and "Fechar" or "Menu"
+ if open then render();list.BackgroundTransparency=.5;TS:Create(list,TweenInfo.new(.15),{BackgroundTransparency=.12}):Play() end
+end
+toggle.Activated:Connect(function() setDrawer(not drawerOpen) end)
+game:GetService("UserInputService").InputBegan:Connect(function(input,processed)
+ if not processed and input.KeyCode==Enum.KeyCode.Escape then setDrawer(false) end
+end)
 for i,name in {"Feras","Ilhas","Ovos","Bestiário","Arena","Missões","Loja"} do
 	local b=mk("TextButton",{Position=UDim2.fromScale(((i-1)%4)/4,math.floor((i-1)/4)/2),Size=UDim2.fromScale(1/4,.5),Text=name,TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(90,70,160),TextColor3=WHITE},bar)
 	tabBtn[name]=b;b.Activated:Connect(function() tab=name;render() end)
 end
-local collect=mk("TextButton",{Position=UDim2.new(1,-130,0,0),Size=UDim2.fromOffset(130,44),Text="Coletar",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(255,190,50),TextColor3=Color3.fromRGB(40,30,70)},gui)
+local collect=mk("TextButton",{Position=UDim2.new(1,-86,0,0),Size=UDim2.fromOffset(78,34),Text="Coletar",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(255,190,50),TextColor3=Color3.fromRGB(40,30,70)},gui)
 collect.Activated:Connect(function() call("Collect") end)
 task.spawn(function() while true do task.wait(1);if tab=="Ovos" then Nursery.tick(list) end end end)
 local music
 if Sounds.Music~="" then music=Instance.new("Sound");music.SoundId=Sounds.Music;music.Looped=true;music.Volume=0.25;music.Parent=SS;music:Play() end
-local mb=mk("TextButton",{Position=UDim2.new(1,-74,0.5,-40),Size=UDim2.fromOffset(70,36),Text="Som ON",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(90,70,160),TextColor3=WHITE},gui)
+local notifications=RS:WaitForChild("WildNotice")
+notifications.OnClientEvent:Connect(function(message,position,success)
+ if typeof(position)=="Vector3" then
+  local ring=Instance.new("Part");ring.Shape=Enum.PartType.Ball;ring.Size=Vector3.one*2;ring.Position=position;ring.Anchored=true;ring.CanCollide=false;ring.CanTouch=false;ring.CanQuery=false;ring.Material=Enum.Material.Neon;ring.Color=success and Color3.fromRGB(255,215,90) or Color3.fromRGB(166,130,220);ring.Transparency=.4;ring.Parent=workspace
+  TS:Create(ring,TweenInfo.new(.6),{Size=Vector3.one*8,Transparency=1}):Play();game:GetService("Debris"):AddItem(ring,.7)
+  sfx(success and "Win" or "Lose")
+ end
+ msg.Text=message
+ if S then task.delay(.2,function() if not inFlight then call("Get") end end) end
+end)
+local lastMessage=""
+task.spawn(function()
+ while true do task.wait(4);if msg.Text==lastMessage then msg.Text="" end;lastMessage=msg.Text end
+end)
+local mb=mk("TextButton",{Position=UDim2.new(1,-74,1,-46),Size=UDim2.fromOffset(66,34),Text="Som ON",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(90,70,160),TextColor3=WHITE},gui)
 mb.Activated:Connect(function() muted=not muted;mb.Text=muted and "Som OFF" or "Som ON";if music then music.Volume=muted and 0 or 0.25 end end)
 -- Feras respiram e se viram devagar (animação local, só visual).
 local base=setmetatable({},{__mode="k"})
@@ -256,7 +272,7 @@ local TUT={
 	{"Na aba OVOS, escolha 2 feras e toque CRUZAR.",function() return tabBtn.Ovos end,function(s) return (s.stats.breed or 0)>=1 end},
 	{"Na aba FERAS, toque em LUTAR para ver uma batalha!",function() return tabBtn.Feras end,function(s) return (s.stats.fight or 0)>=1 end},
 	{"Em MISSÕES, resgate sua primeira recompensa.",function() return tabBtn["Missões"] end,function(s) return next(s.claimed)~=nil end}}
-local panel=mk("Frame",{Position=UDim2.new(0.02,0,0.5,-98),Size=UDim2.new(0.74,0,0,92),BackgroundColor3=Color3.fromRGB(255,240,200),Visible=false},gui)
+local panel=mk("Frame",{Position=UDim2.new(.02,0,0,82),Size=UDim2.new(.72,0,0,66),BackgroundColor3=Color3.fromRGB(255,240,200),Visible=false},gui)
 local ptxt=mk("TextLabel",{Size=UDim2.new(1,-90,1,0),Position=UDim2.fromOffset(8,0),BackgroundTransparency=1,TextScaled=true,Font=Enum.Font.GothamBold,TextColor3=Color3.fromRGB(50,35,90),TextXAlignment=Enum.TextXAlignment.Left},panel)
 local skip=mk("TextButton",{Size=UDim2.fromOffset(76,36),Position=UDim2.new(1,-80,0.5,-18),Text="Pular",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(200,120,120),TextColor3=WHITE},panel)
 local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(255,230,80);stroke.Thickness=2;stroke.ApplyStrokeMode=Enum.ApplyStrokeMode.Border

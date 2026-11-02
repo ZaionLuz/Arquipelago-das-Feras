@@ -35,5 +35,12 @@ add("magmaterra","Magmaterra","Fogo",3,"Híbrido","Beast",{"Fogo","Terra"})
 add("tempestalia","Tempestália","Ar",3,"Híbrido","Bird",{"Ar","Água"})
 add("nevoamusgo","Névoamusgo","Sombra",3,"Híbrido","Beast",{"Sombra","Natureza"})
 add("cinzavento","Cinzavento","Fogo",4,"Híbrido","Dragon",{"Fogo","Ar"})
-function C.stage(lv) return lv>=15 and 3 or lv>=7 and 2 or 1 end
+-- Fênix é uma espécie adicional; Fênix Fuligem e seus IDs permanecem intactos.
+add("fenix","Fênix","Fogo",4,"Brasa","Bird")
+C.ById.fenix.minStage=3
+C.ById.fenix.futureStage={target=4,enabled=false,mechanic="Renascimento (futuro)"}
+function C.stage(lv,id)
+ local normal=lv>=15 and 3 or lv>=7 and 2 or 1
+ return math.max(normal,(id and C.ById[id] and C.ById[id].minStage) or 1)
+end
 return C

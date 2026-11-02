@@ -1,6 +1,7 @@
 --!nonstrict
 -- Identidade por espécie, sem alterar IDs persistidos ou regras econômicas.
 return {
+ fenix={crest="solar",body="bird",pattern=5},
  cinzelo={crest="embers",body="round",pattern=1},magmarau={crest="horns",body="long",pattern=2},
  fenixfuligem={crest="plume",body="bird",pattern=3},vulcanodrago={crest="horns",body="dragon",pattern=4},
  bolhinho={crest="bubbles",body="round",pattern=2},marilisco={crest="fins",body="serpent",pattern=3},

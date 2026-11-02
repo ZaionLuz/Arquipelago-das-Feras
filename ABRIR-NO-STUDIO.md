@@ -11,3 +11,6 @@ Este ZIP contém um projeto **Rojo**, não um lugar .rbxl pronto. Não arraste o
 7. Alternativa de edição contínua: `rojo serve` e conectar pelo plugin.
 
 Leia TESTES-STUDIO.md. Não habilite produtos de monetização: estão bloqueados nesta etapa. O DataStore mantém nome e chaves originais; use experiência de teste isolada para não acessar progresso comercial.
+
+## V4
+O ZIP do GitHub contém a raiz Rojo. Execute `rojo build -o Feras-v4.rbxlx`. Novos módulos são mapeados automaticamente pelas pastas existentes. Não habilite produtos reais. Os selos são adquiridos com ouro do jogo e as capturas são validadas no servidor. A nova Fênix é adulta (estágio 3) e o estágio 4 está desativado.

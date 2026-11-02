@@ -2,6 +2,7 @@
 local Players=game:GetService("Players");local RS=game:GetService("ReplicatedStorage")
 local Data=require(script.Parent.DataService);local World=require(script.Parent.World);local G=require(script.Parent.GameService);local Mon=require(script.Parent.MonetizationService)
 World.build()
+require(script.Parent.Wildlife).start()
 local Net=Instance.new("RemoteFunction");Net.Name="Net";Net.Parent=RS
 local last={}
 local busy={}

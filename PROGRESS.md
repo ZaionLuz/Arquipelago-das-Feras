@@ -46,3 +46,29 @@ Pendências: combate interativo por turnos/equipes, XP, santuário pessoal e con
 ### Verificação efetivamente executada nesta entrega
 Foi possível construir o CLI oficial Luau a partir do código-fonte luau-lang/luau (a versão anterior não tinha interpretador). Compilação sintática de todos os 20 arquivos .luau aprovada. Teste isolado das regras de Creatures/Breeding executado em Luau: 841 pares, 25.230 sorteios consistentes com a tabela de resultados, limites de estágio e IDs inválidos aprovados; 20 mil sorteios adicionais cinzelo/bolhinho deram 25,145% de híbridos, próximo dos 25% configurados. JSON/caminhos Rojo e 29 IDs/designs aprovados. Estes testes não executam APIs Roblox. Build de lugar via Rojo, visual, multiplayer, DataStore e performance continuam não executados.
 A entrada do cliente também ganhou novas tentativas de Get enquanto o perfil carrega, evitando ficar sem interface por uma consulta inicial antes de Data.load terminar.
+
+## V4 — exploração compacta, captura e Fênix
+
+### Implementado
+- HUD reduzida, gaveta fechada por padrão, botão Menu/Fechar e fechamento com Escape. Uma única gaveta para abas; viewport do mapa livre durante exploração. Respeita DeviceSafeInsets. A área exata ocupada depende do dispositivo/tutorial e deve ser medida no Studio.
+- Bestiário com uma prévia 3D giratória, seleção de espécies, filtros por raridade e bioma, exemplares possuídos e estágio. Espécies desconhecidas mantêm silhueta e texto oculto. Não copiamos interface/assets da referência; usamos somente a direção de composição.
+- Marcos de composição por bioma: formação vulcânica, cachoeira estilizada, árvore principal, arco de ruínas, portal umbral e nuvens/cristais. Mantidas seis ilhas e seus IDs. Gelo/tempestade como novos biomas ainda não foram implementados.
+- Wildlife: até 12 encontros simultâneos (2/ilha), limite por espécie, peso 1/raridade², locomoção em pequena área plana. Prompt Capturar usa 1 Selo. Servidor verifica perfil, proximidade, cooldown, ilha desbloqueada, inventário e saldo. Consumo/concessão não fazem yield; um encontro só concede uma criatura. Falha faz a fera fugir; reposição após 25s. Sem captura decidida pelo cliente.
+- Cinco selos iniciais na migração para versão 3 de dados; criação no mercado custa 25 ouro e tem limite 10 mil. Selos, XP existente e capturas persistidos. Não foram trocadas chaves nem DataStore.
+- Chance: comum 80%, rara 50%, épica 28%, lendária 12%, menos 0,5 ponto percentual por nível acima de 1; limitada entre 5% e 90%. Sem bônus ou tipos de selos nesta entrega. Prompt exibe porcentagem inteira arredondada para baixo. Falhas consomem um selo; inventário cheio/ilha bloqueada não consomem.
+- Feedback de captura é aviso compacto e anel local de curta duração; sincroniza snapshot após captura. Não abre apresentação enorme.
+- Nova espécie `fenix` (Fênix lendária, Fogo, ave): asas radiantes amplas, cauda tripla e halo. A Fênix Fuligem existente NÃO foi substituída. Total: 30 espécies. Fênix sempre usa estágio adulto 3, mesmo em nível individual baixo. Encontro selvagem dela usa nível individual 15. Pode sair em cruzamentos com teto lendário; regra original de sorteio mantida, catálogo ampliado. Não é concedida gratuitamente.
+- `futureStage={target=4,enabled=false,...}` declara uma futura mecânica de renascimento. Não há ação, compra ou evolução automática para estágio 4. Estágio é diferente de nível individual.
+
+### Testes executados
+23 arquivos Luau compilados com luau-compile. Teste isolado em Luau: 900 pares e 27 mil sorteios consistentes com outcomes; 20 mil sorteios adicionais de híbridos = 25,17%. Regras de estágio adulto fixo da Fênix, bloqueio do estágio 4 e limites/ordenação das probabilidades de captura aprovados. JSON e caminhos Rojo, igualdade dos 29 IDs originais mais somente fenix e paridade design/catálogo aprovados.
+
+### Não executado / limites
+Nenhum teste no Roblox Studio, nem medida de FPS, área da HUD, aparência, colisões, DataStore ou múltiplos jogadores. Compilar sintaxe não valida APIs em runtime. Wildlife usa patrulha curta, não pathfinding, perseguição, fuga física ou comportamento territorial sofisticado. Há validação de ilha na captura, mas não barreira física impedindo visita. Interação via prompt requer teste de distâncias/linha de visão. Não há apelidos, companheiro ativo ou evolução interativa por escolha; a evolução legada por nível continua automática. HUD não inventa nível/XP de jogador ausentes no projeto. Filtragem por elemento dedicada ainda pendente no novo Bestiário; dados de elemento aparecem na espécie descoberta. Capturas não equipam automaticamente a criatura em habitat. Áudio permanece silencioso até configuração autorizada.
+
+### Arquivos
+Novos: CaptureRules.luau, Wildlife.luau, JournalUI.luau.
+Alterados: Client.client, CollectionUI, DataService, GameService, Main.server, Biomes, Creatures, CreatureDesigns, ModelFactory, testes e documentação.
+Próximo passo: homologar HUD/captura com dois clientes e celulares; depois adicionar evolução interativa e companheiro, sem desbloquear estágio 4 da Fênix antes de definir a mecânica.
+
+A conquista de coleção completa agora usa a quantidade real do catálogo (30), preservando o ID e as recompensas já resgatadas de perfis antigos.

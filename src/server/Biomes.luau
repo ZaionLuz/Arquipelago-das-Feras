@@ -40,6 +40,26 @@ function B.decorate(parent,origin,def)
    crystal(pos+V(0,8,0),def.accent)
   end
  end
+ -- Marco maior por ilha: composição ao fundo, sem bloquear o centro ou as pontes.
+ if def.id=="Brasa" then
+  part(Enum.PartType.Ball,V(16,14,16),V(0,7,-27),Color3.fromRGB(46,35,39),Enum.Material.Basalt)
+  part(Enum.PartType.Cylinder,V(.5,8,8),V(0,13,-27),def.accent,Enum.Material.Neon).CFrame*=CFrame.Angles(0,0,math.pi/2)
+ elseif def.id=="Recife" then
+  part(Enum.PartType.Ball,V(13,9,10),V(0,8,-28),def.ground,Enum.Material.Slate)
+  local fall=part(Enum.PartType.Block,V(5,8,.3),V(0,8,-22.9),def.accent,Enum.Material.Glass);fall.Transparency=.35
+ elseif def.id=="Floresta" then
+  local tree=part(Enum.PartType.Cylinder,V(18,4,4),V(0,13,-26),Color3.fromRGB(83,62,45),Enum.Material.Wood);tree.CFrame*=CFrame.Angles(0,0,math.pi/2)
+  part(Enum.PartType.Ball,V(19,10,16),V(0,23,-26),Color3.fromRGB(67,143,96),Enum.Material.Grass)
+ elseif def.id=="Dunas" or def.id=="Pantano" then
+  for _,side in {-1,1} do part(Enum.PartType.Block,V(3,12,3),V(side*6,10,-25),def.ground,Enum.Material.Slate) end
+  part(Enum.PartType.Block,V(16,3,4),V(0,16,-25),def.accent,Enum.Material.Slate)
+  if def.id=="Pantano" then
+   local portal=part(Enum.PartType.Ball,V(7,9,.3),V(0,9,-25),def.accent,Enum.Material.Neon);portal.Transparency=.45
+  end
+ else
+  for _,side in {-1,1} do crystal(V(side*7,12,-26),def.accent) end
+  part(Enum.PartType.Ball,V(22,4,14),V(0,16,-26),Color3.fromRGB(236,243,255))
+ end
  -- Marco de exploração e caminho radial: tudo abaixo dos pés ou sem colisão.
  local path=part(Enum.PartType.Block,V(8,.15,58),V(0,4.1,0),def.ground:Lerp(Color3.new(1,1,1),.2),Enum.Material.Cobblestone)
  local stone=part(Enum.PartType.Ball,V(7,3,7),V(24,5,0),def.ground,Enum.Material.Slate)

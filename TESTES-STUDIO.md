@@ -29,3 +29,14 @@ Limitações: nenhum teste acima foi executado neste ambiente. Não há garantia
 6. Confirmar que contagem não destrói e recria ViewportFrames a cada segundo. Abrir/fechar aba Ovos 50 vezes, inspecionar memória. Testar duas fileiras em Device Emulator e gamepad.
 7. Mercado não mostra Robux. Remote Buy deve recusar mesmo após configuração de IDs. Não realizar compras reais nesta versão.
 8. Gerar os 87 modelos com DesignChecks.run(). Rodar DataStore e testes de dois servidores da seção anterior antes de publicar.
+
+## Homologação V4 (pendente, não executada aqui)
+1. Rojo build e Play. Ver apenas HUD/atalhos, sem gaveta. Abrir/fechar Menu, Escape, trocar todas as abas. Confirmar acesso a Coletar, ovos, missões, mercado, ilhas, duelos e som. Medir >=75% livre durante exploração com tutorial fechado. Testar 360×640, paisagem e tablet com controles Roblox e entalhe.
+2. Bestiário: girar prévia, rolar seleção, raridade/bioma, silhuetas não descobertas, quantidade e estágio. Trocar abas 100 vezes e verificar desconexão de Heartbeat/memória. Só uma prévia principal deve permanecer viva.
+3. Rodar `require(game.ReplicatedStorage.Shared.DesignChecks).run()`: agora 90 combinações (29 originais × 3 + Fênix testada nos níveis 1/7/15, sempre adulta). Conferir partes, olhos, silhueta, asas e halo solar da Fênix.
+4. Criatura selvagem: se aproximar, segurar prompt; tentar disparar remotamente de longe, sem selo, inventário 60, ilha bloqueada, morto e com dois jogadores segurando ao mesmo tempo. Só um UID por encontro. Confirmar que falha consome 1 selo e remove encontro; tentativas inválidas não consomem.
+5. Ir ao Mercado, criar selo: ouro -25, selo +1. Reconectar: saldo preservado. Migração de v2 recebe cinco selos uma única vez e mantém criaturas, moedas e XP. Nova sessão v3 não renova selos automaticamente.
+6. Capturar e desconectar: confirmar último progresso salvo conforme autosave; forçar save e reconectar. Captura entra no Bestiário e na coleção, não em habitat automaticamente; usar Pôr na aba Feras.
+7. Testar spawn por ilha, limite global 12, 25s de reposição, nenhum modelo dentro de decoração. Verificar patrulha plana/voo e custo de replicação com vários clientes. Teleporte exploratório deve ser validado separadamente antes de jogo competitivo.
+8. Inspeção visual especial da Fênix: adulta em lv1/7/15/20, Fênix Fuligem preservada; `futureStage.enabled=false`; nenhum acesso ao estágio 4 por Feed, Hatch, captura ou remote. Para visualizar sem capturar, usar DesignChecks ou criar modelo localmente no Studio com ModelFactory.build(Creatures.ById.fenix,1).
+9. Cenários novos: caminhar pelo centro e pontes, conferir marcos/cachoeira decorativa, superfícies sem bloqueios invisíveis. Não presumir água/lava perigosas: são decorativas nesta versão.
