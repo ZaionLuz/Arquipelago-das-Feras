@@ -14,3 +14,6 @@ Leia TESTES-STUDIO.md. Não habilite produtos de monetização: estão bloqueado
 
 ## V4
 O ZIP do GitHub contém a raiz Rojo. Execute `rojo build -o Feras-v4.rbxlx`. Novos módulos são mapeados automaticamente pelas pastas existentes. Não habilite produtos reais. Os selos são adquiridos com ouro do jogo e as capturas são validadas no servidor. A nova Fênix é adulta (estágio 3) e o estágio 4 está desativado.
+
+## V5
+Gere com `rojo build -o Feras-v5.rbxlx`. Verifique StreamingEnabled e os raios 64/256 no Workspace depois de abrir. Aproximar-se da fera selvagem abre encontro com captura direta ou batalha por turnos. Consulte RELEASE-V5.md para as escolhas e TESTES-STUDIO.md para validação. Não é preciso instalar assets pagos.

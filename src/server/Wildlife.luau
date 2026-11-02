@@ -2,6 +2,7 @@
 local RS=game:GetService("ReplicatedStorage");local Players=game:GetService("Players")
 local C=require(RS.Shared.Creatures);local I=require(RS.Shared.Islands);local MF=require(RS.Shared.ModelFactory)
 local Rules=require(RS.Shared.CaptureRules);local Data=require(script.Parent.DataService)
+local Encounters=require(script.Parent.EncounterService)
 local W={};local rng=Random.new();local cooldown=setmetatable({},{__mode="k"})
 local started=false
 function W.start()
@@ -25,32 +26,22 @@ function W.start()
   local lift=m:GetPivot().Position.Y-(cf.Position.Y-size.Y/2)
   s.home=ground+Vector3.new(0,lift,0);s.model=m;s.id=def.id;s.level=level;s.born=os.clock()
   m:PivotTo(CFrame.new(s.home));m.Parent=folder
-  local prompt=Instance.new("ProximityPrompt");prompt.ActionText="Capturar • 1 Selo";prompt.ObjectText=def.name.." • "..math.floor(Rules.chance(def.rar,level)*100).."%";prompt.HoldDuration=1;prompt.MaxActivationDistance=11;prompt.RequiresLineOfSight=true;prompt.Parent=m.PrimaryPart
+  local prompt=Instance.new("ProximityPrompt");prompt.ActionText="Encontrar fera";prompt.ObjectText=def.name.." • "..math.floor(Rules.chance(def.rar,level)*100).."%";prompt.HoldDuration=1;prompt.MaxActivationDistance=11;prompt.RequiresLineOfSight=true;prompt.Parent=m.PrimaryPart
   prompt.Triggered:Connect(function(player)
    local d=Data.get(player);local root=player.Character and player.Character:FindFirstChild("HumanoidRootPart")
    if s.model~=m or s.busy or not d or not root or (root.Position-m.PrimaryPart.Position).Magnitude>Rules.MaxDistance then return end
    if cooldown[player] and os.clock()-cooldown[player]<1.5 then return end
    cooldown[player]=os.clock()
    if not d.unlocked[s.island.id] then notice:FireClient(player,"Desbloqueie esta ilha antes de capturar.");return end
-   if d.seals<1 then notice:FireClient(player,"Sem Selos! Crie um no Mercado por 25 ouro.");return end
-   local count=0;for _ in d.creatures do count+=1 end
-   if count>=60 then notice:FireClient(player,"Coleção cheia: limite de 60 feras.");return end
-   s.busy=true -- Nenhum yield entre validar, consumir e conceder.
-   d.seals-=1
-   local position=m.PrimaryPart.Position
-   if rng:NextNumber()<Rules.chance(def.rar,level) then
-    while d.creatures["u"..d.nextId] do d.nextId+=1 end
-    local uid="u"..d.nextId;d.nextId+=1
-    d.creatures[uid]={id=def.id,lv=level,xp=0}
-    local discovery=not d.discovered[def.id];d.discovered[def.id]=true
-    d.stats.capture=(d.stats.capture or 0)+1
-    notice:FireClient(player,(discovery and "Nova espécie! " or "Capturou ")..def.name,position,true)
-    s.model=nil;m:Destroy();s.nextSpawn=os.clock()+Rules.RespawnSeconds
-   else
-    notice:FireClient(player,"O vínculo falhou. A fera fugiu; tente outro encontro.",position,false)
-    s.model=nil;m:Destroy();s.nextSpawn=os.clock()+Rules.RespawnSeconds
-   end
-   s.busy=false
+   if Encounters.active(player) then return end
+   s.busy=true;prompt.Enabled=false
+   local opened=Encounters.open(player,{id=def.id,lv=level,position=m.PrimaryPart.Position},function(remove)
+    if s.model~=m then return end
+    s.busy=false
+    if remove then s.model=nil;m:Destroy();s.nextSpawn=os.clock()+Rules.RespawnSeconds
+    else prompt.Enabled=true;s.born=os.clock() end
+   end)
+   if not opened then s.busy=false;prompt.Enabled=true end
   end)
  end
  task.spawn(function()
@@ -58,14 +49,14 @@ function W.start()
    local now=os.clock()
    for _,s in slots do
     if not s.model and now>=s.nextSpawn then spawn(s)
-    elseif s.model then
+    elseif s.model and not s.busy then
      -- Movimento limitado ao trecho plano e seguro de cada ponto de encontro.
      local elapsed=now-s.born;local pos=s.home+Vector3.new(math.sin(elapsed*.45)*2,0,math.cos(elapsed*.45)*2)
      if C.ById[s.id].shape=="Bird" then pos+=Vector3.new(0,math.max(0,math.sin(elapsed*.5))*2,0) end
      s.model:PivotTo(CFrame.lookAt(pos,pos+Vector3.new(math.cos(elapsed*.45),0,-math.sin(elapsed*.45))))
     end
    end
-   task.wait(.25)
+   task.wait(.5)
   end
  end)
 end

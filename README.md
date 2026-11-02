@@ -33,3 +33,8 @@ Abra primeiro `ABRIR-NO-STUDIO.md`. Melhorias da chocadeira, regras e limitaçõ
 
 ## V4
 30 espécies (29 originais + Fênix lendária), captura com Selos de Vínculo e HUD com gaveta fechada durante exploração. Consulte a seção V4 em PROGRESS.md para funcionalidades e limites reais. O estágio 4 da Fênix é apenas uma extensão futura bloqueada. Validação no Studio continua obrigatória.
+
+## V5 — como jogar e verificar
+Leia RELEASE-V5.md: aproxime-se de uma fera selvagem, escolha Encontrar fera e então capturar diretamente ou batalhar por turnos. Não é preciso lutar para capturar. O treino legado continua na coleção. Todos os resultados importantes são validados pelo servidor.
+
+Para repetir os testes sem Studio, instale o CLI oficial Luau; gere os testes com os scripts Python em tests/ e execute os arquivos *.generated.luau. Os arquivos *.spec.luau são fragmentos para os geradores. O stub de modelos é uma verificação estrutural, não renderização Roblox. Compilar todos os arquivos e executar tests/check_source.py verifica sintaxe/estrutura; veja TESTES-STUDIO.md para homologação real.

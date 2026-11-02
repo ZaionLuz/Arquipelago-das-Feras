@@ -1,0 +1,11 @@
+PASS: Rojo paths, JSON, 30 espécies e catálogos originais preservados
+PASS: 30 designs próprios, sem IDs ausentes ou órfãos
+PASS: todos os IDs legados preservados; somente fenix adicionada
+PASS: sintaxe de 37 arquivos Luau
+PASS	900	pares; sorteios	27000	estágios; híbridos	0.2517
+PASS: Fênix adulta em todos os níveis; estágio 4 bloqueado; probabilidades de captura limitadas
+PASS: combate/captura; 900 pares de dano; 150 encontros; inválidos sem mutação; cooldown, fim, equipe, selos e limites
+PASS: protocolo do encontro: token, versão, propriedade, débito único, concessão única, recompensa única, timeout e saída
+PASS: 90 modelos em stub estrutural (sem render/física); máximo 49 partes
+
+Atenção: regras puras e stubs executados em Luau. Nenhum render, física, rede, DataStore ou dispositivo Roblox real foi testado.

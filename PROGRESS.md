@@ -72,3 +72,6 @@ Alterados: Client.client, CollectionUI, DataService, GameService, Main.server, B
 Próximo passo: homologar HUD/captura com dois clientes e celulares; depois adicionar evolução interativa e companheiro, sem desbloquear estágio 4 da Fênix antes de definir a mecânica.
 
 A conquista de coleção completa agora usa a quantidade real do catálogo (30), preservando o ID e as recompensas já resgatadas de perfis antigos.
+
+## V5
+Implementação em RELEASE-V5.md. Encontro selvagem agora é interativo por turnos com captura direta ou assistida por batalha, habilidades por família, equipe de até três, progresso e recompensas autoritativos. Nova arte por espécie, tema de interface, miniaturas e otimizações integrados sem remover IDs, reprodução, habitats legados, treino ou duelos. Testes de regras/protocolo/estrutura executados; homologação visual e multiplayer real ainda pendente. O pacote não promete qualidade visual comprovada sem Studio.

@@ -1,6 +1,8 @@
 --!nonstrict
 local Players=game:GetService("Players");local RS=game:GetService("ReplicatedStorage")
 local Data=require(script.Parent.DataService);local World=require(script.Parent.World);local G=require(script.Parent.GameService);local Mon=require(script.Parent.MonetizationService)
+local Encounters=require(script.Parent.EncounterService)
+Encounters.start()
 World.build()
 require(script.Parent.Wildlife).start()
 local Net=Instance.new("RemoteFunction");Net.Name="Net";Net.Parent=RS
@@ -10,7 +12,8 @@ local function argument(v) return v==nil or (typeof(v)=="string" and #v<=80) or 
 Net.OnServerInvoke=function(p,action,a,b)
 	if typeof(action)~="string" or not argument(a) or not argument(b) then return end
 	local t=os.clock();if last[p] and t-last[p]<0.15 then return {ok=false,msg="Calma!"} end;last[p]=t
-	local f=G.Actions[action]
+	if Encounters.active(p) and action~="Get" then return {ok=false,msg="Termine ou abandone o encontro primeiro."} end
+ local f=G.Actions[action]
 	if not f or not Data.get(p) then return {ok=false,msg="Indisponível"} end
 	if busy[p] then return {ok=false,msg="Aguarde a ação anterior"} end
  busy[p]=true

@@ -1,4 +1,35 @@
-{"name":"ArquipelagoDasFeras","tree":{"$className":"DataModel",
-"ReplicatedStorage":{"$className":"ReplicatedStorage","Shared":{"$path":"src/shared"}},
-"ServerScriptService":{"$className":"ServerScriptService","Server":{"$path":"src/server"}},
-"StarterPlayer":{"$className":"StarterPlayer","StarterPlayerScripts":{"$className":"StarterPlayerScripts","Client":{"$path":"src/client"}}}}}
+{
+  "name": "ArquipelagoDasFeras",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    },
+    "Workspace": {
+      "$className": "Workspace",
+      "$properties": {
+        "StreamingEnabled": true,
+        "StreamingMinRadius": 64,
+        "StreamingTargetRadius": 256
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ end
 function UI.preview(parent,def,lv,unknown)
  local v=Instance.new("ViewportFrame");v.Size=UDim2.fromScale(1,.65);v.BackgroundTransparency=1;v.Ambient=Color3.fromRGB(185,185,200);v.LightColor=Color3.new(1,1,1);v.Parent=parent
  local world=Instance.new("WorldModel");world.Parent=v
- local model=MF.build(def,lv)
+ local model=MF.build(def,lv,{preview=true})
  for _,obj in model:GetDescendants() do
   if obj:IsA("BillboardGui") then obj:Destroy()
   elseif unknown and obj:IsA("BasePart") then obj.Color=Color3.fromRGB(25,25,40);obj.Material=Enum.Material.SmoothPlastic end

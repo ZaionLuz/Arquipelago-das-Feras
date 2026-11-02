@@ -5,7 +5,7 @@ local Missions=require(RS.Shared.Missions)
 local E=require(RS.Shared.Elements);local Sounds=require(RS.Shared.Sounds);local SS=game:GetService("SoundService")
 local C=require(RS.Shared.Creatures);local I=require(RS.Shared.Islands)
 local Net=RS:WaitForChild("Net")
-local gui=Instance.new("ScreenGui");gui.ResetOnSpawn=false;gui.ScreenInsets=Enum.ScreenInsets.DeviceSafeInsets;gui.Parent=Players.LocalPlayer:WaitForChild("PlayerGui")
+local gui=Instance.new("ScreenGui");gui.ResetOnSpawn=false;gui.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;gui.ScreenInsets=Enum.ScreenInsets.DeviceSafeInsets;gui.Parent=Players.LocalPlayer:WaitForChild("PlayerGui")
 local S,tab,isl,pick,snapAt=nil,"Feras","Brasa",{},os.clock()
 local render;local tabBtn={};local tutorial
 local CollectionUI=require(script.Parent.CollectionUI)
@@ -15,15 +15,16 @@ local Breeding=require(RS.Shared.Breeding)
 local Balance=require(RS.Shared.Economy)
 local Nursery=require(script.Parent.NurseryUI)
 local Journal=require(script.Parent.JournalUI)
+local Theme=require(script.Parent.UITheme)
 local function mk(cls,props,parent) local o=Instance.new(cls);for k,v in props do o[k]=v end;if cls=="TextButton" or cls=="Frame" or cls=="ScrollingFrame" then Instance.new("UICorner",o).CornerRadius=UDim.new(0,12) end
 	if (cls=="TextButton" or cls=="TextLabel") and o.TextScaled then Instance.new("UITextSizeConstraint",o).MaxTextSize=28 end
-	if cls=="TextButton" then local g=Instance.new("UIGradient",o);g.Rotation=90;g.Color=ColorSequence.new(Color3.new(1,1,1),Color3.fromRGB(180,180,190)) end
+	if cls=="TextButton" then o.AutoButtonColor=true;o.Selectable=true;Theme.stroke(o) end
 	o.Parent=parent;return o end
 local WHITE=Color3.new(1,1,1)
 local drawerOpen=false
-local top=mk("TextLabel",{Size=UDim2.new(.72,0,0,34),BackgroundColor3=Color3.fromRGB(40,30,70),TextColor3=WHITE,TextScaled=true,Font=Enum.Font.GothamBold},gui)
+local top=mk("TextLabel",{Size=UDim2.new(.72,0,0,34),BackgroundColor3=Theme.Panel,TextColor3=WHITE,TextScaled=true,Font=Enum.Font.GothamBold},gui)
 local msg=mk("TextLabel",{Position=UDim2.new(0,0,0,46),Size=UDim2.new(1,0,0,28),BackgroundTransparency=1,TextColor3=Color3.fromRGB(255,240,150),TextStrokeTransparency=0.4,TextScaled=true,Font=Enum.Font.GothamBold},gui)
-local list=mk("ScrollingFrame",{Visible=false,AnchorPoint=Vector2.new(1,0),Position=UDim2.new(1,-8,.22,0),Size=UDim2.new(.9,0,.66,-8),BackgroundColor3=Color3.fromRGB(25,20,50),BackgroundTransparency=0.15,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y},gui)
+local list=mk("ScrollingFrame",{Visible=false,AnchorPoint=Vector2.new(1,0),Position=UDim2.new(1,-8,.22,0),Size=UDim2.new(.9,0,.66,-8),BackgroundColor3=Theme.Panel,BackgroundTransparency=0.15,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y},gui)
 mk("UISizeConstraint",{MaxSize=Vector2.new(440,1000)},list)
 mk("UIListLayout",{Padding=UDim.new(0,8),SortOrder=Enum.SortOrder.LayoutOrder},list)
 local muted=false
@@ -115,24 +116,24 @@ local function call(...)
 	tutorial()
 end
 local function row(text,acts)
-	local f=mk("Frame",{LayoutOrder=0,Size=UDim2.new(1,-8,0,52),BackgroundColor3=Color3.fromRGB(55,45,100)},list)
-	mk("TextLabel",{Size=UDim2.fromScale(0.4,1),BackgroundTransparency=1,Text=text,TextScaled=true,TextColor3=WHITE,Font=Enum.Font.Gotham},f)
-	local w=0.6/math.max(1,#acts)
+	local f=mk("Frame",{LayoutOrder=0,Size=UDim2.new(1,-8,0,#acts>0 and 116 or 52),BackgroundColor3=Theme.Card},list)
+	mk("TextLabel",{Position=UDim2.fromOffset(10,4),Size=UDim2.new(1,-20,0,#acts>0 and 54 or 44),BackgroundTransparency=1,Text=text,TextScaled=true,TextColor3=WHITE,Font=Enum.Font.Gotham},f)
+	local w=1/math.max(1,#acts)
 	for i,a in acts do
-		local b=mk("TextButton",{Position=UDim2.fromScale(0.4+(i-1)*w,0),Size=UDim2.new(w,-4,1,0),Text=a[1],TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(120,90,210),TextColor3=WHITE},f)
+		local b=mk("TextButton",{Position=UDim2.new((i-1)*w,3,1,-52),Size=UDim2.new(w,-6,0,46),Text=a[1],TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Theme.Card,TextColor3=WHITE},f)
 		b.Activated:Connect(a[2])
 	end
 end
 local function crText(cr) local d=C.ById[cr.id];return ("%s Nv.%d [%s %s]"):format(d.name,cr.lv,d.el,C.Rarity[d.rar]) end
 render=function()
-	for n,b in tabBtn do b.BackgroundColor3=n==tab and Color3.fromRGB(255,170,60) or Color3.fromRGB(90,70,160) end
+	for n,b in tabBtn do b.BackgroundColor3=n==tab and Color3.fromRGB(255,170,60) or Theme.Card end
 	for _,c in list:GetChildren() do if c:IsA("Frame") then c:Destroy() end end
 	if not S then return end
 	local n=0;for _ in S.discovered do n+=1 end
 	top.Text=("● %d ouro  ◆ %d gemas  ◈ %d selos"):format(S.gold,S.gems,S.seals or 0)
 	if tab=="Feras" then
 		for uid,cr in S.creatures do
-			row(crText(cr),{{"Alimentar",function() call("Feed",uid) end},{"Pôr: "..isl,function() call("Place",uid,isl) end},{"Lutar",function() call("Battle",uid,isl) end}})
+			row(crText(cr),{{"Alimentar",function() call("Feed",uid) end},{"Pôr: "..isl,function() call("Place",uid,isl) end},{"Treino",function() call("Battle",uid,isl) end}})
 		end
 	 elseif tab=="Bestiário" then
   Journal.render(list,S,function() render() end)
@@ -184,17 +185,25 @@ mk("UISizeConstraint",{MaxSize=Vector2.new(440,160)},bar)
 local toggle=mk("TextButton",{Position=UDim2.new(1,-58,0,40),Size=UDim2.fromOffset(50,44),Text="Menu",TextSize=12,Font=Enum.Font.GothamBold,TextColor3=WHITE,BackgroundColor3=Color3.fromRGB(63,66,91)},gui)
 local function setDrawer(open)
  drawerOpen=open;list.Visible=open;bar.Visible=open;toggle.Text=open and "Fechar" or "Menu"
+ if tutorial then tutorial() end
  if open then render();list.BackgroundTransparency=.5;TS:Create(list,TweenInfo.new(.15),{BackgroundTransparency=.12}):Play() end
 end
+local function layoutDrawer()
+ local size=gui.AbsoluteSize
+ local w=math.min(460,size.X-16)
+ bar.Size=UDim2.fromOffset(w,100);bar.Position=UDim2.new(1,-8,0,94)
+ list.Size=UDim2.fromOffset(w,math.max(80,size.Y-214));list.Position=UDim2.new(1,-8,0,200)
+end
+layoutDrawer();gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(layoutDrawer)
 toggle.Activated:Connect(function() setDrawer(not drawerOpen) end)
 game:GetService("UserInputService").InputBegan:Connect(function(input,processed)
  if not processed and input.KeyCode==Enum.KeyCode.Escape then setDrawer(false) end
 end)
 for i,name in {"Feras","Ilhas","Ovos","Bestiário","Arena","Missões","Loja"} do
-	local b=mk("TextButton",{Position=UDim2.fromScale(((i-1)%4)/4,math.floor((i-1)/4)/2),Size=UDim2.fromScale(1/4,.5),Text=name,TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(90,70,160),TextColor3=WHITE},bar)
+	local b=mk("TextButton",{Position=UDim2.fromScale(((i-1)%4)/4,math.floor((i-1)/4)/2),Size=UDim2.fromScale(1/4,.5),Text=name,TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Theme.Card,TextColor3=WHITE},bar)
 	tabBtn[name]=b;b.Activated:Connect(function() tab=name;render() end)
 end
-local collect=mk("TextButton",{Position=UDim2.new(1,-86,0,0),Size=UDim2.fromOffset(78,34),Text="Coletar",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(255,190,50),TextColor3=Color3.fromRGB(40,30,70)},gui)
+local collect=mk("TextButton",{Position=UDim2.new(1,-86,0,0),Size=UDim2.fromOffset(78,34),Text="Coletar",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(255,190,50),TextColor3=Theme.Panel},gui)
 collect.Activated:Connect(function() call("Collect") end)
 task.spawn(function() while true do task.wait(1);if tab=="Ovos" then Nursery.tick(list) end end end)
 local music
@@ -213,45 +222,10 @@ local lastMessage=""
 task.spawn(function()
  while true do task.wait(4);if msg.Text==lastMessage then msg.Text="" end;lastMessage=msg.Text end
 end)
-local mb=mk("TextButton",{Position=UDim2.new(1,-74,1,-46),Size=UDim2.fromOffset(66,34),Text="Som ON",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(90,70,160),TextColor3=WHITE},gui)
+local mb=mk("TextButton",{Position=UDim2.new(1,-74,1,-46),Size=UDim2.fromOffset(66,34),Text="Som ON",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Theme.Card,TextColor3=WHITE},gui)
 mb.Activated:Connect(function() muted=not muted;mb.Text=muted and "Som OFF" or "Som ON";if music then music.Volume=muted and 0 or 0.25 end end)
 -- Feras respiram e se viram devagar (animação local, só visual).
-local base=setmetatable({},{__mode="k"})
-local animationAccumulator=0
-local limbs=setmetatable({},{__mode="k"})
-RunService.Heartbeat:Connect(function(dt)
- animationAccumulator+=dt;if animationAccumulator<.05 then return end;animationAccumulator=0
-	local root=workspace:FindFirstChild("Criaturas");if not root then return end
-	local t=os.clock()
- local camera=workspace.CurrentCamera
-	for _,f in root:GetChildren() do
-		for _,m in f:GetChildren() do
-			if not m.PrimaryPart then continue end;base[m]=base[m] or m:GetPivot()
-			if camera and (base[m].Position-camera.CFrame.Position).Magnitude>130 then continue end
-   local family=m:GetAttribute("Family")
-   if not limbs[m] then
-    local entries={}
-    for _,part in m:GetChildren() do
-     if part:IsA("BasePart") and (part.Name=="Wing" or part.Name=="Leg" or part.Name=="Tail") then
-      table.insert(entries,{part=part,offset=m.PrimaryPart.CFrame:ToObjectSpace(part.CFrame)})
-     end
-    end
-    limbs[m]=entries
-   end
-   local bob=family=="Bird" and .65 or family=="Serpent" and .12 or .18
-   local speed=family=="Insect" and 5 or family=="Bird" and 2 or 1.5
-   m:PivotTo(base[m]*CFrame.new(0,math.sin(t*speed+#m.Name)*bob,0)*CFrame.Angles(0,math.sin(t+#m.Name)*.15,family=="Serpent" and math.sin(t*2)*.09 or 0))
-   for index,entry in limbs[m] do
-    local part=entry.part
-    if part.Parent then
-     local wave=math.sin(t*(family=="Insect" and 6 or 3)+index*.6)
-     local rotation=part.Name=="Wing" and CFrame.Angles(0,0,wave*.2) or part.Name=="Tail" and CFrame.Angles(0,wave*.08,0) or CFrame.Angles(wave*.1,0,0)
-     part.CFrame=m.PrimaryPart.CFrame*entry.offset*rotation
-    end
-   end
-		end
-	end
-end)
+require(script.Parent.CreatureAnimator).start()
 -- Clima e hora do dia mudam conforme a ilha mais próxima.
 local cur
 task.spawn(function()
@@ -267,21 +241,21 @@ task.spawn(function()
 end)
 -- Tutorial guiado: cada passo some quando o objetivo é cumprido; o progresso vem dos stats salvos.
 local TUT={
-	{"Toque em COLETAR para pegar o ouro das suas feras.",function() return collect end,function(s) return (s.stats.collect or 0)>=1 end},
+	{"Colete ouro ou encontre uma fera selvagem. Abra Menu para cuidar da coleção.",function() return collect end,function(s) return (s.stats.collect or 0)>=1 end},
 	{"Na aba FERAS, toque em ALIMENTAR para evoluir uma fera.",function() return tabBtn.Feras end,function(s) return (s.stats.feed or 0)>=1 end},
 	{"Na aba OVOS, escolha 2 feras e toque CRUZAR.",function() return tabBtn.Ovos end,function(s) return (s.stats.breed or 0)>=1 end},
-	{"Na aba FERAS, toque em LUTAR para ver uma batalha!",function() return tabBtn.Feras end,function(s) return (s.stats.fight or 0)>=1 end},
+	{"Aproxime-se de uma fera selvagem. Escolha lutar, criar vínculo ou capturar.",function() return toggle end,function(s) return (s.stats.fight or 0)>=1 end},
 	{"Em MISSÕES, resgate sua primeira recompensa.",function() return tabBtn["Missões"] end,function(s) return next(s.claimed)~=nil end}}
 local panel=mk("Frame",{Position=UDim2.new(.02,0,0,82),Size=UDim2.new(.72,0,0,66),BackgroundColor3=Color3.fromRGB(255,240,200),Visible=false},gui)
 local ptxt=mk("TextLabel",{Size=UDim2.new(1,-90,1,0),Position=UDim2.fromOffset(8,0),BackgroundTransparency=1,TextScaled=true,Font=Enum.Font.GothamBold,TextColor3=Color3.fromRGB(50,35,90),TextXAlignment=Enum.TextXAlignment.Left},panel)
 local skip=mk("TextButton",{Size=UDim2.fromOffset(76,36),Position=UDim2.new(1,-80,0.5,-18),Text="Pular",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(200,120,120),TextColor3=WHITE},panel)
 local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(255,230,80);stroke.Thickness=2;stroke.ApplyStrokeMode=Enum.ApplyStrokeMode.Border
-TS:Create(stroke,TweenInfo.new(0.6,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Thickness=8}):Play()
+stroke.Thickness=2
 local finishing=false
 local function finish() if not finishing then finishing=true;task.spawn(call,"Tut") end end
 skip.Activated:Connect(finish)
 tutorial=function()
-	if not S or S.tut then panel.Visible=false;stroke.Parent=nil;return end
+	if drawerOpen or not S or S.tut then panel.Visible=false;stroke.Parent=nil;return end
 	local step;for _,t in TUT do if not t[3](S) then step=t;break end end
 	if not step then finish();return end
 	panel.Visible=true;ptxt.Text=step[1];stroke.Parent=step[2]()
@@ -296,3 +270,7 @@ task.spawn(function()
  end
  msg.Text="Não foi possível obter o perfil. Reconecte para tentar novamente."
 end)
+
+require(script.Parent.EncounterUI).start(gui,function() return S and S.creatures or {} end,function()
+ task.defer(function() if not inFlight then call("Get") end end)
+end,function() setDrawer(false);panel.Visible=false;stroke.Parent=nil end)

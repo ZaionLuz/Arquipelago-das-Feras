@@ -11,6 +11,7 @@ function W.build()
 		local p=W.pos(i)
 		local base=Instance.new("Part");base.Shape=Enum.PartType.Cylinder;base.Size=Vector3.new(8,80,80);base.CFrame=CFrame.new(p)*CFrame.Angles(0,0,math.rad(90))
 		base.Anchored=true;base.Color=def.ground;base.Material=Enum.Material.Slate;base.Name=def.name;base.Parent=f
+		require(script.Parent.IslandArchitecture).build(f,p,def)
 		require(script.Parent.Biomes).decorate(f,p,def)
 	end
 	for i=1,#I.List do -- pontes ligam as ilhas em anel
@@ -21,6 +22,7 @@ function W.build()
 	local w=Instance.new("Part");w.Anchored=true;w.CanCollide=false;w.Size=Vector3.new(1200,2,1200);w.Position=Vector3.new(0,-4,0)
 	w.Material=Enum.Material.Glass;w.Color=Color3.fromRGB(60,140,210);w.Transparency=.35;w.Parent=f
 	local L=game:GetService("Lighting")
+ L.Brightness=2;L.EnvironmentDiffuseScale=.6;L.EnvironmentSpecularScale=.4;L.ClockTime=14;L.GlobalShadows=true
 	local at=Instance.new("Atmosphere");at.Density=0.25;at.Haze=1.2;at.Color=Color3.fromRGB(200,190,255);at.Parent=L
 	local bl=Instance.new("BloomEffect");bl.Intensity=0.5;bl.Size=24;bl.Threshold=1.8;bl.Parent=L
 	local cc=Instance.new("ColorCorrectionEffect");cc.Saturation=0.2;cc.Contrast=0.08;cc.Parent=L

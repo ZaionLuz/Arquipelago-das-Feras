@@ -3,33 +3,38 @@ local C=require(script.Parent.Creatures)
 local E=require(script.Parent.Elements)
 local Designs=require(script.Parent.CreatureDesigns)
 local V,CF,T=Vector3.new,CFrame.new,Enum.PartType
-local function build(def,lv)
+local function build(def,lv,options)
+ options=options or {}
  local design=Designs[def.id];assert(design,"Espécie sem design: "..def.id)
  local stage=C.stage(lv,def.id);local scale=({.7,1,1.4})[stage]
- local m=Instance.new("Model");m.Name=def.name
+ local m=Instance.new("Model");m.Name=def.name;m.ModelStreamingMode=Enum.ModelStreamingMode.Atomic
  m:SetAttribute("Family",def.shape);m:SetAttribute("Species",def.id);m:SetAttribute("Stage",stage)
  local col=E.Color[def.el];local dark=col:Lerp(Color3.new(0,0,0),.38)
  local accent=def.hybrid and E.Color[def.hybrid[2]] or col:Lerp(Color3.new(1,1,1),.55)
  local function p(name,shape,size,pos,color,rotation,neon)
   local x=Instance.new("Part");x.Name=name;x.Shape=shape;x.Size=size*scale
-  x.Anchored=true;x.CanCollide=false;x.CanTouch=false;x.CanQuery=false
+  x.Anchored=true;x.CanCollide=false;x.CanTouch=false;x.CanQuery=false;x.CastShadow=not neon
   x.Color=color;x.Material=neon and Enum.Material.Neon or Enum.Material.SmoothPlastic
   x.CFrame=CF(pos*scale)*(rotation or CFrame.identity);x.Parent=m;return x
  end
  local body=design.body
  local torsoSize=body=="long" and V(2.6,2.5,4.4) or body=="bird" and V(2.3,3,2.7) or body=="serpent" and V(2.5,2.2,2.8) or body=="golem" and V(4.5,4,2.8) or V(3.2,3,3)
- local y=body=="golem" and 4 or 2.5
+ torsoSize*=V(design.width,design.height,design.length)
+ local y=(body=="golem" and 4 or 2.5)*design.height
  local torso=p("Torso",body=="golem" and T.Block or T.Ball,torsoSize,V(0,y,0),col)
  m.PrimaryPart=torso
  local headY=body=="golem" and 6.4 or body=="long" and 3.1 or 3.7
  local headZ=body=="long" and 2.1 or 1.1
- p("Head",T.Ball,V(2.3,2.1,2),V(0,headY,headZ),col)
+ headY*=design.height;headZ*=design.length
+ local headScale=design.head*(stage==1 and 1.12 or stage==3 and .9 or 1)
+ p("Head",T.Ball,V(2.3,2.1,2)*headScale,V(0,headY,headZ),col)
+ if body=="long" or body=="dragon" then p("Muzzle",T.Ball,V(1.5,.8,1.4)*headScale,V(0,headY-.4,headZ+1.1),accent) end
  for _,side in {-1,1} do
-  p("Eye",T.Ball,V(.68,.8,.4),V(side*.6,headY+.15,headZ+.88),Color3.new(1,1,1))
-  p("Pupil",T.Ball,V(.3,.43,.18),V(side*.6,headY+.15,headZ+1.08),dark)
-  p("EyeGlint",T.Ball,V(.1,.12,.1),V(side*.6-.06,headY+.27,headZ+1.16),Color3.new(1,1,1))
+  p("Eye",T.Ball,V(.68,.8,.4),V(side*.6*headScale,headY+.15*headScale,headZ+.88*headScale),Color3.new(1,1,1))
+  p("Pupil",T.Ball,V(.3,.43,.18),V(side*.6*headScale,headY+.15*headScale,headZ+1.08*headScale),dark)
+  p("EyeGlint",T.Ball,V(.1,.12,.1),V((side*.6-.06)*headScale,headY+.27*headScale,headZ+1.16*headScale),Color3.new(1,1,1))
  end
- p("Smile",T.Ball,V(.6,.12,.15),V(0,headY-.48,headZ+.98),dark)
+ p("Smile",T.Ball,V(.6,.12,.15),V(0,headY-.48*headScale,headZ+.98*headScale),dark)
  if body=="long" or body=="dragon" or body=="golem" then
   for _,side in {-1,1} do for _,z in {-1.25,1.25} do
    p("Foot",T.Ball,V(body=="golem" and 1.7 or .95,1.3,1.3),V(side*(body=="golem" and 1.6 or 1),.8,z),dark)
@@ -37,7 +42,7 @@ local function build(def,lv)
  end
  if body=="bird" or body=="dragon" then
   for _,side in {-1,1} do
-   for feather=1,3 do
+   for feather=1,(stage==1 and 2 or stage==2 and 3 or 4) do
     p("Wing",T.Ball,V(.55,1.1,2.6+feather*.25),V(side*(1.4+feather*.4),y+.6,-feather*.25),feather%2==0 and accent or dark,CFrame.Angles(0,side*.3,side*.25))
    end
    p("Foot",T.Ball,V(.6,.5,1),V(side*.65,.7,.7),accent)
@@ -59,7 +64,7 @@ local function build(def,lv)
   for i=1,3 do p("Wisp",T.Ball,V(1.8-i*.3,1.2,1.8-i*.3),V(math.sin(i)*.4,1.7-i*.5,-i*.5),accent,nil,true) end
  end
  -- Marcas distintas por espécie; mais detalhes nas evoluções, sem emissores contínuos.
- for i=1,design.pattern+stage do
+ for i=1,math.min(4,design.pattern+stage) do
   local angle=i*2.4
   p("Mark",T.Ball,V(.35,.4,.18),V(math.cos(angle)*1.35,y+math.sin(angle)*.7,1.15),accent,nil,stage==3)
  end
@@ -74,6 +79,7 @@ local function build(def,lv)
    p("SolarHalo",T.Ball,V(.25,.25,.25),V(math.cos(a)*1.5,headY+1.3+math.sin(a)*1.5,headZ-.5),gold,nil,true)
   end
  end
+ require(script.Parent.CreatureFeatures).add(p,def,design,stage,headY,headZ,col,dark,accent)
  local crest=design.crest
  for i=1,stage+1 do
   local x=(i-(stage+2)/2)*.65
@@ -88,9 +94,11 @@ local function build(def,lv)
  if crest=="claws" then for _,side in {-1,1} do p("Claw",T.Ball,V(1.1,1.2,.8),V(side*2.4,2,2),accent) end end
  if crest=="stinger" then p("Stinger",T.Ball,V(.7,2,.7),V(0,3,-2),accent,CFrame.Angles(.5,0,0)) end
  if crest=="antlers" then for _,side in {-1,1} do p("Antler",T.Block,V(1.3,.3,.3),V(side*1.1,headY+1.6,headZ),accent) end end
+ if not options.preview then
  local tag=Instance.new("BillboardGui");tag.Size=UDim2.fromOffset(180,32);tag.StudsOffset=V(0,(headY-y+3)*scale,0);tag.MaxDistance=65;tag.AlwaysOnTop=false;tag.Parent=torso
  local text=Instance.new("TextLabel");text.Size=UDim2.fromScale(1,1);text.BackgroundTransparency=1;text.Font=Enum.Font.GothamBold;text.TextSize=14;text.TextColor3=Color3.new(1,1,1);text.TextStrokeTransparency=.4;text.Text=def.name.." • Nv."..lv;text.Parent=tag
  -- Coordenadas das Parts são locais ao modelo; o pivot é a origem do conjunto.
+ end
  m.WorldPivot=CFrame.identity
  return m
 end

@@ -14,8 +14,9 @@ function B.decorate(parent,origin,def)
   p.CFrame*=CFrame.Angles(.2,0,.4)
  end
  for i=1,10 do
-  local angle=i*math.pi*2/10+.13
-  local pos=V(math.cos(angle)*29,4,math.sin(angle)*29)
+  local angle=i*math.pi*2/10+rng:NextNumber(-.1,.1)
+  local radius=rng:NextNumber(27,31)
+  local pos=V(math.cos(angle)*radius,4,math.sin(angle)*radius)
   if def.id=="Brasa" then
    part(Enum.PartType.Ball,V(7,6,7),pos+V(0,1,0),Color3.fromRGB(40,35,40),Enum.Material.Basalt)
    crystal(pos+V(0,4,0),def.accent)
