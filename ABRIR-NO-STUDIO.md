@@ -17,3 +17,8 @@ O ZIP do GitHub contém a raiz Rojo. Execute `rojo build -o Feras-v4.rbxlx`. Nov
 
 ## V5
 Gere com `rojo build -o Feras-v5.rbxlx`. Verifique StreamingEnabled e os raios 64/256 no Workspace depois de abrir. Aproximar-se da fera selvagem abre encontro com captura direta ou batalha por turnos. Consulte RELEASE-V5.md para as escolhas e TESTES-STUDIO.md para validação. Não é preciso instalar assets pagos.
+
+## V6 — primeira expedição
+Execute `rojo build -o Feras-v6.rbxlx`. Abra a experiência privada, Play e procure Maia no Alvorecer. Capture uma fera, selecione Companheiro na coleção e use Menu → Santuário para visitar/construir. Leia MUNDO.md, SISTEMAS.md e PENDENCIAS.md. Os módulos continuam mapeados pelas pastas já existentes; não precisa colar scripts em locais diferentes.
+
+A versão persistente passa de 3 para 4. Faça os testes de migração em experiência isolada antes de usar dados comerciais. Não é uma versão 100% do briefing: 30 espécies estão integradas e 70 permanecem conceitos de direção artística.

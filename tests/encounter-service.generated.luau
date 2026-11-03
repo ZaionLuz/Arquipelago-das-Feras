@@ -51,6 +51,20 @@ end)()
 local Capture=(function()
 --!nonstrict
 local R={SealPrice=25,InitialSeals=5,MaxPerIsland=2,RespawnSeconds=25,MaxDistance=13}
+R.Seals={
+ Basic={name="Básico",multiplier=1,cost=25,level=1},
+ Reinforced={name="Reforçado",multiplier=1.12,cost=60,level=8},
+ Elemental={name="Elemental",multiplier=1.25,cost=85,level=16,material="Natureza",amount=1},
+ Rare={name="Raro",multiplier=1.4,cost=160,level=24,material="Terra",amount=1},
+ Ancient={name="Ancestral",multiplier=1.55,cost=300,level=40,material="Sombra",amount=2},
+}
+R.SealOrder={"Basic","Reinforced","Elemental","Rare","Ancient"}
+function R.multiplier(kind,rarity,activeElement,foeElement,bond)
+ if kind=="Elemental" then return activeElement==foeElement and 1.35 or 1.1 end
+ if kind=="Rare" then return rarity>=3 and 1.4 or 1.15 end
+ if kind=="Ancient" then return bond>=2 and 1.55 or 1.4 end
+ return (R.Seals[kind] or R.Seals.Basic).multiplier
+end
 local base={.8,.5,.28,.12}
 function R.chance(rarity,level)
  return math.clamp((base[rarity] or .1)-math.max(0,level-1)*.005,.05,.9)
@@ -104,8 +118,9 @@ function R.damage(a,b,power,guard)
  return math.max(1,math.floor(a.atk*power*Elements.mult(a.el,b.el)*100/(100+b.def)*(guard and .45 or 1)))
 end
 function R.chance(s)
+ if s.capturable==false then return 0 end
  local def=C.ById[s.foe.id]
- return math.clamp(Capture.chance(def.rar,s.foe.lv)+(1-s.foe.hp/s.foe.maxHp)*.45+s.bond*.08,.05,.94)
+ return math.clamp(Capture.chance(def.rar,s.foe.lv)*Capture.multiplier(s.sealKind or "Basic",def.rar,s.active and s.party[s.active].el,s.foe.el,s.bond)+(1-s.foe.hp/s.foe.maxHp)*.45+s.bond*.08,.05,.94)
 end
 function R.new(id,lv)
  local foe=R.stats(id,lv);foe.hp=foe.maxHp
@@ -135,8 +150,10 @@ function R.step(s,action,pet,rng,seals,room)
   if not current or current.hp<=0 then return false,"Selecione uma fera disponível." end
   if action=="Skill" and s.turn<(current.nextSkill or 0) then return false,"Habilidade recarregando." end
  elseif action=="Capture" then
+  if s.capturable==false then return false,"Guardiões não podem ser capturados." end
   if seals<1 then return false,"Sem selos. Crie mais no Mercado." end
   if not room then return false,"Inventário cheio. Nenhum selo foi gasto." end
+ elseif action=="Bond" and s.capturable==false then return false,"Este desafio exige uma batalha."
  elseif action~="Bond" and action~="Flee" then return false,"Ação desconhecida." end
  s.log={};s.turn+=1;s.version+=1;s.spentSeal=false
  if action=="Flee" then s.status="escaped";note(s,"Você voltou à exploração.");return true end
@@ -186,6 +203,28 @@ return R
 
 end)()
 
+local Progression=(function()
+--!strict
+local P={MaxLevel=100}
+function P.playerCost(level:number):number return 50+level*25 end
+function P.creatureCost(level:number):number return 35+level*15 end
+function P.award(data:any,amount:number)
+ data.playerXp=math.min(1e9,(data.playerXp or 0)+math.max(0,math.floor(amount)))
+ data.playerLevel=data.playerLevel or 1
+ while data.playerLevel<P.MaxLevel and data.playerXp>=P.playerCost(data.playerLevel) do
+  data.playerXp-=P.playerCost(data.playerLevel);data.playerLevel+=1
+ end
+end
+function P.awardCreature(creature:any,amount:number)
+ creature.xp=math.min(1e9,(creature.xp or 0)+math.max(0,math.floor(amount)))
+ while creature.lv<P.MaxLevel and creature.xp>=P.creatureCost(creature.lv) do
+  creature.xp-=P.creatureCost(creature.lv);creature.lv+=1
+ end
+end
+return P
+
+end)()
+
 -- Dependências Roblox simuladas: verifica transações e protocolo, não rede real.
 local clock=0;local now=10000
 local os={clock=function() return clock end,time=function() return now end}
@@ -208,11 +247,13 @@ local E=(function()
 --!nonstrict
 
 local Rules=R
+local CaptureRules=Capture
+local Progression=Progression
 local E={};local sessions={};local rng={NextNumber=function() return 0 end};local net;local events
 local function snapshot(session,message)
  local s=session.state;local party={}
  for uid,p in s.party do party[uid]={id=p.id,lv=p.lv,hp=p.hp,maxHp=p.maxHp,nextSkill=p.nextSkill} end
- return {token=session.token,seals=session.seals,version=s.version,status=s.status,turn=s.turn,foe=s.foe,party=party,active=s.active,bond=s.bond,chance=Rules.chance(s),log=s.log,message=message,expires=session.expires}
+ return {token=session.token,seals=session.seals,sealType=session.sealType or "Basic",sealStock=session.sealStock or {},version=s.version,status=s.status,capturable=s.capturable~=false,turn=s.turn,foe=s.foe,party=party,active=s.active,bond=s.bond,chance=Rules.chance(s),log=s.log,message=message,expires=session.expires}
 end
 local function finish(player,session)
  if session.released then return end;session.released=true
@@ -220,25 +261,29 @@ local function finish(player,session)
  if d and s.status=="captured" then
   while d.creatures["u"..d.nextId] do d.nextId+=1 end
   local uid="u"..d.nextId;d.nextId+=1;d.creatures[uid]={id=s.foe.id,lv=s.foe.lv,xp=0}
-  d.discovered[s.foe.id]=true;d.stats.capture=(d.stats.capture or 0)+1
+  d.discovered[s.foe.id]=true;d.stats.capture=(d.stats.capture or 0)+1;Progression.award(d,30+C.ById[s.foe.id].rar*15)
  elseif d and s.status=="won" then
-  local def=C.ById[s.foe.id];local reward=20+def.rar*15;d.gold+=reward;d.wins+=1;d.stats.win=(d.stats.win or 0)+1
+  local def=C.ById[s.foe.id];local reward=20+def.rar*15;d.gold+=reward;d.wins+=1;d.stats.win=(d.stats.win or 0)+1;Progression.award(d,40+def.rar*20)
   local pet=d.creatures[s.active]
   if pet then
-   pet.xp=(pet.xp or 0)+20+def.rar*10
-   while pet.lv<20 and pet.xp>=35+pet.lv*15 do pet.xp-=35+pet.lv*15;pet.lv+=1 end
+   Progression.awardCreature(pet,20+def.rar*10)
    local refreshed,err=pcall(World.refresh,player)
    if not refreshed then warn("Modelo será reconstruído na próxima atualização: "..tostring(err)) end
   end
  end
  if s.status=="won" then table.insert(s.log,{text="Recompensa: "..(20+C.ById[s.foe.id].rar*15).." ouro e experiência para a fera ativa.",kind="reward"}) end
+ if d and s.status=="won" and session.guardian and not d.guardians[session.guardian] then
+  d.guardians[session.guardian]=true;d.stats.guardian=(d.stats.guardian or 0)+1;d.gold+=100;Progression.award(d,200)
+ end
  session.release(s.status=="captured" or s.status=="won")
 end
 function E.open(player,specimen,release)
  local d=Data.get(player);if not d then return false end
  local old=sessions[player]
  if old and old.state.status=="active" then return false end
- local session={token=Http:GenerateGUID(false),state=Rules.new(specimen.id,specimen.lv),seals=d.seals,origin=specimen.position,expires=os.time()+150,release=release}
+ local session={token=Http:GenerateGUID(false),state=Rules.new(specimen.id,specimen.lv),guardian=specimen.guardianId,seals=d.seals,origin=specimen.position,expires=os.time()+150,release=release}
+ session.state.capturable=specimen.capturable~=false
+ session.sealType="Basic";session.sealStock=d.sealStock or {}
  d.stats.fight=(d.stats.fight or 0)+1
  sessions[player]=session;events:FireClient(player,snapshot(session));return true
 end
@@ -268,11 +313,20 @@ function E.start()
   if typeof(version)~="number" or version~=session.state.version then return snapshot(session,"Estado atualizado. Escolha novamente.") end
   if session.last and os.clock()-session.last<.25 then return snapshot(session,"Aguarde o turno.") end
   session.last=os.clock()
+  if action=="ChooseSeal" then
+   local seal=CaptureRules.Seals[uid]
+   if not seal then return snapshot(session,"Selo inválido") end
+   session.sealType=uid;session.state.sealKind=uid;session.state.version+=1;session.state.log={}
+   session.seals=uid=="Basic" and d.seals or (d.sealStock or {})[uid] or 0
+   return snapshot(session)
+  end
   local pet=uid and d.creatures[uid];local count=0;for _ in d.creatures do count+=1 end
-  local ok,message=Rules.step(session.state,action,pet and {uid=uid,id=pet.id,lv=pet.lv},rng,d.seals,count<60)
+  local ok,message=Rules.step(session.state,action,pet and {uid=uid,id=pet.id,lv=pet.lv},rng,session.seals,count<60)
   if not ok then return snapshot(session,message) end
-  if session.state.spentSeal then d.seals-=1 end
-  session.seals=d.seals
+  if session.state.spentSeal then
+   if session.sealType=="Basic" then d.seals-=1 else d.sealStock[session.sealType]-=1 end
+  end
+  session.seals=session.sealType=="Basic" and d.seals or (d.sealStock or {})[session.sealType] or 0
   if session.state.status~="active" then finish(player,session) end
   return snapshot(session)
  end
@@ -292,7 +346,7 @@ end
 return E
 
 end)()
-local p=player();data[p]={gold=100,seals=3,nextId=3,creatures={u1={id="magmarau",lv=20,xp=0}},stats={},discovered={},wins=0}
+local p=player();data[p]={gold=100,seals=3,nextId=3,creatures={u1={id="magmarau",lv=20,xp=0}},stats={},discovered={},wins=0,guardians={},sealStock={},playerLevel=1,playerXp=0}
 E.start();local net=registry.EncounterNet
 local function open()
  clock+=1
@@ -320,3 +374,15 @@ local gold=data[p].gold;request(s,"Strike");assert(data[p].gold==gold and data[p
 s=open();now+=151;s=request(s,"Capture");assert(s.status=="escaped" and data[p].seals==2)
 s=open();removal(p);assert(not E.active(p))
 print("PASS: protocolo do encontro: token, versão, propriedade, débito único, concessão única, recompensa única, timeout e saída")
+-- V6: estoque separado e desafios de guardião sem captura.
+clock+=1;assert(E.open(p,{id="cinzelo",lv=1,position=vector},function() releaseCount+=1 end));s=emitted[p]
+data[p].sealStock.Rare=1
+s=request(s,"ChooseSeal","Rare");assert(s.sealType=="Rare" and s.seals==1)
+s=request(s,"Capture");assert(s.status=="captured" and data[p].sealStock.Rare==0 and data[p].seals==2)
+clock+=1;assert(E.open(p,{id="cinzelo",lv=1,position=vector,capturable=false,guardianId="Brasa"},function() releaseCount+=1 end));s=emitted[p]
+local before=data[p].seals;s=request(s,"Capture");assert(s.version==0 and data[p].seals==before)
+s=request(s,"Select","u1")
+while s.status=="active" do s=request(s,"Strike") end
+assert(data[p].guardians.Brasa and data[p].stats.guardian==1)
+local oldGold=data[p].gold;request(s,"Strike");assert(data[p].gold==oldGold and data[p].stats.guardian==1)
+print("PASS: estoque de selo separado, guardião incapturável e bônus de desafio único")

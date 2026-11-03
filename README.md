@@ -38,3 +38,6 @@ Abra primeiro `ABRIR-NO-STUDIO.md`. Melhorias da chocadeira, regras e limitaçõ
 Leia RELEASE-V5.md: aproxime-se de uma fera selvagem, escolha Encontrar fera e então capturar diretamente ou batalhar por turnos. Não é preciso lutar para capturar. O treino legado continua na coleção. Todos os resultados importantes são validados pelo servidor.
 
 Para repetir os testes sem Studio, instale o CLI oficial Luau; gere os testes com os scripts Python em tests/ e execute os arquivos *.generated.luau. Os arquivos *.spec.luau são fragmentos para os geradores. O stub de modelos é uma verificação estrutural, não renderização Roblox. Compilar todos os arquivos e executar tests/check_source.py verifica sintaxe/estrutura; veja TESTES-STUDIO.md para homologação real.
+
+## V6 — aventura e santuário
+Esta versão liga exploração/captura à base pessoal: acampamento inicial, Maia, capítulos, companheiro, terrenos próprios, construção de habitats, cinco selos, coleta, guardiões e níveis até 100. Não é o jogo completo de 100 espécies/dez regiões. Consulte CRIATURAS.md e PENDENCIAS.md para o estado real, SISTEMAS.md para as regras e TESTES-STUDIO.md para homologação. O novo código deve ser usado com o projeto completo, não misturado com scripts antigos isolados.

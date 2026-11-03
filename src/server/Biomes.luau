@@ -1,5 +1,7 @@
 --!nonstrict
 -- Decoração determinística; centro e entradas das pontes permanecem livres.
+local Data=require(script.Parent.DataService)
+local Progression=require(game:GetService("ReplicatedStorage").Shared.Progression)
 local B={}
 local V=Vector3.new
 function B.decorate(parent,origin,def)
@@ -26,7 +28,7 @@ function B.decorate(parent,origin,def)
     coral.CFrame*=CFrame.Angles(0,0,math.pi/2+(j-2)*.3)
    end
    crystal(pos+V(0,5,0),def.accent)
-  elseif def.id=="Floresta" or def.id=="Pantano" then
+  elseif def.id=="Alvorecer" or def.id=="Floresta" or def.id=="Pantano" then
    local shadow=def.id=="Pantano"
    local trunk=part(Enum.PartType.Cylinder,V(10,2,2),pos+V(0,5,0),Color3.fromRGB(80,57,55),Enum.Material.Wood)
    trunk.CFrame*=CFrame.Angles(0,0,math.pi/2+(shadow and .25 or 0))
@@ -48,7 +50,7 @@ function B.decorate(parent,origin,def)
  elseif def.id=="Recife" then
   part(Enum.PartType.Ball,V(13,9,10),V(0,8,-28),def.ground,Enum.Material.Slate)
   local fall=part(Enum.PartType.Block,V(5,8,.3),V(0,8,-22.9),def.accent,Enum.Material.Glass);fall.Transparency=.35
- elseif def.id=="Floresta" then
+ elseif def.id=="Floresta" or def.id=="Alvorecer" then
   local tree=part(Enum.PartType.Cylinder,V(18,4,4),V(0,13,-26),Color3.fromRGB(83,62,45),Enum.Material.Wood);tree.CFrame*=CFrame.Angles(0,0,math.pi/2)
   part(Enum.PartType.Ball,V(19,10,16),V(0,23,-26),Color3.fromRGB(67,143,96),Enum.Material.Grass)
  elseif def.id=="Dunas" or def.id=="Pantano" then
@@ -67,7 +69,18 @@ function B.decorate(parent,origin,def)
  local prompt=Instance.new("ProximityPrompt");prompt.ActionText="Conhecer bioma";prompt.ObjectText=def.name.." • "..def.desc;prompt.HoldDuration=0;prompt.MaxActivationDistance=12;prompt.Parent=stone
  prompt.Triggered:Connect(function(player)
   local ch=player.Character;local root=ch and ch:FindFirstChild("HumanoidRootPart")
-  if root and (root.Position-stone.Position).Magnitude<16 then player:SetAttribute("BiomaVisitado",def.id) end
+  local data=Data.get(player)
+  if not data or not root or (root.Position-stone.Position).Magnitude>=16 or not data.unlocked[def.id] then return end
+  if require(script.Parent.EncounterService).active(player) then return end
+  local notice=game:GetService("ReplicatedStorage"):FindFirstChild("WildNotice")
+  if (data.gatherAt[def.id] or 0)>os.time() then if notice then notice:FireClient(player,"Este ponto se recupera em "..(data.gatherAt[def.id]-os.time()).."s") end;return end
+  data.gatherAt[def.id]=os.time()+120
+  data.materials[def.el]=math.min(10000,(data.materials[def.el] or 0)+1)
+  if not data.visited[def.id] then
+   data.visited[def.id]=true;data.gold+=30;data.stats.explore=(data.stats.explore or 0)+1;Progression.award(data,60)
+  end
+  player:SetAttribute("BiomaVisitado",def.id)
+  if notice then notice:FireClient(player,"Descoberta em "..def.name.." • +1 essência de "..def.el) end
  end)
 end
 return B

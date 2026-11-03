@@ -16,6 +16,12 @@ local Balance=require(RS.Shared.Economy)
 local Nursery=require(script.Parent.NurseryUI)
 local Journal=require(script.Parent.JournalUI)
 local Theme=require(script.Parent.UITheme)
+local SanctuaryUI=require(script.Parent.SanctuaryUI)
+local Story=require(RS.Shared.Story)
+local Progression=require(RS.Shared.Progression)
+local CaptureRules=require(RS.Shared.CaptureRules)
+local LocalPlayer=Players.LocalPlayer
+LocalPlayer:SetAttribute("GraphicsQuality","Médio")
 local function mk(cls,props,parent) local o=Instance.new(cls);for k,v in props do o[k]=v end;if cls=="TextButton" or cls=="Frame" or cls=="ScrollingFrame" then Instance.new("UICorner",o).CornerRadius=UDim.new(0,12) end
 	if (cls=="TextButton" or cls=="TextLabel") and o.TextScaled then Instance.new("UITextSizeConstraint",o).MaxTextSize=28 end
 	if cls=="TextButton" then o.AutoButtonColor=true;o.Selectable=true;Theme.stroke(o) end
@@ -23,10 +29,13 @@ local function mk(cls,props,parent) local o=Instance.new(cls);for k,v in props d
 local WHITE=Color3.new(1,1,1)
 local drawerOpen=false
 local top=mk("TextLabel",{Size=UDim2.new(.72,0,0,34),BackgroundColor3=Theme.Panel,TextColor3=WHITE,TextScaled=true,Font=Enum.Font.GothamBold},gui)
-local msg=mk("TextLabel",{Position=UDim2.new(0,0,0,46),Size=UDim2.new(1,0,0,28),BackgroundTransparency=1,TextColor3=Color3.fromRGB(255,240,150),TextStrokeTransparency=0.4,TextScaled=true,Font=Enum.Font.GothamBold},gui)
+local msg=mk("TextLabel",{Position=UDim2.new(0,0,0,48),Size=UDim2.new(1,0,0,28),BackgroundTransparency=1,TextColor3=Color3.fromRGB(255,240,150),TextStrokeTransparency=0.4,TextScaled=true,Font=Enum.Font.GothamBold},gui)
 local list=mk("ScrollingFrame",{Visible=false,AnchorPoint=Vector2.new(1,0),Position=UDim2.new(1,-8,.22,0),Size=UDim2.new(.9,0,.66,-8),BackgroundColor3=Theme.Panel,BackgroundTransparency=0.15,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y},gui)
 mk("UISizeConstraint",{MaxSize=Vector2.new(440,1000)},list)
 mk("UIListLayout",{Padding=UDim.new(0,8),SortOrder=Enum.SortOrder.LayoutOrder},list)
+local xpTrack=mk("Frame",{Position=UDim2.fromOffset(0,38),Size=UDim2.new(.72,0,0,4),BackgroundColor3=Theme.Card},gui)
+local xpFill=mk("Frame",{Size=UDim2.fromScale(0,1),BackgroundColor3=Theme.Mint},xpTrack)
+local objective=mk("TextLabel",{Position=UDim2.fromOffset(6,48),Size=UDim2.new(.7,0,0,36),BackgroundTransparency=1,TextColor3=Theme.Ink,TextSize=12,TextWrapped=true,Font=Enum.Font.GothamMedium},gui)
 local muted=false
 local function sfx(n)
 	if muted or Sounds[n]=="" then return end
@@ -37,7 +46,8 @@ local FX={Fogo={shape="Ball",size=3,path="line",n=45,spd=34},["Água"]={shape="B
 	Natureza={shape="Block",size=2,path="line",n=28,spd=18,spin=true},Terra={shape="Block",size=4,path="drop",n=30,spd=26},
 	Ar={shape="Cylinder",size=1.5,path="line",n=40,spd=40,spin=true},Sombra={shape="Ball",size=3,path="arc",n=40,spd=14}}
 local function fx(el,a,b)
-	local d=FX[el];local c=E.Color[el];local arena=workspace:FindFirstChild("Arena");if not arena then return end
+	if LocalPlayer:GetAttribute("GraphicsQuality")=="Baixo" or LocalPlayer:GetAttribute("MotionReduced") then return end
+ local d=FX[el];local c=E.Color[el];local arena=workspace:FindFirstChild("Arena");if not arena then return end
 	local p=Instance.new("Part");p.Anchored=true;p.CanCollide=false;p.Shape=Enum.PartType[d.shape];p.Size=Vector3.one*d.size
 	p.Material=Enum.Material.Neon;p.Color=c;p.Parent=arena
 	local e=Instance.new("ParticleEmitter");e.Rate=60;e.Lifespan=NumberRange.new(.4);e.Speed=NumberRange.new(1,3);e.Color=ColorSequence.new(c)
@@ -130,10 +140,13 @@ render=function()
 	for _,c in list:GetChildren() do if c:IsA("Frame") then c:Destroy() end end
 	if not S then return end
 	local n=0;for _ in S.discovered do n+=1 end
-	top.Text=("● %d ouro  ◆ %d gemas  ◈ %d selos"):format(S.gold,S.gems,S.seals or 0)
+	top.Text=("Nv.%d  ● %d  ◆ %d  ◈ %d"):format(S.playerLevel or 1,S.gold,S.gems,S.seals or 0)
+ xpFill.Size=UDim2.fromScale(math.clamp((S.playerXp or 0)/Progression.playerCost(S.playerLevel or 1),0,1),1)
+ local quest=Story.current(S);objective.Text=quest and (quest.name.." • "..Story.progress(S,quest).."/"..quest.goal) or "Primeira expedição concluída • Continue explorando"
+ objective.Visible=not drawerOpen and msg.Text==""
 	if tab=="Feras" then
 		for uid,cr in S.creatures do
-			row(crText(cr),{{"Alimentar",function() call("Feed",uid) end},{"Pôr: "..isl,function() call("Place",uid,isl) end},{"Treino",function() call("Battle",uid,isl) end}})
+			row(crText(cr),{{"Alimentar",function() call("Feed",uid) end},{S.companion==uid and "Guardar" or "Companheiro",function() call("Companion",uid) end},{"Pôr: "..isl,function() call("Place",uid,isl) end},{"Treino",function() call("Battle",uid,isl) end}})
 		end
 	 elseif tab=="Bestiário" then
   Journal.render(list,S,function() render() end)
@@ -144,7 +157,21 @@ render=function()
 			if pl~=Players.LocalPlayer then n+=1;row(pl.DisplayName,{{"Desafiar",function() call("Duel",pl.UserId) end}}) end
 		end
 		if n==0 then row("Nenhum outro jogador agora. Convide amigos!",{}) end
-	elseif tab=="Missões" then
+	elseif tab=="Santuário" then
+  SanctuaryUI.render(list,S,call,render)
+ elseif tab=="Opções" then
+  for element,count in S.materials do row("Essência de "..element..": "..count,{}) end
+  for _,quality in {"Baixo","Médio","Alto"} do
+   row("Qualidade "..quality,{{LocalPlayer:GetAttribute("GraphicsQuality")==quality and "Ativa" or "Selecionar",function()
+    LocalPlayer:SetAttribute("GraphicsQuality",quality)
+    for _,effect in Lighting:GetChildren() do if effect:IsA("BloomEffect") then effect.Enabled=quality=="Alto" end end
+    render()
+   end}})
+  end
+  row("Movimentos reduzidos",{{LocalPlayer:GetAttribute("MotionReduced") and "Ativado" or "Desativado",function() LocalPlayer:SetAttribute("MotionReduced",not LocalPlayer:GetAttribute("MotionReduced"));render() end}})
+ elseif tab=="Missões" then
+  local quest=Story.current(S)
+  if quest then row("Maia • "..quest.name.." — "..Story.progress(S,quest).."/"..quest.goal,{{Story.canClaim(S,quest.id) and "Receber capítulo" or "Em andamento",function() call("ClaimStory",quest.id) end}}) end
 		local ev=S.event
 		row(("Evento: +50%% ouro de %s (%dh)"):format(ev.el,math.ceil(ev.left/3600)),{})
 		row("Recompensa diária (sequência "..S.streak..")",{{"Resgatar",function() call("Daily") end}})
@@ -153,14 +180,17 @@ render=function()
 			row(("%s (%d/%d)"):format(m.text,math.min(pr,m.goal),m.goal),{{done and "✓" or (pr>=m.goal and "Resgatar" or "+"..m.gold.." ouro"),function() if not done and pr>=m.goal then call("Claim",m.id) end end}})
 		end
 	elseif tab=="Loja" then
-		row("Selos de Vínculo: "..(S.seals or 0),{{"Criar • 25 ouro",function() call("CraftSeal") end}})
+		for _,kind in CaptureRules.SealOrder do
+   local recipe=CaptureRules.Seals[kind];local count=kind=="Basic" and S.seals or S.sealStock[kind] or 0
+   row("Selo "..recipe.name.." • "..count.." • Nível "..recipe.level..(recipe.material and " • "..recipe.amount.." essência "..recipe.material or ""),{{"Criar • "..recipe.cost.." ouro",function() call("CraftSeal",kind) end}})
+  end
 		row("Mercado de ovos — compras com ouro do jogo",{})
 		for _,def in I.List do
 			if S.unlocked[def.id] then row("Ovo de "..def.name.." — "..(80*def.idx).." ouro",{{"Comprar",function() call("BuyEgg",def.id) end}}) end
 		end
 	elseif tab=="Ilhas" then
 		for _,def in I.List do
-			if S.unlocked[def.id] then row(def.name.." ("..def.el..")"..(def.id==isl and " ✓" or ""),{{"Selecionar",function() isl=def.id;render() end}})
+			if S.unlocked[def.id] then row(def.name.." ("..def.el..") • Nível "..def.minLevel..(def.id==isl and " ✓" or ""),{{"Selecionar",function() isl=def.id;render() end},{"Viajar",function() call("Travel",def.id) end}})
 			else row(def.name.." — "..def.cost.." ouro",{{"Desbloquear",function() call("Unlock",def.id) end}}) end
 		end
 	else
@@ -180,27 +210,30 @@ render=function()
 		end
 	end
 end
+local tabs={"Feras","Santuário","Ilhas","Ovos","Bestiário","Arena","Missões","Loja","Opções"}
 local bar=mk("Frame",{Visible=false,AnchorPoint=Vector2.new(1,0),Position=UDim2.new(1,-8,.1,0),Size=UDim2.new(.9,0,.12,-4),BackgroundTransparency=1},gui)
 mk("UISizeConstraint",{MaxSize=Vector2.new(440,160)},bar)
 local toggle=mk("TextButton",{Position=UDim2.new(1,-58,0,40),Size=UDim2.fromOffset(50,44),Text="Menu",TextSize=12,Font=Enum.Font.GothamBold,TextColor3=WHITE,BackgroundColor3=Color3.fromRGB(63,66,91)},gui)
 local function setDrawer(open)
  drawerOpen=open;list.Visible=open;bar.Visible=open;toggle.Text=open and "Fechar" or "Menu"
+ objective.Visible=not open and msg.Text==""
  if tutorial then tutorial() end
  if open then render();list.BackgroundTransparency=.5;TS:Create(list,TweenInfo.new(.15),{BackgroundTransparency=.12}):Play() end
 end
 local function layoutDrawer()
  local size=gui.AbsoluteSize
  local w=math.min(460,size.X-16)
- bar.Size=UDim2.fromOffset(w,100);bar.Position=UDim2.new(1,-8,0,94)
- list.Size=UDim2.fromOffset(w,math.max(80,size.Y-214));list.Position=UDim2.new(1,-8,0,200)
+ local header=math.ceil(#tabs/4)*50
+ bar.Size=UDim2.fromOffset(w,header);bar.Position=UDim2.new(1,-8,0,94)
+ list.Size=UDim2.fromOffset(w,math.max(70,size.Y-header-108));list.Position=UDim2.new(1,-8,0,header+100)
 end
 layoutDrawer();gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(layoutDrawer)
 toggle.Activated:Connect(function() setDrawer(not drawerOpen) end)
 game:GetService("UserInputService").InputBegan:Connect(function(input,processed)
  if not processed and input.KeyCode==Enum.KeyCode.Escape then setDrawer(false) end
 end)
-for i,name in {"Feras","Ilhas","Ovos","Bestiário","Arena","Missões","Loja"} do
-	local b=mk("TextButton",{Position=UDim2.fromScale(((i-1)%4)/4,math.floor((i-1)/4)/2),Size=UDim2.fromScale(1/4,.5),Text=name,TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Theme.Card,TextColor3=WHITE},bar)
+for i,name in tabs do
+	local b=mk("TextButton",{Position=UDim2.fromScale(((i-1)%4)/4,math.floor((i-1)/4)/math.ceil(#tabs/4)),Size=UDim2.fromScale(1/4,1/math.ceil(#tabs/4)),Text=name,TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Theme.Card,TextColor3=WHITE},bar)
 	tabBtn[name]=b;b.Activated:Connect(function() tab=name;render() end)
 end
 local collect=mk("TextButton",{Position=UDim2.new(1,-86,0,0),Size=UDim2.fromOffset(78,34),Text="Coletar",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(255,190,50),TextColor3=Theme.Panel},gui)
@@ -226,6 +259,9 @@ local mb=mk("TextButton",{Position=UDim2.new(1,-74,1,-46),Size=UDim2.fromOffset(
 mb.Activated:Connect(function() muted=not muted;mb.Text=muted and "Som OFF" or "Som ON";if music then music.Volume=muted and 0 or 0.25 end end)
 -- Feras respiram e se viram devagar (animação local, só visual).
 require(script.Parent.CreatureAnimator).start()
+require(script.Parent.CompanionClient).start()
+RS:WaitForChild("StoryNotice").OnClientEvent:Connect(function(message) msg.Text=message;tab="Missões";setDrawer(true) end)
+msg:GetPropertyChangedSignal("Text"):Connect(function() objective.Visible=not drawerOpen and msg.Text=="" end)
 -- Clima e hora do dia mudam conforme a ilha mais próxima.
 local cur
 task.spawn(function()
@@ -246,7 +282,7 @@ local TUT={
 	{"Na aba OVOS, escolha 2 feras e toque CRUZAR.",function() return tabBtn.Ovos end,function(s) return (s.stats.breed or 0)>=1 end},
 	{"Aproxime-se de uma fera selvagem. Escolha lutar, criar vínculo ou capturar.",function() return toggle end,function(s) return (s.stats.fight or 0)>=1 end},
 	{"Em MISSÕES, resgate sua primeira recompensa.",function() return tabBtn["Missões"] end,function(s) return next(s.claimed)~=nil end}}
-local panel=mk("Frame",{Position=UDim2.new(.02,0,0,82),Size=UDim2.new(.72,0,0,66),BackgroundColor3=Color3.fromRGB(255,240,200),Visible=false},gui)
+local panel=mk("Frame",{Position=UDim2.new(.02,0,0,132),Size=UDim2.new(.72,0,0,66),BackgroundColor3=Color3.fromRGB(255,240,200),Visible=false},gui)
 local ptxt=mk("TextLabel",{Size=UDim2.new(1,-90,1,0),Position=UDim2.fromOffset(8,0),BackgroundTransparency=1,TextScaled=true,Font=Enum.Font.GothamBold,TextColor3=Color3.fromRGB(50,35,90),TextXAlignment=Enum.TextXAlignment.Left},panel)
 local skip=mk("TextButton",{Size=UDim2.fromOffset(76,36),Position=UDim2.new(1,-80,0.5,-18),Text="Pular",TextScaled=true,Font=Enum.Font.GothamBold,BackgroundColor3=Color3.fromRGB(200,120,120),TextColor3=WHITE},panel)
 local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(255,230,80);stroke.Thickness=2;stroke.ApplyStrokeMode=Enum.ApplyStrokeMode.Border

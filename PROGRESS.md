@@ -75,3 +75,8 @@ A conquista de coleção completa agora usa a quantidade real do catálogo (30),
 
 ## V5
 Implementação em RELEASE-V5.md. Encontro selvagem agora é interativo por turnos com captura direta ou assistida por batalha, habilidades por família, equipe de até três, progresso e recompensas autoritativos. Nova arte por espécie, tema de interface, miniaturas e otimizações integrados sem remover IDs, reprodução, habitats legados, treino ou duelos. Testes de regras/protocolo/estrutura executados; homologação visual e multiplayer real ainda pendente. O pacote não promete qualidade visual comprovada sem Studio.
+
+## V6 — primeiro ciclo aventura/santuário
+Implementação em CHANGELOG.md e SISTEMAS.md. Sete regiões presentes, 30 espécies integradas e 70 conceitos planejados; a meta integral continua pendente. Código novo integrado com migração versionada, testes de regras e serviços simulados. Nenhuma inspeção visual no Studio, playtest multiplayer real ou certificação de performance foi executada. Arte final/100 modelos não foram declarados prontos.
+
+Checagem final V6: 55 arquivos Luau compilados; sete suítes executadas (reprodução, combate, protocolo de encontro, modelos em stub, RPG/regras, migração/sessões de dados e ações do GameService). As instruções e os resultados ficam no pacote. O suporte de níveis 1–100 não significa conteúdo/endgame até 100 concluído. A referência de arte ainda não foi atingida/homologada.

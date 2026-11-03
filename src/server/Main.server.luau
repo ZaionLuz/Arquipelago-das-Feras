@@ -4,7 +4,10 @@ local Data=require(script.Parent.DataService);local World=require(script.Parent.
 local Encounters=require(script.Parent.EncounterService)
 Encounters.start()
 World.build()
+require(script.Parent.StartingCamp).build()
+require(script.Parent.Researcher).start()
 require(script.Parent.Wildlife).start()
+require(script.Parent.Guardians).start()
 local Net=Instance.new("RemoteFunction");Net.Name="Net";Net.Parent=RS
 local last={}
 local busy={}
@@ -27,6 +30,7 @@ Players.PlayerAdded:Connect(join)
 for _,p in Players:GetPlayers() do task.spawn(join,p) end
 Players.PlayerRemoving:Connect(function(p)
 	while busy[p] do task.wait() end
+ require(script.Parent.SanctuaryService).release(p)
  Data.release(p);last[p]=nil;busy[p]=nil
 	local f=workspace:FindFirstChild("Criaturas");local m=f and f:FindFirstChild(tostring(p.UserId));if m then m:Destroy() end
 end)

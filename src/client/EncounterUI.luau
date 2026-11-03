@@ -2,6 +2,7 @@
 local RS=game:GetService("ReplicatedStorage");local TS=game:GetService("TweenService");local Run=game:GetService("RunService")
 local C=require(RS.Shared.Creatures);local MF=require(RS.Shared.ModelFactory);local Elements=require(RS.Shared.Elements)
 local Theme=require(script.Parent.UITheme)
+local CaptureRules=require(RS.Shared.CaptureRules)
 local Skills=require(RS.Shared.Skills)
 local CAS=game:GetService("ContextActionService")
 local UI={}
@@ -43,8 +44,10 @@ function UI.start(gui,getOwned,onClose,onOpen)
  render=function(animate)
   if not root then return end
   animation+=1;local job=animation;presenting=false
+  if game:GetService("Players").LocalPlayer:GetAttribute("MotionReduced") then animate=false end
   title.Text=C.ById[state.foe.id].name.." • Nv."..state.foe.lv.." • "..C.Rarity[C.ById[state.foe.id].rar]
   chance.Text="Captura "..math.floor(state.chance*100).."%  •  Selos "..(state.seals or 0).."  •  Vínculo "..state.bond.."/3"
+  if state.capturable==false then chance.Text="Desafio do guardião • não permite captura" end
   local pet=state.active and state.party[state.active]
   health(hpFoe,state.foe,"SELVAGEM");health(hpMine,pet,pet and C.ById[pet.id].name or "SUA EQUIPE")
   if not foeModel or not foeModel.Parent then foeModel=MF.build(C.ById[state.foe.id],state.foe.lv,{preview=true});foeModel.Parent=figures;pose(foeModel,8) end
@@ -77,17 +80,22 @@ function UI.start(gui,getOwned,onClose,onOpen)
     if animation==job then presenting=false end
    end)
   end
+  if not animate and #state.log>0 then status.Text=state.log[#state.log].text end
   if state.message then status.Text=state.message elseif #state.log==0 then status.Text="Capture diretamente ou escolha uma fera para enfraquecer o encontro." end
   for _,o in actions:GetChildren() do if o:IsA("GuiButton") then o:Destroy() end end
-  local buttons=state.status=="active" and {{"Golpe","Strike"},{pet and Skills[C.ById[pet.id].shape].name or "Habilidade","Skill"},{"Proteger + recuperar","Guard"},{"Criar vínculo","Bond"},{"Lançar Selo","Capture"},{"Fugir","Flee"},{"Atualizar","State"}} or {{state.status=="captured" and "Capturou! Continuar" or state.status=="won" and "Vitória! Continuar" or "Voltar à exploração","Close"}}
+  local buttons=state.status=="active" and {{"Golpe","Strike"},{pet and Skills[C.ById[pet.id].shape].name or "Habilidade","Skill"},{"Proteger + recuperar","Guard"},{"Criar vínculo","Bond"},{"Lançar Selo","Capture"},{"Selo: "..(CaptureRules.Seals[state.sealType or "Basic"].name),"ChooseSeal"},{"Fugir","Flee"},{"Atualizar","State"}} or {{state.status=="captured" and "Capturou! Continuar" or state.status=="won" and "Vitória! Continuar" or "Voltar à exploração","Close"}}
   for _,entry in buttons do
+   if state.capturable==false and (entry[2]=="Capture" or entry[2]=="Bond" or entry[2]=="ChooseSeal") then continue end
    local available=true
    if state.status=="active" then
     if entry[2]=="Strike" or entry[2]=="Guard" or entry[2]=="Skill" then available=pet~=nil and pet.hp>0 end
     if entry[2]=="Skill" and pet and state.turn<(pet.nextSkill or 0) then available=false;entry[1]..=" • recarregando" end
     if entry[2]=="Capture" and (state.seals or 0)<1 then available=false end
    end
-   local b=Theme.button(actions,entry[1],function() if entry[2]=="Close" then destroy() else request(entry[2]) end end)
+   local b=Theme.button(actions,entry[1],function() if entry[2]=="Close" then destroy() elseif entry[2]=="ChooseSeal" then
+    local index=table.find(CaptureRules.SealOrder,state.sealType or "Basic") or 1
+    request("ChooseSeal",CaptureRules.SealOrder[index%#CaptureRules.SealOrder+1])
+   else request(entry[2]) end end)
    b.Active=available;b.Selectable=available;b.BackgroundTransparency=available and 0 or .6
   end
   for _,o in roster:GetChildren() do if o:IsA("GuiButton") then o:Destroy() end end

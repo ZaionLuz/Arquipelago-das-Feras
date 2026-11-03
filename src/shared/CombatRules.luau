@@ -13,8 +13,9 @@ function R.damage(a,b,power,guard)
  return math.max(1,math.floor(a.atk*power*Elements.mult(a.el,b.el)*100/(100+b.def)*(guard and .45 or 1)))
 end
 function R.chance(s)
+ if s.capturable==false then return 0 end
  local def=C.ById[s.foe.id]
- return math.clamp(Capture.chance(def.rar,s.foe.lv)+(1-s.foe.hp/s.foe.maxHp)*.45+s.bond*.08,.05,.94)
+ return math.clamp(Capture.chance(def.rar,s.foe.lv)*Capture.multiplier(s.sealKind or "Basic",def.rar,s.active and s.party[s.active].el,s.foe.el,s.bond)+(1-s.foe.hp/s.foe.maxHp)*.45+s.bond*.08,.05,.94)
 end
 function R.new(id,lv)
  local foe=R.stats(id,lv);foe.hp=foe.maxHp
@@ -44,8 +45,10 @@ function R.step(s,action,pet,rng,seals,room)
   if not current or current.hp<=0 then return false,"Selecione uma fera disponível." end
   if action=="Skill" and s.turn<(current.nextSkill or 0) then return false,"Habilidade recarregando." end
  elseif action=="Capture" then
+  if s.capturable==false then return false,"Guardiões não podem ser capturados." end
   if seals<1 then return false,"Sem selos. Crie mais no Mercado." end
   if not room then return false,"Inventário cheio. Nenhum selo foi gasto." end
+ elseif action=="Bond" and s.capturable==false then return false,"Este desafio exige uma batalha."
  elseif action~="Bond" and action~="Flee" then return false,"Ação desconhecida." end
  s.log={};s.turn+=1;s.version+=1;s.spentSeal=false
  if action=="Flee" then s.status="escaped";note(s,"Você voltou à exploração.");return true end

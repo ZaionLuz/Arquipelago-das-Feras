@@ -2,6 +2,7 @@
 local RS=game:GetService("ReplicatedStorage");local Run=game:GetService("RunService")
 local C=require(RS.Shared.Creatures);local I=require(RS.Shared.Islands);local E=require(RS.Shared.Elements)
 local Preview=require(script.Parent.CollectionUI);local Theme=require(script.Parent.UITheme)
+local Lore=require(RS.Shared.SpeciesLore)
 local J={};local selected="cinzelo";local rarity=0;local island=0;local element=0;local search=""
 local function frame(parent,height)
  local f=Instance.new("Frame");f.Size=UDim2.new(1,-8,0,height);f.BackgroundColor3=Theme.Card;f.Parent=parent;Theme.round(f);return f
@@ -10,7 +11,7 @@ function J.render(parent,s,render)
  local filters=frame(parent,100);filters.BackgroundTransparency=1
  local choices={
   {"Raridade: "..(C.Rarity[rarity] or "Todas"),function() rarity=(rarity+1)%5;render() end},
-  {"Bioma: "..(island==0 and "Todos" or I.List[island].name),function() island=(island+1)%7;render() end},
+  {"Bioma: "..(island==0 and "Todos" or I.List[island].name),function() island=(island+1)%(#I.List+1);render() end},
   {"Elemento: "..(E.List[element] or "Todos"),function() element=(element+1)%7;render() end},
  }
  for index,entry in choices do
@@ -20,7 +21,7 @@ function J.render(parent,s,render)
  box.FocusLost:Connect(function() search=string.sub(box.Text,1,40);render() end)
  local def=C.ById[selected];local known=s.discovered[selected];local lv,count=1,0
  for _,cr in s.creatures do if cr.id==selected then count+=1;lv=math.max(lv,cr.lv) end end
- local card=frame(parent,300);local view=Preview.preview(card,def,lv,not known)
+ local card=frame(parent,360);local view=Preview.preview(card,def,lv,not known)
  local world=view:FindFirstChildOfClass("WorldModel");local model=world:FindFirstChildOfClass("Model");local cf,size=model:GetBoundingBox();local distance=math.max(size.X,size.Y,size.Z)*2
  local angle=0;local connection=Run.Heartbeat:Connect(function(dt)
   if not parent.Visible then return end;angle+=dt*.25
@@ -29,6 +30,7 @@ function J.render(parent,s,render)
  card.Destroying:Connect(function() connection:Disconnect() end)
  local info=Theme.label(card,"",14);info.Position=UDim2.fromScale(.03,.66);info.Size=UDim2.fromScale(.94,.33)
  info.Text=known and (def.name.." • "..def.el.." • "..C.Rarity[def.rar].."\n"..(I.ById[def.island] and I.ById[def.island].name or "Híbrido").." • Coleção: "..count.."\nNv."..lv.." • Estágio "..C.stage(lv,def.id)..(def.id=="fenix" and " • Renascimento futuro" or " • Evolui em 7 / 15")) or "Espécie misteriosa\nExplore, capture ou cruze feras para conhecer sua história."
+ if known and Lore[def.id] then info.Text..="\n"..Lore[def.id].description.." • "..Lore[def.id].personality end
  local matches={}
  for _,entry in C.List do
   local found=s.discovered[entry.id]

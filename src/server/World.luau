@@ -2,6 +2,7 @@
 local RS=game:GetService("ReplicatedStorage")
 local I=require(RS.Shared.Islands);local C=require(RS.Shared.Creatures);local MF=require(RS.Shared.ModelFactory)
 local Data=require(script.Parent.DataService)
+local Sanctuary=require(script.Parent.SanctuaryService)
 local W={};local rng=Random.new(7)
 function W.pos(i) local a=(i-1)/#I.List*math.pi*2;return Vector3.new(math.cos(a)*150,10,math.sin(a)*150) end
 function W.build()
@@ -32,20 +33,32 @@ function W.refresh(p)
 	local root=workspace:FindFirstChild("Criaturas") or Instance.new("Folder",workspace);root.Name="Criaturas"
 	local old=root:FindFirstChild(tostring(p.UserId));if old then old:Destroy() end
 	local d=Data.get(p);if not d then return end
-	local mine=Instance.new("Folder");mine.Name=tostring(p.UserId)
+	Sanctuary.refresh(p)
+ local visualCount=0;local occupied=0
+ for id,list in d.habitat do if d.sanctuary[id] and #list>0 then occupied+=1 end end
+ local perHabitat=math.min(2,math.max(1,math.floor(12/math.max(1,occupied))))
+ local mine=Instance.new("Folder");mine.Name=tostring(p.UserId)
 	for isl,list in d.habitat do
-		local center=W.pos(I.ById[isl].idx)
+		local center=Sanctuary.position(p,isl)
+  if not center then continue end
 		for k,uid in list do
+   if k>perHabitat or visualCount>=12 then continue end -- Representantes visuais; todas as feras seguem produzindo.
 			local cr=d.creatures[uid]
-			if cr then
-				local a=k/#list*math.pi*2;local m=MF.build(C.ById[cr.id],cr.lv)
-				local bc,bs=m:GetBoundingBox();local lift=m:GetPivot().Position.Y-(bc.Position.Y-bs.Y/2)
-				m:PivotTo(CFrame.new(center+Vector3.new(math.cos(a)*16,4+lift,math.sin(a)*16),center+Vector3.new(0,4+lift,0)));if d.pass and d.pass.Aura then local h=Instance.new("Highlight");h.FillTransparency=1;h.OutlineColor=Color3.fromRGB(255,215,0);h.Parent=m end
+			if cr and uid~=d.companion then
+    visualCount+=1
+				local displayed=math.min(#list,perHabitat)
+    local radius=displayed==1 and 0 or 8
+    local a=k/displayed*math.pi*2;local m=MF.build(C.ById[cr.id],cr.lv)
+				local _,dimensions=m:GetBoundingBox();local largest=math.max(dimensions.X,dimensions.Y,dimensions.Z)
+    if largest>9 then m:ScaleTo(m:GetScale()*9/largest) end
+    local bc,bs=m:GetBoundingBox();local lift=m:GetPivot().Position.Y-(bc.Position.Y-bs.Y/2)
+				m:PivotTo(CFrame.new(center+Vector3.new(math.cos(a)*radius,.5+lift,math.sin(a)*radius),center+Vector3.new(0,.5+lift,0)));if d.pass and d.pass.Aura then local h=Instance.new("Highlight");h.FillTransparency=1;h.OutlineColor=Color3.fromRGB(255,215,0);h.Parent=m end
 				m:SetAttribute("Family",C.ById[cr.id].shape);m:SetAttribute("OwnerUserId",p.UserId);m:SetAttribute("CreatureUid",uid)
 				m.Parent=mine
 			end
 		end
 	end
 	mine.Parent=root
+ require(script.Parent.CompanionService).sync(p)
 end
 return W

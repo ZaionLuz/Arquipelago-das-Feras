@@ -51,6 +51,20 @@ end)()
 local Capture=(function()
 --!nonstrict
 local R={SealPrice=25,InitialSeals=5,MaxPerIsland=2,RespawnSeconds=25,MaxDistance=13}
+R.Seals={
+ Basic={name="Básico",multiplier=1,cost=25,level=1},
+ Reinforced={name="Reforçado",multiplier=1.12,cost=60,level=8},
+ Elemental={name="Elemental",multiplier=1.25,cost=85,level=16,material="Natureza",amount=1},
+ Rare={name="Raro",multiplier=1.4,cost=160,level=24,material="Terra",amount=1},
+ Ancient={name="Ancestral",multiplier=1.55,cost=300,level=40,material="Sombra",amount=2},
+}
+R.SealOrder={"Basic","Reinforced","Elemental","Rare","Ancient"}
+function R.multiplier(kind,rarity,activeElement,foeElement,bond)
+ if kind=="Elemental" then return activeElement==foeElement and 1.35 or 1.1 end
+ if kind=="Rare" then return rarity>=3 and 1.4 or 1.15 end
+ if kind=="Ancient" then return bond>=2 and 1.55 or 1.4 end
+ return (R.Seals[kind] or R.Seals.Basic).multiplier
+end
 local base={.8,.5,.28,.12}
 function R.chance(rarity,level)
  return math.clamp((base[rarity] or .1)-math.max(0,level-1)*.005,.05,.9)
@@ -104,8 +118,9 @@ function R.damage(a,b,power,guard)
  return math.max(1,math.floor(a.atk*power*Elements.mult(a.el,b.el)*100/(100+b.def)*(guard and .45 or 1)))
 end
 function R.chance(s)
+ if s.capturable==false then return 0 end
  local def=C.ById[s.foe.id]
- return math.clamp(Capture.chance(def.rar,s.foe.lv)+(1-s.foe.hp/s.foe.maxHp)*.45+s.bond*.08,.05,.94)
+ return math.clamp(Capture.chance(def.rar,s.foe.lv)*Capture.multiplier(s.sealKind or "Basic",def.rar,s.active and s.party[s.active].el,s.foe.el,s.bond)+(1-s.foe.hp/s.foe.maxHp)*.45+s.bond*.08,.05,.94)
 end
 function R.new(id,lv)
  local foe=R.stats(id,lv);foe.hp=foe.maxHp
@@ -135,8 +150,10 @@ function R.step(s,action,pet,rng,seals,room)
   if not current or current.hp<=0 then return false,"Selecione uma fera disponível." end
   if action=="Skill" and s.turn<(current.nextSkill or 0) then return false,"Habilidade recarregando." end
  elseif action=="Capture" then
+  if s.capturable==false then return false,"Guardiões não podem ser capturados." end
   if seals<1 then return false,"Sem selos. Crie mais no Mercado." end
   if not room then return false,"Inventário cheio. Nenhum selo foi gasto." end
+ elseif action=="Bond" and s.capturable==false then return false,"Este desafio exige uma batalha."
  elseif action~="Bond" and action~="Flee" then return false,"Ação desconhecida." end
  s.log={};s.turn+=1;s.version+=1;s.spentSeal=false
  if action=="Flee" then s.status="escaped";note(s,"Você voltou à exploração.");return true end

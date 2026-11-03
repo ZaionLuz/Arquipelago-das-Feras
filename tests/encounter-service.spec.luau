@@ -17,7 +17,7 @@ local function player()
  return {Character={FindFirstChild=function() return {Position=vector} end,FindFirstChildOfClass=function() return {Health=100} end}}
 end
 -- SERVICE_MODULE
-local p=player();data[p]={gold=100,seals=3,nextId=3,creatures={u1={id="magmarau",lv=20,xp=0}},stats={},discovered={},wins=0}
+local p=player();data[p]={gold=100,seals=3,nextId=3,creatures={u1={id="magmarau",lv=20,xp=0}},stats={},discovered={},wins=0,guardians={},sealStock={},playerLevel=1,playerXp=0}
 E.start();local net=registry.EncounterNet
 local function open()
  clock+=1
@@ -45,3 +45,15 @@ local gold=data[p].gold;request(s,"Strike");assert(data[p].gold==gold and data[p
 s=open();now+=151;s=request(s,"Capture");assert(s.status=="escaped" and data[p].seals==2)
 s=open();removal(p);assert(not E.active(p))
 print("PASS: protocolo do encontro: token, versão, propriedade, débito único, concessão única, recompensa única, timeout e saída")
+-- V6: estoque separado e desafios de guardião sem captura.
+clock+=1;assert(E.open(p,{id="cinzelo",lv=1,position=vector},function() releaseCount+=1 end));s=emitted[p]
+data[p].sealStock.Rare=1
+s=request(s,"ChooseSeal","Rare");assert(s.sealType=="Rare" and s.seals==1)
+s=request(s,"Capture");assert(s.status=="captured" and data[p].sealStock.Rare==0 and data[p].seals==2)
+clock+=1;assert(E.open(p,{id="cinzelo",lv=1,position=vector,capturable=false,guardianId="Brasa"},function() releaseCount+=1 end));s=emitted[p]
+local before=data[p].seals;s=request(s,"Capture");assert(s.version==0 and data[p].seals==before)
+s=request(s,"Select","u1")
+while s.status=="active" do s=request(s,"Strike") end
+assert(data[p].guardians.Brasa and data[p].stats.guardian==1)
+local oldGold=data[p].gold;request(s,"Strike");assert(data[p].gold==oldGold and data[p].stats.guardian==1)
+print("PASS: estoque de selo separado, guardião incapturável e bônus de desafio único")

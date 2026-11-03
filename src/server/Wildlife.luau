@@ -15,12 +15,12 @@ function W.start()
   local pool,total={},0;local counts={}
   for _,other in slots do if other.model then counts[other.id]=(counts[other.id] or 0)+1 end end
   for _,def in C.List do local cfg=Rules.species(def)
-   if cfg.island==s.island.id and (counts[def.id] or 0)<cfg.max then total+=cfg.weight;table.insert(pool,{def=def,w=cfg.weight}) end
+   if (cfg.island==s.island.id or (s.island.id=="Alvorecer" and (def.id=="brotinho" or def.id=="folhuco" or def.id=="penugem"))) and (counts[def.id] or 0)<cfg.max then total+=cfg.weight;table.insert(pool,{def=def,w=cfg.weight}) end
   end
   if #pool==0 then return end
   local roll=rng:NextNumber()*total;local def=pool[#pool].def
   for _,entry in pool do roll-=entry.w;if roll<=0 then def=entry.def;break end end
-  local level=def.id=="fenix" and 15 or math.max(1,def.rar*2-1)
+  local level=def.id=="fenix" and 15 or math.min(100,(s.island.minLevel or 1)+def.rar*2-2)
   local m=MF.build(def,level);local cf,size=m:GetBoundingBox()
   local ground=I.pos(s.island.idx)+Vector3.new(s.slot==1 and -11 or 11,4,6)
   local lift=m:GetPivot().Position.Y-(cf.Position.Y-size.Y/2)

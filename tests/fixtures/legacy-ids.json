@@ -1,0 +1,41 @@
+{
+  "creatures": [
+    "cinzelo",
+    "magmarau",
+    "fenixfuligem",
+    "vulcanodrago",
+    "bolhinho",
+    "marilisco",
+    "carangueperola",
+    "abissauro",
+    "brotinho",
+    "folhuco",
+    "aracnoflora",
+    "ancestravore",
+    "graozinho",
+    "escorpiodra",
+    "esfingeolito",
+    "colossodune",
+    "penugem",
+    "ventanil",
+    "trovoraptor",
+    "aeronimbo",
+    "lodinho",
+    "caudalume",
+    "vagalumorte",
+    "reinevoento",
+    "vaporino",
+    "magmaterra",
+    "tempestalia",
+    "nevoamusgo",
+    "cinzavento"
+  ],
+  "islands": [
+    "Brasa",
+    "Recife",
+    "Floresta",
+    "Dunas",
+    "Picos",
+    "Pantano"
+  ]
+}

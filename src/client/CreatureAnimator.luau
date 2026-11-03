@@ -8,18 +8,20 @@ function A.start()
   local camera=workspace.CurrentCamera;if not camera then return end
   if scan>=.5 then
    scan=0;local candidates={}
-   for _,name in {"Criaturas","Selvagens"} do
+   for _,name in {"Criaturas","Selvagens","Companheiros"} do
     local folder=workspace:FindFirstChild(name)
     if folder then for _,m in folder:GetDescendants() do
      if m:IsA("Model") and m.PrimaryPart and m:GetAttribute("Species") then
       local dist=(m.PrimaryPart.Position-camera.CFrame.Position).Magnitude
-      if dist<120 then table.insert(candidates,{model=m,dist=dist,wild=name=="Selvagens"}) end
+      local quality=game:GetService("Players").LocalPlayer:GetAttribute("GraphicsQuality") or "Médio"
+      if dist<(quality=="Baixo" and 70 or quality=="Alto" and 130 or 100) then table.insert(candidates,{model=m,dist=dist,wild=name~="Criaturas"}) end
      end
     end end
    end
    table.sort(candidates,function(a,b) return a.dist<b.dist end)
-   nearby={};for i=1,math.min(12,#candidates) do table.insert(nearby,candidates[i]) end
+   nearby={};for i=1,math.min((game:GetService("Players").LocalPlayer:GetAttribute("GraphicsQuality")=="Baixo" and 4 or game:GetService("Players").LocalPlayer:GetAttribute("GraphicsQuality")=="Alto" and 12 or 8),#candidates) do table.insert(nearby,candidates[i]) end
   end
+  if game:GetService("Players").LocalPlayer:GetAttribute("MotionReduced") then return end
   local t=os.clock()
   for _,item in nearby do
    local m=item.model;if not m.Parent or not m.PrimaryPart then continue end

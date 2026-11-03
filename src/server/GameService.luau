@@ -2,6 +2,12 @@
 local RS=game:GetService("ReplicatedStorage")
 local C=require(RS.Shared.Creatures);local I=require(RS.Shared.Islands);local E=require(RS.Shared.Elements);local B=require(RS.Shared.Breeding)
 local M=require(RS.Shared.Missions)
+local SR=require(RS.Shared.SanctuaryRules)
+local CaptureRules=require(RS.Shared.CaptureRules)
+local Story=require(RS.Shared.Story)
+local Progression=require(RS.Shared.Progression)
+local Transport=require(script.Parent.Transport)
+local Sanctuary=require(script.Parent.SanctuaryService)
 local Data=require(script.Parent.DataService);local World=require(script.Parent.World)
 local G={};local rng=Random.new()
 local Mon=require(script.Parent.MonetizationService)
@@ -25,10 +31,60 @@ local function settle(p)
 end
 G.Actions={}
 local A=G.Actions
-function A.CraftSeal(p)
+function A.Home(p) if not Sanctuary.home(p) then return fail("Personagem ou destino indisponível. Aguarde e tente novamente.") end;return ok(p,"Bem-vindo ao seu santuário") end
+function A.Travel(p,id)
+ local d=Data.get(p);local def=I.ById[id];local root=p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+ if not def or not d.unlocked[id] or not root then return fail("Destino indisponível") end
+ if not Transport.go(p,I.pos(def.idx)+Vector3.new(0,9,24)) then return fail("Destino ainda não carregou. Tente novamente.") end
+ return ok(p,"Chegou a "..def.name)
+end
+function A.Companion(p,uid)
  local d=Data.get(p)
- if d.seals>=10000 or d.gold<25 then return fail("Precisa de 25 ouro ou atingiu o limite de selos") end
- d.gold-=25;d.seals+=1;return ok(p,"+1 Selo de Vínculo")
+ if uid~=nil and not d.creatures[uid] then return fail("Escolha uma fera sua") end
+ if d.companion==uid then d.companion=nil else d.companion=uid end
+ World.refresh(p);return ok(p,d.companion and "Companheiro escolhido" or "Companheiro guardado")
+end
+function A.Pet(p)
+ local d=Data.get(p);if not d.companion then return fail("Escolha um companheiro") end
+ p:SetAttribute("PetHappyUntil",workspace:GetServerTimeNow()+2);return ok(p,"Seu companheiro gostou do carinho!")
+end
+function A.BuildHabitat(p,id,slot)
+ local d=Data.get(p);local def=I.ById[id]
+ if not def or not d.unlocked[id] or d.sanctuary[id] or not SR.available(d.sanctuary,slot) then return fail("Habitat, posição ou desbloqueio inválido") end
+ local cost=SR.buildCost(def);if d.gold<cost then return fail("Precisa de "..cost.." ouro") end
+ d.gold-=cost;d.sanctuary[id]={slot=slot,level=1};bump(d,"habitatBuild");World.refresh(p);return ok(p,"Habitat construído no seu terreno")
+end
+function A.MoveHabitat(p,id,slot)
+ local d=Data.get(p);local entry=d.sanctuary[id]
+ if not entry or not SR.available(d.sanctuary,slot,id) then return fail("Posição ocupada ou inválida") end
+ entry.slot=slot;World.refresh(p);return ok(p,"Habitat movido")
+end
+function A.UpgradeHabitat(p,id)
+ local d=Data.get(p);local entry=d.sanctuary[id]
+ if not entry or entry.level>=SR.MaxLevel then return fail("Habitat indisponível ou máximo") end
+ local cost=SR.upgradeCost(entry);if d.gold<cost then return fail("Precisa de "..cost.." ouro") end
+ settle(p);d.gold-=cost;entry.level+=1;bump(d,"habitatUpgrade");World.refresh(p);return ok(p,"Habitat melhorado: mais duas vagas")
+end
+function A.RemoveHabitat(p,id)
+ local d=Data.get(p)
+ if not d.sanctuary[id] or #(d.habitat[id] or {})>0 then return fail("Transfira as feras antes de remover o habitat") end
+ d.sanctuary[id]=nil;World.refresh(p);return ok(p,"Estrutura removida, sem reembolso")
+end
+function A.ClaimStory(p,id)
+ local d=Data.get(p);if not Story.canClaim(d,id) then return fail("Conclua o capítulo atual primeiro") end
+ local q=Story.ById[id];d.storyClaimed[id]=true;d.gold+=q.gold;d.seals=math.min(10000,d.seals+q.seals);Progression.award(d,q.xp)
+ return ok(p,"Capítulo concluído! +"..q.gold.." ouro, +"..q.xp.." XP e +"..q.seals.." selos")
+end
+function A.CraftSeal(p,kind)
+ local d=Data.get(p);kind=kind or "Basic";local recipe=CaptureRules.Seals[kind]
+ if not recipe then return fail("Tipo de selo inválido") end
+ local count=kind=="Basic" and d.seals or d.sealStock[kind] or 0
+ if count>=10000 or d.gold<recipe.cost or d.playerLevel<recipe.level then return fail("Precisa de nível "..recipe.level.." e "..recipe.cost.." ouro; limite 10 mil selos") end
+ if recipe.material and (d.materials[recipe.material] or 0)<recipe.amount then return fail("Precisa de "..recipe.amount.." essência de "..recipe.material) end
+ d.gold-=recipe.cost
+ if recipe.material then d.materials[recipe.material]-=recipe.amount end
+ if kind=="Basic" then d.seals+=1 else d.sealStock[kind]=count+1 end
+ return ok(p,"+1 Selo "..recipe.name)
 end
 function A.Get(p) return ok(p) end
 function A.Collect(p) local g=settle(p);bump(Data.get(p),"collect");return ok(p,"+"..g.." ouro") end
@@ -43,8 +99,12 @@ end
 function A.Place(p,uid,isl)
 	local d=Data.get(p);local def=I.ById[isl]
 	if not d.creatures[uid] or not def or not d.unlocked[isl] then return fail("Ilha ou criatura inválida") end
-	local list=d.habitat[isl] or {}
-	if #list-(table.find(list,uid) and 1 or 0)>=def.slots then return fail("Habitat cheio ("..def.slots..")") end
+	local structure=d.sanctuary[isl]
+ if not structure then return fail("Construa esse habitat no Santuário") end
+ local creature=C.ById[d.creatures[uid].id]
+ if creature.el~=def.el and not (creature.hybrid and table.find(creature.hybrid,def.el)) then return fail("Elemento incompatível com este habitat") end
+ local list=d.habitat[isl] or {}
+	if #list-(table.find(list,uid) and 1 or 0)>=SR.capacity(def,structure) then return fail("Habitat cheio") end
 	settle(p)
 	for _,l in d.habitat do local i=table.find(l,uid);if i then table.remove(l,i) end end
 	d.habitat[isl]=d.habitat[isl] or {};table.insert(d.habitat[isl],uid);World.refresh(p)
@@ -53,7 +113,8 @@ end
 function A.Unlock(p,isl)
 	local d=Data.get(p);local def=I.ById[isl]
 	if not def or d.unlocked[isl] then return fail("Ilha inválida") end
-	if d.gold<def.cost then return fail("Precisa de "..def.cost.." ouro") end
+	if (d.playerLevel or 1)<(def.minLevel or 1) then return fail("Explorador nível "..def.minLevel.." necessário") end
+ if d.gold<def.cost then return fail("Precisa de "..def.cost.." ouro") end
 	d.gold-=def.cost;d.unlocked[isl]=true;return ok(p,def.name.." desbloqueada!")
 end
 function A.Breed(p,a,b)
@@ -80,7 +141,8 @@ function A.Battle(p,uid,isl)
 	if lastBattle[p] and os.clock()-lastBattle[p]<20 then return fail("Suas feras descansam: "..math.ceil(20-(os.clock()-lastBattle[p])).."s") end
 	lastBattle[p]=os.clock();bump(d,"fight")
 	local pool={};for _,c in C.List do if c.island==isl then table.insert(pool,c) end end
-	local g=pool[rng:NextInteger(1,#pool)];local glv=math.min(MAXLV,def.idx*3+1);local me=C.ById[cr.id]
+	if #pool==0 then for _,c in C.List do if c.el==def.el and c.rar<=2 then table.insert(pool,c) end end end
+ local g=pool[rng:NextInteger(1,#pool)];local glv=math.min(MAXLV,(def.minLevel or 1)+g.rar*2);local me=C.ById[cr.id]
 	local m1,m2=me.hp*lvMul(cr.lv),g.hp*lvMul(glv);local hp1,hp2,log=m1,m2,{}
 	for _=1,40 do
 		local x=me.atk*lvMul(cr.lv)*E.mult(me.el,g.el);hp2-=x
@@ -107,7 +169,8 @@ function A.BuyEgg(p,isl)
 	local cost=80*def.idx;if d.gold<cost then return fail("Precisa de "..cost.." ouro") end
 	local pool,tot={},0
 	for _,c in C.List do if c.island==isl and c.rar<=3 then local w=1/(c.rar*c.rar);table.insert(pool,{c,w});tot+=w end end
-	local r=rng:NextNumber()*tot;local pick=pool[1][1]
+	if #pool==0 then return fail("Não há ovos comerciais desta região nesta versão") end
+ local r=rng:NextNumber()*tot;local pick=pool[1][1]
 	for _,e in pool do r-=e[2];if r<=0 then pick=e[1];break end end
 	d.gold-=cost;table.insert(d.eggs,{id=pick.id,ready=os.time()+Balance.IncubationBase*pick.rar*pick.rar});return ok(p,"Ovo de "..def.name.." comprado!")
 end
