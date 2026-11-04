@@ -5,7 +5,6 @@ local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
 local TS = game:GetService("TweenService")
 local Missions = require(RS.Shared.Missions)
-local E = require(RS.Shared.Elements)
 local Sounds = require(RS.Shared.Sounds)
 local SS = game:GetService("SoundService")
 local C = require(RS.Shared.Creatures)
@@ -27,6 +26,10 @@ local Balance = require(RS.Shared.Economy)
 local Nursery = require(script.Parent.NurseryUI)
 local Journal = require(script.Parent.JournalUI)
 local Theme = require(script.Parent.UITheme)
+local PixelIcons = require(script.Parent.PixelIcons)
+local BattleStage = require(script.Parent.BattleStage)
+local ArtOverlay = require(script.Parent.ArtOverlay)
+local loading = ArtOverlay.loading(gui)
 local SanctuaryUI = require(script.Parent.SanctuaryUI)
 local Story = require(RS.Shared.Story)
 local Progression = require(RS.Shared.Progression)
@@ -41,36 +44,71 @@ local function mk(cls, props, parent)
 		o[k] = v
 	end
 	if cls == "TextButton" or cls == "Frame" or cls == "ScrollingFrame" then
-		Instance.new("UICorner", o).CornerRadius = UDim.new(0, 12)
+		Theme.round(o)
+		if cls ~= "ScrollingFrame" and props.BackgroundTransparency ~= 1 then
+			Theme.stroke(o)
+		end
 	end
 	if (cls == "TextButton" or cls == "TextLabel") and o.TextScaled then
 		Instance.new("UITextSizeConstraint", o).MaxTextSize = 28
 	end
 	if cls == "TextButton" then
-		o.AutoButtonColor = true
+		o.Active = true
 		o.Selectable = true
-		Theme.stroke(o)
+		Theme.bind(o)
+	end
+	if cls == "TextLabel" or cls == "TextButton" then
+		o.Font = Theme.Font
 	end
 	o.Parent = parent
 	return o
 end
-local WHITE = Color3.new(1, 1, 1)
+local WHITE = Theme.Ink
 local drawerOpen = false
-local top = mk("TextLabel", {
-	Size = UDim2.new(0.72, 0, 0, 34),
-	BackgroundColor3 = Theme.Panel,
-	TextColor3 = WHITE,
-	TextScaled = true,
-	Font = Enum.Font.GothamBold,
-}, gui)
+local top = mk(
+	"Frame",
+	{ Position = UDim2.fromOffset(8, 8), Size = UDim2.new(0.72, -8, 0, 40), BackgroundColor3 = Theme.Panel },
+	gui
+)
+local resourceValues = {}
+local function resourceAmount(n)
+	if n >= 1e9 then
+		return ("%.1fb"):format(n / 1e9)
+	elseif n >= 1e6 then
+		return ("%.1fm"):format(n / 1e6)
+	elseif n >= 1e3 then
+		return math.floor(n / 1e3) .. "k"
+	end
+	return tostring(n)
+end
+local resourceKinds = { "Fera", "Coin", "Gem", "Seal" }
+for index, kind in resourceKinds do
+	local holder = mk(
+		"Frame",
+		{ Position = UDim2.fromScale((index - 1) / 4, 0), Size = UDim2.fromScale(0.25, 1), BackgroundTransparency = 1 },
+		top
+	)
+	local icon = PixelIcons.draw(holder, kind, 1)
+	icon.Position = UDim2.fromOffset(4, 12)
+	local value = mk("TextLabel", {
+		Position = UDim2.fromOffset(24, 0),
+		Size = UDim2.new(1, -26, 1, 0),
+		BackgroundTransparency = 1,
+		Text = "0",
+		TextSize = 12,
+		TextColor3 = Theme.Ink,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	}, holder)
+	resourceValues[index] = value
+end
 local msg = mk("TextLabel", {
-	Position = UDim2.new(0, 0, 0, 48),
-	Size = UDim2.new(1, 0, 0, 28),
+	Position = UDim2.new(0, 8, 0, 62),
+	Size = UDim2.new(1, -16, 0, 28),
 	BackgroundTransparency = 1,
-	TextColor3 = Color3.fromRGB(255, 240, 150),
+	TextColor3 = Theme.Accent,
 	TextStrokeTransparency = 0.4,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
+	Font = Theme.Font,
 }, gui)
 local list = mk("ScrollingFrame", {
 	Visible = false,
@@ -86,18 +124,18 @@ mk("UISizeConstraint", { MaxSize = Vector2.new(440, 1000) }, list)
 mk("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, list)
 local xpTrack = mk(
 	"Frame",
-	{ Position = UDim2.fromOffset(0, 38), Size = UDim2.new(0.72, 0, 0, 4), BackgroundColor3 = Theme.Card },
+	{ Position = UDim2.fromOffset(8, 52), Size = UDim2.new(0.72, -8, 0, 4), BackgroundColor3 = Theme.Card },
 	gui
 )
 local xpFill = mk("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = Theme.Mint }, xpTrack)
 local objective = mk("TextLabel", {
-	Position = UDim2.fromOffset(6, 48),
+	Position = UDim2.fromOffset(12, 62),
 	Size = UDim2.new(0.7, 0, 0, 36),
 	BackgroundTransparency = 1,
 	TextColor3 = Theme.Ink,
 	TextSize = 12,
 	TextWrapped = true,
-	Font = Enum.Font.GothamMedium,
+	Font = Theme.Font,
 }, gui)
 local muted = false
 local function sfx(n)
@@ -129,7 +167,7 @@ local function fx(el, a, b)
 		return
 	end
 	local d = FX[el]
-	local c = E.Color[el]
+	local c = Theme.Tokens.Elements[el][4]
 	local arena = workspace:FindFirstChild(Text.ARENA_1A4BA8)
 	if not arena then
 		return
@@ -192,21 +230,21 @@ local function playBattle(b)
 	local cam = workspace.CurrentCamera
 	local o = Vector3.new(0, 300, 0)
 	local ct = cam.CameraType
+	local originalCF, originalFov, originalFocus = cam.CFrame, cam.FieldOfView, cam.Focus
 	local stage = Instance.new("Folder")
 	stage.Name = Text.ARENA_1A4BA8
 	stage.Parent = workspace
-	local fl = Instance.new("Part")
-	fl.Anchored = true
-	fl.Size = Vector3.new(70, 2, 30)
-	fl.Position = o
-	fl.Color = Color3.fromRGB(70, 60, 110)
-	fl.Parent = stage
+	BattleStage.build(stage, BattleStage.resolve(C.ById[b.foe.id]), o)
 	local function face(pos, to)
 		return CFrame.lookAt(pos, pos + (pos - to))
 	end
-	local pa, pf = o + Vector3.new(-14, 5, 0), o + Vector3.new(14, 5, 0)
+	local pa, pf = o + Vector3.new(-8, 5, 0), o + Vector3.new(8, 5, 0)
 	local a = MF.build(C.ById[b.me.id], b.me.lv)
 	local f = MF.build(C.ById[b.foe.id], b.foe.lv)
+	local ac, asz = a:GetBoundingBox()
+	local fc, fsz = f:GetBoundingBox()
+	pa = Vector3.new(pa.X, o.Y + 0.42 + a:GetPivot().Position.Y - (ac.Position.Y - asz.Y * 0.5), pa.Z)
+	pf = Vector3.new(pf.X, o.Y + 0.42 + f:GetPivot().Position.Y - (fc.Position.Y - fsz.Y * 0.5), pf.Z)
 	a:PivotTo(face(pa, pf))
 	f:PivotTo(face(pf, pa))
 	a.Parent = stage
@@ -216,12 +254,12 @@ local function playBattle(b)
 	local barA = mk("Frame", {
 		Position = UDim2.fromScale(0.05, 0.12),
 		Size = UDim2.fromScale(0.4, 0.03),
-		BackgroundColor3 = Color3.fromRGB(80, 220, 120),
+		BackgroundColor3 = Theme.Mint,
 	}, gui)
 	local barF = mk("Frame", {
 		Position = UDim2.fromScale(0.55, 0.12),
 		Size = UDim2.fromScale(0.4, 0.03),
-		BackgroundColor3 = Color3.fromRGB(230, 90, 90),
+		BackgroundColor3 = Theme.Tokens.Ramps.Ember[4],
 	}, gui)
 	pcall(function()
 		task.wait(0.6)
@@ -247,8 +285,8 @@ local function playBattle(b)
 				Size = UDim2.fromScale(1, 1),
 				BackgroundTransparency = 1,
 				TextScaled = true,
-				Font = Enum.Font.GothamBlack,
-				TextColor3 = s.mult > 1 and Color3.fromRGB(255, 220, 60) or WHITE,
+				Font = Theme.Font,
+				TextColor3 = s.mult > 1 and Theme.Accent or WHITE,
 				Text = "-" .. s.dmg .. (s.mult > 1 and "!" or s.mult < 1 and Text.FRACO_988207 or ""),
 			}, g)
 			task.delay(1, function()
@@ -269,6 +307,9 @@ local function playBattle(b)
 	barF:Destroy()
 	stage:Destroy()
 	cam.CameraType = ct
+	cam.CFrame = originalCF
+	cam.FieldOfView = originalFov
+	cam.Focus = originalFocus
 end
 local function call(...)
 	if inFlight then
@@ -311,29 +352,63 @@ local function call(...)
 	render()
 	tutorial()
 end
-local function row(text, acts)
-	local f = mk(
-		"Frame",
-		{ LayoutOrder = 0, Size = UDim2.new(1, -8, 0, #acts > 0 and 116 or 52), BackgroundColor3 = Theme.Card },
-		list
-	)
+local function row(text, acts, creature)
+	local f = mk("Frame", {
+		LayoutOrder = 0,
+		Size = UDim2.new(1, -8, 0, #acts > 2 and 178 or #acts > 0 and 124 or 64),
+		BackgroundColor3 = Theme.Card,
+	}, list)
 	mk("TextLabel", {
-		Position = UDim2.fromOffset(10, 4),
-		Size = UDim2.new(1, -20, 0, #acts > 0 and 54 or 44),
+		Position = UDim2.fromOffset(creature and 96 or 10, 4),
+		Size = UDim2.new(1, creature and -106 or -20, 0, #acts > 0 and 62 or 56),
 		BackgroundTransparency = 1,
 		Text = text,
 		TextScaled = true,
 		TextColor3 = WHITE,
-		Font = Enum.Font.Gotham,
+		Font = Theme.Font,
 	}, f)
-	local w = 1 / math.max(1, #acts)
+	if creature then
+		local holder = mk(
+			"Frame",
+			{ Position = UDim2.fromOffset(4, 4), Size = UDim2.fromOffset(88, 68), BackgroundTransparency = 1 },
+			f
+		)
+		local preview
+		local function showSpecimen()
+			if not f.Parent then
+				return
+			end
+			local scrollTop = list.AbsolutePosition.Y
+			local y = f.AbsolutePosition.Y
+			local visible = list.Visible and y + f.AbsoluteSize.Y >= scrollTop and y <= scrollTop + list.AbsoluteSize.Y
+			if visible and not preview then
+				preview = CollectionUI.preview(holder, C.ById[creature.id], creature.lv, false)
+				preview.Size = UDim2.fromScale(1, 1)
+			elseif not visible and preview then
+				preview:Destroy()
+				preview = nil
+			end
+		end
+		local scroll = list:GetPropertyChangedSignal("CanvasPosition"):Connect(showSpecimen)
+		local visibility = list:GetPropertyChangedSignal("Visible"):Connect(showSpecimen)
+		local layout = f:GetPropertyChangedSignal("AbsolutePosition"):Connect(showSpecimen)
+		f.Destroying:Connect(function()
+			scroll:Disconnect()
+			visibility:Disconnect()
+			layout:Disconnect()
+		end)
+		task.defer(showSpecimen)
+	end
+	local columns = math.min(2, math.max(1, #acts))
+	local w = 1 / columns
+	local rows = math.ceil(#acts / columns)
 	for i, a in acts do
 		local b = mk("TextButton", {
-			Position = UDim2.new((i - 1) * w, 3, 1, -52),
-			Size = UDim2.new(w, -6, 0, 46),
+			Position = UDim2.new((i - 1) % columns * w, 4, 1, -rows * 52 + (math.floor((i - 1) / columns)) * 52),
+			Size = UDim2.new(w, -8, 0, 44),
 			Text = a[1],
 			TextScaled = true,
-			Font = Enum.Font.GothamBold,
+			Font = Theme.Font,
 			BackgroundColor3 = Theme.Card,
 			TextColor3 = WHITE,
 		}, f)
@@ -347,7 +422,7 @@ local function crText(cr)
 end
 render = function()
 	for n, b in tabBtn do
-		b.BackgroundColor3 = n == tab and Color3.fromRGB(255, 170, 60) or Theme.Card
+		b.BackgroundColor3 = n == tab and Theme.Tokens.Ramps.Leaf[2] or Theme.Card
 	end
 	for _, c in list:GetChildren() do
 		if c:IsA("Frame") and not (tab == Text.BESTIARIO_65A46C and c.Name == "BestiaryPanel") then
@@ -361,7 +436,11 @@ render = function()
 	for _ in S.discovered do
 		n += 1
 	end
-	top.Text = (Text.NV_D_D_D_D_60CA2C):format(S.playerLevel or 1, S.gold, S.gems, S.seals or 0)
+	resourceValues[1].Text = tostring(S.playerLevel or 1)
+	resourceValues[2].Text = resourceAmount(S.gold)
+	resourceValues[3].Text = resourceAmount(S.gems)
+	resourceValues[4].Text = resourceAmount(S.seals or 0)
+	loading.ready()
 	xpFill.Size = UDim2.fromScale(math.clamp((S.playerXp or 0) / Progression.playerCost(S.playerLevel or 1), 0, 1), 1)
 	local objectiveChapter = Story.current(S)
 	objective.Text = objectiveChapter
@@ -410,7 +489,7 @@ render = function()
 						call("Battle", uid, isl)
 					end,
 				},
-			})
+			}, cr)
 		end
 	elseif tab == Text.BESTIARIO_65A46C then
 		Journal.render(list, S, function()
@@ -506,7 +585,8 @@ render = function()
 			local done = S.claimed[m.id]
 			row((Text.S_D_D_A1F15E):format(m.text, math.min(pr, m.goal), m.goal), {
 				{
-					done and "✓" or (pr >= m.goal and Text.RESGATAR_76A111 or "+" .. m.gold .. Text.OURO_6C9D60),
+					done and "Concluída"
+						or (pr >= m.goal and Text.RESGATAR_76A111 or "+" .. m.gold .. Text.OURO_6C9D60),
 					function()
 						if not done and pr >= m.goal then
 							call("Claim", m.id)
@@ -635,7 +715,7 @@ render = function()
 		end
 		for uid, cr in S.creatures do
 			local on = table.find(pick, uid)
-			row((on and "★ " or "") .. crText(cr), {
+			row((on and "Selecionada · " or "") .. crText(cr), {
 				{
 					on and Text.TIRAR_F409BD or Text.ESCOLHER_D7B72C,
 					function()
@@ -671,13 +751,13 @@ local bar = mk("Frame", {
 }, gui)
 mk("UISizeConstraint", { MaxSize = Vector2.new(440, 160) }, bar)
 local toggle = mk("TextButton", {
-	Position = UDim2.new(1, -58, 0, 40),
-	Size = UDim2.fromOffset(50, 44),
+	Position = UDim2.new(1, -94, 0, 60),
+	Size = UDim2.fromOffset(86, 44),
 	Text = Text.MENU_57F5F5,
 	TextSize = 12,
-	Font = Enum.Font.GothamBold,
+	Font = Theme.Font,
 	TextColor3 = WHITE,
-	BackgroundColor3 = Color3.fromRGB(63, 66, 91),
+	BackgroundColor3 = Theme.Card,
 }, gui)
 local function setDrawer(open)
 	drawerOpen = open
@@ -726,7 +806,7 @@ for i, name in tabs do
 		Size = UDim2.fromScale(1 / 4, 1 / math.ceil(#tabs / 4)),
 		Text = name,
 		TextScaled = true,
-		Font = Enum.Font.GothamBold,
+		Font = Theme.Font,
 		BackgroundColor3 = Theme.Card,
 		TextColor3 = WHITE,
 	}, bar)
@@ -737,12 +817,12 @@ for i, name in tabs do
 	end)
 end
 local collect = mk("TextButton", {
-	Position = UDim2.new(1, -86, 0, 0),
-	Size = UDim2.fromOffset(78, 44),
+	Position = UDim2.new(1, -94, 0, 8),
+	Size = UDim2.fromOffset(86, 44),
 	Text = Text.COLETAR_199B16,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
-	BackgroundColor3 = Color3.fromRGB(255, 190, 50),
+	Font = Theme.Font,
+	BackgroundColor3 = Theme.Accent,
 	TextColor3 = Theme.Panel,
 }, gui)
 collect.Activated:Connect(function()
@@ -777,7 +857,7 @@ notifications.OnClientEvent:Connect(function(message, position, success)
 		ring.CanTouch = false
 		ring.CanQuery = false
 		ring.Material = Enum.Material.Neon
-		ring.Color = success and Color3.fromRGB(255, 215, 90) or Color3.fromRGB(166, 130, 220)
+		ring.Color = success and Theme.Accent or Theme.Tokens.Ramps.Veil[4]
 		ring.Transparency = 0.4
 		ring.Parent = workspace
 		TS:Create(ring, TweenInfo.new(0.6), { Size = Vector3.one * 8, Transparency = 1 }):Play()
@@ -804,11 +884,11 @@ task.spawn(function()
 	end
 end)
 local mb = mk("TextButton", {
-	Position = UDim2.new(1, -74, 1, -46),
-	Size = UDim2.fromOffset(66, 44),
+	Position = UDim2.new(1, -96, 1, -52),
+	Size = UDim2.fromOffset(88, 44),
 	Text = Text.SOM_ON_ACD88F,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
+	Font = Theme.Font,
 	BackgroundColor3 = Theme.Card,
 	TextColor3 = WHITE,
 }, gui)
@@ -822,6 +902,7 @@ end)
 -- Feras respiram e se viram devagar (animação local, só visual).
 require(script.Parent.CreatureAnimator).start()
 require(script.Parent.CompanionClient).start()
+require(script.Parent.EnvironmentArt).start()
 require(script.Parent.SolarPresentation).start(function()
 	return S
 end)
@@ -831,6 +912,7 @@ RS:WaitForChild("StoryNotice").OnClientEvent:Connect(function(message)
 	setDrawer(true)
 end)
 msg:GetPropertyChangedSignal("Text"):Connect(function()
+	loading.message(msg.Text)
 	objective.Visible = not drawerOpen and msg.Text == ""
 end)
 -- Clima e hora do dia mudam conforme a ilha mais próxima.
@@ -910,7 +992,7 @@ local TUT = {
 local panel = mk("Frame", {
 	Position = UDim2.new(0.02, 0, 0, 132),
 	Size = UDim2.new(0.72, 0, 0, 66),
-	BackgroundColor3 = Color3.fromRGB(255, 240, 200),
+	BackgroundColor3 = Theme.Card,
 	Visible = false,
 }, gui)
 local ptxt = mk("TextLabel", {
@@ -918,21 +1000,21 @@ local ptxt = mk("TextLabel", {
 	Position = UDim2.fromOffset(8, 0),
 	BackgroundTransparency = 1,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
-	TextColor3 = Color3.fromRGB(50, 35, 90),
+	Font = Theme.Font,
+	TextColor3 = Theme.Ink,
 	TextXAlignment = Enum.TextXAlignment.Left,
 }, panel)
 local skip = mk("TextButton", {
 	Size = UDim2.fromOffset(76, 44),
-	Position = UDim2.new(1, -80, 0.5, -18),
+	Position = UDim2.new(1, -80, 0.5, -22),
 	Text = Text.PULAR_6EC317,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
-	BackgroundColor3 = Color3.fromRGB(200, 120, 120),
+	Font = Theme.Font,
+	BackgroundColor3 = Theme.Tokens.Ramps.Ember[2],
 	TextColor3 = WHITE,
 }, panel)
 local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(255, 230, 80)
+stroke.Color = Theme.Accent
 stroke.Thickness = 2
 stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 stroke.Thickness = 2

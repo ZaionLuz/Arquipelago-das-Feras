@@ -18,7 +18,7 @@ local function frame(parent, height)
 	f.Size = UDim2.new(1, -8, 0, height)
 	f.BackgroundColor3 = Theme.Card
 	f.Parent = parent
-	Theme.round(f)
+	Theme.panel(f)
 	return f
 end
 function J.render(parent, s, render)
@@ -71,7 +71,8 @@ function J.render(parent, s, render)
 	local box = Instance.new("TextBox")
 	box.PlaceholderText = Text.BUSCAR_ESPECIE_09F339
 	box.Text = search
-	box.TextSize = 14
+	box.TextSize = 16
+	box.Font = Theme.Font
 	box.ClearTextOnFocus = false
 	box.Size = UDim2.new(0.5, -4, 0, 46)
 	box.Position = UDim2.new(0.5, 2, 0, 50)
@@ -105,6 +106,8 @@ function J.render(parent, s, render)
 	local info = Theme.label(card, "", 14)
 	info.Position = UDim2.fromScale(0.03, 0.66)
 	info.Size = UDim2.fromScale(0.94, 0.33)
+	info.TextXAlignment = Enum.TextXAlignment.Left
+	info.TextYAlignment = Enum.TextYAlignment.Top
 	info.Text = known
 			and (def.name .. " • " .. def.el .. " • " .. C.Rarity[def.rar] .. "\n" .. (I.ById[def.island] and I.ById[def.island].name or Text.HIBRIDO_9CB40A) .. Text.COLECAO_57798D .. count .. Text.NV_AE0838 .. lv .. Text.ESTAGIO_D2FEE2 .. C.stage(
 				lv,
@@ -150,9 +153,9 @@ function J.render(parent, s, render)
 		local found = s.discovered[entry.id]
 		local tile = Instance.new("Frame")
 		tile.LayoutOrder = index
-		tile.BackgroundColor3 = entry.id == selected and Color3.fromRGB(63, 88, 81) or Theme.Card
+		tile.BackgroundColor3 = entry.id == selected and Theme.Tokens.Elements[entry.el][1] or Theme.Card
 		tile.Parent = grid
-		Theme.round(tile)
+		Theme.panel(tile, entry.id == selected and Theme.Tokens.Elements[entry.el][4] or Theme.Edge)
 		local mini
 		local function visibility()
 			if not tile.Parent then

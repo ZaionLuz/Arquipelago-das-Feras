@@ -2,6 +2,7 @@
 local C = require(script.Parent.Creatures)
 local D = require(script.Parent.CreatureDesigns)
 local Features = require(script.Parent.CreatureFeatures)
+local Art = require(script.Parent.ArtTokens)
 local Factory = {}
 local cache = {}
 local V = Vector3.new
@@ -79,6 +80,9 @@ local function template(def, stage)
 	m:SetAttribute("HeadType", d.head)
 	m:SetAttribute("TailType", d.tail)
 	m:SetAttribute("LimbCount", d.limbs)
+	m:SetAttribute("ArtStyle", "PixelSculpt")
+	m:SetAttribute("Expression", d.expression.mouth)
+	m:SetAttribute("BlinkOffset", #def.id * 0.2)
 	local root = Instance.new("Part")
 	root.Name = "Root"
 	root.Size = V(0.1, 0.1, 0.1) * scale
@@ -101,8 +105,9 @@ local function template(def, stage)
 		p.Name = name .. suffix
 		p.Size = size * scale
 		p.CFrame = CFrame.new(pos * scale) * (rotation or CFrame.identity)
-		p.Color = color
+		p.Color = Art.nearest(color)
 		p.Material = Enum.Material.SmoothPlastic
+		p.Reflectance = 0
 		p.CanCollide = false
 		p.CanTouch = false
 		p.CanQuery = false
@@ -110,6 +115,14 @@ local function template(def, stage)
 		p.Anchored = false
 		p.CastShadow = p.Size.Magnitude > 2
 		p.CollisionGroup = "Creatures"
+		-- Organic families keep volume; only stone-bodied species use block silhouettes.
+		if
+			kind == "sphere"
+			and d.family == "mineral"
+			and (name == "Body" or name == "Haunch" or name:find("Tail%d"))
+		then
+			kind = "block"
+		end
 		if kind == "sphere" or kind == "head" then
 			local mesh = Instance.new("SpecialMesh")
 			mesh.MeshType = kind == "head" and Enum.MeshType.Head or Enum.MeshType.Sphere
@@ -117,6 +130,9 @@ local function template(def, stage)
 			mesh.Parent = p
 		elseif kind == "cylinder" then
 			p.Shape = Enum.PartType.Cylinder
+		end
+		if name == "Body" or name == "Haunch" then
+			p.Color = Art.nearest(color:Lerp(Art.Ramps.Veil[1], 0.08))
 		end
 		p:SetAttribute("Feature", name:gsub("%d+", ""))
 		p.Parent = m
@@ -167,7 +183,7 @@ local function template(def, stage)
 		)
 		headPos = V(0, limbHeight + h * 1.15, l * 0.25)
 	elseif family == "quadruped" or family == "draconic" then
-		torso = make("Body", "sphere", V(w, h * 0.7, l), V(0, limbHeight + h * 0.35, 0), palette[1], nil, true)
+		torso = make("Body", "sphere", V(w * 0.94, h * 0.7, l), V(0, limbHeight + h * 0.35, 0), palette[1], nil, true)
 		make(
 			"Haunch",
 			"sphere",
@@ -310,17 +326,15 @@ local function template(def, stage)
 	}
 	local hp = heads[d.head]
 	local headSize = hp[2] * headRatio
-	local head = make("Head", hp[1], headSize, headPos, palette[2], nil, true, torso)
+	local head = make("Head", hp[1], headSize, headPos, palette[2], A(d.expression.look, 0, 0), true, torso)
 	if family == "mineral" then
-		torso.Material = Enum.Material.Granite
+		torso.Material = Enum.Material.Slate
 		head.Material = Enum.Material.Slate
 	elseif family == "vegetal" then
-		torso.Material = Enum.Material.Wood
-		head.Material = Enum.Material.Fabric
-	elseif family == "aquatic" then
 		torso.Material = Enum.Material.SmoothPlastic
-	elseif family == "arthropod" then
-		torso.Material = Enum.Material.Sandstone
+		head.Material = Enum.Material.SmoothPlastic
+	elseif family == "aquatic" or family == "arthropod" then
+		torso.Material = Enum.Material.SmoothPlastic
 	end
 	if family == "quadruped" or family == "draconic" then
 		make(
@@ -346,6 +360,28 @@ local function template(def, stage)
 			head
 		)
 	end
+	local bodySize = torso.Size / scale
+	local bodyCenter = torso.CFrame.Position / scale
+	make(
+		"BellyBib",
+		(family == "spectral" or family == "mineral") and "wedge" or "block",
+		V(bodySize.X * 0.58, bodySize.Y * 0.5, 0.09),
+		bodyCenter + V(0, -bodySize.Y * 0.1, bodySize.Z * 0.5 + 0.025),
+		palette[3],
+		nil,
+		false,
+		torso
+	)
+	make(
+		"DorsalRim",
+		"wedge",
+		V(bodySize.X * 0.72, 0.09, bodySize.Z * 0.65),
+		bodyCenter + V(-bodySize.X * 0.08, bodySize.Y * 0.5 + 0.02, 0),
+		palette[2],
+		nil,
+		false,
+		torso
+	)
 	Features.face(make, d, head, headPos, headRatio, stage, headSize)
 	-- Esqueleto locomotor varia: raízes, patas articuladas, braços ou pernas de artrópode.
 	local legs = family == "winged" and 2 or family == "draconic" and 4 or family == "arthropod" and d.limbs or d.limbs
@@ -386,16 +422,22 @@ local function template(def, stage)
 					local name = "Wing" .. (side < 0 and "L" or "R") .. "_" .. row .. "_" .. i
 					local wingColor = palette[math.min(4, row + 1)]
 					if def.acquisition == "special" then
-						wingColor = palette[row]:Lerp(palette[row + 1], 0.3 + i / feathers * 0.7)
+						wingColor = Art.nearest(palette[row]:Lerp(palette[row + 1], 0.3 + i / feathers * 0.7))
 					end
 					make(
 						name,
 						"wedge",
 						V(0.45, 0.25, child and 1 or 1.8 + i * 0.25),
-						V(side * (w * 0.4 + i * 0.55), headPos.Y - 0.8 - row * 0.12, -row * 0.45 - i * 0.13),
+						V(
+							side * (w * 0.4 + i * (def.acquisition == "special" and 0.68 or 0.55)),
+							headPos.Y - 0.8 - row * 0.12 + (def.acquisition == "special" and i * 0.17 or 0),
+							-row * 0.45 - i * 0.13
+						),
 						wingColor,
 						A(
-							d.feature == "stormcrown" and -0.5 or 0.1 * row,
+							def.acquisition == "special" and 0.65 + row * 0.08
+								or d.feature == "stormcrown" and -0.5
+								or 0.1 * row,
 							side * (d.feature == "stormcrown" and 0.8 or 0.25),
 							side * (0.15 + i * 0.035)
 						),
@@ -412,7 +454,8 @@ local function template(def, stage)
 	end
 	for i = 1, tails do
 		local feathered = family == "winged"
-		local width = feathered and 0.4 or 0.55
+		local width = feathered and (def.acquisition == "special" and 0.54 or 0.46)
+			or (d.tail == "leafbrush" and 0.75 or 0.55)
 		local pos = feathered and V((i - (tails + 1) / 2) * 0.3, h * 0.6, -l * 0.6 - i * 0.15)
 			or V(math.sin(i * 0.8) * 0.35, h * 0.4 - i * 0.12, -l * 0.5 - i * 0.55)
 		make(
@@ -470,7 +513,7 @@ local function template(def, stage)
 		end
 	end
 	Features.trait(make, d, headPos, stage, head, torso)
-	Features.surface(make, d, V(0, h * 0.65, 0), stage, torso)
+	Features.surface(make, d, bodyCenter, stage, torso, bodySize)
 	if def.acquisition == "special" then
 		for i = 1, 16 do
 			local a = i * math.pi / 8
@@ -547,10 +590,11 @@ function Factory.build(def, level, options)
 		local label = Instance.new("TextLabel")
 		label.Size = UDim2.fromScale(1, 1)
 		label.BackgroundTransparency = 1
-		label.TextColor3 = Color3.new(1, 1, 1)
-		label.TextStrokeTransparency = 0.4
-		label.TextSize = 14
-		label.Font = Enum.Font.GothamBold
+		label.TextColor3 = Art.Ink
+		label.TextStrokeTransparency = 0
+		label.TextStrokeColor3 = Art.Shadow
+		label.TextSize = 16
+		label.Font = Art.Font
 		label.Text = def.name .. " • Nv." .. level
 		label.Parent = gui
 	end

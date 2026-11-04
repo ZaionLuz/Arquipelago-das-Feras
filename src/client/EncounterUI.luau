@@ -4,13 +4,15 @@ local RS = game:GetService("ReplicatedStorage")
 local TS = game:GetService("TweenService")
 local C = require(RS.Shared.Creatures)
 local MF = require(RS.Shared.ModelFactory)
-local Elements = require(RS.Shared.Elements)
 local Theme = require(script.Parent.UITheme)
 local CaptureRules = require(RS.Shared.CaptureRules)
 local Skills = require(RS.Shared.Skills)
 local CAS = game:GetService("ContextActionService")
 local Solar = require(script.Parent.SolarPresentation)
 local Animator = require(script.Parent.CreatureAnimator)
+local Stage = require(script.Parent.BattleStage)
+local Art = require(RS.Shared.ArtTokens)
+local Icons = require(script.Parent.PixelIcons)
 local UI = {}
 function UI.start(gui, getOwned, onClose, onOpen)
 	local net = RS:WaitForChild("EncounterNet")
@@ -55,7 +57,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 	local function pose(model, x)
 		local cf, size = model:GetBoundingBox()
 		local lift = model:GetPivot().Position.Y - (cf.Position.Y - size.Y / 2)
-		model:PivotTo(CFrame.new(x, lift, 0) * CFrame.Angles(0, x < 0 and math.pi / 2 or -math.pi / 2, 0))
+		model:PivotTo(CFrame.new(x, lift + 0.42, 0) * CFrame.Angles(0, x < 0 and math.pi / 2 or -math.pi / 2, 0))
 	end
 	local function impact(element, position)
 		if
@@ -68,7 +70,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		if not orb then
 			orb = Instance.new("Part")
 			orb.Name = "ElementImpact"
-			orb.Shape = Enum.PartType.Ball
+			orb.Shape = Enum.PartType.Block
 			orb.Anchored = true
 			orb.CanCollide = false
 			orb.CanQuery = false
@@ -76,11 +78,11 @@ function UI.start(gui, getOwned, onClose, onOpen)
 			orb.Material = Enum.Material.Neon
 			orb.Parent = figures
 		end
-		orb.Color = Elements.Color[element]
+		orb.Color = Art.Elements[element][4]
 		orb.Position = position
-		orb.Size = Vector3.one * 0.5
+		orb.Size = Vector3.new(0.5, 0.5, 0.25)
 		orb.Transparency = 0.2
-		TS:Create(orb, TweenInfo.new(0.35), { Size = Vector3.one * 7, Transparency = 1 }):Play()
+		TS:Create(orb, TweenInfo.new(0.35), { Size = Vector3.new(6, 6, 0.25), Transparency = 1 }):Play()
 	end
 	local render
 	local function request(action, uid)
@@ -111,24 +113,39 @@ function UI.start(gui, getOwned, onClose, onOpen)
 				unit and (unit.hp .. " / " .. unit.maxHp .. Text.PV_33D16B)
 				or Text.ESCOLHA_UMA_FERA_PARA_BATALHAR_462F3D
 			)
-		label.TextColor3 = unit and unit.hp <= unit.maxHp * 0.3 and Color3.fromRGB(255, 166, 140) or Theme.Ink
+		label.TextColor3 = unit and unit.hp <= unit.maxHp * 0.3 and Art.Ramps.Ember[4] or Theme.Ink
 		local track = label:FindFirstChild("Meter")
 		if not track then
 			track = Instance.new("Frame")
 			track.Name = "Meter"
-			track.Position = UDim2.new(0.04, 0, 1, -4)
-			track.Size = UDim2.new(0.92, 0, 0, 4)
+			track.Position = UDim2.new(0.04, 0, 1, -10)
+			track.Size = UDim2.new(0.92, 0, 0, 8)
 			track.BackgroundColor3 = Theme.Card
 			track.Parent = label
-			Theme.round(track, 2)
+			Theme.stroke(track)
+			for i = 1, 7 do
+				local tick = Instance.new("Frame")
+				tick.Name = "Tick"
+				tick.Size = UDim2.new(0, 2, 1, 0)
+				tick.Position = UDim2.fromScale(i / 8, 0)
+				tick.BackgroundColor3 = Art.Panel
+				tick.BorderSizePixel = 0
+				tick.ZIndex = 3
+				tick.Parent = track
+			end
 			local fill = Instance.new("Frame")
 			fill.Name = "Fill"
 			fill.Size = UDim2.fromScale(1, 1)
 			fill.BorderSizePixel = 0
 			fill.Parent = track
-			Theme.round(fill, 2)
+			local shine = Instance.new("Frame")
+			shine.Size = UDim2.new(1, 0, 0, 2)
+			shine.BackgroundColor3 = Art.Ink
+			shine.BackgroundTransparency = 0.5
+			shine.BorderSizePixel = 0
+			shine.Parent = fill
 		end
-		track.Fill.BackgroundColor3 = label.TextColor3 == Theme.Ink and Theme.Mint or Color3.fromRGB(235, 135, 114)
+		track.Fill.BackgroundColor3 = label.TextColor3 == Theme.Ink and Theme.Mint or Art.Ramps.Ember[3]
 		TS:Create(track.Fill, TweenInfo.new(0.3), { Size = UDim2.fromScale(unit and unit.hp / unit.maxHp or 0, 1) })
 			:Play()
 	end
@@ -192,9 +209,9 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		end
 		local delta = state.foe.lv - teamLevel
 		title.TextColor3 = delta < 0 and Theme.Mint
-			or delta < 4 and Color3.fromRGB(243, 220, 133)
-			or delta < 8 and Color3.fromRGB(244, 167, 94)
-			or Color3.fromRGB(250, 118, 110)
+			or delta < 4 and Art.Ramps.Sand[4]
+			or delta < 8 and Art.Ramps.Ember[4]
+			or Art.Ramps.Ember[3]
 		if delta >= 8 then
 			title.Text ..= Text.PERIGO_DC2EAE .. delta
 		end
@@ -215,7 +232,26 @@ function UI.start(gui, getOwned, onClose, onOpen)
 						local defender = target == ally and foe or ally
 						if defender then
 							Animator.play(defender, "damage", 0.4)
+							local number = Theme.label(viewport, event.text:match("(%d+) de dano") or "", 24)
+							number.Name = "ImpactNumber"
+							number.Position = UDim2.new(target == ally and 0.62 or 0.18, 0, 0.2, 0)
+							number.Size = UDim2.fromOffset(100, 44)
+							number.TextColor3 = Art.Ramps.Ember[5]
+							number.TextStrokeColor3 = Art.Ramps.Veil[1]
+							number.TextStrokeTransparency = 0
+							number.ZIndex = 12
+							TS:Create(number, TweenInfo.new(0.65), {
+								Position = number.Position - UDim2.fromOffset(0, 24),
+								TextTransparency = 1,
+								TextStrokeTransparency = 1,
+							}):Play()
+							task.delay(0.7, function()
+								number:Destroy()
+							end)
 							impact(C.ById[target:GetAttribute("Species")].el, defender:GetPivot().Position)
+							local viewStart = viewport.CurrentCamera.CFrame
+							viewport.CurrentCamera.CFrame = viewStart * CFrame.new(0.18, 0, 0)
+							TS:Create(viewport.CurrentCamera, TweenInfo.new(0.12), { CFrame = viewStart }):Play()
 						end
 						local start = target:GetPivot()
 						local toward = event.kind == "hit" and 2 or -2
@@ -261,18 +297,15 @@ function UI.start(gui, getOwned, onClose, onOpen)
 						change:Disconnect()
 						value:Destroy()
 					elseif event.kind == "capture" or event.kind == "miss" or event.kind == "bond" then
-						local orb = Instance.new("Part")
-						orb.Shape = Enum.PartType.Ball
-						orb.Anchored = true
-						orb.CanCollide = false
-						orb.Material = Enum.Material.Neon
-						orb.Color = Theme.Accent
-						orb.Size = Vector3.one * 2
-						orb.Position = foe:GetPivot().Position
-						orb.Parent = figures
-						TS:Create(orb, TweenInfo.new(0.4), { Size = Vector3.one * 12, Transparency = 1 }):Play()
+						local seal = Icons.draw(viewport, event.kind == "bond" and "heart" or "seal", 32, Art.Accent)
+						seal.Position = UDim2.new(0.2, -16, 0.55, -16)
+						seal.ZIndex = 14
+						TS:Create(seal, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+							Position = UDim2.new(0.72, -16, 0.35, -16),
+							Rotation = event.kind == "bond" and 15 or 180,
+						}):Play()
 						task.wait(0.4)
-						orb:Destroy()
+						seal:Destroy()
 					end
 					task.wait(0.25)
 				end
@@ -345,6 +378,23 @@ function UI.start(gui, getOwned, onClose, onOpen)
 			b.Active = available
 			b.Selectable = available
 			b.BackgroundTransparency = available and 0 or 0.6
+			local iconName = ({
+				Strike = "strike",
+				Skill = "skill",
+				Guard = "guard",
+				Bond = "bond",
+				Capture = "capture",
+				Flee = "flee",
+				State = "refresh",
+				ChooseSeal = "seal",
+				Close = "close",
+			})[entry[2]] or "skill"
+			local icon = Icons.draw(b, iconName, 16, available and Art.Accent or Art.Muted)
+			icon.Position = UDim2.new(0, 8, 0.5, -8)
+			b.TextXAlignment = Enum.TextXAlignment.Center
+			if not available then
+				b.TextColor3 = Art.Muted
+			end
 		end
 		for _, o in roster:GetChildren() do
 			if o:IsA("GuiButton") then
@@ -363,7 +413,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 				local unit = state.party[uid]
 				local b = Theme.button(
 					roster,
-					(uid == state.active and "● " or "")
+					(uid == state.active and "> " or "")
 						.. C.ById[creature.id].name
 						.. " • "
 						.. (unit and unit.hp .. Text.PV_33D16B or "Nv." .. creature.lv),
@@ -389,8 +439,9 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		allyKey = nil
 		root = Instance.new("Frame")
 		root.Size = UDim2.fromScale(1, 1)
-		root.BackgroundColor3 = Color3.new(0, 0, 0)
-		root.BackgroundTransparency = 0.35
+		root.BackgroundColor3 = Art.Panel
+		root.BackgroundTransparency = 1
+		TS:Create(root, TweenInfo.new(0.18), { BackgroundTransparency = 0.16 }):Play()
 		root.ZIndex = 50
 		root.Active = true
 		root.Parent = gui
@@ -415,8 +466,8 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		viewport = Instance.new("ViewportFrame")
 		viewport.Position = UDim2.fromScale(0.02, 0.16)
 		viewport.Size = UDim2.fromScale(0.96, 0.36)
-		viewport.BackgroundColor3 = Color3.fromRGB(29, 54, 58)
-		viewport.Ambient = Color3.fromRGB(185, 202, 210)
+		viewport.BackgroundColor3 = Art.Ramps.Sky[2]
+		viewport.Ambient = Art.Ramps.Sky[4]
 		viewport.LightDirection = Vector3.new(-1, -1, -1)
 		viewport.Parent = panel
 		Theme.round(viewport)
@@ -424,13 +475,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		world.Parent = viewport
 		figures = Instance.new("Folder")
 		figures.Parent = world
-		local floor = Instance.new("Part")
-		floor.Size = Vector3.new(60, 1, 30)
-		floor.Position = Vector3.new(0, -0.5, 0)
-		floor.Anchored = true
-		floor.Color = Color3.fromRGB(57, 87, 78)
-		floor.Material = Enum.Material.Grass
-		floor.Parent = world
+		Stage.build(world, Stage.resolve(C.ById[state.foe.id]))
 		local cam = Instance.new("Camera")
 		cam.FieldOfView = 48
 		cam.CFrame = CFrame.lookAt(Vector3.new(0, 14, 37), Vector3.new(0, 5, 0))

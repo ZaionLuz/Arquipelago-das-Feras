@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+bash scripts/test
+"${LUNE_BIN:-lune}" run scripts/art/check_visuals.luau
+"${LUNE_BIN:-lune}" run scripts/art/check_world.luau
+python3 scripts/art/check_scope.py
+"${SELENE_BIN:-selene}" src
+"${STYLUA_BIN:-stylua}" --syntax Luau --check src scripts

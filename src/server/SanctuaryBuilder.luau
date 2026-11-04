@@ -2,6 +2,7 @@
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local RS = game:GetService("ReplicatedStorage")
 local I = require(RS.Shared.Islands)
+local Tokens = require(RS.Shared.ArtTokens)
 local Data = require(script.Parent.DataService)
 local Quest = require(RS.Shared.PhoenixQuest)
 local Region = require(script.Parent.RegionService)
@@ -20,8 +21,8 @@ function B.build()
 		p.Name = name
 		p.Size = size
 		p.Position = pos
-		p.Color = color
-		p.Material = material or Enum.Material.Sandstone
+		p.Color = Tokens.nearest(color)
+		p.Material = material == Enum.Material.Neon and Enum.Material.Neon or Enum.Material.SmoothPlastic
 		p.Shape = shape or Enum.PartType.Block
 		p.Anchored = true
 		p.CanTouch = false
@@ -58,8 +59,8 @@ function B.build()
 		)
 		front.CanCollide = true
 	end
-	local stone = Color3.fromRGB(113, 93, 79)
-	local gold = Color3.fromRGB(240, 179, 66)
+	local stone = Tokens.Ramps.Sand[2]
+	local gold = Tokens.Ramps.Sand[4]
 	for i = 1, 12 do
 		local a = i * math.pi / 6
 		local p = part(

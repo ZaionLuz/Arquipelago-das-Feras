@@ -1,3 +1,9 @@
+# Pendências da reforma visual
+
+Play e screenshots de todas as telas no Roblox Studio, revisão estética humana, toque/mobile e FPS real. A adaptação entregue é3D com linguagem pixel; conversão integral2D está fora do que foi verificado. Veja docs/ART_REPORT.md.
+
+---
+
 # Pendências e limites V7
 
 ◐ Revisão estética de cada espécie/estágio na galeria; movimento dos Motor6D, penas e caudas em render real.

@@ -1,3 +1,17 @@
+# Arquipélago das Feras — art-overhaul
+
+Reforma visual original sobre a V7, em branch separada. Abra **releases/Feras-Art-Overhaul.rbxlx** no Roblox Studio. Gameplay, save e balanceamento permanecem iguais; a apresentação usa modelos3D refinados e UI em pixel grid.
+
+- Comparações e resultados: **docs/ART_REPORT.md**.
+- Revisão de atlas/poses: **assets/review.html** (offline, não é o jogo).
+- Regenerar imagens: `pip install -r scripts/art/requirements.txt` e `python scripts/art/build_assets.py`, com Lune no PATH ou LUNE_BIN.
+- Verificar código/arte: `bash scripts/art/test`; scripts e ferramentas estão descritos no relatório.
+- Tokens: src/shared/ArtTokens.luau; arte original anterior preservada em assets/_legacy.
+
+Testes nativos e build passaram. Play no Studio, screenshots reais, aprovação estética e60FPS continuam pendentes. O atlas exportado não usa IDs inventados nem é apresentado como sprite já integrado ao Roblox.
+
+---
+
 # Arquipélago das Feras — V7
 
 RPG de exploração, batalha, captura e criação de criaturas para Roblox: 30 espécies, sete ilhas, santuários pessoais, habitats, cruzamento, companheiro e capítulos.

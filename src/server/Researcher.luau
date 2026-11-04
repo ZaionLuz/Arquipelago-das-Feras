@@ -4,6 +4,7 @@ local RS = game:GetService("ReplicatedStorage")
 local Data = require(script.Parent.DataService)
 local Story = require(RS.Shared.Story)
 local I = require(RS.Shared.Islands)
+local Art = require(script.Parent.WorldArt)
 local R = {}
 function R.start()
 	local event = Instance.new("RemoteEvent")
@@ -42,6 +43,7 @@ function R.start()
 			Color3.fromRGB(62, 121, 115)
 		)
 	end
+	Art.researcher(model, base)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = Text.CONVERSAR_AC3B38
 	prompt.ObjectText = Text.MAIA_PESQUISADORA_DO_ARQUIPELAGO_38D949

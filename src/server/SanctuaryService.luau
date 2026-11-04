@@ -4,6 +4,8 @@ local RS = game:GetService("ReplicatedStorage")
 local Data = require(script.Parent.DataService)
 local I = require(RS.Shared.Islands)
 local Rules = require(RS.Shared.SanctuaryRules)
+local Art = require(script.Parent.WorldArt)
+local Tokens = require(RS.Shared.ArtTokens)
 local S = {}
 local plots = {}
 local used = {}
@@ -92,6 +94,7 @@ function S.ensure(player)
 		end
 		require(script.Parent.Transport).go(p, I.pos(1) + V(0, 9, 24), "Alvorecer")
 	end)
+	Art.plot(folder, center)
 	local plot = { index = index, center = center, folder = folder, signature = "" }
 	plots[player] = plot
 	return plot
@@ -157,10 +160,10 @@ function S.refresh(player)
 		local text = Instance.new("TextLabel")
 		text.Size = UDim2.fromScale(1, 1)
 		text.BackgroundTransparency = 1
-		text.TextColor3 = Color3.new(1, 1, 1)
+		text.TextColor3 = Tokens.Ink
 		text.TextStrokeTransparency = 0.4
 		text.TextSize = 14
-		text.Font = Enum.Font.GothamBold
+		text.Font = Tokens.Font
 		text.Text = def.el
 			.. " • Habitat "
 			.. entry.level
@@ -169,6 +172,7 @@ function S.refresh(player)
 			.. " / "
 			.. Rules.capacity(def, entry)
 		text.Parent = label
+		Art.habitat(zone, pos, id)
 	end
 end
 function S.home(player)

@@ -8,6 +8,7 @@ local TS = game:GetService("TweenService")
 local I = require(RS.Shared.Islands)
 local Config = require(RS.Shared.Config)
 local Theme = require(script.Parent.UITheme)
+local Art = require(RS.Shared.ArtTokens)
 local Solar = {}
 local started = false
 function Solar.start(getSnapshot)
@@ -58,7 +59,7 @@ function Solar.start(getSnapshot)
 		if enabled and not correction then
 			correction = Instance.new("ColorCorrectionEffect")
 			correction.Name = "TonalidadeLocal"
-			correction.TintColor = Color3.fromRGB(255, 219, 170)
+			correction.TintColor = Art.Ramps.Sand[5]
 			correction.Saturation = 0.1
 			correction.Contrast = 0.06
 			correction.Parent = Lighting
@@ -66,7 +67,7 @@ function Solar.start(getSnapshot)
 			Lighting.ClockTime = 17.5
 			atmosphere = Lighting:FindFirstChildOfClass("Atmosphere") or Instance.new("Atmosphere")
 			priorAtmosphere = { Color = atmosphere.Color, Density = atmosphere.Density, Haze = atmosphere.Haze }
-			atmosphere.Color = Color3.fromRGB(255, 202, 130)
+			atmosphere.Color = Art.Ramps.Sand[4]
 			atmosphere.Density = 0.26
 			atmosphere.Haze = 1.8
 			atmosphere.Parent = Lighting

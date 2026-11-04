@@ -1,19 +1,20 @@
 --!nonstrict
--- Volume e silhueta com poucas peças grandes; não altera a superfície segura y=14.
+-- Silhueta estratificada cenográfica; piso e colisão originais ficam em World.
+local T = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
 local A = {}
 local V = Vector3.new
 function A.build(parent, center, def)
 	local group = Instance.new("Folder")
 	group.Name = "Geologia_" .. def.id
 	group.Parent = parent
-	local rng = Random.new(718 + def.idx)
-	local function rock(size, pos, color)
-		local p = Instance.new("Part")
-		p.Shape = Enum.PartType.Ball
+	local ramp = T.ramp(def.id)
+	local function slab(size, offset, color, rotation, kind)
+		local p = Instance.new(kind == "wedge" and "WedgePart" or "Part")
+		p.Name = "Estrato"
 		p.Size = size
-		p.Position = center + pos
+		p.CFrame = CFrame.new(center + offset) * (rotation or CFrame.identity)
 		p.Color = color
-		p.Material = Enum.Material.Rock
+		p.Material = Enum.Material.SmoothPlastic
 		p.Anchored = true
 		p.CanCollide = false
 		p.CanTouch = false
@@ -21,20 +22,31 @@ function A.build(parent, center, def)
 		p.Parent = group
 		return p
 	end
-	rock(V(76, 21, 76), V(0, -9, 0), def.ground:Lerp(Color3.fromRGB(30, 35, 45), 0.55))
-	for i = 1, 7 do
-		local a = i * math.pi * 2 / 7
-		local radius = 33
-		local p = rock(
-			V(rng:NextNumber(12, 20), rng:NextNumber(12, 20), rng:NextNumber(12, 20)),
-			V(math.cos(a) * radius, -5, math.sin(a) * radius),
-			def.ground:Lerp(Color3.fromRGB(42, 44, 51), 0.4)
+	-- Grandes planos recortados, com bordas quentes em cima e sombras frias abaixo.
+	for tier = 1, 3 do
+		local radius = 37 - tier * 3.5
+		for side = 1, 8 do
+			local angle = side * math.pi / 4
+			slab(
+				V(24, 4.5, 9),
+				V(math.cos(angle) * radius, -tier * 4 + 1, math.sin(angle) * radius),
+				ramp[math.max(1, 4 - tier)],
+				CFrame.Angles(0, -angle + math.pi / 2, 0.06 * (side % 2)),
+				tier == 3 and "wedge" or nil
+			)
+		end
+	end
+	slab(V(38, 8, 38), V(0, -9, 0), ramp[1], CFrame.Angles(0, math.pi / 4, 0), "wedge")
+	-- Veios de cor mantêm o mesmo material fosco e não criam pontos luminosos sem motivo.
+	for index = 1, 4 do
+		local angle = index * math.pi / 2 + 0.3
+		slab(
+			V(8, 0.7, 1.4),
+			V(math.cos(angle) * 35, -3.2, math.sin(angle) * 35),
+			ramp[3],
+			CFrame.Angles(0, -angle + math.pi / 2, 0)
 		)
-		p.CFrame *= CFrame.Angles(rng:NextNumber(), rng:NextNumber(), rng:NextNumber())
 	end
-	-- Pequenas pedras costeiras: um grupo coeso, em vez de ruído em todo o mapa.
-	for i = 1, 4 do
-		rock(V(5 + i, 3, 5), V(34 + i, -0.5, (i - 2) * 5), def.ground:Lerp(Color3.fromRGB(222, 201, 156), 0.3))
-	end
+	return group
 end
 return A

@@ -4,6 +4,7 @@ local RS = game:GetService("ReplicatedStorage")
 local I = require(RS.Shared.Islands)
 local Rules = require(RS.Shared.SanctuaryRules)
 local Theme = require(script.Parent.UITheme)
+local Icons = require(script.Parent.PixelIcons)
 local U = {}
 local slot = 5
 function U.render(parent, d, call, render)
@@ -12,7 +13,7 @@ function U.render(parent, d, call, render)
 		f.Size = UDim2.new(1, -8, 0, height)
 		f.BackgroundColor3 = Theme.Card
 		f.Parent = parent
-		Theme.round(f)
+		Theme.panel(f)
 		return f
 	end
 	local info = card(70)
@@ -46,12 +47,14 @@ function U.render(parent, d, call, render)
 			render()
 		end)
 		if slot == index then
-			b.BackgroundColor3 = Color3.fromRGB(78, 110, 94)
+			b.BackgroundColor3 = Theme.Tokens.Ramps.Leaf[2]
 		end
 	end
 	for _, def in I.List do
 		local entry = d.sanctuary[def.id]
-		local f = card(156)
+		local f = card(184)
+		local icon = Icons.draw(f, def.el, 16, Theme.Tokens.Elements[def.el])
+		icon.Position = UDim2.fromOffset(12, 12)
 		local label = Theme.label(
 			f,
 			def.name
@@ -68,8 +71,8 @@ function U.render(parent, d, call, render)
 				),
 			14
 		)
-		label.Size = UDim2.new(1, -12, 0, 90)
-		label.Position = UDim2.fromOffset(6, 0)
+		label.Size = UDim2.new(1, -44, 0, 112)
+		label.Position = UDim2.fromOffset(36, 4)
 		local buttons = entry
 				and {
 					{
@@ -101,7 +104,7 @@ function U.render(parent, d, call, render)
 			}
 		for k, button in buttons do
 			local b = Theme.button(f, button[1], button[2])
-			b.Size = UDim2.new(1 / #buttons, -6, 0, 48)
+			b.Size = UDim2.new(1 / #buttons, -8, 0, 48)
 			b.Position = UDim2.new((k - 1) / #buttons, 3, 1, -54)
 		end
 	end

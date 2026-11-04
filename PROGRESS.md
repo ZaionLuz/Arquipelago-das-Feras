@@ -1,3 +1,9 @@
+# Reforma visual atual
+
+Leia docs/ART_PROGRESS.md e docs/ART_REPORT.md. A branch art-overhaul contém duas passagens de arte, pipeline e bundle separados. Main e a lógica V7 foram preservados. As pendências visuais de Studio estão discriminadas no relatório.
+
+---
+
 # Progresso atual — V7
 
 ✔ Código, testes e build da V7 concluídos neste ambiente. Estado estável: `bash scripts/test` retorna zero; relatório em docs/VALIDACAO_V7.md.
