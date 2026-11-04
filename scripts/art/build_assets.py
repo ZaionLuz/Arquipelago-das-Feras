@@ -17,7 +17,7 @@ def baseline_root():
  destination=Path(tempfile.gettempdir())/'feras-art-baseline'
  destination.mkdir(exist_ok=True)
  known=None
- for ref in [BASELINE,'9ece1fd6a35b7bbd8cd871bb2a265652ce0c8033']:
+ for ref in ([BASELINE,'9ece1fd6a35b7bbd8cd871bb2a265652ce0c8033'] if shutil.which('git') else []):
   if subprocess.run(['git','cat-file','-e',ref],cwd=ROOT,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0:known=ref;break
  if known:
   blob=subprocess.check_output(['git','archive',known,'src/shared','src/client/CreatureAnimator.luau'],cwd=ROOT)
