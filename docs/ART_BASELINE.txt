@@ -1,0 +1,59 @@
+PASS: Rojo paths, JSON, 30 espécies e catálogos originais preservados
+PASS: 30 designs próprios, sem IDs ausentes ou órfãos
+PASS: todos os IDs legados preservados; somente fenix adicionada
+PASS: seis IDs de ilha preservados e Alvorecer adicionado
+PASS: fichas e personalidades das 30 espécies integradas
+PASS: fixture portátil de IDs anteriores preservada
+PASS: sintaxe de 79 arquivos Luau
+PASS	900	pares; sorteios	27000	estágios; híbridos	0.2517
+PASS: Fênix adulta em todos os níveis; estágio 4 bloqueado; probabilidades de captura limitadas
+PASS: combate/captura; 900 pares de dano; 150 encontros; inválidos sem mutação; cooldown, fim, equipe, selos e limites
+PASS: protocolo do encontro: token, versão, propriedade, débito único, concessão única, recompensa única, timeout e saída
+PASS: estoque de selo separado, guardião incapturável e bônus de desafio único
+PASS V7.09: reentrada durante yield, 101 capturas intercaladas = 1 concessão/débito, cooldown e desconexão na abertura
+PASS: progressão até 100, 9 posições únicas, sobreposição, validação, capacidade, capítulos e cinco receitas
+PASS: efeito de selo elemental, raro e ancestral depende das condições do encontro
+PASS: migração v3→v5, UID, níveis, santuário, companion, inventário, snapshot, lease, sessão concorrente e falha de dados simulados
+PASS V7.01/13: corrupção/futuro intactos no storage, inicial só Alvorecer, estoques legados acima do cap e round-trip
+PASS: estruturas/flags corrompidos recusados antes da escrita; timestamps legados preservados
+PASS: metadados numéricos adicionais de criaturas, ovos e inventários preservados
+PASS: ações reais em serviços simulados: construir, mover, melhorar, capacidade, propriedade, companheiro, cinco selos e capítulos sem duplicação
+PASS V7.01: migração, 6 fixtures sintéticas, 1000 perfis, idempotência e rejeição segura
+PASS V7.02: matriz Access 6300 decisões, argumentos forjados, legado
+PASS V7.04/07: 280 mil níveis, 140 mil pools, 90 mil cruzamentos e Fuligem preservada
+PASS V7.07/09/10: origens bloqueadas, ovo legado autenticado, 100 replays = 1 concessão, payload zero sem spoilers
+PASS V7.08: 300 mil execuções Monte Carlo, monotonicidade e limites
+PASS V7.08: encontro especial permite 15 selos sem fuga aleatória herdada de animais comuns
+PASS V7.03: volumes, região de sessão, remote de região falsificada, destino de respawn e legado
+PASS V7.12: 100 atualizações mesmo estágio = 1 construção; troca de espécie/estágio reutiliza Viewport
+PASS V7.11: clone com referências locais e validação negativa de Root, colisão e scripts
+PASS V7.02: Main.Net real rejeita tabela/NaN/ilha inexistente, remotes travados e nível forjado; zero transportes
+PASS V7: ruínas 74 peças ancoradas, 4 prompts; coleta exige distância/região e abre após três flags
+PASS: modelos 91 construções, 48 penas de asa / 11 cauda; distância mínima 0.15217624322706935 fenixfuligem/penugem:3
+PASS: cena headless de 40 criaturas: 1293 peças; orçamento global 3200
+phoenix 45 0.047 0.274
+phoenix 46 0.053 0.35
+phoenix 47 0.081 0.405
+phoenix 48 0.104 0.436
+phoenix 49 0.173 0.555
+phoenix 50 0.206 0.615
+phoenix 51 0.285 0.735
+phoenix 52 0.337 0.778
+phoenix 53 0.454 0.823
+phoenix 54 0.475 0.87
+phoenix 55 0.592 0.9
+balance 10 0.895 0.548 0.56 0
+balance 18 0.909 0.523 0.512 0
+balance 26 0.912 0.543 0.535 0
+balance 34 0.944 0.676 0.526 0
+balance 42 0.931 0.673 0.508 0
+balance 50 0.923 0.675 0.546 0
+PASS V7.05/06: médias de combate e Fênix nas metas; ouro crescente, penalidades, ritmo e limites alcançáveis
+PASS V7.07: varredura estática de ID especial, concessão central, chave preservada e galeria só Studio
+PASS: proveniência das seis fixtures explicitamente sintética
+Created sourcemap at /tmp/feras-v7-sourcemap.json
+Building project 'ArquipelagoDasFeras'
+Built project to Feras-V7-test.rbxlx
+PASS: bundle Rojo desserializado com 57 scripts/módulos e streaming habilitado
+PASS: as 57 fontes do bundle correspondem ao src: Feras-V7-test.rbxlx
+PASS V7.14: regressão + testes V7 + build Rojo concluídos

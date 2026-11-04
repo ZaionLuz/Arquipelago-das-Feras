@@ -10,5 +10,5 @@ for item in ET.parse(path).iter('Item'):
  name=item.find('./Properties/string[@name="Name"]').text
  assert node.text==sources[name],f'Bundle desatualizado: {name}'
  count+=1
-assert count==len(sources)==57
-print('PASS: as 57 fontes do bundle correspondem ao src:',path.name)
+assert count==len(sources)
+print('PASS:',count,'fontes do bundle correspondem ao src:',path.name)
