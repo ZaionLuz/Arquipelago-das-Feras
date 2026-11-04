@@ -14,4 +14,5 @@ python3 scripts/static_v7.py
 "$rojo_bin" sourcemap -o /tmp/feras-v7-sourcemap.json
 "$rojo_bin" build -o /tmp/Feras-V7-test.rbxlx
 "$lune_bin" run scripts/check_bundle.luau /tmp/Feras-V7-test.rbxlx
+python3 scripts/check_bundle_sources.py /tmp/Feras-V7-test.rbxlx
 printf '%s\n' 'PASS V7.14: regressão + testes V7 + build Rojo concluídos'

@@ -1,3 +1,5 @@
+> V7 atual: consulte [docs/QA_STUDIO_V7.md](docs/QA_STUDIO_V7.md). O conteúdo abaixo registra as versões anteriores.
+
 # Validação obrigatória no Studio
 
 1. Instale Rojo CLI e plugin. Na raiz: `rojo build -o Feras.rbxlx`. Abra o arquivo no Studio. Alternativa: `rojo serve` e conectar plugin. Não colar módulos em locais diferentes do default.project.json.

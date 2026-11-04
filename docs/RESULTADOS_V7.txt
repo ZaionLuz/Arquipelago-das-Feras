@@ -53,6 +53,7 @@ Created sourcemap at /tmp/feras-v7-sourcemap.json
 Building project 'ArquipelagoDasFeras'
 Built project to Feras-V7-test.rbxlx
 PASS: bundle Rojo desserializado com 57 scripts/módulos e streaming habilitado
+PASS: as 57 fontes do bundle correspondem ao src: Feras-V7-test.rbxlx
 PASS V7.14: regressão + testes V7 + build Rojo concluídos
 Results:
 0 errors

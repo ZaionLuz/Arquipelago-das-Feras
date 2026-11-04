@@ -30,7 +30,7 @@ Saída: `docs/RESULTADOS_V7.txt`. Compilação, suites antigas adaptadas, execu�
 | 13. Salvar/carregar | ✔ / ◐ | DataService real com UpdateAsync simulado, round-trip, lease e falha segura; DataStore real pendente |
 | 14. Regressão/build | ✔ | scripts/test, Rojo sourcemap e build de place; bundle nativo de scripts validado |
 | Interface e textos | ✔ / ◐ | 452 textos centralizados em Strings, Viewport reutilizado, painéis e alvos maiores; layout/toque/câmera exigem Studio |
-| Apresentação e santuário | ✔ / ◐ | builder dentro do orçamento e validações de altar; mergulho, onda, ambiente local e efeitos configuráveis implementados; render/áudio não executados |
+| Apresentação e santuário | ✔ / ◐ | builder executado com 74 peças nativas dentro do orçamento e validações de altar; mergulho, onda, ambiente local e efeitos configuráveis implementados; render/áudio não executados |
 | Ferramentas/análise tipada | ✔ / ✘ | Rojo 7.7.1, Lune 0.11.1, Luau/compile/analyze, StyLua 2.6.0 e Selene 0.32.0 disponíveis. luau-lsp baixado era ARM, não executou nesta máquina x86; nova tentativa de rede falhou. Análise completa com definições Roblox pendente |
 
 ## Resultados medidos
@@ -46,3 +46,5 @@ Modelos: menor distância 0.15218, limiar 0,12; par fenixfuligem/penugem:3. Cena
 ✔ `selene src`: zero erros, zero avisos, zero erros de parsing com standard Luau e globais Roblox declaradas como any. Esse lint não verifica assinatura de toda API Roblox. ✔ StyLua e compilador Luau passaram. ✘ luau-analyze sem definições Roblox gera globais desconhecidas; não é apresentado como análise tipada limpa. Saída de diagnóstico resumida no audit.
 
 Não há validação estética aprovada, multiplayer real ou prova de FPS em celular. O roteiro para essas verificações está em QA_STUDIO_V7.md. A V7 implementa o escopo de 30 espécies/7 ilhas, não a visão histórica de 100 espécies/10 regiões.
+
+✔ Bundle releases/Feras-V7.rbxlx desserializado nativamente; as 57 fontes incorporadas foram comparadas ao src e coincidem (scripts/check_bundle_sources.py). Build não equivale a Play no Studio.

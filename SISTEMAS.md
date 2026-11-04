@@ -1,3 +1,5 @@
+> V7 atual: consulte [docs/VALIDACAO_V7.md](docs/VALIDACAO_V7.md). O conteúdo abaixo registra as versões anteriores.
+
 # Sistemas — versão de integração RPG/santuário (V6)
 
 ## Dados

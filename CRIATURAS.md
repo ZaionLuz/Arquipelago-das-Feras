@@ -1,3 +1,5 @@
+> V7 atual: consulte [docs/CRIATURAS.md](docs/CRIATURAS.md). O conteúdo abaixo registra as versões anteriores.
+
 # Catálogo de direção artística — meta de 100 espécies
 
 **Estado real:** 30 espécies registradas no jogo com gerador procedural utilizável, 70 conceitos planejados. Nenhum dos 70 conceitos abaixo foi registrado como criatura capturável ou apresentado como modelo pronto. Não há 100 modelos nem 300 formas concluídas. O alvo do briefing ainda está pendente.

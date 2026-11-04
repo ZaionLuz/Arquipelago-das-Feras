@@ -1,3 +1,7 @@
+# V7 — abrir diretamente
+
+Abra `releases/Feras-V7.rbxlx` no Roblox Studio e pressione Play. O arquivo já inclui os scripts. Leia `docs/QA_STUDIO_V7.md` para galeria, mobile e testes privados. As instruções abaixo são histórico de versões anteriores.
+
 # Como abrir a versão 3
 
 Este ZIP contém um projeto **Rojo**, não um lugar .rbxl pronto. Não arraste o ZIP para o Studio.

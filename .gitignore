@@ -4,3 +4,6 @@ __pycache__/
 *.rbxlx
 *.log
 .DS_Store
+
+# Bundle textual de entrega mantido intencionalmente no repositório.
+!releases/Feras-V7.rbxlx

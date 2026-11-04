@@ -1,3 +1,5 @@
+> V7 atual: consulte [docs/MUNDO.md](docs/MUNDO.md). O conteúdo abaixo registra as versões anteriores.
+
 # Mundo: estado implementado e direção final
 
 ## Regiões presentes
