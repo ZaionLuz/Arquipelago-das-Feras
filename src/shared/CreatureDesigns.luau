@@ -1,5 +1,6 @@
 --!nonstrict
 -- Receitas anatômicas reais; o ID não é usado para inventar métricas de diferença.
+local Art = require(script.Parent.ArtTokens)
 local rows = {
 	-- id,família,cabeça,olhos,cauda,membros,traço exclusivo,superfície,dimensões,cores
 	{
@@ -363,14 +364,52 @@ local rows = {
 		{ 0x8F263C, 0xE86435, 0xF4B846, 0xFFF1CA },
 	},
 }
+-- Tilt/mouth recipes are visual only; species IDs and progression stay untouched.
+local expressions = {
+	cinzelo = { tilt = -0.22, mouth = "smirk", look = 0.08 },
+	magmarau = { tilt = 0.24, mouth = "tusk", look = -0.05 },
+	fenixfuligem = { tilt = 0.18, mouth = "beak", look = 0.12 },
+	vulcanodrago = { tilt = 0.3, mouth = "fang", look = -0.08 },
+	bolhinho = { tilt = -0.2, mouth = "o", look = 0.16 },
+	marilisco = { tilt = 0.1, mouth = "smirk", look = -0.04 },
+	carangueperola = { tilt = -0.3, mouth = "smile", look = 0.08 },
+	abissauro = { tilt = 0.3, mouth = "fang", look = -0.1 },
+	brotinho = { tilt = -0.28, mouth = "smile", look = 0.12 },
+	folhuco = { tilt = 0.18, mouth = "smirk", look = 0.04 },
+	aracnoflora = { tilt = -0.24, mouth = "smile", look = 0.14 },
+	ancestravore = { tilt = 0.12, mouth = "solemn", look = -0.08 },
+	graozinho = { tilt = -0.35, mouth = "o", look = 0.15 },
+	escorpiodra = { tilt = 0.35, mouth = "smirk", look = -0.1 },
+	esfingeolito = { tilt = 0.12, mouth = "solemn", look = 0.06 },
+	colossodune = { tilt = 0.24, mouth = "solemn", look = -0.08 },
+	penugem = { tilt = -0.26, mouth = "beak", look = 0.18 },
+	ventanil = { tilt = 0.08, mouth = "beak", look = 0.1 },
+	trovoraptor = { tilt = 0.32, mouth = "fang", look = -0.12 },
+	aeronimbo = { tilt = -0.15, mouth = "smile", look = 0.12 },
+	lodinho = { tilt = -0.3, mouth = "o", look = 0.05 },
+	caudalume = { tilt = -0.1, mouth = "smirk", look = 0.1 },
+	vagalumorte = { tilt = 0.15, mouth = "solemn", look = 0.02 },
+	reinevoento = { tilt = 0.35, mouth = "solemn", look = -0.12 },
+	vaporino = { tilt = -0.14, mouth = "o", look = 0.14 },
+	magmaterra = { tilt = 0.28, mouth = "tusk", look = -0.1 },
+	tempestalia = { tilt = 0.2, mouth = "beak", look = 0.08 },
+	nevoamusgo = { tilt = -0.1, mouth = "solemn", look = 0.02 },
+	cinzavento = { tilt = 0.26, mouth = "fang", look = -0.08 },
+	fenix = { tilt = 0.18, mouth = "beak", look = 0.08 },
+}
 local D = {}
 for _, r in rows do
 	local palette = {}
 	for _, hex in r[10] do
-		table.insert(palette, Color3.fromRGB(math.floor(hex / 65536) % 256, math.floor(hex / 256) % 256, hex % 256))
+		table.insert(
+			palette,
+			Art.nearest(Color3.fromRGB(math.floor(hex / 65536) % 256, math.floor(hex / 256) % 256, hex % 256))
+		)
 	end
 	D[r[1]] = {
 		family = r[2],
+		expression = expressions[r[1]],
+		silhouette = r[3] .. ":" .. r[5],
 		bodyPlan = r[2] .. ":" .. r[3],
 		appendages = { r[7], r[5] },
 		elementalMotif = r[8],

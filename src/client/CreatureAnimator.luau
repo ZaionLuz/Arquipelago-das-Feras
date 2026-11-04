@@ -1,6 +1,7 @@
 --!nonstrict
 local Run = game:GetService("RunService")
 local Players = game:GetService("Players")
+local Art = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
 local A = {}
 local records = setmetatable({}, { __mode = "k" })
 local started = false
@@ -14,6 +15,8 @@ function A.register(model, visible, orbit)
 			visible = visible,
 			orbit = orbit,
 			last = 0,
+			body = model:FindFirstChild("Body"),
+			baseColor = model:FindFirstChild("Body") and model.Body.Color or nil,
 		}
 		for _, obj in model:GetDescendants() do
 			if obj:IsA("Motor6D") then
@@ -52,9 +55,21 @@ local function apply(model, record, time, full, reduced)
 	end
 	local family = model:GetAttribute("Family")
 	local moving = full and model:GetAttribute("Moving") == true
-	local pose = record.untilTime and time < record.untilTime and record.pose or "idle"
-	local lift = math.sin(time * 2) * (family == "spectral" and 0.2 or family == "mineral" and 0.015 or 0.035)
+	local pose = record.pose == "faint" and "faint"
+		or record.untilTime and time < record.untilTime and record.pose
+		or "idle"
+	-- Six authored idle keyposes are interpolated, retaining the pixel-art cadence without stepping the camera.
+	local keyposes = { 0, 0.8, 1, 0.1, -0.8, -1 }
+	local sample = (time * 0.9) % 6
+	local index = math.floor(sample) + 1
+	local alpha = sample % 1
+	local idle = keyposes[index] + (keyposes[index % 6 + 1] - keyposes[index]) * alpha
+	local lift = idle * (family == "spectral" and 0.22 or family == "mineral" and 0.015 or 0.045)
 	local progress = record.poseStart and math.clamp((time - record.poseStart) / record.poseDuration, 0, 1) or 0
+	if record.body and record.body.Parent and record.baseColor then
+		local flash = pose == "damage" and not reduced and progress < 0.4 and (1 - progress / 0.4) * 0.65 or 0
+		record.body.Color = record.baseColor:Lerp(Art.Ink, flash)
+	end
 	for _, joint in record.joints do
 		if not joint.Parent then
 			continue
@@ -66,11 +81,21 @@ local function apply(model, record, time, full, reduced)
 			if role == "Body" then
 				transform = CFrame.new(0, lift, 0) * CFrame.Angles(0, math.sin(time * 0.6) * 0.04, 0)
 				if pose == "attack" then
-					transform *= CFrame.Angles(math.sin(progress * math.pi) * 0.25, 0, 0)
+					local anticipation = progress < 0.25 and -math.sin(progress / 0.25 * math.pi / 2) * 0.16
+						or math.sin((progress - 0.25) / 0.75 * math.pi) * 0.28
+					transform *= CFrame.new(0, -math.abs(anticipation) * 0.2, anticipation * 0.8) * CFrame.Angles(
+						anticipation,
+						0,
+						0
+					)
 				elseif pose == "damage" then
-					transform *= CFrame.Angles(0, 0, math.sin(time * 30) * 0.08)
+					transform *= CFrame.new(0, 0, -math.sin(progress * math.pi) * 0.16) * CFrame.Angles(
+						0,
+						0,
+						math.sin(progress * math.pi * 4) * (1 - progress) * 0.12
+					)
 				elseif pose == "faint" then
-					transform *= CFrame.Angles(0, 0, progress * 1.2)
+					transform *= CFrame.new(0, -progress * 0.45, 0) * CFrame.Angles(0.18 * progress, 0, progress * 1.2)
 				elseif pose == "victory" then
 					transform *= CFrame.new(0, math.abs(math.sin(time * 7)) * 0.3, 0)
 				end
@@ -81,16 +106,24 @@ local function apply(model, record, time, full, reduced)
 					transform *= CFrame.Angles(0, 0, math.sin(time) * 0.06)
 				end
 			elseif role == "Head" then
-				transform = CFrame.Angles(0, math.sin(time * 0.8 + phase) * 0.08, 0)
+				transform = CFrame.Angles(idle * 0.035, math.sin(time * 0.8 + phase) * 0.075, 0)
+				if pose == "attack" then
+					transform *= CFrame.Angles(-math.sin(progress * math.pi) * 0.18, 0, 0)
+				elseif pose == "faint" then
+					transform *= CFrame.Angles(progress * 0.5, 0, 0)
+				end
 			elseif role:find("Eye") then
-				transform = CFrame.Angles((time + phase) % 5 < 0.12 and 1.35 or 0, 0, 0)
+				transform =
+					CFrame.Angles((time + (model:GetAttribute("BlinkOffset") or 0)) % 4.8 < 0.13 and 1.35 or 0, 0, 0)
 			elseif role:find("Wing") then
 				local side = joint.C0.Position.X < 0 and -1 or 1
 				local pivot = CFrame.new(side * 0.5, 0, 0)
+				local amplitude = pose == "faint" and 0 or (full and 0.35 or 0.12)
 				local flap = CFrame.Angles(
 					0,
 					0,
-					side * math.sin(time * (pose == "attack" and 6 or 2) + phase * 0.4) * (full and 0.35 or 0.12)
+					side * math.sin(time * (pose == "attack" and 6 or 2) + phase * 0.4) * amplitude
+						+ (pose == "faint" and side * progress * 0.6 or 0)
 				)
 				transform = joint.C0:Inverse() * pivot * flap * pivot:Inverse() * joint.C0
 			elseif role:find("Tail") or role:find("Coil") or role:find("Veil") then
