@@ -26,6 +26,12 @@ function M.chance(state)
 			0.35
 		)
 	end
-	return math.clamp(Seals.chance(def.rar, foe.lv) * seal + (1 - health) * 0.45 + state.bond * 0.08, 0.05, 0.94)
+	local chance =
+		math.clamp(Seals.chance(def.rar, foe.lv) * seal + (1 - health) * 0.45 + state.bond * 0.08, 0.05, 0.94)
+	if state.explorerLevel then
+		local prepared = math.max(state.explorerLevel, pet and pet.lv or 0)
+		chance *= math.exp(-0.06 * math.max(0, foe.lv - prepared - 3))
+	end
+	return math.clamp(chance, 0.01, 0.94)
 end
 return M

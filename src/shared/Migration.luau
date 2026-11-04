@@ -210,6 +210,43 @@ function M.run(raw)
 	if existing > 0 then
 		d.phoenix.captured = true
 	end
+
+	if d.navigation ~= nil and type(d.navigation) ~= "table" then
+		return nil, "CORRUPT_NAVIGATION"
+	end
+	if not d.navigation then
+		local visited = { Alvorecer = true }
+		for id, value in d.visited or {} do
+			if Bands.ById[id] and value == true then
+				visited[id] = true
+			end
+		end
+		d.navigation = { visited = visited, checkpoint = "Alvorecer" }
+	end
+	if type(d.navigation.visited) ~= "table" or not Bands.ById[d.navigation.checkpoint] then
+		return nil, "CORRUPT_NAVIGATION"
+	end
+	for id, value in d.navigation.visited do
+		if not Bands.ById[id] or type(value) ~= "boolean" then
+			return nil, "CORRUPT_NAVIGATION"
+		end
+	end
+	if d.sanctuary == nil then
+		d.sanctuary = {}
+		local slot = 0
+		for _, id in Bands.Order do
+			if (d.unlocked and d.unlocked[id]) or #(d.habitat and d.habitat[id] or {}) > 0 then
+				slot += 1
+				d.sanctuary[id] = { slot = slot, level = 1 }
+			end
+		end
+	end
+	if Config.World.FreeExploration then
+		d.unlocked = d.unlocked or {}
+		for _, id in Bands.Order do
+			d.unlocked[id] = true
+		end
+	end
 	d.v = Config.ProfileVersion
 	return d
 end

@@ -116,6 +116,10 @@ local function finish(player, session)
 end
 function E.open(player, specimen, release)
 	local d = Data.get(player)
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		return false
+	end
 	if not d then
 		return false
 	end
@@ -140,7 +144,7 @@ function E.open(player, specimen, release)
 		state = Rules.new(
 			specimen.id,
 			specimen.lv,
-			{ statMultiplier = specimen.statMultiplier, isLegendary = specimen.special }
+			{ statMultiplier = specimen.statMultiplier, explorerLevel = d.playerLevel, isLegendary = specimen.special }
 		),
 		guardian = specimen.guardianId,
 		seals = d.seals,
@@ -162,6 +166,10 @@ function E.startSpecial(player, id)
 	if id ~= "phoenix_solar" or E.active(player) then
 		return false, "ACTIVE_OR_INVALID"
 	end
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		return false, "CHARACTER_UNAVAILABLE"
+	end
 	local d = Data.get(player)
 	local ok, reason = Quest.check(d or {}, os.time())
 	if not ok then
@@ -176,6 +184,7 @@ function E.startSpecial(player, id)
 		return false, "DISTANCE"
 	end
 	opening[player] = true
+	local previousAttempts, previousCooldown = d.phoenix.attempts, d.phoenix.nextAttemptAt
 	local nonce = Http:GenerateGUID(false)
 	d.phoenix.encounterId = nonce
 	d.phoenix.attempts += 1
@@ -198,10 +207,15 @@ function E.startSpecial(player, id)
 	}, function()
 		player:SetAttribute("SolarEncounterEnded", os.time())
 	end)
-	opening[player] = nil
 	if not opened then
 		d.phoenix.encounterId = nil
+		if Data.get(player) == d then
+			d.phoenix.attempts = previousAttempts
+			d.phoenix.nextAttemptAt = previousCooldown
+			Data.save(player)
+		end
 	end
+	opening[player] = nil
 	return opened, opened and "OK" or "INTERRUPTED"
 end
 function E.active(player)

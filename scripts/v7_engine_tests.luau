@@ -5,7 +5,7 @@ local profile = { playerLevel = 1, unlocked = { Alvorecer = true }, gold = 0 }
 local session = { region = "Alvorecer", lastSafe = "Alvorecer" }
 local player = { Character = {
 	FindFirstChild = function()
-		return { Position = V.new(150, 10, 0) }
+		return { Position = V.new(1400, 10, 0) }
 	end,
 } }
 local Data = {
@@ -30,7 +30,7 @@ local I = load("src/shared/Islands.luau")
 assert(Region.current(player, "battle") == "Alvorecer")
 for _, id in { "Brasa", "Recife", "Floresta", "Dunas", "Picos", "Pantano" } do
 	local result = Guard.inspect(profile, session, I.pos(I.ById[id].idx))
-	assert(not result.ok and result.safe == "Alvorecer")
+	assert(result.ok and result.island == id)
 	for _, purpose in { "encounter", "capture", "battle", "shop", "hatch" } do
 		assert(not Region.requireCurrent(player, id, purpose).ok)
 	end
@@ -38,12 +38,12 @@ end
 profile.unlocked.Brasa = true
 profile.playerLevel = 10
 assert(not Region.requireCurrent(player, "Brasa", "battle").ok) -- Intenção remota não altera a sessão.
-assert(session.region == "Alvorecer" and Guard.best(profile) == "Brasa")
+assert(session.region == "Alvorecer" and Guard.best(profile) == "Alvorecer")
 profile.playerLevel = 1
 profile.legacyGrandfathered = { Brasa = true }
-assert(Guard.best(profile) == "Brasa")
+assert(Guard.best(profile) == "Alvorecer")
 local bad = Guard.inspect(profile, session, I.pos(2))
-assert(not bad.ok and bad.reason == "WRONG_REGION")
+assert(bad.ok and bad.island == "Brasa")
 print("PASS V7.03: volumes, região de sessão, remote de região falsificada, destino de respawn e legado")
 local calls = 0
 local connections = {}
@@ -195,7 +195,7 @@ local netLoad = Loader.new({
 netLoad("src/server/Main.server.luau")
 local remote = registry.Net
 for _, action in { "Travel", "Unlock", "BuildHabitat", "MoveHabitat", "UpgradeHabitat", "RemoveHabitat", "BuyEgg" } do
-	for _, bad in { {}, 0 / 0, "inexistente", "Pantano", "Brasa" } do
+	for _, bad in { {}, 0 / 0, "inexistente" } do
 		clock += 1
 		local result = remote.OnServerInvoke(player, action, bad, 100)
 		assert(result == nil or result.ok == false, action .. " aceitou argumento forjado")
@@ -203,14 +203,14 @@ for _, action in { "Travel", "Unlock", "BuildHabitat", "MoveHabitat", "UpgradeHa
 end
 clock += 1
 local fakeLevel = remote.OnServerInvoke(player, "Travel", "Pantano", 100)
-assert(fakeLevel.ok == false and profile.playerLevel == 1)
+assert(fakeLevel.ok == true and profile.playerLevel == 1)
 clock += 1
 assert(remote.OnServerInvoke(player, "Battle", "u1", "Brasa").ok == false)
-assert(transports == 0 and session.region == "Alvorecer")
+assert(transports == 1 and session.region == "Alvorecer")
 clock += 1
 assert(remote.OnServerInvoke(player, "Get").ok)
 print(
-	"PASS V7.02: Main.Net real rejeita tabela/NaN/ilha inexistente, remotes travados e nível forjado; zero transportes"
+	"PASS V7.02: Main.Net real rejeita tabela/NaN/ilha inexistente, contexto regional validado; níveis enviados não alteram perfil; viagem livre"
 )
 -- Builder real com instâncias Roblox nativas; somente sinais ProximityPrompt são simulados.
 local prompts = {}
@@ -246,7 +246,7 @@ for _, obj in container:GetDescendants() do
 	end
 end
 assert(parts <= 400 and #prompts == 4)
-local position = V.new(150, 10, 0)
+local position = V.new(1400, 10, 0)
 player.Character.FindFirstChild = function()
 	return { Position = position }
 end

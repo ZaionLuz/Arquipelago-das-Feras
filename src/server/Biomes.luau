@@ -4,19 +4,22 @@ local Data = require(script.Parent.DataService)
 local Progression = require(game:GetService("ReplicatedStorage").Shared.Progression)
 local B = {}
 local V = Vector3.new
+local Layout = require(game:GetService("ReplicatedStorage").Shared.WorldLayout)
 function B.decorate(parent, origin, def)
 	local folder = Instance.new("Folder")
 	folder.Name = "Bioma_" .. def.id
 	folder.Parent = parent
 	local rng = Random.new(100 + def.idx)
+	local decorationShift = V(0, 0, 0)
 	local function part(shape, size, pos, color, material, solid)
 		local p = Instance.new("Part")
 		p.Shape = shape
 		p.Size = size
-		p.Position = origin + pos
+		p.Position = origin + pos + decorationShift
 		p.Anchored = true
 		p.CanCollide = solid == true
 		p.CanTouch = false
+		p.CanQuery = solid == true
 		p.Color = color
 		p.Material = material or Enum.Material.SmoothPlastic
 		p.Parent = folder
@@ -26,9 +29,9 @@ function B.decorate(parent, origin, def)
 		local p = part(Enum.PartType.Block, V(1.8, 5, 1.8), pos, color, Enum.Material.Neon)
 		p.CFrame *= CFrame.Angles(0.2, 0, 0.4)
 	end
-	for i = 1, 10 do
-		local angle = i * math.pi * 2 / 10 + rng:NextNumber(-0.1, 0.1)
-		local radius = rng:NextNumber(27, 31)
+	for i = 1, 20 do
+		local angle = i * math.pi * 2 / 20 + rng:NextNumber(-0.1, 0.1)
+		local radius = rng:NextNumber(160, Layout.RegionRadius - 55)
 		local pos = V(math.cos(angle) * radius, 4, math.sin(angle) * radius)
 		if def.id == "Brasa" then
 			part(Enum.PartType.Ball, V(7, 6, 7), pos + V(0, 1, 0), Color3.fromRGB(40, 35, 40), Enum.Material.Basalt)
@@ -72,7 +75,8 @@ function B.decorate(parent, origin, def)
 			crystal(pos + V(0, 8, 0), def.accent)
 		end
 	end
-	-- Marco maior por ilha: composição ao fundo, sem bloquear o centro ou as pontes.
+	-- Marco maior deslocado: destino visível depois de explorar a região.
+	decorationShift = V(0, 0, -240)
 	if def.id == "Brasa" then
 		part(Enum.PartType.Ball, V(16, 14, 16), V(0, 7, -27), Color3.fromRGB(46, 35, 39), Enum.Material.Basalt)
 		part(Enum.PartType.Cylinder, V(0.5, 8, 8), V(0, 13, -27), def.accent, Enum.Material.Neon).CFrame *= CFrame.Angles(
@@ -104,10 +108,11 @@ function B.decorate(parent, origin, def)
 		end
 		part(Enum.PartType.Ball, V(22, 4, 14), V(0, 16, -26), Color3.fromRGB(236, 243, 255))
 	end
-	-- Marco de exploração e caminho radial: tudo abaixo dos pés ou sem colisão.
+	-- Marco central preservado; entradas e superfície continuam livres.
+	decorationShift = V(0, 0, 0)
 	local _path = part(
 		Enum.PartType.Block,
-		V(8, 0.15, 58),
+		V(18, 0.1, Layout.RegionRadius * 1.6),
 		V(0, 4.1, 0),
 		def.ground:Lerp(Color3.new(1, 1, 1), 0.2),
 		Enum.Material.Cobblestone
@@ -123,7 +128,7 @@ function B.decorate(parent, origin, def)
 		local ch = player.Character
 		local root = ch and ch:FindFirstChild("HumanoidRootPart")
 		local data = Data.get(player)
-		if not data or not root or (root.Position - stone.Position).Magnitude >= 16 or not data.unlocked[def.id] then
+		if not data or not root or (root.Position - stone.Position).Magnitude >= 16 then
 			return
 		end
 		if not require(script.Parent.RegionService).requireCurrent(player, def.id, "encounter").ok then

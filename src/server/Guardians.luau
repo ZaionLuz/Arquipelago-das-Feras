@@ -44,7 +44,7 @@ function G.start()
 				not d
 				or not root
 				or (root.Position - model.PrimaryPart.Position).Magnitude > 13
-				or not d.unlocked[island.id]
+				or not require(RS.Shared.Access).check(d, island.id, "battle").ok
 				or Encounters.active(p)
 			then
 				return

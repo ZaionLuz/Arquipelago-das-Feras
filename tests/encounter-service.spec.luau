@@ -85,3 +85,10 @@ local pending=coroutine.create(function() return E.startSpecial(quitting,"phoeni
 assert(coroutine.resume(pending));removal(quitting);data[quitting]=nil;holdSave=false
 assert(coroutine.resume(pending));assert(not E.active(quitting) and emitted[quitting]==nil)
 print("PASS V7.09: reentrada durante yield, 101 capturas intercaladas = 1 concessão/débito, cooldown e desconexão na abertura")
+
+local dead=player();data[dead]=solarProfile();dead.Character.FindFirstChildOfClass=function() return {Health=0} end
+assert(not E.startSpecial(dead,"phoenix_solar"));assert(data[dead].phoenix.attempts==0 and data[dead].phoenix.nextAttemptAt==0)
+local dying=player();data[dying]=solarProfile();local health=100;dying.Character.FindFirstChildOfClass=function() return {Health=health} end
+holdSave=true;local starting=coroutine.create(function() return E.startSpecial(dying,"phoenix_solar") end);assert(coroutine.resume(starting));health=0;holdSave=false
+assert(coroutine.resume(starting));assert(not E.active(dying) and data[dying].phoenix.attempts==0 and data[dying].phoenix.nextAttemptAt==0)
+print("PASS: altar recusa morto antes da tentativa e reverte abertura interrompida por morte durante save")

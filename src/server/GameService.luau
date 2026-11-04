@@ -73,7 +73,7 @@ function A.Travel(p, id)
 		return fail(Text.ACESSO_NEGADO_AB7F08)
 	end
 	local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
-	if not def or not d.unlocked[id] or not root then
+	if not def or not root then
 		return fail(Text.DESTINO_INDISPONIVEL_06B531)
 	end
 	if not Transport.go(p, I.pos(def.idx) + Vector3.new(0, 9, 24), id) then
@@ -274,6 +274,9 @@ function A.Unlock(p, isl)
 	if not check.ok then
 		return fail(check.reason)
 	end
+	if require(RS.Shared.Config).World.FreeExploration then
+		return ok(p, "Região livre para explorar; nenhum ouro foi cobrado.")
+	end
 	if d.unlocked[isl] then
 		return fail(Text.JA_DESBLOQUEADA_118724)
 	end
@@ -345,7 +348,7 @@ function A.Battle(p, uid, isl)
 	end
 	local cr = d.creatures[uid]
 	local def = I.ById[actual]
-	if not cr or not def or not d.unlocked[isl] then
+	if not cr or not def then
 		return fail(Text.BATALHA_INVALIDA_A8AE42)
 	end
 	if lastBattle[p] and os.clock() - lastBattle[p] < 20 then

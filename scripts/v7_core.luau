@@ -100,32 +100,37 @@ do
 	assert(not Migration.run(raw))
 end
 print("PASS V7.01: migração, 6 fixtures sintéticas, 1000 perfis, idempotência e rejeição segura")
+local Config = load("src/shared/Config.luau")
 local checks = 0
-for level = 1, 100 do
-	for _, id in Bands.Order do
-		for _, purpose in
-			{ "travel", "encounter", "capture", "battle", "hatch", "shop", "habitat", "sanctuary", "unlock" }
-		do
-			local d = profile(5)
-			d.playerLevel = level
-			d.unlocked = {}
-			for _, island in Bands.Order do
-				d.unlocked[island] = true
+for _, open in { true, false } do
+	Config.World.FreeExploration = open
+	for level = 1, 100 do
+		for _, id in Bands.Order do
+			for _, purpose in
+				{ "travel", "encounter", "capture", "battle", "hatch", "shop", "habitat", "sanctuary", "unlock" }
+			do
+				local d = profile(5)
+				d.playerLevel = level
+				d.unlocked = {}
+				for _, island in Bands.Order do
+					d.unlocked[island] = true
+				end
+				d.gold = 1e6
+				local result = Access.check(d, id, purpose)
+				assert(result.ok == (open or level >= Bands.ById[id].min))
+				checks += 1
+				d.unlocked[id] = nil
+				if purpose ~= "unlock" then
+					assert(Access.check(d, id, purpose).ok == open)
+				end
+				d.legacyGrandfathered = { [id] = true }
+				d.unlocked[id] = true
+				assert(Access.check(d, id, purpose).ok)
 			end
-			d.gold = 1e6
-			local result = Access.check(d, id, purpose)
-			assert(result.ok == (level >= Bands.ById[id].min))
-			checks += 1
-			d.unlocked[id] = nil
-			if purpose ~= "unlock" then
-				assert(not Access.check(d, id, purpose).ok)
-			end
-			d.legacyGrandfathered = { [id] = true }
-			d.unlocked[id] = true
-			assert(Access.check(d, id, purpose).ok)
 		end
 	end
 end
+Config.World.FreeExploration = true
 for _, bad in { {}, 0 / 0, 123, false, "inexistente" } do
 	assert(not Access.check(profile(), bad, "travel").ok)
 end

@@ -91,8 +91,7 @@ local AMB = {
 local Bands = require(script.Parent.LevelBands)
 local M = { List = L, ById = {} }
 function M.pos(i)
-	local a = (i - 1) / #L * math.pi * 2
-	return Vector3.new(math.cos(a) * 150, 10, math.sin(a) * 150)
+	return require(script.Parent.WorldLayout).center(i)
 end
 for i, d in L do
 	d.idx = i

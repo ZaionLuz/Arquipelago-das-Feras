@@ -1,5 +1,4 @@
 --!nonstrict
-local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local RS = game:GetService("ReplicatedStorage")
 local I = require(RS.Shared.Islands)
 local C = require(RS.Shared.Creatures)
@@ -10,8 +9,7 @@ local Art = require(script.Parent.WorldArt)
 local Tokens = require(RS.Shared.ArtTokens)
 local W = {}
 function W.pos(i)
-	local a = (i - 1) / #I.List * math.pi * 2
-	return Vector3.new(math.cos(a) * 150, 10, math.sin(a) * 150)
+	return I.pos(i)
 end
 function W.build()
 	local old = workspace:FindFirstChild("Arquipelago")
@@ -21,98 +19,29 @@ function W.build()
 	local f = Instance.new("Folder")
 	f.Name = "Arquipelago"
 	f.Parent = workspace
-	for i, def in I.List do
-		local p = W.pos(i)
-		local base = Instance.new("Part")
-		base.Shape = Enum.PartType.Cylinder
-		base.Size = Vector3.new(8, 80, 80)
-		base.CFrame = CFrame.new(p) * CFrame.Angles(0, 0, math.rad(90))
-		base.Anchored = true
-		base.Color = Tokens.ramp(def.id)[3]
-		base.Material = Enum.Material.SmoothPlastic
-		base.Name = def.name
-		base.Parent = f
+	require(script.Parent.ExpeditionWorld).build(f)
+	for _, def in I.List do
+		local p = I.pos(def.idx)
 		require(script.Parent.IslandArchitecture).build(f, p, def)
 		require(script.Parent.Biomes).decorate(f, p, def)
 	end
-	for i = 1, #I.List do -- pontes ligam as ilhas em anel
-		local p1, p2 = W.pos(i), W.pos(i % #I.List + 1)
-		local mid = (p1 + p2) / 2 + Vector3.new(0, 3.6, 0)
-		local b = Instance.new("Part")
-		b.Anchored = true
-		b.Size = Vector3.new(9, 1, (p2 - p1).Magnitude)
-		b.CFrame = CFrame.lookAt(mid, mid + (p2 - p1))
-		b.Material = Enum.Material.SmoothPlastic
-		b.Color = Tokens.Ramps.Sand[3]
-		b.Parent = f
-		-- Arcos nas duas extremidades: entrar usa Travel, nunca altera a sessão só pela posição.
-		for _, target in { i, i % #I.List + 1 } do
-			local destination = I.List[target]
-			local center = W.pos(target)
-			local other = target == i and p2 or p1
-			local point = center + (other - center).Unit * 34 + Vector3.new(0, 6, 0)
-			for _, side in { -1, 1 } do
-				local column = Instance.new("Part")
-				column.Size = Vector3.new(1.4, 9, 1.4)
-				column.Position = point + Vector3.new(side * 5, 0, 0)
-				column.Anchored = true
-				column.Material = Enum.Material.Slate
-				column.Color = Tokens.ramp(destination.id)[2]
-				column.Parent = f
-			end
-			local arch = Instance.new("Part")
-			arch.Name = "Portao_" .. destination.id
-			arch.Size = Vector3.new(12, 1.5, 2)
-			arch.Position = point + Vector3.new(0, 5, 0)
-			arch.Anchored = true
-			arch.Material = Enum.Material.Sandstone
-			arch.Parent = f
-			local sign = Instance.new("BillboardGui")
-			sign.Size = UDim2.fromOffset(160, 48)
-			sign.StudsOffset = Vector3.new(0, 2, 0)
-			sign.MaxDistance = 65
-			sign.Parent = arch
-			local text = Instance.new("TextLabel")
-			text.Size = UDim2.fromScale(1, 1)
-			text.BackgroundTransparency = 1
-			text.Text = destination.name .. Text.NIVEL_44C4F0 .. destination.minLevel
-			text.Font = Tokens.Font
-			text.TextSize = 14
-			text.TextColor3 = Tokens.Ink
-			text.TextStrokeTransparency = 0.4
-			text.Parent = sign
-			local prompt = Instance.new("ProximityPrompt")
-			prompt.ActionText = Text.ENTRAR_7573BA
-			prompt.ObjectText = destination.name .. " · Nv." .. destination.minLevel
-			prompt.MaxActivationDistance = 19
-			prompt.RequiresLineOfSight = false
-			prompt.Parent = arch
-			prompt.Triggered:Connect(function(player)
-				local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-				if
-					not hrp
-					or (hrp.Position - arch.Position).Magnitude > 22
-					or require(script.Parent.EncounterService).active(player)
-				then
-					return
-				end
-				local result = require(script.Parent.GameService).Actions.Travel(player, destination.id)
-				local event = RS:FindFirstChild("WildNotice")
-				if event and not result.ok then
-					event:FireClient(player, result.msg)
-				end
-			end)
+	-- Água dividida em peças abaixo do limite de 2048 studs do Roblox.
+	for x = -1, 1 do
+		for z = -1, 1 do
+			local water = Instance.new("Part")
+			water.Name = "Mar"
+			water.Anchored = true
+			water.CanCollide = false
+			water.CanTouch = false
+			water.CanQuery = false
+			water.Size = Vector3.new(1664, 2, 1664)
+			water.Position = Vector3.new(x * 1664, -4, z * 1664)
+			water.Material = Enum.Material.Glass
+			water.Color = Tokens.Ramps.Tidal[2]
+			water.Transparency = 0.12
+			water.Parent = f
 		end
 	end
-	local w = Instance.new("Part")
-	w.Anchored = true
-	w.CanCollide = false
-	w.Size = Vector3.new(1200, 2, 1200)
-	w.Position = Vector3.new(0, -4, 0)
-	w.Material = Enum.Material.Glass
-	w.Color = Tokens.Ramps.Tidal[2]
-	w.Transparency = 0.12
-	w.Parent = f
 	local L = game:GetService("Lighting")
 	L.Brightness = 2.1
 	L.GeographicLatitude = 28

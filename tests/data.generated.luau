@@ -45,6 +45,8 @@ end}
 local M_Strings=(function()
 --!strict
 local S = {
+	OPEN_WORLD = "Exploração livre",
+	RETURN_TO_CAMP = "Retorno ao acampamento",
 	UNKNOWN_ISLAND = "Região inválida",
 	NOT_UNLOCKED = "Região ainda bloqueada",
 	LOCKED_LEVEL = "Nível do explorador insuficiente",
@@ -60,6 +62,12 @@ function S.reason(code: string): string
 	return S[code] or code
 end
 S.Text = {
+	WORLD_PATHS = "Caminhos do arquipélago",
+	WORLD_VISIT_TWO = "Visite duas regiões diferentes. Os caminhos estão livres.",
+	WORLD_COMPANY = "Companhia de jornada",
+	WORLD_CAPTURE_THREE = "Capture três feras para ampliar sua equipe.",
+	WORLD_HORIZON = "Além do horizonte",
+	WORLD_VISIT_FOUR = "Conheça quatro regiões do arquipélago.",
 	ABRINDO_A_COMPRA_5DF77F = "Abrindo a compra...",
 	ACAMPAMENTO_DO_ALVORECER_EBD2E1 = "Acampamento do Alvorecer",
 	ACARICIAR_COMPANHEIRO_6D295C = "Acariciar companheiro",
@@ -637,10 +645,11 @@ end)()
 local M_Config=(function()
 --!strict
 return {
+	World = { FreeExploration = true },
 	V7 = { EnforceIslandLevels = true, PhoenixSanctuary = true, RequireGuardian = false },
 	PhoenixMaxPerAccount = 1,
 	PhoenixRetrySeconds = 1200,
-	ProfileVersion = 5,
+	ProfileVersion = 6,
 	Assets = { PhoenixIntro = "", PhoenixCry = "", SolarAmbience = "" },
 }
 
@@ -728,6 +737,95 @@ for index, id in L.Order do
 		previous = L.Order[index - 1],
 		cost = ({ 0, 1440, 3384, 5112, 6840, 8568, 10296 })[index],
 	}
+end
+return L
+
+end)()
+local M_WorldLayout=(function()
+--!nonstrict
+-- Geometria compartilhada; servidor continua autoridade de posição/contexto.
+local L = {
+	RingRadius = 1400,
+	RegionRadius = 420,
+	SurfaceY = 14,
+	RouteWidth = 64,
+	Count = 7,
+	SanctuaryOrigin = Vector3.new(5000, 12, 5000),
+}
+local V = Vector3.new
+function L.center(index)
+	local a = (index - 1) / L.Count * math.pi * 2
+	return V(math.cos(a) * L.RingRadius, 10, math.sin(a) * L.RingRadius)
+end
+function L.route(index)
+	local a, b = L.center(index), L.center(index % L.Count + 1)
+	local direction = (b - a).Unit
+	return {
+		a = a + direction * (L.RegionRadius - 24),
+		b = b - direction * (L.RegionRadius - 24),
+		from = index,
+		to = index % L.Count + 1,
+		width = L.RouteWidth,
+	}
+end
+function L.distanceToSegment(p, a, b)
+	local delta = b - a
+	local length = delta:Dot(delta)
+	if length == 0 then
+		return (p - a).Magnitude, 0
+	end
+	local t = math.clamp((p - a):Dot(delta) / length, 0, 1)
+	return (p - (a + delta * t)).Magnitude, t
+end
+function L.detect(position)
+	if
+		typeof(position) ~= "Vector3"
+		or position.X ~= position.X
+		or position.Y ~= position.Y
+		or position.Z ~= position.Z
+	then
+		return nil
+	end
+	if math.abs(position.Y - 10) > 180 then
+		return nil
+	end
+	local flat = V(position.X, 10, position.Z)
+	for index = 1, L.Count do
+		if (flat - L.center(index)).Magnitude <= L.RegionRadius then
+			return index, "region"
+		end
+	end
+	for index = 1, L.Count do
+		local road = L.route(index)
+		local distance, t = L.distanceToSegment(flat, road.a, road.b)
+		if distance <= L.RouteWidth * 0.5 then
+			return t < 0.5 and road.from or road.to, "route"
+		end
+	end
+	return nil
+end
+function L.safePoint(index)
+	return L.center(index) + V(0, 9, 24)
+end
+function L.wildOffset(slot)
+	local positions = {
+		V(-100, 4, 70),
+		V(100, 4, 80),
+		V(-215, 4, -90),
+		V(210, 4, -150),
+		V(-70, 4, -310),
+		V(290, 4, 180),
+		V(-300, 4, 170),
+		V(75, 4, 290),
+	}
+	return positions[(slot - 1) % #positions + 1]
+end
+function L.campOffset(index)
+	local road = L.route(index)
+	return (road.a - L.center(index)) * 0.68 + V(0, 4, 0)
+end
+function L.plotCenter(index)
+	return L.SanctuaryOrigin + V(((index - 1) % 4) * 190, 0, math.floor((index - 1) / 4) * 190)
 end
 return L
 
@@ -826,8 +924,7 @@ local AMB = {
 local Bands = M_LevelBands
 local M = { List = L, ById = {} }
 function M.pos(i)
-	local a = (i - 1) / #L * math.pi * 2
-	return Vector3.new(math.cos(a) * 150, 10, math.sin(a) * 150)
+	return M_WorldLayout.center(i)
 end
 for i, d in L do
 	d.idx = i
@@ -959,10 +1056,10 @@ local S = {
 		},
 		{
 			id = "care",
-			name = Text.UM_LAR_PARA_SUAS_FERAS_224C2D,
-			text = Text.ALIMENTE_SUAS_FERAS_TRES_VEZES_C051DF,
-			stat = "feed",
-			goal = 3,
+			name = Text.WORLD_PATHS,
+			text = Text.WORLD_VISIT_TWO,
+			stat = "regionVisit",
+			goal = 2,
 			gold = 100,
 			xp = 100,
 			seals = 1,
@@ -979,10 +1076,10 @@ local S = {
 		},
 		{
 			id = "birth",
-			name = Text.A_PROXIMA_GERACAO_E30F93,
-			text = Text.CHOQUE_UM_OVO_NO_SEU_SANTUARIO_559309,
-			stat = "hatch",
-			goal = 1,
+			name = Text.WORLD_COMPANY,
+			text = Text.WORLD_CAPTURE_THREE,
+			stat = "capture",
+			goal = 3,
 			gold = 150,
 			xp = 120,
 			seals = 2,
@@ -999,10 +1096,10 @@ local S = {
 		},
 		{
 			id = "home",
-			name = Text.SANTUARIO_EM_CRESCIMENTO_8E370B,
-			text = Text.MELHORE_UM_DOS_SEUS_HABITATS_EF7888,
-			stat = "habitatUpgrade",
-			goal = 1,
+			name = Text.WORLD_HORIZON,
+			text = Text.WORLD_VISIT_FOUR,
+			stat = "regionVisit",
+			goal = 4,
 			gold = 200,
 			xp = 200,
 			seals = 3,
@@ -1315,10 +1412,103 @@ function M.run(raw)
 	if existing > 0 then
 		d.phoenix.captured = true
 	end
+
+	if d.navigation ~= nil and type(d.navigation) ~= "table" then
+		return nil, "CORRUPT_NAVIGATION"
+	end
+	if not d.navigation then
+		local visited = { Alvorecer = true }
+		for id, value in d.visited or {} do
+			if Bands.ById[id] and value == true then
+				visited[id] = true
+			end
+		end
+		d.navigation = { visited = visited, checkpoint = "Alvorecer" }
+	end
+	if type(d.navigation.visited) ~= "table" or not Bands.ById[d.navigation.checkpoint] then
+		return nil, "CORRUPT_NAVIGATION"
+	end
+	for id, value in d.navigation.visited do
+		if not Bands.ById[id] or type(value) ~= "boolean" then
+			return nil, "CORRUPT_NAVIGATION"
+		end
+	end
+	if d.sanctuary == nil then
+		d.sanctuary = {}
+		local slot = 0
+		for _, id in Bands.Order do
+			if (d.unlocked and d.unlocked[id]) or #(d.habitat and d.habitat[id] or {}) > 0 then
+				slot += 1
+				d.sanctuary[id] = { slot = slot, level = 1 }
+			end
+		end
+	end
+	if Config.World.FreeExploration then
+		d.unlocked = d.unlocked or {}
+		for _, id in Bands.Order do
+			d.unlocked[id] = true
+		end
+	end
 	d.v = Config.ProfileVersion
 	return d
 end
 return M
+
+end)()
+local M_Access=(function()
+--!nonstrict
+local Bands = M_LevelBands
+local Config = M_Config
+local A = {}
+local purposes = {
+	travel = true,
+	encounter = true,
+	capture = true,
+	battle = true,
+	hatch = true,
+	shop = true,
+	habitat = true,
+	sanctuary = true,
+	unlock = true,
+}
+function A.check(profile, id, purpose)
+	if typeof(profile) ~= "table" or typeof(id) ~= "string" or not Bands.ById[id] or not purposes[purpose] then
+		return { ok = false, reason = "UNKNOWN_ISLAND" }
+	end
+	local level = profile.playerLevel or 1
+	if typeof(level) ~= "number" or level ~= level or level < 1 or level == math.huge then
+		return { ok = false, reason = "LOCKED_LEVEL" }
+	end
+	if Config.World.FreeExploration then
+		return { ok = true, reason = "OPEN_WORLD" }
+	end
+	local band = Bands.ById[id]
+	local unlocked = profile.unlocked and profile.unlocked[id] == true
+	local grandfathered = unlocked and profile.legacyGrandfathered and profile.legacyGrandfathered[id] == true
+	if purpose ~= "unlock" and not unlocked then
+		return { ok = false, reason = "NOT_UNLOCKED" }
+	end
+	if Config.V7.EnforceIslandLevels and not grandfathered and level < band.min then
+		return { ok = false, reason = "LOCKED_LEVEL" }
+	end
+	if purpose == "unlock" then
+		if band.previous and not (profile.unlocked and profile.unlocked[band.previous]) then
+			return { ok = false, reason = "LOCKED_PREV" }
+		end
+		if
+			Config.V7.RequireGuardian
+			and band.previous
+			and not (profile.guardians and profile.guardians[band.previous])
+		then
+			return { ok = false, reason = "LOCKED_GUARDIAN" }
+		end
+		if (profile.gold or 0) < band.cost then
+			return { ok = false, reason = "LOCKED_GOLD" }
+		end
+	end
+	return { ok = true, reason = grandfathered and "LEGACY" or "OK" }
+end
+return A
 
 end)()
 local M_PhoenixQuest=(function()
@@ -1367,7 +1557,7 @@ function Q.check(profile, now)
 	if not Config.V7.PhoenixSanctuary then
 		return false, "DISABLED"
 	end
-	if (profile.playerLevel or 1) < 45 or not (profile.unlocked and profile.unlocked.Dunas) then
+	if (profile.playerLevel or 1) < 45 or not M_Access.check(profile, "Dunas", "encounter").ok then
 		return false, "REQUIREMENTS"
 	end
 	if Q.stage(profile) < 3 then
@@ -1387,66 +1577,14 @@ end
 return Q
 
 end)()
-local M_Access=(function()
---!nonstrict
-local Bands = M_LevelBands
-local Config = M_Config
-local A = {}
-local purposes = {
-	travel = true,
-	encounter = true,
-	capture = true,
-	battle = true,
-	hatch = true,
-	shop = true,
-	habitat = true,
-	sanctuary = true,
-	unlock = true,
-}
-function A.check(profile, id, purpose)
-	if typeof(profile) ~= "table" or typeof(id) ~= "string" or not Bands.ById[id] or not purposes[purpose] then
-		return { ok = false, reason = "UNKNOWN_ISLAND" }
-	end
-	local level = profile.playerLevel or 1
-	if typeof(level) ~= "number" or level ~= level or level < 1 or level == math.huge then
-		return { ok = false, reason = "LOCKED_LEVEL" }
-	end
-	local band = Bands.ById[id]
-	local unlocked = profile.unlocked and profile.unlocked[id] == true
-	local grandfathered = unlocked and profile.legacyGrandfathered and profile.legacyGrandfathered[id] == true
-	if purpose ~= "unlock" and not unlocked then
-		return { ok = false, reason = "NOT_UNLOCKED" }
-	end
-	if Config.V7.EnforceIslandLevels and not grandfathered and level < band.min then
-		return { ok = false, reason = "LOCKED_LEVEL" }
-	end
-	if purpose == "unlock" then
-		if band.previous and not (profile.unlocked and profile.unlocked[band.previous]) then
-			return { ok = false, reason = "LOCKED_PREV" }
-		end
-		if
-			Config.V7.RequireGuardian
-			and band.previous
-			and not (profile.guardians and profile.guardians[band.previous])
-		then
-			return { ok = false, reason = "LOCKED_GUARDIAN" }
-		end
-		if (profile.gold or 0) < band.cost then
-			return { ok = false, reason = "LOCKED_GOLD" }
-		end
-	end
-	return { ok = true, reason = grandfathered and "LEGACY" or "OK" }
-end
-return A
-
-end)()
 -- Migração e leases com DataStore simulado; não valida APIs ou concorrência real.
 local store={values={}}
 local function copy(x) if type(x)~="table" then return x end;local t={};for k,v in x do t[k]=copy(v) end;return t end
 function store:UpdateAsync(key,callback)
+ if self.holdBefore then coroutine.yield("BEFORE_READ") end
  if self.fail then error("falha simulada") end
  local value=callback(copy(self.values[key]))
- if value==nil then return nil end;self.values[key]=copy(value);return copy(value)
+ if value==nil then return nil end;self.values[key]=copy(value);if self.holdAfter then coroutine.yield("AFTER_WRITE") end;return copy(value)
 end
 local serial=0
 local Http={GenerateGUID=function() serial+=1;return tostring(serial) end}
@@ -1473,6 +1611,7 @@ local CaptureRules = M_CaptureRules
 local store = DSS:GetDataStore("ArquipelagoV1")
 local D = {}
 local profiles = {}
+local pending = {}
 local VERSION = M_Config.ProfileVersion
 local sessions = {}
 local Http = game:GetService("HttpService")
@@ -1486,6 +1625,7 @@ local function clone(t)
 end
 local function default()
 	local result = {
+		navigation = { visited = { Alvorecer = true }, checkpoint = "Alvorecer" },
 		v = VERSION,
 		gold = 100,
 		gems = 5,
@@ -1521,6 +1661,11 @@ local function default()
 		legacyEggPermits = {},
 		discovered = {},
 	}
+	if M_Config.World.FreeExploration then
+		for _, region in I.List do
+			result.unlocked[region.id] = true
+		end
+	end
 	assert(Grant.grant(result, "brotinho", "starter", "starter:1"))
 	assert(Grant.grant(result, "folhuco", "starter", "starter:2"))
 	return result
@@ -1714,11 +1859,19 @@ function D.validate(raw)
 end
 -- Lease gravado atomicamente no MESMO registro legado (sem trocar a chave).
 function D.load(p)
+	if pending[p] then
+		return false
+	end
+	local ticket = {}
+	pending[p] = ticket
 	local token = Http:GenerateGUID(false)
 	local raw, ok
 	for attempt = 1, 3 do
 		ok, raw = pcall(function()
 			return store:UpdateAsync("P" .. p.UserId, function(old)
+				if ticket.cancelled then
+					return nil
+				end
 				if
 					old ~= nil
 					and (typeof(old) ~= "table" or typeof(old.creatures) ~= "table" or (old.v or 1) > VERSION)
@@ -1750,6 +1903,23 @@ function D.load(p)
 		end
 		task.wait(attempt)
 	end
+	if ticket.cancelled then
+		pending[p] = nil
+		if ok and raw then
+			profiles[p] = D.validate(raw)
+			sessions[p] = {
+				token = token,
+				expires = raw._session.expires,
+				busy = false,
+				region = "Alvorecer",
+				lastSafe = "Alvorecer",
+				closing = true,
+			}
+			D.release(p)
+		end
+		return false
+	end
+	pending[p] = nil
 	if not ok or not raw then
 		p:Kick(Text.DADOS_INDISPONIVEIS_OU_SESSAO_AINDA_ATIVA_AGUARD_97BBDC)
 		return false
@@ -1834,6 +2004,9 @@ function D.save(p, release)
 	return false
 end
 function D.release(p)
+	if pending[p] then
+		pending[p].cancelled = true
+	end
 	local session = sessions[p]
 	if not session then
 		return
@@ -1854,16 +2027,16 @@ function D.saveAll()
 	end
 end
 function D.closeAll()
-	local pending = 0
+	local remaining = 0
 	for p in profiles do
-		pending += 1
+		remaining += 1
 		task.spawn(function()
 			D.release(p)
-			pending -= 1
+			remaining -= 1
 		end)
 	end
 	local deadline = os.clock() + 25
-	while pending > 0 and os.clock() < deadline do
+	while remaining > 0 and os.clock() < deadline do
 		task.wait(0.1)
 	end
 end
@@ -1873,7 +2046,7 @@ end
 local D=factory();local Other=factory()
 local old={v=3,gold=432,gems=12,creatures={u1={id="cinzelo",lv=20,xp=70},u99={id="bolhinho",lv=100,xp=3}},nextId=3,unlocked={Brasa=true,Recife=true},habitat={Brasa={"u1","u99"}},seals=4}
 local migrated=D.validate(old)
-assert(migrated.v==5 and migrated.gold==432 and migrated.gems==12 and migrated.seals==4)
+assert(migrated.v==6 and migrated.gold==432 and migrated.gems==12 and migrated.seals==4)
 assert(migrated.creatures.u1.lv==20 and migrated.creatures.u99.lv==100 and migrated.nextId==100)
 assert(migrated.sanctuary.Brasa and migrated.unlocked.Alvorecer and #migrated.habitat.Brasa==2)
 local newer=copy(migrated);newer.companion="u99";newer.playerLevel=80;newer.playerXp=100;newer.materials={Natureza=5};newer.sealStock={Rare=3};newer.sanctuary.Brasa.level=3
@@ -1888,7 +2061,7 @@ assert(D.save(a));assert(store.values.P1.gold==654)
 D.release(a);local c=who(1);assert(Other.load(c));assert(Other.get(c).gold==654)
 store.values.P1._session.token="alien";assert(not Other.save(c));assert(store.values.P1.gold==654)
 store.fail=true;local failed=who(8);assert(not D.load(failed));assert(not store.values.P8)
-print("PASS: migração v3→v5, UID, níveis, santuário, companion, inventário, snapshot, lease, sessão concorrente e falha de dados simulados")
+print("PASS: migração v3→v6, UID, níveis, santuário, companion, inventário, snapshot, lease, sessão concorrente e falha de dados simulados")
 -- V7: nenhum perfil inválido/futuro é substituído por um perfil inicial.
 store.fail=false
 for index,bad in {{v=99,creatures={u1={id="cinzelo",lv=1}},gold=888},{v=4,creatures={},gold=777},{v=4,creatures={u1={id="unknown",lv=5}},gold=666}} do
@@ -1896,7 +2069,7 @@ for index,bad in {{v=99,creatures={u1={id="cinzelo",lv=1}},gold=888},{v=4,creatu
  assert(not D.load(whoBad));assert(store.values["P"..id].gold==bad.gold and store.values["P"..id].v==bad.v)
 end
 local fresh=who(200);assert(D.load(fresh));local f=D.get(fresh)
-assert(f.unlocked.Alvorecer and not f.unlocked.Brasa and not f.unlocked.Recife)
+assert(f.unlocked.Alvorecer and f.unlocked.Brasa and f.unlocked.Pantano and f.navigation.checkpoint=="Alvorecer")
 assert(f.nextId==3 and f.creatures.u1.id=="brotinho" and f.creatures.u2.id=="folhuco")
 local legacy=copy(old);legacy.creatures={};legacy.habitat={Brasa={}};legacy.eggs={}
 for index=1,65 do legacy.creatures["u"..index]={id="cinzelo",lv=65,xp=250};table.insert(legacy.habitat.Brasa,"u"..index) end
@@ -1905,7 +2078,7 @@ local preserved=D.validate(legacy);local count=0;for _ in preserved.creatures do
 assert(count==65 and #preserved.eggs==5 and #preserved.habitat.Brasa==65)
 assert(preserved.gold==legacy.gold and preserved.creatures.u65.lv==65 and preserved.creatures.u65.xp==250)
 assert(D.save(fresh));D.release(fresh);local round=who(200);assert(D.load(round));assert(D.get(round).creatures.u1.id=="brotinho")
-print("PASS V7.01/13: corrupção/futuro intactos no storage, inicial só Alvorecer, estoques legados acima do cap e round-trip")
+print("PASS V7.01/13: corrupção/futuro intactos no storage, inicial no Alvorecer com regiões abertas, estoques legados acima do cap e round-trip")
 
 for _,field in {"sanctuary","habitat","discovered"} do
  local corrupt=copy(old)
@@ -1921,3 +2094,17 @@ print("PASS: estruturas/flags corrompidos recusados antes da escrita; timestamps
 local extras=copy(old);extras.creatures.u1.legacyCounter=123;extras.eggs={{id="cinzelo",ready=123,legacyQuality=8}};extras.materials={customLegacy=77};extras.sealStock={customLegacy=14}
 local retain=D.validate(extras);assert(retain.creatures.u1.legacyCounter==123 and retain.eggs[1].legacyQuality==8 and retain.materials.customLegacy==77 and retain.sealStock.customLegacy==14)
 print("PASS: metadados numéricos adicionais de criaturas, ovos e inventários preservados")
+
+-- Cancelamento durante carregamento, antes e depois da escrita do lease.
+for _,phase in {"Before","After"} do
+ local id=phase=="Before" and 901 or 902;local entering=who(id);store.values["P"..id]=copy(old);store["hold"..phase]=true
+ local loader=coroutine.create(function() return D.load(entering) end)
+ local ok,stage=coroutine.resume(loader);assert(ok and (stage=="BEFORE_READ" or stage=="AFTER_WRITE"))
+ D.release(entering);store["hold"..phase]=false
+ local resumed,loaded=coroutine.resume(loader);assert(resumed and loaded==false)
+ assert(D.get(entering)==nil and store.values["P"..id].gold==old.gold and store.values["P"..id]._session==nil)
+end
+-- Habitat criado fora da região inicial sobrevive ao novo round-trip.
+local remoteHabitat=D.validate(old);remoteHabitat.sanctuary.Pantano={slot=8,level=1};remoteHabitat.habitat.Pantano={"u99"};remoteHabitat.habitat.Brasa={"u1"}
+local reloaded=D.validate(remoteHabitat);assert(reloaded.unlocked.Pantano and reloaded.habitat.Pantano[1]=="u99")
+print("PASS open world: cancelamento do load antes/depois do lease sem perfil fantasma; habitat em região livre preservado")

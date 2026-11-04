@@ -15,6 +15,7 @@ local CaptureRules = require(RS.Shared.CaptureRules)
 local store = DSS:GetDataStore("ArquipelagoV1")
 local D = {}
 local profiles = {}
+local pending = {}
 local VERSION = require(RS.Shared.Config).ProfileVersion
 local sessions = {}
 local Http = game:GetService("HttpService")
@@ -28,6 +29,7 @@ local function clone(t)
 end
 local function default()
 	local result = {
+		navigation = { visited = { Alvorecer = true }, checkpoint = "Alvorecer" },
 		v = VERSION,
 		gold = 100,
 		gems = 5,
@@ -63,6 +65,11 @@ local function default()
 		legacyEggPermits = {},
 		discovered = {},
 	}
+	if require(RS.Shared.Config).World.FreeExploration then
+		for _, region in I.List do
+			result.unlocked[region.id] = true
+		end
+	end
 	assert(Grant.grant(result, "brotinho", "starter", "starter:1"))
 	assert(Grant.grant(result, "folhuco", "starter", "starter:2"))
 	return result
@@ -256,11 +263,19 @@ function D.validate(raw)
 end
 -- Lease gravado atomicamente no MESMO registro legado (sem trocar a chave).
 function D.load(p)
+	if pending[p] then
+		return false
+	end
+	local ticket = {}
+	pending[p] = ticket
 	local token = Http:GenerateGUID(false)
 	local raw, ok
 	for attempt = 1, 3 do
 		ok, raw = pcall(function()
 			return store:UpdateAsync("P" .. p.UserId, function(old)
+				if ticket.cancelled then
+					return nil
+				end
 				if
 					old ~= nil
 					and (typeof(old) ~= "table" or typeof(old.creatures) ~= "table" or (old.v or 1) > VERSION)
@@ -292,6 +307,23 @@ function D.load(p)
 		end
 		task.wait(attempt)
 	end
+	if ticket.cancelled then
+		pending[p] = nil
+		if ok and raw then
+			profiles[p] = D.validate(raw)
+			sessions[p] = {
+				token = token,
+				expires = raw._session.expires,
+				busy = false,
+				region = "Alvorecer",
+				lastSafe = "Alvorecer",
+				closing = true,
+			}
+			D.release(p)
+		end
+		return false
+	end
+	pending[p] = nil
 	if not ok or not raw then
 		p:Kick(Text.DADOS_INDISPONIVEIS_OU_SESSAO_AINDA_ATIVA_AGUARD_97BBDC)
 		return false
@@ -376,6 +408,9 @@ function D.save(p, release)
 	return false
 end
 function D.release(p)
+	if pending[p] then
+		pending[p].cancelled = true
+	end
 	local session = sessions[p]
 	if not session then
 		return
@@ -396,16 +431,16 @@ function D.saveAll()
 	end
 end
 function D.closeAll()
-	local pending = 0
+	local remaining = 0
 	for p in profiles do
-		pending += 1
+		remaining += 1
 		task.spawn(function()
 			D.release(p)
-			pending -= 1
+			remaining -= 1
 		end)
 	end
 	local deadline = os.clock() + 25
-	while pending > 0 and os.clock() < deadline do
+	while remaining > 0 and os.clock() < deadline do
 		task.wait(0.1)
 	end
 end

@@ -45,6 +45,8 @@ end}
 local M_Strings=(function()
 --!strict
 local S = {
+	OPEN_WORLD = "Exploração livre",
+	RETURN_TO_CAMP = "Retorno ao acampamento",
 	UNKNOWN_ISLAND = "Região inválida",
 	NOT_UNLOCKED = "Região ainda bloqueada",
 	LOCKED_LEVEL = "Nível do explorador insuficiente",
@@ -60,6 +62,12 @@ function S.reason(code: string): string
 	return S[code] or code
 end
 S.Text = {
+	WORLD_PATHS = "Caminhos do arquipélago",
+	WORLD_VISIT_TWO = "Visite duas regiões diferentes. Os caminhos estão livres.",
+	WORLD_COMPANY = "Companhia de jornada",
+	WORLD_CAPTURE_THREE = "Capture três feras para ampliar sua equipe.",
+	WORLD_HORIZON = "Além do horizonte",
+	WORLD_VISIT_FOUR = "Conheça quatro regiões do arquipélago.",
 	ABRINDO_A_COMPRA_5DF77F = "Abrindo a compra...",
 	ACAMPAMENTO_DO_ALVORECER_EBD2E1 = "Acampamento do Alvorecer",
 	ACARICIAR_COMPANHEIRO_6D295C = "Acariciar companheiro",
@@ -640,6 +648,95 @@ end
 return L
 
 end)()
+local M_WorldLayout=(function()
+--!nonstrict
+-- Geometria compartilhada; servidor continua autoridade de posição/contexto.
+local L = {
+	RingRadius = 1400,
+	RegionRadius = 420,
+	SurfaceY = 14,
+	RouteWidth = 64,
+	Count = 7,
+	SanctuaryOrigin = Vector3.new(5000, 12, 5000),
+}
+local V = Vector3.new
+function L.center(index)
+	local a = (index - 1) / L.Count * math.pi * 2
+	return V(math.cos(a) * L.RingRadius, 10, math.sin(a) * L.RingRadius)
+end
+function L.route(index)
+	local a, b = L.center(index), L.center(index % L.Count + 1)
+	local direction = (b - a).Unit
+	return {
+		a = a + direction * (L.RegionRadius - 24),
+		b = b - direction * (L.RegionRadius - 24),
+		from = index,
+		to = index % L.Count + 1,
+		width = L.RouteWidth,
+	}
+end
+function L.distanceToSegment(p, a, b)
+	local delta = b - a
+	local length = delta:Dot(delta)
+	if length == 0 then
+		return (p - a).Magnitude, 0
+	end
+	local t = math.clamp((p - a):Dot(delta) / length, 0, 1)
+	return (p - (a + delta * t)).Magnitude, t
+end
+function L.detect(position)
+	if
+		typeof(position) ~= "Vector3"
+		or position.X ~= position.X
+		or position.Y ~= position.Y
+		or position.Z ~= position.Z
+	then
+		return nil
+	end
+	if math.abs(position.Y - 10) > 180 then
+		return nil
+	end
+	local flat = V(position.X, 10, position.Z)
+	for index = 1, L.Count do
+		if (flat - L.center(index)).Magnitude <= L.RegionRadius then
+			return index, "region"
+		end
+	end
+	for index = 1, L.Count do
+		local road = L.route(index)
+		local distance, t = L.distanceToSegment(flat, road.a, road.b)
+		if distance <= L.RouteWidth * 0.5 then
+			return t < 0.5 and road.from or road.to, "route"
+		end
+	end
+	return nil
+end
+function L.safePoint(index)
+	return L.center(index) + V(0, 9, 24)
+end
+function L.wildOffset(slot)
+	local positions = {
+		V(-100, 4, 70),
+		V(100, 4, 80),
+		V(-215, 4, -90),
+		V(210, 4, -150),
+		V(-70, 4, -310),
+		V(290, 4, 180),
+		V(-300, 4, 170),
+		V(75, 4, 290),
+	}
+	return positions[(slot - 1) % #positions + 1]
+end
+function L.campOffset(index)
+	local road = L.route(index)
+	return (road.a - L.center(index)) * 0.68 + V(0, 4, 0)
+end
+function L.plotCenter(index)
+	return L.SanctuaryOrigin + V(((index - 1) % 4) * 190, 0, math.floor((index - 1) / 4) * 190)
+end
+return L
+
+end)()
 local M_Islands=(function()
 --!nonstrict
 local Text = M_Strings.Text
@@ -734,8 +831,7 @@ local AMB = {
 local Bands = M_LevelBands
 local M = { List = L, ById = {} }
 function M.pos(i)
-	local a = (i - 1) / #L * math.pi * 2
-	return Vector3.new(math.cos(a) * 150, 10, math.sin(a) * 150)
+	return M_WorldLayout.center(i)
 end
 for i, d in L do
 	d.idx = i
@@ -857,10 +953,11 @@ end)()
 local M_Config=(function()
 --!strict
 return {
+	World = { FreeExploration = true },
 	V7 = { EnforceIslandLevels = true, PhoenixSanctuary = true, RequireGuardian = false },
 	PhoenixMaxPerAccount = 1,
 	PhoenixRetrySeconds = 1200,
-	ProfileVersion = 5,
+	ProfileVersion = 6,
 	Assets = { PhoenixIntro = "", PhoenixCry = "", SolarAmbience = "" },
 }
 
@@ -888,6 +985,9 @@ function A.check(profile, id, purpose)
 	local level = profile.playerLevel or 1
 	if typeof(level) ~= "number" or level ~= level or level < 1 or level == math.huge then
 		return { ok = false, reason = "LOCKED_LEVEL" }
+	end
+	if Config.World.FreeExploration then
+		return { ok = true, reason = "OPEN_WORLD" }
 	end
 	local band = Bands.ById[id]
 	local unlocked = profile.unlocked and profile.unlocked[id] == true
@@ -1223,10 +1323,10 @@ local S = {
 		},
 		{
 			id = "care",
-			name = Text.UM_LAR_PARA_SUAS_FERAS_224C2D,
-			text = Text.ALIMENTE_SUAS_FERAS_TRES_VEZES_C051DF,
-			stat = "feed",
-			goal = 3,
+			name = Text.WORLD_PATHS,
+			text = Text.WORLD_VISIT_TWO,
+			stat = "regionVisit",
+			goal = 2,
 			gold = 100,
 			xp = 100,
 			seals = 1,
@@ -1243,10 +1343,10 @@ local S = {
 		},
 		{
 			id = "birth",
-			name = Text.A_PROXIMA_GERACAO_E30F93,
-			text = Text.CHOQUE_UM_OVO_NO_SEU_SANTUARIO_559309,
-			stat = "hatch",
-			goal = 1,
+			name = Text.WORLD_COMPANY,
+			text = Text.WORLD_CAPTURE_THREE,
+			stat = "capture",
+			goal = 3,
 			gold = 150,
 			xp = 120,
 			seals = 2,
@@ -1263,10 +1363,10 @@ local S = {
 		},
 		{
 			id = "home",
-			name = Text.SANTUARIO_EM_CRESCIMENTO_8E370B,
-			text = Text.MELHORE_UM_DOS_SEUS_HABITATS_EF7888,
-			stat = "habitatUpgrade",
-			goal = 1,
+			name = Text.WORLD_HORIZON,
+			text = Text.WORLD_VISIT_FOUR,
+			stat = "regionVisit",
+			goal = 4,
 			gold = 200,
 			xp = 200,
 			seals = 3,
@@ -1433,7 +1533,13 @@ function M.chance(state)
 			0.35
 		)
 	end
-	return math.clamp(Seals.chance(def.rar, foe.lv) * seal + (1 - health) * 0.45 + state.bond * 0.08, 0.05, 0.94)
+	local chance =
+		math.clamp(Seals.chance(def.rar, foe.lv) * seal + (1 - health) * 0.45 + state.bond * 0.08, 0.05, 0.94)
+	if state.explorerLevel then
+		local prepared = math.max(state.explorerLevel, pet and pet.lv or 0)
+		chance *= math.exp(-0.06 * math.max(0, foe.lv - prepared - 3))
+	end
+	return math.clamp(chance, 0.01, 0.94)
 end
 return M
 
@@ -1496,6 +1602,7 @@ function R.new(id, lv, settings)
 	end
 	foe.hp = foe.maxHp
 	return {
+		explorerLevel = settings.explorerLevel,
 		foe = foe,
 		party = {},
 		active = nil,
@@ -1823,7 +1930,7 @@ function A.Travel(p, id)
 		return fail(Text.ACESSO_NEGADO_AB7F08)
 	end
 	local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
-	if not def or not d.unlocked[id] or not root then
+	if not def or not root then
 		return fail(Text.DESTINO_INDISPONIVEL_06B531)
 	end
 	if not Transport.go(p, I.pos(def.idx) + Vector3.new(0, 9, 24), id) then
@@ -2024,6 +2131,9 @@ function A.Unlock(p, isl)
 	if not check.ok then
 		return fail(check.reason)
 	end
+	if M_Config.World.FreeExploration then
+		return ok(p, "Região livre para explorar; nenhum ouro foi cobrado.")
+	end
 	if d.unlocked[isl] then
 		return fail(Text.JA_DESBLOQUEADA_118724)
 	end
@@ -2095,7 +2205,7 @@ function A.Battle(p, uid, isl)
 	end
 	local cr = d.creatures[uid]
 	local def = I.ById[actual]
-	if not cr or not def or not d.unlocked[isl] then
+	if not cr or not def then
 		return fail(Text.BATALHA_INVALIDA_A8AE42)
 	end
 	if lastBattle[p] and os.clock() - lastBattle[p] < 20 then
@@ -2296,3 +2406,9 @@ assert(not G.Actions.Travel(a,"Pantano").ok)
 d.stats.capture=1;assert(G.Actions.ClaimStory(a,"arrival").ok)
 old=d.gold;assert(not G.Actions.ClaimStory(a,"arrival").ok and d.gold==old)
 print("PASS: ações reais em serviços simulados: construir, mover, melhorar, capacidade, propriedade, companheiro, cinco selos e capítulos sem duplicação")
+-- A compatibilidade Unlock não cobra nem concede recompensas em mundo livre.
+d.gold=0;d.playerLevel=1
+for _,region in {"Alvorecer","Brasa","Recife","Floresta","Dunas","Picos","Pantano"} do assert(G.Actions.Unlock(a,region).ok and d.gold==0) end
+assert(not G.Actions.Unlock(a,"inexistente").ok)
+a.Character={FindFirstChild=function() return {} end};assert(G.Actions.Travel(a,"Pantano").ok and d.playerLevel==1 and d.gold==0)
+print("PASS: viagens de iniciante e ação legada Unlock não exigem nível nem gastam ouro")

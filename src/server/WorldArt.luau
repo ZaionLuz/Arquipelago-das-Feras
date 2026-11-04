@@ -3,7 +3,8 @@
 local RS = game:GetService("ReplicatedStorage")
 local T = require(RS.Shared.ArtTokens)
 local I = require(RS.Shared.Islands)
-local A = { BudgetPerIsland = 190 }
+local Layout = require(RS.Shared.WorldLayout)
+local A = { BudgetPerIsland = 340 }
 local V = Vector3.new
 local function block(parent, name, size, position, color, rotation, kind)
 	local p = Instance.new(kind == "wedge" and "WedgePart" or "Part")
@@ -157,19 +158,20 @@ function A.biome(parent, center, def)
 	local ramp = T.ramp(def.id)
 	local style = T.Biomes[def.id]
 	-- Rebordo de ladrilhos e pequenos pisos interrompidos deixam legíveis o centro e as entradas.
-	for index = 1, 12 do
-		local angle = index * math.pi / 6
-		local edge = center + V(math.cos(angle) * 37, 4.03, math.sin(angle) * 37)
-		block(root, "BordaDeIlha", V(9, 0.18, 2), edge, ramp[4], CFrame.Angles(0, -angle + math.pi / 2, 0))
+	for index = 1, 24 do
+		local angle = index * math.pi / 12
+		local edge = center
+			+ V(math.cos(angle) * (Layout.RegionRadius - 4), 4.03, math.sin(angle) * (Layout.RegionRadius - 4))
+		block(root, "BordaDeIlha", V(36, 0.18, 3), edge, ramp[4], CFrame.Angles(0, -angle + math.pi / 2, 0))
 	end
-	for index = 1, 8 do
-		local angle = index * math.pi / 4 + 0.15
-		local radius = 27 + (index % 2) * 4
+	for index = 1, 20 do
+		local angle = index * math.pi / 10 + 0.15
+		local radius = 155 + (index % 3) * 85
 		shrub(root, center + V(math.cos(angle) * radius, 4.08, math.sin(angle) * radius), ramp, style, index)
 	end
-	for index = 1, 16 do
+	for index = 1, 64 do
 		local angle = index * 2.399
-		local radius = 14 + (index % 4) * 4
+		local radius = 90 + (index % 8) * 39
 		local point = center + V(math.cos(angle) * radius, 4.08, math.sin(angle) * radius)
 		if math.abs(point.X - center.X) > 7 then
 			local grass = block(
@@ -220,7 +222,7 @@ function A.build(parent)
 	-- Linhas de espuma escalonadas são geométricas, sem textura filtrada ou emissor global.
 	for index = 1, 42 do
 		local angle = index * math.pi / 21
-		local distance = 210 + (index % 3) * 28
+		local distance = Layout.RingRadius + Layout.RegionRadius + 100 + (index % 3) * 28
 		local strip = block(
 			ocean,
 			"Espuma",

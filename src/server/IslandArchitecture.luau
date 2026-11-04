@@ -1,6 +1,7 @@
 --!nonstrict
 -- Silhueta estratificada cenográfica; piso e colisão originais ficam em World.
 local T = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
+local Layout = require(game:GetService("ReplicatedStorage").Shared.WorldLayout)
 local A = {}
 local V = Vector3.new
 function A.build(parent, center, def)
@@ -24,25 +25,25 @@ function A.build(parent, center, def)
 	end
 	-- Grandes planos recortados, com bordas quentes em cima e sombras frias abaixo.
 	for tier = 1, 3 do
-		local radius = 37 - tier * 3.5
-		for side = 1, 8 do
-			local angle = side * math.pi / 4
+		local radius = Layout.RegionRadius - tier * 18
+		for side = 1, 16 do
+			local angle = side * math.pi / 8
 			slab(
-				V(24, 4.5, 9),
-				V(math.cos(angle) * radius, -tier * 4 + 1, math.sin(angle) * radius),
+				V(168, 18, 26),
+				V(math.cos(angle) * radius, -tier * 16 + 1, math.sin(angle) * radius),
 				ramp[math.max(1, 4 - tier)],
 				CFrame.Angles(0, -angle + math.pi / 2, 0.06 * (side % 2)),
 				tier == 3 and "wedge" or nil
 			)
 		end
 	end
-	slab(V(38, 8, 38), V(0, -9, 0), ramp[1], CFrame.Angles(0, math.pi / 4, 0), "wedge")
+	slab(V(630, 28, 630), V(0, -44, 0), ramp[1], CFrame.Angles(0, math.pi / 4, 0), "wedge")
 	-- Veios de cor mantêm o mesmo material fosco e não criam pontos luminosos sem motivo.
 	for index = 1, 4 do
 		local angle = index * math.pi / 2 + 0.3
 		slab(
-			V(8, 0.7, 1.4),
-			V(math.cos(angle) * 35, -3.2, math.sin(angle) * 35),
+			V(38, 1.5, 4),
+			V(math.cos(angle) * (Layout.RegionRadius - 5), -3.2, math.sin(angle) * (Layout.RegionRadius - 5)),
 			ramp[3],
 			CFrame.Angles(0, -angle + math.pi / 2, 0)
 		)

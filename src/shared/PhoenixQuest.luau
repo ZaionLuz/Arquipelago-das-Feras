@@ -43,7 +43,7 @@ function Q.check(profile, now)
 	if not Config.V7.PhoenixSanctuary then
 		return false, "DISABLED"
 	end
-	if (profile.playerLevel or 1) < 45 or not (profile.unlocked and profile.unlocked.Dunas) then
+	if (profile.playerLevel or 1) < 45 or not require(script.Parent.Access).check(profile, "Dunas", "encounter").ok then
 		return false, "REQUIREMENTS"
 	end
 	if Q.stage(profile) < 3 then

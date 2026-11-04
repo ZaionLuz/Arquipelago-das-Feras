@@ -60,6 +60,10 @@ Net.OnServerInvoke = function(p, action, a, b)
 end
 local function join(p)
 	if Data.load(p) then
+		if p.Parent ~= Players then
+			Data.release(p)
+			return
+		end
 		require(script.Parent.RegionGuard).initialize(p)
 		Mon.refresh(p)
 		World.refresh(p)

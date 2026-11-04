@@ -2,6 +2,8 @@ local Color3={fromRGB=function() return {} end}
 local M_Strings=(function()
 --!strict
 local S = {
+	OPEN_WORLD = "Exploração livre",
+	RETURN_TO_CAMP = "Retorno ao acampamento",
 	UNKNOWN_ISLAND = "Região inválida",
 	NOT_UNLOCKED = "Região ainda bloqueada",
 	LOCKED_LEVEL = "Nível do explorador insuficiente",
@@ -17,6 +19,12 @@ function S.reason(code: string): string
 	return S[code] or code
 end
 S.Text = {
+	WORLD_PATHS = "Caminhos do arquipélago",
+	WORLD_VISIT_TWO = "Visite duas regiões diferentes. Os caminhos estão livres.",
+	WORLD_COMPANY = "Companhia de jornada",
+	WORLD_CAPTURE_THREE = "Capture três feras para ampliar sua equipe.",
+	WORLD_HORIZON = "Além do horizonte",
+	WORLD_VISIT_FOUR = "Conheça quatro regiões do arquipélago.",
 	ABRINDO_A_COMPRA_5DF77F = "Abrindo a compra...",
 	ACAMPAMENTO_DO_ALVORECER_EBD2E1 = "Acampamento do Alvorecer",
 	ACARICIAR_COMPANHEIRO_6D295C = "Acariciar companheiro",
@@ -713,7 +721,13 @@ function M.chance(state)
 			0.35
 		)
 	end
-	return math.clamp(Seals.chance(def.rar, foe.lv) * seal + (1 - health) * 0.45 + state.bond * 0.08, 0.05, 0.94)
+	local chance =
+		math.clamp(Seals.chance(def.rar, foe.lv) * seal + (1 - health) * 0.45 + state.bond * 0.08, 0.05, 0.94)
+	if state.explorerLevel then
+		local prepared = math.max(state.explorerLevel, pet and pet.lv or 0)
+		chance *= math.exp(-0.06 * math.max(0, foe.lv - prepared - 3))
+	end
+	return math.clamp(chance, 0.01, 0.94)
 end
 return M
 
@@ -776,6 +790,7 @@ function R.new(id, lv, settings)
 	end
 	foe.hp = foe.maxHp
 	return {
+		explorerLevel = settings.explorerLevel,
 		foe = foe,
 		party = {},
 		active = nil,

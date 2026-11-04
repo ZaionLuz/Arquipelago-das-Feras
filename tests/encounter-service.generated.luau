@@ -2,6 +2,8 @@ local Color3={fromRGB=function() return {} end}
 local M_Strings=(function()
 --!strict
 local S = {
+	OPEN_WORLD = "Exploração livre",
+	RETURN_TO_CAMP = "Retorno ao acampamento",
 	UNKNOWN_ISLAND = "Região inválida",
 	NOT_UNLOCKED = "Região ainda bloqueada",
 	LOCKED_LEVEL = "Nível do explorador insuficiente",
@@ -17,6 +19,12 @@ function S.reason(code: string): string
 	return S[code] or code
 end
 S.Text = {
+	WORLD_PATHS = "Caminhos do arquipélago",
+	WORLD_VISIT_TWO = "Visite duas regiões diferentes. Os caminhos estão livres.",
+	WORLD_COMPANY = "Companhia de jornada",
+	WORLD_CAPTURE_THREE = "Capture três feras para ampliar sua equipe.",
+	WORLD_HORIZON = "Além do horizonte",
+	WORLD_VISIT_FOUR = "Conheça quatro regiões do arquipélago.",
 	ABRINDO_A_COMPRA_5DF77F = "Abrindo a compra...",
 	ACAMPAMENTO_DO_ALVORECER_EBD2E1 = "Acampamento do Alvorecer",
 	ACARICIAR_COMPANHEIRO_6D295C = "Acariciar companheiro",
@@ -713,7 +721,13 @@ function M.chance(state)
 			0.35
 		)
 	end
-	return math.clamp(Seals.chance(def.rar, foe.lv) * seal + (1 - health) * 0.45 + state.bond * 0.08, 0.05, 0.94)
+	local chance =
+		math.clamp(Seals.chance(def.rar, foe.lv) * seal + (1 - health) * 0.45 + state.bond * 0.08, 0.05, 0.94)
+	if state.explorerLevel then
+		local prepared = math.max(state.explorerLevel, pet and pet.lv or 0)
+		chance *= math.exp(-0.06 * math.max(0, foe.lv - prepared - 3))
+	end
+	return math.clamp(chance, 0.01, 0.94)
 end
 return M
 
@@ -776,6 +790,7 @@ function R.new(id, lv, settings)
 	end
 	foe.hp = foe.maxHp
 	return {
+		explorerLevel = settings.explorerLevel,
 		foe = foe,
 		party = {},
 		active = nil,
@@ -1095,10 +1110,11 @@ end)()
 local M_Config=(function()
 --!strict
 return {
+	World = { FreeExploration = true },
 	V7 = { EnforceIslandLevels = true, PhoenixSanctuary = true, RequireGuardian = false },
 	PhoenixMaxPerAccount = 1,
 	PhoenixRetrySeconds = 1200,
-	ProfileVersion = 5,
+	ProfileVersion = 6,
 	Assets = { PhoenixIntro = "", PhoenixCry = "", SolarAmbience = "" },
 }
 
@@ -1171,6 +1187,62 @@ end
 return G
 
 end)()
+local M_Access=(function()
+--!nonstrict
+local Bands = M_LevelBands
+local Config = M_Config
+local A = {}
+local purposes = {
+	travel = true,
+	encounter = true,
+	capture = true,
+	battle = true,
+	hatch = true,
+	shop = true,
+	habitat = true,
+	sanctuary = true,
+	unlock = true,
+}
+function A.check(profile, id, purpose)
+	if typeof(profile) ~= "table" or typeof(id) ~= "string" or not Bands.ById[id] or not purposes[purpose] then
+		return { ok = false, reason = "UNKNOWN_ISLAND" }
+	end
+	local level = profile.playerLevel or 1
+	if typeof(level) ~= "number" or level ~= level or level < 1 or level == math.huge then
+		return { ok = false, reason = "LOCKED_LEVEL" }
+	end
+	if Config.World.FreeExploration then
+		return { ok = true, reason = "OPEN_WORLD" }
+	end
+	local band = Bands.ById[id]
+	local unlocked = profile.unlocked and profile.unlocked[id] == true
+	local grandfathered = unlocked and profile.legacyGrandfathered and profile.legacyGrandfathered[id] == true
+	if purpose ~= "unlock" and not unlocked then
+		return { ok = false, reason = "NOT_UNLOCKED" }
+	end
+	if Config.V7.EnforceIslandLevels and not grandfathered and level < band.min then
+		return { ok = false, reason = "LOCKED_LEVEL" }
+	end
+	if purpose == "unlock" then
+		if band.previous and not (profile.unlocked and profile.unlocked[band.previous]) then
+			return { ok = false, reason = "LOCKED_PREV" }
+		end
+		if
+			Config.V7.RequireGuardian
+			and band.previous
+			and not (profile.guardians and profile.guardians[band.previous])
+		then
+			return { ok = false, reason = "LOCKED_GUARDIAN" }
+		end
+		if (profile.gold or 0) < band.cost then
+			return { ok = false, reason = "LOCKED_GOLD" }
+		end
+	end
+	return { ok = true, reason = grandfathered and "LEGACY" or "OK" }
+end
+return A
+
+end)()
 local M_PhoenixQuest=(function()
 --!nonstrict
 local Text = M_Strings.Text
@@ -1217,7 +1289,7 @@ function Q.check(profile, now)
 	if not Config.V7.PhoenixSanctuary then
 		return false, "DISABLED"
 	end
-	if (profile.playerLevel or 1) < 45 or not (profile.unlocked and profile.unlocked.Dunas) then
+	if (profile.playerLevel or 1) < 45 or not M_Access.check(profile, "Dunas", "encounter").ok then
 		return false, "REQUIREMENTS"
 	end
 	if Q.stage(profile) < 3 then
@@ -1235,59 +1307,6 @@ function Q.check(profile, now)
 	return true
 end
 return Q
-
-end)()
-local M_Access=(function()
---!nonstrict
-local Bands = M_LevelBands
-local Config = M_Config
-local A = {}
-local purposes = {
-	travel = true,
-	encounter = true,
-	capture = true,
-	battle = true,
-	hatch = true,
-	shop = true,
-	habitat = true,
-	sanctuary = true,
-	unlock = true,
-}
-function A.check(profile, id, purpose)
-	if typeof(profile) ~= "table" or typeof(id) ~= "string" or not Bands.ById[id] or not purposes[purpose] then
-		return { ok = false, reason = "UNKNOWN_ISLAND" }
-	end
-	local level = profile.playerLevel or 1
-	if typeof(level) ~= "number" or level ~= level or level < 1 or level == math.huge then
-		return { ok = false, reason = "LOCKED_LEVEL" }
-	end
-	local band = Bands.ById[id]
-	local unlocked = profile.unlocked and profile.unlocked[id] == true
-	local grandfathered = unlocked and profile.legacyGrandfathered and profile.legacyGrandfathered[id] == true
-	if purpose ~= "unlock" and not unlocked then
-		return { ok = false, reason = "NOT_UNLOCKED" }
-	end
-	if Config.V7.EnforceIslandLevels and not grandfathered and level < band.min then
-		return { ok = false, reason = "LOCKED_LEVEL" }
-	end
-	if purpose == "unlock" then
-		if band.previous and not (profile.unlocked and profile.unlocked[band.previous]) then
-			return { ok = false, reason = "LOCKED_PREV" }
-		end
-		if
-			Config.V7.RequireGuardian
-			and band.previous
-			and not (profile.guardians and profile.guardians[band.previous])
-		then
-			return { ok = false, reason = "LOCKED_GUARDIAN" }
-		end
-		if (profile.gold or 0) < band.cost then
-			return { ok = false, reason = "LOCKED_GOLD" }
-		end
-	end
-	return { ok = true, reason = grandfathered and "LEGACY" or "OK" }
-end
-return A
 
 end)()
 local C=M_Creatures
@@ -1433,6 +1452,10 @@ local function finish(player, session)
 end
 function E.open(player, specimen, release)
 	local d = Data.get(player)
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		return false
+	end
 	if not d then
 		return false
 	end
@@ -1457,7 +1480,7 @@ function E.open(player, specimen, release)
 		state = Rules.new(
 			specimen.id,
 			specimen.lv,
-			{ statMultiplier = specimen.statMultiplier, isLegendary = specimen.special }
+			{ statMultiplier = specimen.statMultiplier, explorerLevel = d.playerLevel, isLegendary = specimen.special }
 		),
 		guardian = specimen.guardianId,
 		seals = d.seals,
@@ -1479,6 +1502,10 @@ function E.startSpecial(player, id)
 	if id ~= "phoenix_solar" or E.active(player) then
 		return false, "ACTIVE_OR_INVALID"
 	end
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		return false, "CHARACTER_UNAVAILABLE"
+	end
 	local d = Data.get(player)
 	local ok, reason = Quest.check(d or {}, os.time())
 	if not ok then
@@ -1493,6 +1520,7 @@ function E.startSpecial(player, id)
 		return false, "DISTANCE"
 	end
 	opening[player] = true
+	local previousAttempts, previousCooldown = d.phoenix.attempts, d.phoenix.nextAttemptAt
 	local nonce = Http:GenerateGUID(false)
 	d.phoenix.encounterId = nonce
 	d.phoenix.attempts += 1
@@ -1515,10 +1543,15 @@ function E.startSpecial(player, id)
 	}, function()
 		player:SetAttribute("SolarEncounterEnded", os.time())
 	end)
-	opening[player] = nil
 	if not opened then
 		d.phoenix.encounterId = nil
+		if Data.get(player) == d then
+			d.phoenix.attempts = previousAttempts
+			d.phoenix.nextAttemptAt = previousCooldown
+			Data.save(player)
+		end
 	end
+	opening[player] = nil
 	return opened, opened and "OK" or "INTERRUPTED"
 end
 function E.active(player)
@@ -1732,3 +1765,10 @@ local pending=coroutine.create(function() return E.startSpecial(quitting,"phoeni
 assert(coroutine.resume(pending));removal(quitting);data[quitting]=nil;holdSave=false
 assert(coroutine.resume(pending));assert(not E.active(quitting) and emitted[quitting]==nil)
 print("PASS V7.09: reentrada durante yield, 101 capturas intercaladas = 1 concessão/débito, cooldown e desconexão na abertura")
+
+local dead=player();data[dead]=solarProfile();dead.Character.FindFirstChildOfClass=function() return {Health=0} end
+assert(not E.startSpecial(dead,"phoenix_solar"));assert(data[dead].phoenix.attempts==0 and data[dead].phoenix.nextAttemptAt==0)
+local dying=player();data[dying]=solarProfile();local health=100;dying.Character.FindFirstChildOfClass=function() return {Health=health} end
+holdSave=true;local starting=coroutine.create(function() return E.startSpecial(dying,"phoenix_solar") end);assert(coroutine.resume(starting));health=0;holdSave=false
+assert(coroutine.resume(starting));assert(not E.active(dying) and data[dying].phoenix.attempts==0 and data[dying].phoenix.nextAttemptAt==0)
+print("PASS: altar recusa morto antes da tentativa e reverte abertura interrompida por morte durante save")

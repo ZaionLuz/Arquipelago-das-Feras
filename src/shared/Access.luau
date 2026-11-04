@@ -21,6 +21,9 @@ function A.check(profile, id, purpose)
 	if typeof(level) ~= "number" or level ~= level or level < 1 or level == math.huge then
 		return { ok = false, reason = "LOCKED_LEVEL" }
 	end
+	if Config.World.FreeExploration then
+		return { ok = true, reason = "OPEN_WORLD" }
+	end
 	local band = Bands.ById[id]
 	local unlocked = profile.unlocked and profile.unlocked[id] == true
 	local grandfathered = unlocked and profile.legacyGrandfathered and profile.legacyGrandfathered[id] == true

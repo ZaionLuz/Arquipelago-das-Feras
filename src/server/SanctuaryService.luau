@@ -5,6 +5,7 @@ local Data = require(script.Parent.DataService)
 local I = require(RS.Shared.Islands)
 local Rules = require(RS.Shared.SanctuaryRules)
 local Art = require(script.Parent.WorldArt)
+local Layout = require(RS.Shared.WorldLayout)
 local Tokens = require(RS.Shared.ArtTokens)
 local S = {}
 local plots = {}
@@ -33,7 +34,7 @@ function S.ensure(player)
 		index += 1
 	end
 	used[index] = true
-	local center = V(((index - 1) % 4) * 190, 12, 850 + math.floor((index - 1) / 4) * 190)
+	local center = Layout.plotCenter(index)
 	local root = workspace:FindFirstChild("Santuarios") or Instance.new("Folder", workspace)
 	root.Name = "Santuarios"
 	local folder = Instance.new("Folder")
@@ -174,6 +175,14 @@ function S.refresh(player)
 		text.Parent = label
 		Art.habitat(zone, pos, id)
 	end
+end
+function S.contains(player, position)
+	local plot = plots[player]
+	if not plot then
+		return false
+	end
+	local d = position - plot.center
+	return math.abs(d.X) <= 72 and math.abs(d.Z) <= 72 and math.abs(d.Y) <= 90
 end
 function S.home(player)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")

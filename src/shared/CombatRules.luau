@@ -55,6 +55,7 @@ function R.new(id, lv, settings)
 	end
 	foe.hp = foe.maxHp
 	return {
+		explorerLevel = settings.explorerLevel,
 		foe = foe,
 		party = {},
 		active = nil,

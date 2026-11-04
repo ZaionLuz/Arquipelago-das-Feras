@@ -34,3 +34,9 @@ assert(not G.Actions.Travel(a,"Pantano").ok)
 d.stats.capture=1;assert(G.Actions.ClaimStory(a,"arrival").ok)
 old=d.gold;assert(not G.Actions.ClaimStory(a,"arrival").ok and d.gold==old)
 print("PASS: ações reais em serviços simulados: construir, mover, melhorar, capacidade, propriedade, companheiro, cinco selos e capítulos sem duplicação")
+-- A compatibilidade Unlock não cobra nem concede recompensas em mundo livre.
+d.gold=0;d.playerLevel=1
+for _,region in {"Alvorecer","Brasa","Recife","Floresta","Dunas","Picos","Pantano"} do assert(G.Actions.Unlock(a,region).ok and d.gold==0) end
+assert(not G.Actions.Unlock(a,"inexistente").ok)
+a.Character={FindFirstChild=function() return {} end};assert(G.Actions.Travel(a,"Pantano").ok and d.playerLevel==1 and d.gold==0)
+print("PASS: viagens de iniciante e ação legada Unlock não exigem nível nem gastam ouro")

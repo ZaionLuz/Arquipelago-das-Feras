@@ -124,6 +124,8 @@ end)()
 local M_Strings=(function()
 --!strict
 local S = {
+	OPEN_WORLD = "Exploração livre",
+	RETURN_TO_CAMP = "Retorno ao acampamento",
 	UNKNOWN_ISLAND = "Região inválida",
 	NOT_UNLOCKED = "Região ainda bloqueada",
 	LOCKED_LEVEL = "Nível do explorador insuficiente",
@@ -139,6 +141,12 @@ function S.reason(code: string): string
 	return S[code] or code
 end
 S.Text = {
+	WORLD_PATHS = "Caminhos do arquipélago",
+	WORLD_VISIT_TWO = "Visite duas regiões diferentes. Os caminhos estão livres.",
+	WORLD_COMPANY = "Companhia de jornada",
+	WORLD_CAPTURE_THREE = "Capture três feras para ampliar sua equipe.",
+	WORLD_HORIZON = "Além do horizonte",
+	WORLD_VISIT_FOUR = "Conheça quatro regiões do arquipélago.",
 	ABRINDO_A_COMPRA_5DF77F = "Abrindo a compra...",
 	ACAMPAMENTO_DO_ALVORECER_EBD2E1 = "Acampamento do Alvorecer",
 	ACARICIAR_COMPANHEIRO_6D295C = "Acariciar companheiro",
@@ -613,10 +621,10 @@ local S = {
 		},
 		{
 			id = "care",
-			name = Text.UM_LAR_PARA_SUAS_FERAS_224C2D,
-			text = Text.ALIMENTE_SUAS_FERAS_TRES_VEZES_C051DF,
-			stat = "feed",
-			goal = 3,
+			name = Text.WORLD_PATHS,
+			text = Text.WORLD_VISIT_TWO,
+			stat = "regionVisit",
+			goal = 2,
 			gold = 100,
 			xp = 100,
 			seals = 1,
@@ -633,10 +641,10 @@ local S = {
 		},
 		{
 			id = "birth",
-			name = Text.A_PROXIMA_GERACAO_E30F93,
-			text = Text.CHOQUE_UM_OVO_NO_SEU_SANTUARIO_559309,
-			stat = "hatch",
-			goal = 1,
+			name = Text.WORLD_COMPANY,
+			text = Text.WORLD_CAPTURE_THREE,
+			stat = "capture",
+			goal = 3,
 			gold = 150,
 			xp = 120,
 			seals = 2,
@@ -653,10 +661,10 @@ local S = {
 		},
 		{
 			id = "home",
-			name = Text.SANTUARIO_EM_CRESCIMENTO_8E370B,
-			text = Text.MELHORE_UM_DOS_SEUS_HABITATS_EF7888,
-			stat = "habitatUpgrade",
-			goal = 1,
+			name = Text.WORLD_HORIZON,
+			text = Text.WORLD_VISIT_FOUR,
+			stat = "regionVisit",
+			goal = 4,
 			gold = 200,
 			xp = 200,
 			seals = 3,
@@ -771,7 +779,7 @@ assert(SR.available(occupied,1,"h1"))
 assert(SR.capacity({slots=4},{level=3})==8)
 local d={storyClaimed={},stats={capture=1}}
 assert(Story.canClaim(d,"arrival"));assert(not Story.canClaim(d,"care"))
-d.storyClaimed.arrival=true;d.stats.feed=3;assert(Story.canClaim(d,"care"))
+d.storyClaimed.arrival=true;d.stats.feed=3;assert(not Story.canClaim(d,"care"));d.stats.regionVisit=2;assert(Story.canClaim(d,"care"))
 for _,id in Capture.SealOrder do
  local seal=Capture.Seals[id];assert(seal.cost>0 and seal.multiplier>=1 and seal.level>=1)
 end

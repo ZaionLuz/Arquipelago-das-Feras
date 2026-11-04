@@ -12,7 +12,7 @@ assert(SR.available(occupied,1,"h1"))
 assert(SR.capacity({slots=4},{level=3})==8)
 local d={storyClaimed={},stats={capture=1}}
 assert(Story.canClaim(d,"arrival"));assert(not Story.canClaim(d,"care"))
-d.storyClaimed.arrival=true;d.stats.feed=3;assert(Story.canClaim(d,"care"))
+d.storyClaimed.arrival=true;d.stats.feed=3;assert(not Story.canClaim(d,"care"));d.stats.regionVisit=2;assert(Story.canClaim(d,"care"))
 for _,id in Capture.SealOrder do
  local seal=Capture.Seals[id];assert(seal.cost>0 and seal.multiplier>=1 and seal.level>=1)
 end
