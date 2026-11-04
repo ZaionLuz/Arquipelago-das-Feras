@@ -1,6 +1,7 @@
 --!nonstrict
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local I = require(game:GetService("ReplicatedStorage").Shared.Islands)
+local Art = require(script.Parent.WorldArt)
 local C = {}
 function C.build()
 	local parent = Instance.new("Model")
@@ -59,5 +60,6 @@ function C.build()
 			Enum.PartType.Ball
 		)
 	end
+	Art.camp(parent, center)
 end
 return C

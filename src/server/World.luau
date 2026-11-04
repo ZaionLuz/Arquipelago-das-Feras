@@ -6,6 +6,8 @@ local C = require(RS.Shared.Creatures)
 local MF = require(RS.Shared.ModelFactory)
 local Data = require(script.Parent.DataService)
 local Sanctuary = require(script.Parent.SanctuaryService)
+local Art = require(script.Parent.WorldArt)
+local Tokens = require(RS.Shared.ArtTokens)
 local W = {}
 function W.pos(i)
 	local a = (i - 1) / #I.List * math.pi * 2
@@ -26,8 +28,8 @@ function W.build()
 		base.Size = Vector3.new(8, 80, 80)
 		base.CFrame = CFrame.new(p) * CFrame.Angles(0, 0, math.rad(90))
 		base.Anchored = true
-		base.Color = def.ground
-		base.Material = Enum.Material.Slate
+		base.Color = Tokens.ramp(def.id)[3]
+		base.Material = Enum.Material.SmoothPlastic
 		base.Name = def.name
 		base.Parent = f
 		require(script.Parent.IslandArchitecture).build(f, p, def)
@@ -40,8 +42,8 @@ function W.build()
 		b.Anchored = true
 		b.Size = Vector3.new(9, 1, (p2 - p1).Magnitude)
 		b.CFrame = CFrame.lookAt(mid, mid + (p2 - p1))
-		b.Material = Enum.Material.WoodPlanks
-		b.Color = Color3.fromRGB(150, 105, 60)
+		b.Material = Enum.Material.SmoothPlastic
+		b.Color = Tokens.Ramps.Sand[3]
 		b.Parent = f
 		-- Arcos nas duas extremidades: entrar usa Travel, nunca altera a sessão só pela posição.
 		for _, target in { i, i % #I.List + 1 } do
@@ -55,7 +57,7 @@ function W.build()
 				column.Position = point + Vector3.new(side * 5, 0, 0)
 				column.Anchored = true
 				column.Material = Enum.Material.Slate
-				column.Color = destination.ground
+				column.Color = Tokens.ramp(destination.id)[2]
 				column.Parent = f
 			end
 			local arch = Instance.new("Part")
@@ -74,9 +76,9 @@ function W.build()
 			text.Size = UDim2.fromScale(1, 1)
 			text.BackgroundTransparency = 1
 			text.Text = destination.name .. Text.NIVEL_44C4F0 .. destination.minLevel
-			text.Font = Enum.Font.GothamBold
+			text.Font = Tokens.Font
 			text.TextSize = 14
-			text.TextColor3 = Color3.fromRGB(255, 222, 150)
+			text.TextColor3 = Tokens.Ink
 			text.TextStrokeTransparency = 0.4
 			text.Parent = sign
 			local prompt = Instance.new("ProximityPrompt")
@@ -108,34 +110,40 @@ function W.build()
 	w.Size = Vector3.new(1200, 2, 1200)
 	w.Position = Vector3.new(0, -4, 0)
 	w.Material = Enum.Material.Glass
-	w.Color = Color3.fromRGB(60, 140, 210)
-	w.Transparency = 0.35
+	w.Color = Tokens.Ramps.Tidal[2]
+	w.Transparency = 0.12
 	w.Parent = f
 	local L = game:GetService("Lighting")
-	L.Brightness = 2
-	L.EnvironmentDiffuseScale = 0.6
-	L.EnvironmentSpecularScale = 0.4
+	L.Brightness = 2.1
+	L.GeographicLatitude = 28
+	L.ShadowSoftness = 0.12
+	L.Ambient = Tokens.Ramps.Sky[2]
+	L.OutdoorAmbient = Tokens.Ramps.Metal[3]
+	L.EnvironmentDiffuseScale = 0.5
+	L.EnvironmentSpecularScale = 0.15
 	L.ClockTime = 14
 	L.GlobalShadows = true
 	local at = Instance.new("Atmosphere")
-	at.Density = 0.25
-	at.Haze = 1.2
-	at.Color = Color3.fromRGB(200, 190, 255)
+	at.Density = 0.18
+	at.Haze = 0.9
+	at.Color = Tokens.Ramps.Sky[4]
 	at.Parent = L
 	local bl = Instance.new("BloomEffect")
-	bl.Intensity = 0.5
-	bl.Size = 24
+	bl.Intensity = 0.12
+	bl.Size = 12
 	bl.Threshold = 1.8
 	bl.Parent = L
 	local cc = Instance.new("ColorCorrectionEffect")
-	cc.Saturation = 0.2
-	cc.Contrast = 0.08
+	cc.Saturation = 0.05
+	cc.Contrast = 0.1
 	cc.Parent = L
 	local s = Instance.new("SpawnLocation")
 	s.Anchored = true
 	s.Size = Vector3.new(10, 1, 10)
 	s.Position = W.pos(1) + Vector3.new(0, 5, 30)
 	s.Parent = f
+	Art.recolor(f)
+	Art.build(f)
 end
 function W.refresh(p)
 	local root = workspace:FindFirstChild("Criaturas") or Instance.new("Folder", workspace)
@@ -191,7 +199,7 @@ function W.refresh(p)
 				if d.pass and d.pass.Aura then
 					local h = Instance.new("Highlight")
 					h.FillTransparency = 1
-					h.OutlineColor = Color3.fromRGB(255, 215, 0)
+					h.OutlineColor = Tokens.Accent
 					h.Parent = m
 				end
 				m:SetAttribute("OwnerUserId", p.UserId)
