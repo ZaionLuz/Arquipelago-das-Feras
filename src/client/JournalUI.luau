@@ -13,6 +13,17 @@ local rarity = 0
 local island = 0
 local element = 0
 local search = ""
+function J.select(id)
+	if not C.ById[id] then
+		return false
+	end
+	selected = id
+	rarity = 0
+	island = 0
+	element = 0
+	search = ""
+	return true
+end
 local function frame(parent, height)
 	local f = Instance.new("Frame")
 	f.Size = UDim2.new(1, -8, 0, height)

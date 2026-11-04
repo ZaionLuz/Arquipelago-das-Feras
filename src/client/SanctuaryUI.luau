@@ -19,6 +19,11 @@ function U.render(parent, d, call, render)
 	local info = card(70)
 	local t = Theme.label(info, Text.SEU_SANTUARIO_9_POSICOES_SELECIONE_UMA_POSICAO_E_400064, 14)
 	t.Size = UDim2.fromScale(1, 1)
+	local production = card(48)
+	local collect = Theme.button(production, "Recolher suprimentos da base", function()
+		call("Collect")
+	end)
+	collect.Size = UDim2.fromScale(1, 1)
 	local travel = card(48)
 	local home = Theme.button(travel, Text.VISITAR_MEU_SANTUARIO_A636DA, function()
 		call("Home")
@@ -107,6 +112,41 @@ function U.render(parent, d, call, render)
 			b.Size = UDim2.new(1 / #buttons, -8, 0, 48)
 			b.Position = UDim2.new((k - 1) / #buttons, 3, 1, -54)
 		end
+	end
+	local ids = {}
+	for uid in d.creatures do
+		table.insert(ids, uid)
+	end
+	table.sort(ids)
+	local destination
+	for id, entry in d.sanctuary do
+		if entry.slot == slot then
+			destination = id
+		end
+	end
+	local C = require(RS.Shared.Creatures)
+	for _, uid in ids do
+		local creature = d.creatures[uid]
+		local f = card(108)
+		local label = Theme.label(f, C.ById[creature.id].name .. " · Nv." .. creature.lv .. " · cuidado opcional", 14)
+		label.Size = UDim2.new(1, -16, 0, 48)
+		label.Position = UDim2.fromOffset(8, 4)
+		local feed = Theme.button(f, "Cuidar · " .. (creature.lv * 20) .. " ouro", function()
+			call("Feed", uid)
+		end)
+		feed.Size = UDim2.new(0.5, -8, 0, 44)
+		feed.Position = UDim2.new(0, 4, 1, -50)
+		feed.Active = creature.lv < 100
+		feed.Selectable = feed.Active
+		local place = Theme.button(f, destination and "Pôr em " .. destination or "Selecione habitat", function()
+			if destination then
+				call("Place", uid, destination)
+			end
+		end)
+		place.Size = UDim2.new(0.5, -8, 0, 44)
+		place.Position = UDim2.new(0.5, 4, 1, -50)
+		place.Active = destination ~= nil
+		place.Selectable = place.Active
 	end
 end
 return U

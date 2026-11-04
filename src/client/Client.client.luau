@@ -34,7 +34,6 @@ local SanctuaryUI = require(script.Parent.SanctuaryUI)
 local Story = require(RS.Shared.Story)
 local Progression = require(RS.Shared.Progression)
 local CaptureRules = require(RS.Shared.CaptureRules)
-local Strings = require(RS.Shared.Strings)
 local Bands = require(RS.Shared.LevelBands)
 local LocalPlayer = Players.LocalPlayer
 LocalPlayer:SetAttribute("GraphicsQuality", Text.MEDIO_4F48C1)
@@ -446,31 +445,16 @@ render = function()
 	objective.Text = objectiveChapter
 			and (objectiveChapter.name .. " • " .. Story.progress(S, objectiveChapter) .. "/" .. objectiveChapter.goal)
 		or Text.PRIMEIRA_EXPEDICAO_CONCLUIDA_CONTINUE_EXPLORANDO_04DB58
-	local nextIsland
-	for _, id in Bands.Order do
-		if not S.unlocked[id] then
-			nextIsland = I.ById[id]
-			break
-		end
-	end
-	if nextIsland then
-		objective.Text = nextIsland.name
-			.. Text.FALTAM_1A9B57
-			.. math.max(0, nextIsland.minLevel - S.playerLevel)
-			.. Text.NIVEIS_769F71
-			.. nextIsland.cost
-			.. Text.OURO_6C9D60
+	local regionId = LocalPlayer:GetAttribute("RegionId") or S.region or "Alvorecer"
+	local current = I.ById[regionId]
+	if current then
+		local b = Bands.ById[regionId]
+		objective.Text = current.name .. " · feras " .. b.min .. "–" .. b.max .. " · exploração livre"
 	end
 	objective.Visible = not drawerOpen and msg.Text == ""
 	if tab == Text.FERAS_EF033A then
 		for uid, cr in S.creatures do
 			row(crText(cr), {
-				{
-					Text.ALIMENTAR_14F041,
-					function()
-						call("Feed", uid)
-					end,
-				},
 				{
 					S.companion == uid and Text.GUARDAR_A0B626 or Text.COMPANHEIRO_FDBCE5,
 					function()
@@ -478,15 +462,11 @@ render = function()
 					end,
 				},
 				{
-					Text.POR_944529 .. isl,
+					"Ver no bestiário",
 					function()
-						call("Place", uid, isl)
-					end,
-				},
-				{
-					Text.TREINO_172166,
-					function()
-						call("Battle", uid, isl)
+						Journal.select(cr.id)
+						tab = Text.BESTIARIO_65A46C
+						render()
 					end,
 				},
 			}, cr)
@@ -636,21 +616,22 @@ render = function()
 			local band = Bands.ById[def.id]
 			local state = S.access and S.access[def.id]
 				or { ok = false, reason = "NOT_UNLOCKED", unlockReason = "NOT_UNLOCKED" }
+			local seen = S.navigation and S.navigation.visited[def.id]
 			local text = def.name
-				.. Text.NV_MIN_EC7398
-				.. def.minLevel
-				.. Text.VOCE_3A71A4
-				.. S.playerLevel
-				.. Text.SELVAGENS_492B94
+				.. (def.id == isl and " · selecionada" or "")
+				.. " · "
+				.. (seen and "Visitada" or "Por descobrir")
+				.. "\nFeras "
 				.. band.min
 				.. "–"
 				.. band.max
-				.. Text.GUARDIAO_6B7FE6
+				.. " · Guardião "
 				.. band.guardian
-				.. " · "
-				.. def.cost
-				.. Text.OURO_028C29
-				.. Strings.reason(S.unlocked[def.id] and state.reason or state.unlockReason)
+				.. "\nExploração livre · "
+				.. (
+					S.playerLevel < band.min and "PERIGO: inimigos acima do seu nível"
+					or "Equipe preparada para esta região"
+				)
 			local acts = {}
 			if state.ok then
 				acts = {
@@ -668,13 +649,6 @@ render = function()
 						end,
 					},
 				}
-			elseif not S.unlocked[def.id] then
-				acts = { {
-					Text.DESBLOQUEAR_539711,
-					function()
-						call("Unlock", def.id)
-					end,
-				} }
 			end
 			local card = row(text, acts)
 			local track = mk(
@@ -804,7 +778,13 @@ for i, name in tabs do
 	local b = mk("TextButton", {
 		Position = UDim2.fromScale(((i - 1) % 4) / 4, math.floor((i - 1) / 4) / math.ceil(#tabs / 4)),
 		Size = UDim2.fromScale(1 / 4, 1 / math.ceil(#tabs / 4)),
-		Text = name,
+		Text = ({
+			Feras = "Equipe",
+			["Santuário"] = "Acampamento",
+			Ilhas = "Regiões",
+			Ovos = "Criação",
+			["Missões"] = "Diário",
+		})[name] or name,
 		TextScaled = true,
 		Font = Theme.Font,
 		BackgroundColor3 = Theme.Card,
@@ -816,17 +796,28 @@ for i, name in tabs do
 		render()
 	end)
 end
+LocalPlayer:GetAttributeChangedSignal("RegionId"):Connect(function()
+	if S and not inFlight then
+		task.defer(function()
+			if not inFlight then
+				call("Get")
+			end
+		end)
+	end
+end)
+
 local collect = mk("TextButton", {
 	Position = UDim2.new(1, -94, 0, 8),
 	Size = UDim2.fromOffset(86, 44),
-	Text = Text.COLETAR_199B16,
+	Text = "Mapa",
 	TextScaled = true,
 	Font = Theme.Font,
 	BackgroundColor3 = Theme.Accent,
 	TextColor3 = Theme.Panel,
 }, gui)
 collect.Activated:Connect(function()
-	call("Collect")
+	tab = Text.ILHAS_577072
+	setDrawer(true)
 end)
 task.spawn(function()
 	while true do
@@ -944,39 +935,39 @@ end)
 -- Tutorial guiado: cada passo some quando o objetivo é cumprido; o progresso vem dos stats salvos.
 local TUT = {
 	{
-		Text.COLETE_OURO_OU_ENCONTRE_UMA_FERA_SELVAGEM_ABRA_M_40C94E,
+		"Abra o Mapa e siga por um caminho. Todas as regiões podem ser exploradas.",
 		function()
 			return collect
 		end,
 		function(s)
-			return (s.stats.collect or 0) >= 1
+			return (s.stats.regionVisit or 1) >= 2
 		end,
 	},
 	{
-		Text.NA_ABA_FERAS_TOQUE_EM_ALIMENTAR_PARA_EVOLUIR_UMA_2E587F,
+		"Escolha um companheiro na aba Equipe para acompanhar sua jornada.",
 		function()
 			return tabBtn.Feras
 		end,
 		function(s)
-			return (s.stats.feed or 0) >= 1
+			return s.companion ~= nil
 		end,
 	},
 	{
-		Text.NA_ABA_OVOS_ESCOLHA_2_FERAS_E_TOQUE_CRUZAR_518B3E,
-		function()
-			return tabBtn.Ovos
-		end,
-		function(s)
-			return (s.stats.breed or 0) >= 1
-		end,
-	},
-	{
-		Text.APROXIME_SE_DE_UMA_FERA_SELVAGEM_ESCOLHA_LUTAR_C_CD5B93,
+		"Aproxime-se de uma fera e experimente a batalha ou captura.",
 		function()
 			return toggle
 		end,
 		function(s)
 			return (s.stats.fight or 0) >= 1
+		end,
+	},
+	{
+		"Use seus selos para conquistar seu primeiro vínculo selvagem.",
+		function()
+			return toggle
+		end,
+		function(s)
+			return (s.stats.capture or 0) >= 1
 		end,
 	},
 	{
