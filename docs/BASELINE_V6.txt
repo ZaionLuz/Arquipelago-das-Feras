@@ -1,0 +1,17 @@
+PASS: Rojo paths, JSON, 30 espécies e catálogos originais preservados
+PASS: 30 designs próprios, sem IDs ausentes ou órfãos
+PASS: todos os IDs legados preservados; somente fenix adicionada
+PASS: seis IDs de ilha preservados e Alvorecer adicionado
+PASS: fichas e personalidades das 30 espécies integradas
+PASS: fixture portátil de IDs anteriores preservada
+PASS: sintaxe de 55 arquivos Luau
+PASS	900	pares; sorteios	27000	estágios; híbridos	0.2517
+PASS: Fênix adulta em todos os níveis; estágio 4 bloqueado; probabilidades de captura limitadas
+PASS: combate/captura; 900 pares de dano; 150 encontros; inválidos sem mutação; cooldown, fim, equipe, selos e limites
+PASS: protocolo do encontro: token, versão, propriedade, débito único, concessão única, recompensa única, timeout e saída
+PASS: estoque de selo separado, guardião incapturável e bônus de desafio único
+PASS: 90 modelos em stub estrutural (sem render/física); máximo 49 partes
+PASS: progressão até 100, 9 posições únicas, sobreposição, validação, capacidade, capítulos e cinco receitas
+PASS: efeito de selo elemental, raro e ancestral depende das condições do encontro
+PASS: migração v3→v4, UID, níveis, santuário, companion, inventário, snapshot, lease, sessão concorrente e falha de dados simulados
+PASS: ações reais em serviços simulados: construir, mover, melhorar, capacidade, propriedade, companheiro, cinco selos e capítulos sem duplicação
