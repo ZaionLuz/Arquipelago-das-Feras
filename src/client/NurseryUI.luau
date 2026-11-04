@@ -2,16 +2,17 @@
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local RS = game:GetService("ReplicatedStorage")
 local C = require(RS.Shared.Creatures)
-local E = require(RS.Shared.Elements)
 local Balance = require(RS.Shared.Economy)
 local Preview = require(script.Parent.CollectionUI)
+local Theme = require(script.Parent.UITheme)
+local Icons = require(script.Parent.PixelIcons)
 local N = {}
 local function frame(parent, height)
 	local f = Instance.new("Frame")
 	f.Size = UDim2.new(1, -12, 0, height)
-	f.BackgroundColor3 = Color3.fromRGB(40, 40, 73)
+	f.BackgroundColor3 = Theme.Card
 	f.Parent = parent
-	Instance.new("UICorner", f).CornerRadius = UDim.new(0, 14)
+	Theme.panel(f)
 	return f
 end
 local function text(parent, name, value, pos, size)
@@ -21,10 +22,10 @@ local function text(parent, name, value, pos, size)
 	t.Position = pos
 	t.Size = size
 	t.BackgroundTransparency = 1
-	t.TextColor3 = Color3.new(1, 1, 1)
+	t.TextColor3 = Theme.Ink
 	t.TextSize = 14
 	t.TextWrapped = true
-	t.Font = Enum.Font.GothamBold
+	t.Font = Theme.Font
 	t.Parent = parent
 	return t
 end
@@ -33,14 +34,16 @@ local function button(parent, name, value, x, callback)
 	b.Name = name
 	b.Text = value
 	b.Position = UDim2.fromScale(x, 0.72)
-	b.Size = UDim2.fromScale(0.31, 0.24)
-	b.BackgroundColor3 = Color3.fromRGB(245, 186, 73)
-	b.TextColor3 = Color3.fromRGB(25, 25, 50)
-	b.Font = Enum.Font.GothamBold
+	b.Size = UDim2.new(0.31, 0, 0, 44)
+	b.BackgroundColor3 = Theme.Tokens.Ramps.Sand[2]
+	b.TextColor3 = Theme.Ink
+	b.Font = Theme.Font
 	b.TextSize = 14
 	b.Parent = parent
 	b.Activated:Connect(callback)
-	Instance.new("UICorner", b)
+	b.Active = true
+	b.Selectable = true
+	Theme.bind(b)
 	return b
 end
 local function enabled(b, yes)
@@ -50,28 +53,43 @@ local function enabled(b, yes)
 	b.BackgroundTransparency = yes and 0 or 0.65
 end
 function N.egg(parent, def, left, hatch, speed)
-	local f = frame(parent, 154)
+	local f = frame(parent, 176)
 	f.Name = "IncubatingEgg"
 	f:SetAttribute("ReadyClock", os.clock() + left)
 	local v = Instance.new("ViewportFrame")
 	v.Size = UDim2.fromScale(0.3, 1)
 	v.BackgroundTransparency = 1
-	v.Ambient = Color3.fromRGB(200, 200, 200)
+	v.Ambient = Theme.Tokens.Ramps.Metal[3]
+	v.LightColor = Theme.Ink
+	v.LightDirection = Vector3.new(-1, -1, -1)
 	v.Parent = f
 	local egg = Instance.new("Part")
 	egg.Shape = Enum.PartType.Ball
 	egg.Size = Vector3.new(3, 4, 3)
 	egg.Anchored = true
 	egg.CanCollide = false
-	egg.Color = E.Color[def.el]
+	egg.Color = Theme.Tokens.Elements[def.el][4]
 	egg.Material = Enum.Material.SmoothPlastic
 	egg.Parent = v
+	for index = 1, 4 do
+		local mark = Instance.new("Part")
+		mark.Size = Vector3.new(0.32, 0.32, 0.08)
+		mark.CFrame = CFrame.new((index % 2 == 0 and 1 or -1) * 0.55, (math.floor((index - 1) / 2) - 0.5) * 1.0, 1.4)
+		mark.Anchored = true
+		mark.CanCollide = false
+		mark.CanQuery = false
+		mark.CanTouch = false
+		mark.Color = Theme.Tokens.Elements[def.el][2]
+		mark.Parent = v
+	end
+	local icon = Icons.draw(f, "Egg", 16, Theme.Tokens.Elements[def.el])
+	icon.Position = UDim2.fromOffset(8, 8)
 	local gem = Instance.new("Part")
 	gem.Shape = Enum.PartType.Ball
 	gem.Size = Vector3.new(0.8, 1, 0.5)
 	gem.Position = Vector3.new(0, 0.3, 1.4)
 	gem.Anchored = true
-	gem.Color = def.hybrid and E.Color[def.hybrid[2]] or Color3.fromRGB(255, 237, 174)
+	gem.Color = def.hybrid and Theme.Tokens.Elements[def.hybrid[2]][3] or Theme.Ink
 	gem.Parent = v
 	local camera = Instance.new("Camera")
 	camera.CFrame = CFrame.lookAt(Vector3.new(4, 2, 9), Vector3.zero)
@@ -138,8 +156,8 @@ function N.parents(parent, a, b, outcomes, available, breed)
 		UDim2.fromScale(0.94, 0.14)
 	)
 	local start = button(f, "Breed", "Cruzar", 0.33, breed)
-	start.Position = UDim2.fromScale(0.15, 0.86)
-	start.Size = UDim2.fromScale(0.7, 0.12)
+	start.Position = UDim2.new(0.15, 0, 1, -52)
+	start.Size = UDim2.new(0.7, 0, 0, 44)
 	enabled(start, available)
 	return f
 end

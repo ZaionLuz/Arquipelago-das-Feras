@@ -2,9 +2,10 @@
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local RS = game:GetService("ReplicatedStorage")
 local C = require(RS.Shared.Creatures)
-local E = require(RS.Shared.Elements)
 local MF = require(RS.Shared.ModelFactory)
 local Animator = require(script.Parent.CreatureAnimator)
+local Theme = require(script.Parent.UITheme)
+local Icons = require(script.Parent.PixelIcons)
 local UI = { rebuilds = 0 }
 function UI.visible(object)
 	while object do
@@ -25,9 +26,9 @@ local function label(parent, text, pos, size)
 	t.Size = size
 	t.Text = text
 	t.TextWrapped = true
-	t.Font = Enum.Font.GothamBold
+	t.Font = Theme.Font
 	t.TextSize = 16
-	t.TextColor3 = Color3.new(1, 1, 1)
+	t.TextColor3 = Theme.Ink
 	t.Parent = parent
 	return t
 end
@@ -42,8 +43,9 @@ function UI.preview(parent, def, lv, unknown)
 		v.Name = "CreaturePreview"
 		v.Size = UDim2.fromScale(1, 0.65)
 		v.BackgroundTransparency = 1
-		v.Ambient = Color3.fromRGB(185, 185, 200)
-		v.LightColor = Color3.new(1, 1, 1)
+		v.Ambient = Theme.Tokens.Ramps.Metal[3]
+		v.LightDirection = Vector3.new(-1, -1, -1)
+		v.LightColor = Theme.Tokens.Ink
 		v.Parent = parent
 	else
 		v:ClearAllChildren()
@@ -57,7 +59,7 @@ function UI.preview(parent, def, lv, unknown)
 		if obj:IsA("BillboardGui") then
 			obj:Destroy()
 		elseif unknown and obj:IsA("BasePart") then
-			obj.Color = Color3.fromRGB(25, 25, 40)
+			obj.Color = Theme.Tokens.Ramps.Veil[1]
 			obj.Material = Enum.Material.SmoothPlastic
 		end
 	end
@@ -65,6 +67,22 @@ function UI.preview(parent, def, lv, unknown)
 	local low, high = MF.bounds(model)
 	local size = high - low
 	local center = (low + high) * 0.5
+	local ramp = Theme.Tokens.Elements[def.el] or Theme.Tokens.Ramps.Metal
+	local width = math.max(size.X, size.Z) * 0.85
+	for index = 1, 2 do
+		local floor = Instance.new("Part")
+		floor.Name = "SpecimenPlinth" .. index
+		floor.Size = Vector3.new(width + (2 - index) * 0.5, 0.18, width * 0.65 + (2 - index) * 0.5)
+		floor.CFrame = CFrame.new(center.X, low.Y - 0.4 + index * 0.18, center.Z)
+		floor.Color = ramp[index == 1 and 1 or 2]
+		floor.Material = Enum.Material.SmoothPlastic
+		floor.Anchored = true
+		floor.CanCollide = false
+		floor.CanQuery = false
+		floor.CanTouch = false
+		floor.CastShadow = false
+		floor.Parent = world
+	end
 	local camera = Instance.new("Camera")
 	camera.FieldOfView = 40
 	local distance = math.max(size.X, size.Y, size.Z) * 2
@@ -81,12 +99,11 @@ function UI.card(parent, def, lv, known, order)
 	card.Name = "CollectionCard"
 	card.LayoutOrder = order
 	card.Size = UDim2.new(1, -12, 0, 190)
-	card.BackgroundColor3 = known and E.Color[def.el]:Lerp(Color3.fromRGB(20, 20, 40), 0.65)
-		or Color3.fromRGB(35, 35, 50)
+	card.BackgroundColor3 = known and Theme.Tokens.Elements[def.el][1] or Theme.Panel
 	card.Parent = parent
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 12)
-	corner.Parent = card
+	Theme.panel(card, known and Theme.Tokens.Elements[def.el][3] or Theme.Edge)
+	local emblem = Icons.draw(card, def.el, 16, Theme.Tokens.Elements[def.el])
+	emblem.Position = UDim2.fromOffset(8, 8)
 	local preview
 	local function visible()
 		if not card.Parent then
@@ -127,16 +144,16 @@ end
 function UI.discovery(gui, def, lv, evolved)
 	local overlay = Instance.new("Frame")
 	overlay.Size = UDim2.fromScale(1, 1)
-	overlay.BackgroundColor3 = Color3.fromRGB(12, 10, 30)
+	overlay.BackgroundColor3 = Theme.Panel
 	overlay.BackgroundTransparency = 0.08
 	overlay.ZIndex = 30
 	overlay.Parent = gui
 	local panel = Instance.new("Frame")
 	panel.Size = UDim2.fromScale(0.8, 0.8)
 	panel.Position = UDim2.fromScale(0.1, 0.1)
-	panel.BackgroundColor3 = E.Color[def.el]:Lerp(Color3.fromRGB(20, 20, 40), 0.65)
+	panel.BackgroundColor3 = Theme.Tokens.Elements[def.el][1]
 	panel.Parent = overlay
-	Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 20)
+	Theme.panel(panel, Theme.Tokens.Elements[def.el][4])
 	UI.preview(panel, def, lv, false)
 	label(
 		panel,
@@ -166,14 +183,16 @@ function UI.discovery(gui, def, lv, evolved)
 	).TextSize =
 		12
 	local close = Instance.new("TextButton")
-	close.Size = UDim2.fromScale(0.8, 0.13)
-	close.Position = UDim2.fromScale(0.1, 0.84)
+	close.Size = UDim2.new(0.8, 0, 0, 44)
+	close.Position = UDim2.new(0.1, 0, 1, -56)
 	close.Text = Text.CONTINUAR_AVENTURA_E2F9B1
 	close.TextSize = 18
-	close.Font = Enum.Font.GothamBold
-	close.BackgroundColor3 = Color3.fromRGB(255, 200, 90)
+	close.Font = Theme.Font
+	close.BackgroundColor3 = Theme.Tokens.Elements[def.el][2]
 	close.Parent = panel
+	close.Active = true
 	close.Selectable = true
+	Theme.bind(close)
 	close.Activated:Connect(function()
 		overlay:Destroy()
 	end)
