@@ -144,20 +144,16 @@ assert(fired == 1)
 assert(button.Size.Y.Offset >= 44 and button.Font == T.Font)
 fs.writeFile(
 	"docs/art/ART_METRICS.json",
-	serde.encode(
-		"json",
-		{
-			paletteColors = colors,
-			icons = iconCounts,
-			maxIconRuns = maxRuns,
-			battleParts = scenes,
-			buttonStates = { normal = true, hover = true, pressed = true, disabled = true },
-			callbackUnchanged = true,
-			touchTarget = 44,
-			rendererExecuted = false,
-		},
-		true
-	)
+	serde.encode("json", {
+		paletteColors = colors,
+		icons = iconCounts,
+		maxIconRuns = maxRuns,
+		battleParts = scenes,
+		buttonStates = { normal = true, hover = true, pressed = true, disabled = true },
+		callbackUnchanged = true,
+		touchTarget = 44,
+		rendererExecuted = false,
+	}, true)
 )
 print(
 	"PASS art: 48 cores, ícones16px, cenários7≤190, origem de treino, botão hover/pressionado/desativado, callback único"

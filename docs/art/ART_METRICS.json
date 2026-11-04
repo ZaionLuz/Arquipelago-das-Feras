@@ -1,12 +1,12 @@
 {
   "battleParts": {
-    "Alvorecer": 83,
-    "Brasa": 67,
-    "Dunas": 75,
-    "Floresta": 83,
-    "Pantano": 83,
-    "Picos": 67,
-    "Recife": 83
+    "Alvorecer": 111,
+    "Brasa": 95,
+    "Dunas": 103,
+    "Floresta": 111,
+    "Pantano": 111,
+    "Picos": 95,
+    "Recife": 111
   },
   "buttonStates": {
     "disabled": true,

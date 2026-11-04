@@ -47,15 +47,27 @@ function S.build(world, id, origin)
 	for layer = 1, 3 do
 		for i = 1, 6 do
 			local h = 4 + (i * 7 + layer * 3) % 9
-			part(
-				"DistantContour",
-				V(2, h, 13),
-				V((i - 3.5) * 13, h * 0.5 + 4 - layer, -21 + layer * 3),
-				ramp[layer],
-				"wedge",
-				CFrame.Angles(0, math.pi / 2, 0)
-			)
+			local x = (i - 3.5) * 13
+			local z = -21 + layer * 3
+			for _, side in { -1, 1 } do
+				part(
+					"DistantContour",
+					V(2, h, 6.5),
+					V(x + side * 3.25, h * 0.5 + 4 - layer, z),
+					ramp[layer],
+					"wedge",
+					CFrame.Angles(0, -side * math.pi / 2, 0)
+				)
+			end
 		end
+	end
+	part("SunDisk", V(0.2, 5, 5), V(22, 19, -22), Art.Ramps.Sand[5], "cylinder", CFrame.Angles(0, math.pi / 2, 0))
+	for cloud = 1, 3 do
+		local x = cloud * 18 - 34
+		local y = 17 + cloud % 2 * 4
+		part("CloudMiddle", V(7, 1.5, 1), V(x, y, -19), Art.Ramps.Sky[5])
+		part("CloudCrown", V(4, 1.1, 1), V(x - 0.6, y + 1, -19), Art.Ramps.Sky[5])
+		part("CloudShadow", V(6, 0.4, 1.1), V(x + 0.3, y - 0.8, -19), Art.Ramps.Sky[4])
 	end
 	part("Ground", V(70, 1, 40), V(0, -0.55, 0), ramp[2])
 	for i = 1, 14 do

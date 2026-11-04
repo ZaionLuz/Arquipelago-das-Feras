@@ -115,10 +115,11 @@ local function template(def, stage)
 		p.Anchored = false
 		p.CastShadow = p.Size.Magnitude > 2
 		p.CollisionGroup = "Creatures"
-		-- Head meshes remain softly expressive; bodies become hand-cut silhouette planes.
+		-- Organic families keep volume; only stone-bodied species use block silhouettes.
 		if
 			kind == "sphere"
-			and (name == "Body" or name == "Haunch" or name:find("Coil") or name:find("Tail%d") or name:find("Leg"))
+			and d.family == "mineral"
+			and (name == "Body" or name == "Haunch" or name:find("Tail%d"))
 		then
 			kind = "block"
 		end
@@ -427,10 +428,16 @@ local function template(def, stage)
 						name,
 						"wedge",
 						V(0.45, 0.25, child and 1 or 1.8 + i * 0.25),
-						V(side * (w * 0.4 + i * 0.55), headPos.Y - 0.8 - row * 0.12, -row * 0.45 - i * 0.13),
+						V(
+							side * (w * 0.4 + i * (def.acquisition == "special" and 0.68 or 0.55)),
+							headPos.Y - 0.8 - row * 0.12 + (def.acquisition == "special" and i * 0.17 or 0),
+							-row * 0.45 - i * 0.13
+						),
 						wingColor,
 						A(
-							d.feature == "stormcrown" and -0.5 or 0.1 * row,
+							def.acquisition == "special" and 0.65 + row * 0.08
+								or d.feature == "stormcrown" and -0.5
+								or 0.1 * row,
 							side * (d.feature == "stormcrown" and 0.8 or 0.25),
 							side * (0.15 + i * 0.035)
 						),

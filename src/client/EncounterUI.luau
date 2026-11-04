@@ -300,14 +300,10 @@ function UI.start(gui, getOwned, onClose, onOpen)
 						local seal = Icons.draw(viewport, event.kind == "bond" and "heart" or "seal", 32, Art.Accent)
 						seal.Position = UDim2.new(0.2, -16, 0.55, -16)
 						seal.ZIndex = 14
-						TS
-							:Create(
-								seal,
-								TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-								{ Position = UDim2.new(0.72, -16, 0.35, -16), Rotation = event.kind == "bond" and 15
-									or 180 }
-							)
-							:Play()
+						TS:Create(seal, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+							Position = UDim2.new(0.72, -16, 0.35, -16),
+							Rotation = event.kind == "bond" and 15 or 180,
+						}):Play()
 						task.wait(0.4)
 						seal:Destroy()
 					end
