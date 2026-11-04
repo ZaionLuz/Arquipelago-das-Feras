@@ -1,0 +1,178 @@
+{
+  "aggregate": {
+    "common": 0.919,
+    "guardian": 0.5311666666666667,
+    "plusFive": 0.6063333333333334,
+    "prepared": 0.6128181818181818,
+    "underTen": 0,
+    "unprepared": 0.2551818181818182
+  },
+  "assumptions": "50 vitórias/h, XP comum, sem missões/offline/penalidade; combate sem vantagem elemental: 1 comum; guardião na borda superior: raro/comum/raro; abaixo: 3 comuns. Fênix: 3 épicos fogo sem preparo; raro água/comum fogo/raro fogo preparado. Metas avaliadas na média das faixas, não por espécie individual",
+  "combat": [
+    {
+      "common": 0.895,
+      "guardian": 0.56,
+      "level": 10,
+      "plusFive": 0.548,
+      "underTen": 0
+    },
+    {
+      "common": 0.909,
+      "guardian": 0.512,
+      "level": 18,
+      "plusFive": 0.523,
+      "underTen": 0
+    },
+    {
+      "common": 0.912,
+      "guardian": 0.535,
+      "level": 26,
+      "plusFive": 0.543,
+      "underTen": 0
+    },
+    {
+      "common": 0.944,
+      "guardian": 0.526,
+      "level": 34,
+      "plusFive": 0.676,
+      "underTen": 0
+    },
+    {
+      "common": 0.931,
+      "guardian": 0.508,
+      "level": 42,
+      "plusFive": 0.673,
+      "underTen": 0
+    },
+    {
+      "common": 0.923,
+      "guardian": 0.546,
+      "level": 50,
+      "plusFive": 0.675,
+      "underTen": 0
+    }
+  ],
+  "executionsPerCase": 1000,
+  "gold": [
+    {
+      "cost": 1440,
+      "hours": 1,
+      "incomePerMinute": 24,
+      "island": "Brasa"
+    },
+    {
+      "cost": 3384,
+      "hours": 1.0000000000000002,
+      "incomePerMinute": 56.39999999999999,
+      "island": "Recife"
+    },
+    {
+      "cost": 5112,
+      "hours": 1.0000000000000002,
+      "incomePerMinute": 85.19999999999999,
+      "island": "Floresta"
+    },
+    {
+      "cost": 6840,
+      "hours": 1,
+      "incomePerMinute": 114,
+      "island": "Dunas"
+    },
+    {
+      "cost": 8568,
+      "hours": 0.9999999999999999,
+      "incomePerMinute": 142.8,
+      "island": "Picos"
+    },
+    {
+      "cost": 10296,
+      "hours": 1,
+      "incomePerMinute": 171.6,
+      "island": "Pantano"
+    }
+  ],
+  "pacing": [
+    {
+      "hours": 0.7508571428571428,
+      "level": 10
+    },
+    {
+      "hours": 2.000857142857143,
+      "level": 18
+    },
+    {
+      "hours": 4.000857142857143,
+      "level": 26
+    },
+    {
+      "hours": 7.000857142857143,
+      "level": 34
+    },
+    {
+      "hours": 11.000857142857143,
+      "level": 42
+    },
+    {
+      "hours": 16.000857142857143,
+      "level": 50
+    }
+  ],
+  "phoenix": [
+    {
+      "level": 45,
+      "prepared": 0.274,
+      "unprepared": 0.047
+    },
+    {
+      "level": 46,
+      "prepared": 0.35,
+      "unprepared": 0.053
+    },
+    {
+      "level": 47,
+      "prepared": 0.405,
+      "unprepared": 0.081
+    },
+    {
+      "level": 48,
+      "prepared": 0.436,
+      "unprepared": 0.104
+    },
+    {
+      "level": 49,
+      "prepared": 0.555,
+      "unprepared": 0.173
+    },
+    {
+      "level": 50,
+      "prepared": 0.615,
+      "unprepared": 0.206
+    },
+    {
+      "level": 51,
+      "prepared": 0.735,
+      "unprepared": 0.285
+    },
+    {
+      "level": 52,
+      "prepared": 0.778,
+      "unprepared": 0.337
+    },
+    {
+      "level": 53,
+      "prepared": 0.823,
+      "unprepared": 0.454
+    },
+    {
+      "level": 54,
+      "prepared": 0.87,
+      "unprepared": 0.475
+    },
+    {
+      "level": 55,
+      "prepared": 0.9,
+      "unprepared": 0.592
+    }
+  ],
+  "seed": 3103
+}

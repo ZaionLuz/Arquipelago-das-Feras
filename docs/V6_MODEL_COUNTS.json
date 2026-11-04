@@ -1,0 +1,155 @@
+{
+  "source": "tests/models.generated.luau, snapshot hist\u00f3rico V6; contagem em stub sem f\u00edsica/render",
+  "models": {
+    "cinzelo": [
+      16,
+      19,
+      22
+    ],
+    "magmarau": [
+      21,
+      23,
+      24
+    ],
+    "fenixfuligem": [
+      26,
+      31,
+      36
+    ],
+    "vulcanodrago": [
+      33,
+      37,
+      41
+    ],
+    "bolhinho": [
+      18,
+      20,
+      21
+    ],
+    "marilisco": [
+      23,
+      24,
+      25
+    ],
+    "carangueperola": [
+      27,
+      28,
+      29
+    ],
+    "abissauro": [
+      33,
+      37,
+      41
+    ],
+    "brotinho": [
+      19,
+      22,
+      23
+    ],
+    "folhuco": [
+      24,
+      27,
+      28
+    ],
+    "aracnoflora": [
+      25,
+      29,
+      31
+    ],
+    "ancestravore": [
+      23,
+      27,
+      28
+    ],
+    "graozinho": [
+      18,
+      20,
+      22
+    ],
+    "escorpiodra": [
+      23,
+      25,
+      27
+    ],
+    "esfingeolito": [
+      21,
+      25,
+      26
+    ],
+    "colossodune": [
+      22,
+      23,
+      24
+    ],
+    "penugem": [
+      24,
+      30,
+      36
+    ],
+    "ventanil": [
+      25,
+      31,
+      36
+    ],
+    "trovoraptor": [
+      34,
+      39,
+      44
+    ],
+    "aeronimbo": [
+      21,
+      23,
+      25
+    ],
+    "lodinho": [
+      16,
+      19,
+      21
+    ],
+    "caudalume": [
+      21,
+      22,
+      23
+    ],
+    "vagalumorte": [
+      25,
+      26,
+      27
+    ],
+    "reinevoento": [
+      18,
+      22,
+      24
+    ],
+    "vaporino": [
+      21,
+      23,
+      25
+    ],
+    "magmaterra": [
+      21,
+      24,
+      27
+    ],
+    "tempestalia": [
+      26,
+      31,
+      36
+    ],
+    "nevoamusgo": [
+      23,
+      27,
+      28
+    ],
+    "cinzavento": [
+      33,
+      39,
+      44
+    ],
+    "fenix": [
+      49,
+      49,
+      49
+    ]
+  }
+}

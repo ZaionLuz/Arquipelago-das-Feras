@@ -1,0 +1,70 @@
+{
+  "levels": {
+    "Alvorecer": [
+      9,
+      9,
+      11,
+      12
+    ],
+    "Brasa": [
+      8,
+      8,
+      10,
+      11
+    ],
+    "Dunas": [
+      8,
+      8,
+      10,
+      11
+    ],
+    "Floresta": [
+      8,
+      8,
+      10,
+      11
+    ],
+    "Pantano": [
+      8,
+      8,
+      10,
+      11
+    ],
+    "Picos": [
+      8,
+      8,
+      10,
+      11
+    ],
+    "Recife": [
+      8,
+      8,
+      10,
+      11
+    ]
+  },
+  "scenarios": [
+    {
+      "chance": 0.04,
+      "executions": 100000,
+      "meanAttempts": 25.05711,
+      "scenario": "sem preparo",
+      "within15": 0.4557
+    },
+    {
+      "chance": 0.09278080000000002,
+      "executions": 100000,
+      "meanAttempts": 10.78357,
+      "scenario": "médio",
+      "within15": 0.76788
+    },
+    {
+      "chance": 0.20629880000000003,
+      "executions": 100000,
+      "meanAttempts": 4.84456,
+      "scenario": "ótimo",
+      "within15": 0.96831
+    }
+  ],
+  "seed": 718
+}

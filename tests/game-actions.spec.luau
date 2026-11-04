@@ -1,3 +1,4 @@
+local Region={current=function() return "Brasa" end,requireContext=function() return {ok=true} end}
 local profiles={};local Data={get=function(p) return profiles[p] end,snapshot=function(p) return profiles[p] end}
 local World={refresh=function() end};local Sanctuary={home=function() return true end}
 local Transport={go=function() return true end}

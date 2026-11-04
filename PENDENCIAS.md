@@ -1,20 +1,13 @@
-# Pendências — não é uma entrega 100% do briefing
+# Pendências e limites V7
 
-## Bloqueios de homologação
-- Roblox Studio indisponível neste ambiente. Não houve renderização visual, teste real multiplayer/DataStore, controle em aparelhos nem benchmark de FPS.
-- Arte procedural atual precisa de revisão de um artista/rigging e inspeção no Studio para atingir a qualidade das referências. Não há MeshParts esculpidos externamente ou qualidade final AAA comprovada.
+◐ Revisão estética de cada espécie/estágio na galeria; movimento dos Motor6D, penas e caudas em render real.
+◐ Device Emulator e aparelhos reais: responsividade, toque, câmera e consumo com vários jogadores.
+◐ Barreiras, streaming e respawn físico; acesso lógico e remotes forjados já foram testados headless.
+◐ Multiplayer e DataStore real: desconexão durante save, cooldown, leases e concessão única; plataforma simulada passou.
+◐ Playtest do ritmo e composição de equipes; simulações batem as metas na média das faixas/presets documentados, com variação individual.
+✘ Análise tipada completa com luau-lsp x86 e definições Roblox; binário ARM não executou, nova tentativa de download falhou na conexão.
+✘ Fixtures de contas reais V1–V6 não fornecidas; as seis fixtures entregues são sintéticas e explicitamente rotuladas.
 
-## Escopo restante
-- Produzir e integrar os 70 conceitos de CRIATURAS.md. Atualmente existem 30 espécies, não 100. Os conceitos não contam como modelos.
-- Desenvolver três formas realmente transformadoras e animações completas por espécie. Os testes atuais exercitam 90 construções, incluindo Fênix adulta repetida em níveis diferentes; isso não equivale a 300 modelos distintos.
-- Concluir os seis elementos adicionais, a categoria Incomum e a distribuição de raridade futura, sem quebrar os índices legados.
-- Construir Inverno/Trovão/Celestial e elevar as sete regiões existentes ao padrão artístico final; cavernas navegáveis, ruínas interativas e progressão final ainda faltam.
-- Evolução por escolha e requisitos/materiais, nova curva 16/36 com migração e apresentação de transformação; legado 7/15 mantido.
-- Elenco completo de treinadores, chefes originais, desafio final e história longa. Há apenas uma primeira expedição com sete capítulos e guardiões reaproveitando espécies do catálogo.
-- Decoração livre, expansão de terreno, visitas estruturadas e colocação com ghost 3D. O santuário atual usa nove posições e habitats regionais, sem decoração editável.
-- Pathfinding complexo e personalidades comportamentais completas; companheiro usa representação cosmética com desvio simples, não navegação autônoma robusta.
-- Sons/música licenciados e áudio de ações. Nenhum ID de áudio inventado.
-- Polimento final de menus, suporte homologado a gamepad, movimentos/câmeras em todos os dispositivos e preferência persistente de gráficos.
+Áudio e monetização são configurações opcionais vazias/desativadas, sem IDs inventados. Estágio 4 da Fênix, 70 espécies adicionais e dez regiões pertencem à visão futura, fora da V7 de 30 espécies/sete ilhas.
 
-## Próximo lote recomendado
-Homologar primeiro o ciclo Alvorecer → captura → companheiro → santuário → ovo → melhoria → guardião em dois clientes. Corrigir os problemas observados antes de produzir novos lotes de criaturas. Só marcar uma espécie como concluída depois de arte, rig, gameplay e teste no Studio aprovados. Não ampliar a contagem do catálogo jogável artificialmente.
+Procedimento de revisão: docs/QA_STUDIO_V7.md. Evidências executadas: docs/VALIDACAO_V7.md e docs/RESULTADOS_V7.txt. Nenhum item acima foi marcado como executado no Studio.

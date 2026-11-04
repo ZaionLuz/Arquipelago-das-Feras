@@ -16,30 +16,30 @@ if original and original.exists():
    p=f'src/shared/{name}.luau';assert z.read(p)==(root/p).read_bytes(),p
 print('PASS: Rojo paths, JSON, 30 espécies e catálogos originais preservados')
 designs=(root/'src/shared/CreatureDesigns.luau').read_text()
-ids=set(re.findall(r'^add\("([^"]+)"', (root/'src/shared/Creatures.luau').read_text(),re.M))
-design_ids=set(re.findall(r'\b([a-z]+)=\{crest=',designs))
+ids=set(re.findall(r'^add\(\s*"([^"]+)"', (root/'src/shared/Creatures.luau').read_text(),re.M))
+design_ids=set(re.findall(r'\{\s*"([a-z]+)",\s*"(?:mineral|quadruped|winged|draconic|aquatic|serpentine|arthropod|vegetal|biped|spectral)"',designs,re.M))
 assert ids==design_ids,(ids-design_ids,design_ids-ids)
 print('PASS: 30 designs próprios, sem IDs ausentes ou órfãos')
 
 if original and original.exists():
  with zipfile.ZipFile(original) as z:
-  legacy=set(re.findall(r'^add\("([^"]+)"',z.read('src/shared/Creatures.luau').decode(),re.M))
+  legacy=set(re.findall(r'^add\(\s*"([^"]+)"',z.read('src/shared/Creatures.luau').decode(),re.M))
   assert legacy <= ids and ids-legacy=={'fenix'}
 print('PASS: todos os IDs legados preservados; somente fenix adicionada')
 
 original_ids={'Brasa','Recife','Floresta','Dunas','Picos','Pantano'}
 island_source=(root/'src/shared/Islands.luau').read_text()
-assert all('id="'+key+'"' in island_source for key in original_ids)
-assert len(re.findall(r'\{id="',island_source))==7
+assert all(re.search(r'id\s*=\s*"'+key+r'"',island_source) for key in original_ids)
+assert len(re.findall(r'\bid\s*=\s*"',island_source))==7
 assert 'Alvorecer' in island_source
 print('PASS: seis IDs de ilha preservados e Alvorecer adicionado')
 
 lore=(root/'src/shared/SpeciesLore.luau').read_text()
-lore_ids=set(re.findall(r' (\w+)=\{description=',lore))
+lore_ids=set(re.findall(r'(\w+)\s*=\s*\{\s*description\s*=',lore))
 assert lore_ids==ids
 print('PASS: fichas e personalidades das 30 espécies integradas')
 
 legacy_fixture=json.loads((root/'tests/fixtures/legacy-ids.json').read_text())
 assert set(legacy_fixture['creatures']) <= ids
-assert all('id="'+i+'"' in island_source for i in legacy_fixture['islands'])
+assert all(re.search(r'id\s*=\s*"'+i+r'"',island_source) for i in legacy_fixture['islands'])
 print('PASS: fixture portátil de IDs anteriores preservada')

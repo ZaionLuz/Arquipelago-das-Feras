@@ -1,0 +1,32 @@
+{
+  "application": "V6",
+  "assumptions": "50 vitórias comuns/h, 60 XP explorador e 30 XP criatura/vitória",
+  "creature60Hours": 19.076666666666664,
+  "explorer": [
+    {
+      "hours": 0.525,
+      "level": 10
+    },
+    {
+      "hours": 1.5583333333333331,
+      "level": 18
+    },
+    {
+      "hours": 3.1250000000000004,
+      "level": 26
+    },
+    {
+      "hours": 5.225000000000001,
+      "level": 34
+    },
+    {
+      "hours": 7.858333333333334,
+      "level": 42
+    },
+    {
+      "hours": 11.025000000000002,
+      "level": 50
+    }
+  ],
+  "formulaSource": "a35b1ea src/shared/Progression.luau"
+}

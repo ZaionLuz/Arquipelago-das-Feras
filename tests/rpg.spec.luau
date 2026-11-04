@@ -1,5 +1,5 @@
 local player={playerLevel=1,playerXp=0}
-P.award(player,75);assert(player.playerLevel==2 and player.playerXp==0)
+P.award(player,P.playerCost(1));assert(player.playerLevel==2 and player.playerXp==0)
 P.award(player,1e9);assert(player.playerLevel==100)
 local cr={lv=20,xp=0};P.awardCreature(cr,1e9);assert(cr.lv==100)
 local occupied={};local seen={}

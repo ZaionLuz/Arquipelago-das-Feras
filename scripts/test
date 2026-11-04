@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+luau_bin="${LUAU_BIN:-luau}"
+compiler_bin="${LUAU_COMPILER_BIN:-luau-compile}"
+lune_bin="${LUNE_BIN:-lune}"
+rojo_bin="${ROJO_BIN:-rojo}"
+python3 tests/run_checks.py --luau "$luau_bin" --compiler "$compiler_bin"
+"$lune_bin" run scripts/v7_core.luau
+"$lune_bin" run scripts/v7_engine_tests.luau
+"$lune_bin" run scripts/check_models.luau
+"$lune_bin" run scripts/sim_balance.luau
+python3 scripts/static_v7.py
+"$rojo_bin" sourcemap -o /tmp/feras-v7-sourcemap.json
+"$rojo_bin" build -o /tmp/Feras-V7-test.rbxlx
+"$lune_bin" run scripts/check_bundle.luau /tmp/Feras-V7-test.rbxlx
+printf '%s\n' 'PASS V7.14: regressão + testes V7 + build Rojo concluídos'

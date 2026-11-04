@@ -1,0 +1,308 @@
+{
+  "V1": {
+    "application": 1,
+    "profile": {
+      "claimed": {
+        "m1": true
+      },
+      "creatures": {
+        "u1": {
+          "id": "cinzelo",
+          "lv": 15,
+          "xp": 200
+        }
+      },
+      "eggs": [
+        {
+          "id": "bolhinho",
+          "ready": 12345
+        }
+      ],
+      "gems": 12,
+      "gold": 1000,
+      "habitat": {
+        "Brasa": [
+          "u1"
+        ]
+      },
+      "nextId": 2,
+      "playerLevel": 1,
+      "playerXp": 70,
+      "sanctuary": {
+        "Brasa": {
+          "level": 3,
+          "slot": 1
+        }
+      },
+      "seals": 10,
+      "stats": {
+        "win": 12
+      },
+      "storyClaimed": {
+        "arrival": true
+      },
+      "unlocked": {
+        "Brasa": true,
+        "Recife": true
+      },
+      "v": 1
+    },
+    "schema": 1,
+    "synthetic": true
+  },
+  "V2": {
+    "application": 2,
+    "profile": {
+      "claimed": {
+        "m1": true
+      },
+      "creatures": {
+        "u1": {
+          "id": "cinzelo",
+          "lv": 15,
+          "xp": 200
+        }
+      },
+      "eggs": [
+        {
+          "id": "bolhinho",
+          "ready": 12345
+        }
+      ],
+      "gems": 12,
+      "gold": 1000,
+      "habitat": {
+        "Brasa": [
+          "u1"
+        ]
+      },
+      "nextId": 2,
+      "playerLevel": 1,
+      "playerXp": 70,
+      "sanctuary": {
+        "Brasa": {
+          "level": 3,
+          "slot": 1
+        }
+      },
+      "seals": 10,
+      "stats": {
+        "win": 12
+      },
+      "storyClaimed": {
+        "arrival": true
+      },
+      "unlocked": {
+        "Brasa": true,
+        "Recife": true
+      },
+      "v": 2
+    },
+    "schema": 2,
+    "synthetic": true
+  },
+  "V3": {
+    "application": 3,
+    "profile": {
+      "claimed": {
+        "m1": true
+      },
+      "creatures": {
+        "u1": {
+          "id": "cinzelo",
+          "lv": 15,
+          "xp": 200
+        }
+      },
+      "eggs": [
+        {
+          "id": "bolhinho",
+          "ready": 12345
+        }
+      ],
+      "gems": 12,
+      "gold": 1000,
+      "habitat": {
+        "Brasa": [
+          "u1"
+        ]
+      },
+      "nextId": 2,
+      "playerLevel": 1,
+      "playerXp": 70,
+      "sanctuary": {
+        "Brasa": {
+          "level": 3,
+          "slot": 1
+        }
+      },
+      "seals": 10,
+      "stats": {
+        "win": 12
+      },
+      "storyClaimed": {
+        "arrival": true
+      },
+      "unlocked": {
+        "Brasa": true,
+        "Recife": true
+      },
+      "v": 2
+    },
+    "schema": 2,
+    "synthetic": true
+  },
+  "V4": {
+    "application": 4,
+    "profile": {
+      "claimed": {
+        "m1": true
+      },
+      "creatures": {
+        "u1": {
+          "id": "cinzelo",
+          "lv": 15,
+          "xp": 200
+        }
+      },
+      "eggs": [
+        {
+          "id": "bolhinho",
+          "ready": 12345
+        }
+      ],
+      "gems": 12,
+      "gold": 1000,
+      "habitat": {
+        "Brasa": [
+          "u1"
+        ]
+      },
+      "nextId": 2,
+      "playerLevel": 1,
+      "playerXp": 70,
+      "sanctuary": {
+        "Brasa": {
+          "level": 3,
+          "slot": 1
+        }
+      },
+      "seals": 10,
+      "stats": {
+        "win": 12
+      },
+      "storyClaimed": {
+        "arrival": true
+      },
+      "unlocked": {
+        "Brasa": true,
+        "Recife": true
+      },
+      "v": 3
+    },
+    "schema": 3,
+    "synthetic": true
+  },
+  "V5": {
+    "application": 5,
+    "profile": {
+      "claimed": {
+        "m1": true
+      },
+      "creatures": {
+        "u1": {
+          "id": "cinzelo",
+          "lv": 15,
+          "xp": 200
+        }
+      },
+      "eggs": [
+        {
+          "id": "bolhinho",
+          "ready": 12345
+        }
+      ],
+      "gems": 12,
+      "gold": 1000,
+      "habitat": {
+        "Brasa": [
+          "u1"
+        ]
+      },
+      "nextId": 2,
+      "playerLevel": 1,
+      "playerXp": 70,
+      "sanctuary": {
+        "Brasa": {
+          "level": 3,
+          "slot": 1
+        }
+      },
+      "seals": 10,
+      "stats": {
+        "win": 12
+      },
+      "storyClaimed": {
+        "arrival": true
+      },
+      "unlocked": {
+        "Brasa": true,
+        "Recife": true
+      },
+      "v": 3
+    },
+    "schema": 3,
+    "synthetic": true
+  },
+  "V6": {
+    "application": 6,
+    "profile": {
+      "claimed": {
+        "m1": true
+      },
+      "creatures": {
+        "u1": {
+          "id": "cinzelo",
+          "lv": 15,
+          "xp": 200
+        }
+      },
+      "eggs": [
+        {
+          "id": "bolhinho",
+          "ready": 12345
+        }
+      ],
+      "gems": 12,
+      "gold": 1000,
+      "habitat": {
+        "Brasa": [
+          "u1"
+        ]
+      },
+      "nextId": 2,
+      "playerLevel": 1,
+      "playerXp": 70,
+      "sanctuary": {
+        "Brasa": {
+          "level": 3,
+          "slot": 1
+        }
+      },
+      "seals": 10,
+      "stats": {
+        "win": 12
+      },
+      "storyClaimed": {
+        "arrival": true
+      },
+      "unlocked": {
+        "Brasa": true,
+        "Recife": true
+      },
+      "v": 4
+    },
+    "schema": 4,
+    "synthetic": true
+  }
+}

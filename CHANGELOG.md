@@ -1,3 +1,14 @@
+# V7 — designs, acesso e encontro secreto
+
+✔ Testes e build executados; ◐ homologação no Studio pendente. Evidências: docs/VALIDACAO_V7.md.
+
+- Redesenhadas 30 espécies com dez famílias anatômicas, olhos/cabeças/caudas diferentes, transformação 7/15, materiais sem assets, rigs Motor6D e cache por estágio. Fênix adulta com 48 penas de asa, 11 penas de cauda, ponteiras e halo.
+- Introduzidos Access/LevelBands, região de sessão, RegionGuard e arcos de entrada; novos perfis só Alvorecer, legado preservado. Ouro, XP e combate recalibrados por simulações.
+- Fonte especial da Fênix: três vestígios nas Dunas/Picos, câmara nas ruínas, altar nível 45+, cooldown persistido e concessão por nonce. Pools comuns excluem especiais; ovos legados autenticados continuam válidos.
+- DataStore ArquipelagoV1 mantido, esquema 5 idempotente; corrupção/futuro recusados antes de escrever. Estoques antigos acima de limites preservados.
+- UI com nível/faixa/motivo e acesso legado por ilha, dificuldade, diário gradual, Viewports reutilizados e 452 textos em Strings. Apresentação especial local, efeitos configuráveis e câmera do Viewport restaurada.
+- Runner headless, construtores nativos Lune, simulação de combate/captura, lint, galeria opt-in e documentação por espécie.
+
 # Changelog — V6: primeira expedição e santuário
 
 ## Implementado nesta versão
