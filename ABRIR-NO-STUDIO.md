@@ -1,3 +1,11 @@
+# Versão atual: mundo aberto
+
+Abra **releases/Feras-Open-World.rbxlx** pelo menu File → Open from File do Roblox Studio e pressione Play. O mapa aparece durante a execução. Não precisa instalar Node ou colar scripts para abrir esse arquivo. Para editar `src/`, reconstrua com Rojo ou sincronize pelo plugin.
+
+Confira [README](README.md) e [validação da fase atual](docs/open_world/STUDIO_QA.md). As instruções abaixo são históricas; o bundle atual usa esquema de save 6 e não deve ser substituído por um bundle antigo em dados já migrados.
+
+---
+
 # V7 — abrir diretamente
 
 Abra `releases/Feras-V7.rbxlx` no Roblox Studio e pressione Play. O arquivo já inclui os scripts. Leia `docs/QA_STUDIO_V7.md` para galeria, mobile e testes privados. As instruções abaixo são histórico de versões anteriores.

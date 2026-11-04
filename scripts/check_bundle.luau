@@ -5,7 +5,8 @@ local place = rb.deserializePlace(
 	fs.readFile(
 		args[1]
 			or (
-				fs.isFile("releases/Feras-Art-Overhaul.rbxlx") and "releases/Feras-Art-Overhaul.rbxlx"
+				fs.isFile("releases/Feras-Open-World.rbxlx") and "releases/Feras-Open-World.rbxlx"
+				or fs.isFile("releases/Feras-Art-Overhaul.rbxlx") and "releases/Feras-Art-Overhaul.rbxlx"
 				or "releases/Feras-V7.rbxlx"
 			)
 	)

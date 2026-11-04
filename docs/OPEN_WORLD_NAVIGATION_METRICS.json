@@ -1,0 +1,12 @@
+{
+  "concurrentTravelRejected": true,
+  "invalidDestinationCases": 5,
+  "ownSanctuaryOnly": true,
+  "physicsExecuted": false,
+  "platformMock": true,
+  "preservesOriginalAnchor": true,
+  "recoveryCases": 7,
+  "regionsVisited": 7,
+  "walkingSamples": 707,
+  "walkingTeleports": 0
+}

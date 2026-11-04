@@ -1,0 +1,17 @@
+{
+  "directCaptureNovice": {
+    "1": 0.8,
+    "10": 0.5267456261836284,
+    "20": 0.26993948461245404,
+    "5": 0.734576336195714,
+    "50": 0.035126931439600606
+  },
+  "freeAccessDecisions": 6300,
+  "levelsIndependentOfPlayer": true,
+  "migrationPreservesClaims": true,
+  "preparedBelowLevel": 0.059494262258062286,
+  "preparedTeam45": 0.8337052105141279,
+  "regionalLevelDraws": 280000,
+  "schemaVersion": 6,
+  "storyRequiresBreeding": false
+}

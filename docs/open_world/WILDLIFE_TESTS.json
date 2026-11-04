@@ -1,0 +1,19 @@
+{
+  "busyCreaturePreserved": true,
+  "despawnDistance": 440,
+  "duplicateTriggers": 50,
+  "grace": 15,
+  "headlessMock": true,
+  "initialActive": 10,
+  "modelBuildBackoff": 5,
+  "modelBuildErrorRecovered": true,
+  "openErrorRecovered": true,
+  "perRegionCommon": {
+    "Alvorecer": 2,
+    "Floresta": 2
+  },
+  "plannedSlots": 56,
+  "regionsObserved": 2,
+  "respawnCooldown": true,
+  "spawnDistance": 300
+}

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+bash scripts/test
+for check in check_progression check_navigation check_map check_wildlife; do
+    "${LUNE_BIN:-lune}" run "scripts/open_world/$check.luau"
+done
+"${LUNE_BIN:-lune}" run scripts/art/check_visuals.luau
+"${SELENE_BIN:-selene}" src
+"${STYLUA_BIN:-stylua}" --syntax Luau --check src scripts
+"${ROJO_BIN:-rojo}" build -o releases/Feras-Open-World.rbxlx
+"${LUNE_BIN:-lune}" run scripts/check_bundle.luau releases/Feras-Open-World.rbxlx
+python3 scripts/check_bundle_sources.py releases/Feras-Open-World.rbxlx
+printf '%s\n' 'PASS mundo aberto: regressão, progressão, navegação, mapa, fauna e bundle. Studio pendente.'

@@ -2,7 +2,7 @@ from pathlib import Path
 import sys,xml.etree.ElementTree as ET
 root=Path(__file__).resolve().parents[1]
 sources={p.name.replace('.server.luau','').replace('.client.luau','').replace('.luau',''):p.read_text() for p in (root/'src').rglob('*.luau')}
-path=Path(sys.argv[1]) if len(sys.argv)>1 else root/('releases/Feras-Art-Overhaul.rbxlx' if (root/'releases/Feras-Art-Overhaul.rbxlx').exists() else 'releases/Feras-V7.rbxlx')
+path=Path(sys.argv[1]) if len(sys.argv)>1 else next(root/'releases'/name for name in ('Feras-Open-World.rbxlx','Feras-Art-Overhaul.rbxlx','Feras-V7.rbxlx') if (root/'releases'/name).exists())
 count=0
 for item in ET.parse(path).iter('Item'):
  node=item.find('./Properties/*[@name="Source"]')

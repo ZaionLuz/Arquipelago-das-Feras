@@ -1,4 +1,10 @@
-# Reforma visual atual
+# Fase atual — mundo aberto
+
+Sete regiões grandes conectadas e livres desde o início, dificuldade regional, checkpoints, população por proximidade e acampamento opcional. Schema 6 no mesmo DataStore. Regressão e bundle aprovados por `bash scripts/open_world/test`; resultados em [docs/open_world/README.md](docs/open_world/README.md). Física, streaming, visual, multiplayer e DataStore reais aguardam Studio. Abra `releases/Feras-Open-World.rbxlx`.
+
+---
+
+# Histórico — reforma visual
 
 Leia docs/ART_PROGRESS.md e docs/ART_REPORT.md. A branch art-overhaul contém duas passagens de arte, pipeline e bundle separados. Main e a lógica V7 foram preservados. As pendências visuais de Studio estão discriminadas no relatório.
 

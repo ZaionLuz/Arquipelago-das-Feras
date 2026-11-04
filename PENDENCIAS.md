@@ -1,4 +1,10 @@
-# Pendências da reforma visual
+# Pendências atuais — mundo aberto
+
+Executar [o roteiro no Studio](docs/open_world/STUDIO_QA.md): caminhar nas sete estradas e 21 rampas, conferir streaming e fauna, viagens/morte, dois clientes, persistência real, UI mobile e desempenho. A suíte headless e o bundle passaram; a execução no Roblox não foi realizada aqui. Os itens abaixo registram as fases anteriores e não representam bloqueios de entrada nas áreas atuais.
+
+---
+
+# Histórico — reforma visual
 
 Play e screenshots de todas as telas no Roblox Studio, revisão estética humana, toque/mobile e FPS real. A adaptação entregue é3D com linguagem pixel; conversão integral2D está fora do que foi verificado. Veja docs/ART_REPORT.md.
 

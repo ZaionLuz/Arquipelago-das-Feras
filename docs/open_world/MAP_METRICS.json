@@ -1,0 +1,20 @@
+{
+  "areaMultiplier": 110.25,
+  "decorParts": 1571,
+  "diameter": 840,
+  "fullWorldParts": 2847,
+  "legacyGates": 0,
+  "maxPartDimension": 2048,
+  "oceanTiles": 9,
+  "oldWalkableArea": 35185.83772020568,
+  "physicsExecuted": false,
+  "ramps": 21,
+  "regions": 7,
+  "routeWidth": 64,
+  "routesSampled": 707,
+  "solidParts": 154,
+  "surfaceParts": 483,
+  "terraces": 21,
+  "walkableArea": 3879238.608652677,
+  "wildPoints": 56
+}
