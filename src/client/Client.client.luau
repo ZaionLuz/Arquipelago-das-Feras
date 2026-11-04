@@ -230,6 +230,7 @@ local function playBattle(b)
 	local cam = workspace.CurrentCamera
 	local o = Vector3.new(0, 300, 0)
 	local ct = cam.CameraType
+	local originalCF, originalFov, originalFocus = cam.CFrame, cam.FieldOfView, cam.Focus
 	local stage = Instance.new("Folder")
 	stage.Name = Text.ARENA_1A4BA8
 	stage.Parent = workspace
@@ -237,9 +238,13 @@ local function playBattle(b)
 	local function face(pos, to)
 		return CFrame.lookAt(pos, pos + (pos - to))
 	end
-	local pa, pf = o + Vector3.new(-14, 5, 0), o + Vector3.new(14, 5, 0)
+	local pa, pf = o + Vector3.new(-8, 5, 0), o + Vector3.new(8, 5, 0)
 	local a = MF.build(C.ById[b.me.id], b.me.lv)
 	local f = MF.build(C.ById[b.foe.id], b.foe.lv)
+	local ac, asz = a:GetBoundingBox()
+	local fc, fsz = f:GetBoundingBox()
+	pa = Vector3.new(pa.X, o.Y + 0.42 + a:GetPivot().Position.Y - (ac.Position.Y - asz.Y * 0.5), pa.Z)
+	pf = Vector3.new(pf.X, o.Y + 0.42 + f:GetPivot().Position.Y - (fc.Position.Y - fsz.Y * 0.5), pf.Z)
 	a:PivotTo(face(pa, pf))
 	f:PivotTo(face(pf, pa))
 	a.Parent = stage
@@ -302,6 +307,9 @@ local function playBattle(b)
 	barF:Destroy()
 	stage:Destroy()
 	cam.CameraType = ct
+	cam.CFrame = originalCF
+	cam.FieldOfView = originalFov
+	cam.Focus = originalFocus
 end
 local function call(...)
 	if inFlight then

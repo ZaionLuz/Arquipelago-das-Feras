@@ -1,5 +1,5 @@
 {
-  "baseline": "9ece1fd6a35b7bbd8cd871bb2a265652ce0c8033",
+  "baseline": "c5a3860d77a68b6f8a18c771bfd07c5aaef5669d",
   "scope": "gameplay/save/balance/persistent IDs byte-identical",
   "files": {
     "src/shared/Creatures.luau": "bdc7782c3bcfe642065b77d5f1093b0557466a959d60978f7790577fe70684e4",
