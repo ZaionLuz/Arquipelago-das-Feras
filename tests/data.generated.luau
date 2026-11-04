@@ -1107,6 +1107,7 @@ local M_Migration=(function()
 -- Sem serviços. Só acrescenta campos: a sanitização de entrada continua no DataService.
 local Config = M_Config
 local C = M_Creatures
+local Bands = M_LevelBands
 local M = {}
 function M.clone(value)
 	if type(value) ~= "table" then
@@ -1204,6 +1205,71 @@ function M.run(raw)
 	end
 	if raw.phoenix and not number(raw.phoenix.captureCount, 0) then
 		return nil, "CORRUPT_CAPTURE_COUNT"
+	end
+
+	for _, key in
+		{
+			"discovered",
+			"guardians",
+			"visited",
+			"storyClaimed",
+			"legacyGrandfathered",
+			"gatherAt",
+			"sealStock",
+			"materials",
+		}
+	do
+		if raw[key] ~= nil and type(raw[key]) ~= "table" then
+			return nil, "CORRUPT_MAP:" .. key
+		end
+	end
+	for _, key in { "unlocked", "discovered", "guardians", "visited", "claimed", "storyClaimed", "legacyGrandfathered" } do
+		for _, value in raw[key] or {} do
+			if type(value) ~= "boolean" then
+				return nil, "CORRUPT_FLAG:" .. key
+			end
+		end
+	end
+	for id, entry in raw.sanctuary or {} do
+		if
+			not Bands.ById[id]
+			or type(entry) ~= "table"
+			or not number(entry.slot, 1)
+			or not entry.slot
+			or entry.slot > 9
+			or not number(entry.level, 1)
+			or not entry.level
+		then
+			return nil, "CORRUPT_HABITAT_STRUCTURE"
+		end
+	end
+	local assigned = {}
+	for id, list in raw.habitat or {} do
+		if not Bands.ById[id] or type(list) ~= "table" then
+			return nil, "CORRUPT_HABITAT"
+		end
+		for _, uid in list do
+			if type(uid) ~= "string" or not raw.creatures[uid] or assigned[uid] then
+				return nil, "CORRUPT_HABITAT_UID"
+			end
+			assigned[uid] = true
+		end
+	end
+	for _, egg in raw.eggs or {} do
+		if
+			not number(egg.ready, 0)
+			or (egg.region ~= nil and not Bands.ById[egg.region])
+			or (egg.nonce ~= nil and type(egg.nonce) ~= "string")
+		then
+			return nil, "CORRUPT_EGG_FIELDS"
+		end
+	end
+	if raw.phoenix then
+		for _, key in { "captured", "sanctuaryOpen" } do
+			if raw.phoenix[key] ~= nil and type(raw.phoenix[key]) ~= "boolean" then
+				return nil, "CORRUPT_PHOENIX_FLAG"
+			end
+		end
 	end
 	local d = M.clone(raw)
 	local old = d.v
@@ -1481,7 +1547,7 @@ function D.validate(raw)
 		return (typeof(x) == "number" and x == x and x >= 0 and x < math.huge) and math.floor(x) or f
 	end
 	d.seals = num(raw.seals, 5, 10000)
-	d.sealStock = {}
+	d.sealStock = clone(raw.sealStock or {})
 	for kind in CaptureRules.Seals do
 		if kind ~= "Basic" and typeof(raw.sealStock) == "table" then
 			d.sealStock[kind] = num(raw.sealStock[kind], 0, 10000)
@@ -1495,11 +1561,13 @@ function D.validate(raw)
 	d.grants = Migration.clone(raw.grants or {})
 	d.legacyEggPermits = Migration.clone(raw.legacyEggPermits or {})
 	d.phoenix = Migration.clone(raw.phoenix or d.phoenix)
-	d.last = math.min(num(raw.last, os.time(), 1e12), os.time())
+	d.last = num(raw.last, os.time(), 1e12)
 	local cr, n = {}, 0
 	for uid, c in raw.creatures do
 		if typeof(uid) == "string" and typeof(c) == "table" and C.ById[c.id] then
-			cr[uid] = { id = c.id, lv = math.max(num(c.lv, 1, 100), 1), xp = num(c.xp, 0, 1e9) }
+			cr[uid] = clone(c)
+			cr[uid].lv = math.max(num(c.lv, 1, 100), 1)
+			cr[uid].xp = num(c.xp, 0, 1e9)
 			n += 1
 		end
 	end
@@ -1511,7 +1579,7 @@ function D.validate(raw)
 		end
 	end
 	d.creatures = cr
-	d.discovered = {}
+	d.discovered = clone(raw.discovered or {})
 	for _, c in cr do
 		d.discovered[c.id] = true
 	end
@@ -1534,10 +1602,10 @@ function D.validate(raw)
 	d.playerLevel = math.max(num(raw.playerLevel, 1, 100), 1)
 	d.playerXp = num(raw.playerXp, 0, 1e9)
 	d.companion = typeof(raw.companion) == "string" and cr[raw.companion] and raw.companion or nil
-	d.guardians = {}
-	d.visited = {}
-	d.materials = {}
-	d.gatherAt = {}
+	d.guardians = clone(raw.guardians or {})
+	d.visited = clone(raw.visited or {})
+	d.materials = clone(raw.materials or {})
+	d.gatherAt = clone(raw.gatherAt or {})
 	for _, def in I.List do
 		if typeof(raw.guardians) == "table" and raw.guardians[def.id] == true then
 			d.guardians[def.id] = true
@@ -1618,7 +1686,7 @@ function D.validate(raw)
 	d.tut = raw.tut == true
 	d.receipts = {}
 	d.pass = {}
-	d.dailyDay = math.min(num(raw.dailyDay, 0, 1e9), os.time() // 86400)
+	d.dailyDay = num(raw.dailyDay, 0, 1e9)
 	d.streak = num(raw.streak, 0, 1e6)
 	if typeof(raw.receipts) == "table" then
 		for k, value in raw.receipts do
@@ -1636,12 +1704,9 @@ function D.validate(raw)
 				and typeof(e.ready) == "number"
 				and e.ready == e.ready
 				and e.ready >= 0
-				and e.ready < 1e12
+				and e.ready < math.huge
 			then
-				table.insert(
-					d.eggs,
-					{ id = e.id, ready = math.floor(e.ready), nonce = e.nonce, region = e.region or "Alvorecer" }
-				)
+				table.insert(d.eggs, clone(e))
 			end
 		end
 	end
@@ -1841,3 +1906,18 @@ assert(count==65 and #preserved.eggs==5 and #preserved.habitat.Brasa==65)
 assert(preserved.gold==legacy.gold and preserved.creatures.u65.lv==65 and preserved.creatures.u65.xp==250)
 assert(D.save(fresh));D.release(fresh);local round=who(200);assert(D.load(round));assert(D.get(round).creatures.u1.id=="brotinho")
 print("PASS V7.01/13: corrupção/futuro intactos no storage, inicial só Alvorecer, estoques legados acima do cap e round-trip")
+
+for _,field in {"sanctuary","habitat","discovered"} do
+ local corrupt=copy(old)
+ if field=="sanctuary" then corrupt.sanctuary={Brasa={slot="invalid",level=1}}
+ elseif field=="habitat" then corrupt.habitat={Brasa={"missing"}}
+ else corrupt.discovered="invalid" end
+ store.values.P999=copy(corrupt);local entrant=who(999);assert(not D.load(entrant));assert(store.values.P999.v==corrupt.v and store.values.P999.gold==corrupt.gold)
+end
+local futureTime=copy(old);futureTime.last=os.time()+500;futureTime.dailyDay=os.time()//86400+1
+local keepTime=D.validate(futureTime);assert(keepTime.last==futureTime.last and keepTime.dailyDay==futureTime.dailyDay)
+print("PASS: estruturas/flags corrompidos recusados antes da escrita; timestamps legados preservados")
+
+local extras=copy(old);extras.creatures.u1.legacyCounter=123;extras.eggs={{id="cinzelo",ready=123,legacyQuality=8}};extras.materials={customLegacy=77};extras.sealStock={customLegacy=14}
+local retain=D.validate(extras);assert(retain.creatures.u1.legacyCounter==123 and retain.eggs[1].legacyQuality==8 and retain.materials.customLegacy==77 and retain.sealStock.customLegacy==14)
+print("PASS: metadados numéricos adicionais de criaturas, ovos e inventários preservados")

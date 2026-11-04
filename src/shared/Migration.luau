@@ -2,6 +2,7 @@
 -- Sem serviços. Só acrescenta campos: a sanitização de entrada continua no DataService.
 local Config = require(script.Parent.Config)
 local C = require(script.Parent.Creatures)
+local Bands = require(script.Parent.LevelBands)
 local M = {}
 function M.clone(value)
 	if type(value) ~= "table" then
@@ -99,6 +100,71 @@ function M.run(raw)
 	end
 	if raw.phoenix and not number(raw.phoenix.captureCount, 0) then
 		return nil, "CORRUPT_CAPTURE_COUNT"
+	end
+
+	for _, key in
+		{
+			"discovered",
+			"guardians",
+			"visited",
+			"storyClaimed",
+			"legacyGrandfathered",
+			"gatherAt",
+			"sealStock",
+			"materials",
+		}
+	do
+		if raw[key] ~= nil and type(raw[key]) ~= "table" then
+			return nil, "CORRUPT_MAP:" .. key
+		end
+	end
+	for _, key in { "unlocked", "discovered", "guardians", "visited", "claimed", "storyClaimed", "legacyGrandfathered" } do
+		for _, value in raw[key] or {} do
+			if type(value) ~= "boolean" then
+				return nil, "CORRUPT_FLAG:" .. key
+			end
+		end
+	end
+	for id, entry in raw.sanctuary or {} do
+		if
+			not Bands.ById[id]
+			or type(entry) ~= "table"
+			or not number(entry.slot, 1)
+			or not entry.slot
+			or entry.slot > 9
+			or not number(entry.level, 1)
+			or not entry.level
+		then
+			return nil, "CORRUPT_HABITAT_STRUCTURE"
+		end
+	end
+	local assigned = {}
+	for id, list in raw.habitat or {} do
+		if not Bands.ById[id] or type(list) ~= "table" then
+			return nil, "CORRUPT_HABITAT"
+		end
+		for _, uid in list do
+			if type(uid) ~= "string" or not raw.creatures[uid] or assigned[uid] then
+				return nil, "CORRUPT_HABITAT_UID"
+			end
+			assigned[uid] = true
+		end
+	end
+	for _, egg in raw.eggs or {} do
+		if
+			not number(egg.ready, 0)
+			or (egg.region ~= nil and not Bands.ById[egg.region])
+			or (egg.nonce ~= nil and type(egg.nonce) ~= "string")
+		then
+			return nil, "CORRUPT_EGG_FIELDS"
+		end
+	end
+	if raw.phoenix then
+		for _, key in { "captured", "sanctuaryOpen" } do
+			if raw.phoenix[key] ~= nil and type(raw.phoenix[key]) ~= "boolean" then
+				return nil, "CORRUPT_PHOENIX_FLAG"
+			end
+		end
 	end
 	local d = M.clone(raw)
 	local old = d.v

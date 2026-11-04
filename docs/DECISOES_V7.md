@@ -20,3 +20,5 @@
 - CreatureGallery é opt-in no Studio. O sigilo é do payload de descoberta, não de arquivos replicados. Fênix já possuída ou ovo legado autenticado preserva a descoberta.
 - O padrão PhoenixMaxPerAccount é 1; captureCount permite elevar o limite sem ignorar capturas anteriores. A exceção legacy_egg continua limitada ao nonce de item anterior à versão 5.
 - As receitas foram feitas primeiro e as fichas textuais consolidadas depois; desvio processual registrado, sem afirmar o contrário. A entrega contém as 30 fichas e métricas por estágio.
+
+- Verificação final ampliada: construções/listas/flags inválidos são recusados antes de UpdateAsync; timestamps e metadados numéricos extras de criaturas, ovos e inventários são mantidos em round-trip. Não se limita preservação aos campos conhecidos pelo cliente atual.

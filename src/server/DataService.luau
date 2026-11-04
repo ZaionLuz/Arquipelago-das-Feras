@@ -89,7 +89,7 @@ function D.validate(raw)
 		return (typeof(x) == "number" and x == x and x >= 0 and x < math.huge) and math.floor(x) or f
 	end
 	d.seals = num(raw.seals, 5, 10000)
-	d.sealStock = {}
+	d.sealStock = clone(raw.sealStock or {})
 	for kind in CaptureRules.Seals do
 		if kind ~= "Basic" and typeof(raw.sealStock) == "table" then
 			d.sealStock[kind] = num(raw.sealStock[kind], 0, 10000)
@@ -103,11 +103,13 @@ function D.validate(raw)
 	d.grants = Migration.clone(raw.grants or {})
 	d.legacyEggPermits = Migration.clone(raw.legacyEggPermits or {})
 	d.phoenix = Migration.clone(raw.phoenix or d.phoenix)
-	d.last = math.min(num(raw.last, os.time(), 1e12), os.time())
+	d.last = num(raw.last, os.time(), 1e12)
 	local cr, n = {}, 0
 	for uid, c in raw.creatures do
 		if typeof(uid) == "string" and typeof(c) == "table" and C.ById[c.id] then
-			cr[uid] = { id = c.id, lv = math.max(num(c.lv, 1, 100), 1), xp = num(c.xp, 0, 1e9) }
+			cr[uid] = clone(c)
+			cr[uid].lv = math.max(num(c.lv, 1, 100), 1)
+			cr[uid].xp = num(c.xp, 0, 1e9)
 			n += 1
 		end
 	end
@@ -119,7 +121,7 @@ function D.validate(raw)
 		end
 	end
 	d.creatures = cr
-	d.discovered = {}
+	d.discovered = clone(raw.discovered or {})
 	for _, c in cr do
 		d.discovered[c.id] = true
 	end
@@ -142,10 +144,10 @@ function D.validate(raw)
 	d.playerLevel = math.max(num(raw.playerLevel, 1, 100), 1)
 	d.playerXp = num(raw.playerXp, 0, 1e9)
 	d.companion = typeof(raw.companion) == "string" and cr[raw.companion] and raw.companion or nil
-	d.guardians = {}
-	d.visited = {}
-	d.materials = {}
-	d.gatherAt = {}
+	d.guardians = clone(raw.guardians or {})
+	d.visited = clone(raw.visited or {})
+	d.materials = clone(raw.materials or {})
+	d.gatherAt = clone(raw.gatherAt or {})
 	for _, def in I.List do
 		if typeof(raw.guardians) == "table" and raw.guardians[def.id] == true then
 			d.guardians[def.id] = true
@@ -226,7 +228,7 @@ function D.validate(raw)
 	d.tut = raw.tut == true
 	d.receipts = {}
 	d.pass = {}
-	d.dailyDay = math.min(num(raw.dailyDay, 0, 1e9), os.time() // 86400)
+	d.dailyDay = num(raw.dailyDay, 0, 1e9)
 	d.streak = num(raw.streak, 0, 1e6)
 	if typeof(raw.receipts) == "table" then
 		for k, value in raw.receipts do
@@ -244,12 +246,9 @@ function D.validate(raw)
 				and typeof(e.ready) == "number"
 				and e.ready == e.ready
 				and e.ready >= 0
-				and e.ready < 1e12
+				and e.ready < math.huge
 			then
-				table.insert(
-					d.eggs,
-					{ id = e.id, ready = math.floor(e.ready), nonce = e.nonce, region = e.region or "Alvorecer" }
-				)
+				table.insert(d.eggs, clone(e))
 			end
 		end
 	end

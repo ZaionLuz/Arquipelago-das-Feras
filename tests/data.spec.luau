@@ -50,3 +50,18 @@ assert(count==65 and #preserved.eggs==5 and #preserved.habitat.Brasa==65)
 assert(preserved.gold==legacy.gold and preserved.creatures.u65.lv==65 and preserved.creatures.u65.xp==250)
 assert(D.save(fresh));D.release(fresh);local round=who(200);assert(D.load(round));assert(D.get(round).creatures.u1.id=="brotinho")
 print("PASS V7.01/13: corrupção/futuro intactos no storage, inicial só Alvorecer, estoques legados acima do cap e round-trip")
+
+for _,field in {"sanctuary","habitat","discovered"} do
+ local corrupt=copy(old)
+ if field=="sanctuary" then corrupt.sanctuary={Brasa={slot="invalid",level=1}}
+ elseif field=="habitat" then corrupt.habitat={Brasa={"missing"}}
+ else corrupt.discovered="invalid" end
+ store.values.P999=copy(corrupt);local entrant=who(999);assert(not D.load(entrant));assert(store.values.P999.v==corrupt.v and store.values.P999.gold==corrupt.gold)
+end
+local futureTime=copy(old);futureTime.last=os.time()+500;futureTime.dailyDay=os.time()//86400+1
+local keepTime=D.validate(futureTime);assert(keepTime.last==futureTime.last and keepTime.dailyDay==futureTime.dailyDay)
+print("PASS: estruturas/flags corrompidos recusados antes da escrita; timestamps legados preservados")
+
+local extras=copy(old);extras.creatures.u1.legacyCounter=123;extras.eggs={{id="cinzelo",ready=123,legacyQuality=8}};extras.materials={customLegacy=77};extras.sealStock={customLegacy=14}
+local retain=D.validate(extras);assert(retain.creatures.u1.legacyCounter==123 and retain.eggs[1].legacyQuality==8 and retain.materials.customLegacy==77 and retain.sealStock.customLegacy==14)
+print("PASS: metadados numéricos adicionais de criaturas, ovos e inventários preservados")

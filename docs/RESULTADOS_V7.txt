@@ -15,6 +15,8 @@ PASS: progressão até 100, 9 posições únicas, sobreposição, validação, c
 PASS: efeito de selo elemental, raro e ancestral depende das condições do encontro
 PASS: migração v3→v5, UID, níveis, santuário, companion, inventário, snapshot, lease, sessão concorrente e falha de dados simulados
 PASS V7.01/13: corrupção/futuro intactos no storage, inicial só Alvorecer, estoques legados acima do cap e round-trip
+PASS: estruturas/flags corrompidos recusados antes da escrita; timestamps legados preservados
+PASS: metadados numéricos adicionais de criaturas, ovos e inventários preservados
 PASS: ações reais em serviços simulados: construir, mover, melhorar, capacidade, propriedade, companheiro, cinco selos e capítulos sem duplicação
 PASS V7.01: migração, 6 fixtures sintéticas, 1000 perfis, idempotência e rejeição segura
 PASS V7.02: matriz Access 6300 decisões, argumentos forjados, legado
