@@ -452,10 +452,10 @@ for _, r in rows do
 				},
 			},
 		},
-		budget = { 28, 48, 80 },
+		budget = { 105, 155, 200 },
 		anim = r[2],
 		lod = { near = 70, mid = 150, hide = 300 },
 	}
 end
-D.fenix.budget = { 170, 170, 170 }
+D.fenix.budget = { 245, 245, 245 }
 return D

@@ -1,7 +1,7 @@
 from pathlib import Path
 import re,json
 root=Path(__file__).resolve().parents[1]
-allowed={'Creatures.luau','CreatureDesigns.luau','CreatureGrant.luau','SpeciesRules.luau','Migration.luau','DesignChecks.luau','JournalUI.luau','CreatureGallery.luau'}
+allowed={'Creatures.luau','CreatureDesigns.luau','CreatureGrant.luau','SpeciesRules.luau','Migration.luau','DesignChecks.luau','JournalUI.luau','CreatureGallery.luau','SculptSky.luau'}
 for p in (root/'src').rglob('*.luau'):
  s=p.read_text()
  if re.search(r'[\"\']fenix[\"\']|\.fenix\b',s):assert p.name in allowed, f'ID especial fora da lista: {p}'

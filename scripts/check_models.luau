@@ -29,4 +29,4 @@ fs.writeFile(
 		models = rows,
 	}, true)
 )
-print("PASS: cena headless de 40 criaturas:", scene, "peças; orçamento global 3200")
+print("PASS: cena headless de 40 criaturas:", scene, "peças; orçamento global 3200 preservado (não mede FPS)")

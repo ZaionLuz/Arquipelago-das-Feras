@@ -166,20 +166,30 @@ function Checks.run()
 		end
 	end
 	local phoenix = F.build(C.ById.fenix, 60, { preview = true })
-	local wings, tail = 0, 0
+	local wings, tail, arcs, rays = 0, 0, 0, 0
 	for _, part in phoenix:GetDescendants() do
 		if part:IsA("BasePart") then
-			if part.Name:match("^Wing[LR]_%d+_%d+$") then
+			if part.Name:match("^PrimaryFeather") then
 				wings += 1
-			elseif part.Name:match("^Tail%d+$") then
+			elseif part.Name:match("^TailRibbon") then
 				tail += 1
+			elseif part.Name:match("^HaloArc") then
+				arcs += 1
+			elseif part.Name:match("^HaloRay") then
+				rays += 1
 			end
 		end
 	end
-	assert(wings == 48 and tail == 11, "Plumagem da Fênix incompleta")
+	assert(wings == 16 and tail == 28 and arcs == 16 and rays == 8, "Anatomia solar incompleta")
 	F.validate(phoenix)
 	phoenix:Destroy()
-	print("PASS: modelos", total + 1, "construções, 48 penas de asa / 11 cauda; distância mínima", minimum, closest)
+	print(
+		"PASS: modelos",
+		total + 1,
+		"construções, 16 rêmiges / 28 segmentos de cauda / halo 16+8; distância mínima",
+		minimum,
+		closest
+	)
 	return { reports = reports, minimum = minimum, closest = closest, total = total + 1, signatures = signatures }
 end
 return Checks
