@@ -101,3 +101,6 @@ Built project to Feras-Bestiario-40.rbxlx
 PASS: bundle Rojo desserializado com 75 scripts/módulos e streaming habilitado
 PASS: 75 fontes do bundle correspondem ao src: Feras-Bestiario-40.rbxlx
 PASS bestiário40 nativo final: catálogo/regressão, 116 rigs/LOD, refinamento88formas, escopo60fontes, galerias e bundle75fontes. Validação deassetsBlender aguarda render; execução/FPS no Studio pendentes.
+PASS static geometry: 116 distinct forms exported
+PASS assets: 40 self-contained GLBs, 116 native forms, 88/88 prior forms and all30 adults remodeled, 47 review images, hashes and rig maps verified
+PASS entrega final: regressão nativa e assets Blender verificados; 40 espécies/116 formas/47 pranchas. Play, física e FPS reais dependem do Roblox Studio.

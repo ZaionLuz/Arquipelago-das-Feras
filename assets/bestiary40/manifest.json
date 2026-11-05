@@ -1,0 +1,348 @@
+{
+  "format": 2,
+  "source": "native Roblox ModelFactory static geometry",
+  "renderer": "Blender Cycles CPU",
+  "studioScreenshots": false,
+  "detail": "full",
+  "baselineSpecies": 30,
+  "legacyHeadApproximation": "The old Roblox Head mesh is reconstructed as an ellipsoid; new sculpts use exported sphere/wedge/cylinder parts.",
+  "forms": 116,
+  "adults": 40,
+  "meshArchive": "meshes.zip",
+  "meshArchiveSha256": "2dcc6ce633a0c04d4cb7c34726fd45ff4e815a08849d4e22a16219ebe34e2bbf",
+  "sourceGeometryCanonicalSha256": "7a8e899cf77280fb9f0e4e7406dfbe4102ed97cc64a338f4d7d28738c846f87c",
+  "models": [
+    {
+      "id": "cinzelo",
+      "name": "Cinzelo",
+      "parts": 76,
+      "nativeJoints": 11,
+      "glbSha256": "7727317268d77d8486581ed651b86c3c24aec962c0b24114974546f573c85568"
+    },
+    {
+      "id": "magmarau",
+      "name": "Magmarau",
+      "parts": 68,
+      "nativeJoints": 12,
+      "glbSha256": "2b6b9c2cc96f2994b03b70afc2bf99965d29384a176bf94e473c96688e8c71c3"
+    },
+    {
+      "id": "fenixfuligem",
+      "name": "Fênix Fuligem",
+      "parts": 101,
+      "nativeJoints": 9,
+      "glbSha256": "6be00c0a7444d6ba335dd5e0a310f3b1a23256b4be2ec303eafe462c78e0d5e6"
+    },
+    {
+      "id": "vulcanodrago",
+      "name": "Vulcanodrago",
+      "parts": 83,
+      "nativeJoints": 11,
+      "glbSha256": "e2b1abacfa886e3a9d79172b73e75b02a5ff7e44cfa56ead3512818bb726feff"
+    },
+    {
+      "id": "bolhinho",
+      "name": "Bolhinho",
+      "parts": 50,
+      "nativeJoints": 9,
+      "glbSha256": "d9c87353baed181e676a2efe0e87aa961ced8f7ca574cf5beb778455fda01ab5"
+    },
+    {
+      "id": "marilisco",
+      "name": "Marilisco",
+      "parts": 54,
+      "nativeJoints": 14,
+      "glbSha256": "bac57644cd1e3da1ee9b0ef3b91870d73707e0275c6dfd3b5be40c42c44e551b"
+    },
+    {
+      "id": "carangueperola",
+      "name": "Caranguepérola",
+      "parts": 87,
+      "nativeJoints": 24,
+      "glbSha256": "93ba5ad03951faa879097e9bcc3a75065ce52efca3f0d257d8c564ac59c51f53"
+    },
+    {
+      "id": "abissauro",
+      "name": "Abissauro",
+      "parts": 64,
+      "nativeJoints": 13,
+      "glbSha256": "4f54d4a8cbb9cd477321c06f485ddc209b37164b1650bf933bee0a892ec04b63"
+    },
+    {
+      "id": "brotinho",
+      "name": "Brotinho",
+      "parts": 64,
+      "nativeJoints": 12,
+      "glbSha256": "012725dcaa5da09d226cb5b8c8015415bc4331d1c8d379de40a0d105b9d888d4"
+    },
+    {
+      "id": "folhuco",
+      "name": "Folhuço",
+      "parts": 84,
+      "nativeJoints": 13,
+      "glbSha256": "0dea38dc5ac44d3cbc9d549b7d85268f7711660a1339afb51b2305c088f1d534"
+    },
+    {
+      "id": "aracnoflora",
+      "name": "Aracnoflora",
+      "parts": 103,
+      "nativeJoints": 30,
+      "glbSha256": "5f622da6f99b2fc0bac8351e9a305c2bd84112fbc3c8f837137dbd804a05f742"
+    },
+    {
+      "id": "ancestravore",
+      "name": "Ancestrávore",
+      "parts": 84,
+      "nativeJoints": 10,
+      "glbSha256": "e74cf244b1428c3e1b87eb49d1bd1cdd6f3c214e910f84bb34bd23c56530bcb4"
+    },
+    {
+      "id": "graozinho",
+      "name": "Grãozinho",
+      "parts": 57,
+      "nativeJoints": 5,
+      "glbSha256": "1cd9402fe2b5fa18f62dd6cb8d1b07a4635124dab1a8f6131d18200e5e8ed63f"
+    },
+    {
+      "id": "escorpiodra",
+      "name": "Escorpiodra",
+      "parts": 81,
+      "nativeJoints": 31,
+      "glbSha256": "54bc492f3bc4c705c6f5af814259df4629251335122715c43f19f9b04d648823"
+    },
+    {
+      "id": "esfingeolito",
+      "name": "Esfingeolito",
+      "parts": 75,
+      "nativeJoints": 12,
+      "glbSha256": "b63ca99d3596923b859f47454b5eebb60d0f40b0a368a07ad7521a125c43b9f0"
+    },
+    {
+      "id": "colossodune",
+      "name": "Colossodune",
+      "parts": 77,
+      "nativeJoints": 8,
+      "glbSha256": "3bd80f3733863efd49ac9235909148666d8f87a2e939c76a520d6df5a4608b39"
+    },
+    {
+      "id": "penugem",
+      "name": "Penugem",
+      "parts": 94,
+      "nativeJoints": 9,
+      "glbSha256": "a99e3c33cfdd24df0f3bb15273ea731ef5bc76b8d39209efc6e485a74183cbd7"
+    },
+    {
+      "id": "ventanil",
+      "name": "Ventanil",
+      "parts": 96,
+      "nativeJoints": 9,
+      "glbSha256": "3bf7c66bcc6c0a9a503a8bf534145e410aba92e93c93539d5f7e38f27b836b70"
+    },
+    {
+      "id": "trovoraptor",
+      "name": "Trovoraptor",
+      "parts": 69,
+      "nativeJoints": 9,
+      "glbSha256": "cbbb0c6be546fb971c7de5e059964c492e7cf18e8657ca4f7585a01ee9cfc6c3"
+    },
+    {
+      "id": "aeronimbo",
+      "name": "Aeronimbo",
+      "parts": 62,
+      "nativeJoints": 5,
+      "glbSha256": "b515de638c8c91efc78c60d1243e0633962510a3f0b3d6a818a62c2cdf599356"
+    },
+    {
+      "id": "lodinho",
+      "name": "Lodinho",
+      "parts": 47,
+      "nativeJoints": 6,
+      "glbSha256": "4e583487a4e7e0221123bf0e302062fdbf78a38e98802c51a3e0a354dfbaef4f"
+    },
+    {
+      "id": "caudalume",
+      "name": "Caudalume",
+      "parts": 48,
+      "nativeJoints": 5,
+      "glbSha256": "adacbbaa088801e2f6fae12fc06038f1103342c54ea212ec1c8b09f6669e0aa8"
+    },
+    {
+      "id": "vagalumorte",
+      "name": "Vagalumorte",
+      "parts": 87,
+      "nativeJoints": 12,
+      "glbSha256": "13437c99667a55f1226baae0613203df6a316c1edb7340cda56ed672b3b950d8"
+    },
+    {
+      "id": "reinevoento",
+      "name": "Rei Nevoento",
+      "parts": 55,
+      "nativeJoints": 6,
+      "glbSha256": "60db18b062513f139b313f8a57e63e90754d4d555f645636220686c71d7b0452"
+    },
+    {
+      "id": "vaporino",
+      "name": "Vaporino",
+      "parts": 62,
+      "nativeJoints": 9,
+      "glbSha256": "e4f2e3151feb63047ccedac498b640d233d24b28d9ff5f766d27d7ecb159d177"
+    },
+    {
+      "id": "magmaterra",
+      "name": "Magmaterra",
+      "parts": 79,
+      "nativeJoints": 10,
+      "glbSha256": "fec0a04327eebfa620748c3d26730749eb984f32a773f8a302320ff6a0304f5e"
+    },
+    {
+      "id": "tempestalia",
+      "name": "Tempestália",
+      "parts": 122,
+      "nativeJoints": 9,
+      "glbSha256": "ae76df9e274bac9870994889e552bd80c51cf2929a76784aa03b36d51b44468b"
+    },
+    {
+      "id": "nevoamusgo",
+      "name": "Névoamusgo",
+      "parts": 75,
+      "nativeJoints": 12,
+      "glbSha256": "b378681c1600b393a750dd6774a02be59dfd688b22a5b39425941c0689c6327e"
+    },
+    {
+      "id": "cinzavento",
+      "name": "Cinzavento",
+      "parts": 76,
+      "nativeJoints": 9,
+      "glbSha256": "a895cd0552438824225c4897af87df2f73189146244d9d10eda25198cbbc21e3"
+    },
+    {
+      "id": "fenix",
+      "name": "Fênix",
+      "parts": 193,
+      "nativeJoints": 9,
+      "glbSha256": "f34d5d1a4e7b9c5ade2a19de3d6492bf474439693718b74467dc71bce057a0ed"
+    },
+    {
+      "id": "bambunim",
+      "name": "Bambunim",
+      "parts": 71,
+      "nativeJoints": 8,
+      "glbSha256": "c36b628d80f596df5487a6c7ee51b82c5dd1264715480de90e1e32c375468f60"
+    },
+    {
+      "id": "brasebode",
+      "name": "Brasebode",
+      "parts": 62,
+      "nativeJoints": 11,
+      "glbSha256": "5a6485a258ee226a837cbeff03e07f398275b09faef5cbc72c08cffe8835687c"
+    },
+    {
+      "id": "coralote",
+      "name": "Coralote",
+      "parts": 73,
+      "nativeJoints": 9,
+      "glbSha256": "295fcc86e7b0c0a04bea7f1260ec31efe2912e6dd460cd8614d2611ab2238f59"
+    },
+    {
+      "id": "dunatatu",
+      "name": "Dunatatu",
+      "parts": 68,
+      "nativeJoints": 9,
+      "glbSha256": "e0485ee139a01b462916afb42f8992aed7995afa3b5618c368f8b4941b7e3120"
+    },
+    {
+      "id": "nimburso",
+      "name": "Nimburso",
+      "parts": 62,
+      "nativeJoints": 11,
+      "glbSha256": "1f8df441fab488e1d9a994d6a57eb793d40d1662f514972296a7660a615b991d"
+    },
+    {
+      "id": "lumissapo",
+      "name": "Lumissapo",
+      "parts": 70,
+      "nativeJoints": 8,
+      "glbSha256": "f4ba9d6f5320a42315e5d7f8bc09cc0c1501f7bf64505d9d2ed273516f457852"
+    },
+    {
+      "id": "nectarim",
+      "name": "Nectarim",
+      "parts": 67,
+      "nativeJoints": 14,
+      "glbSha256": "82b46b9928d1a10bb079d78d25450d3f12598a41a097a319ab13edbe00fbd501"
+    },
+    {
+      "id": "cristalince",
+      "name": "Cristalince",
+      "parts": 73,
+      "nativeJoints": 9,
+      "glbSha256": "e6de96a2c575682338fd679a95c2b2bad5bd40b63e00c0bf0c8450fc5e7956b2"
+    },
+    {
+      "id": "maritromba",
+      "name": "Maritromba",
+      "parts": 48,
+      "nativeJoints": 7,
+      "glbSha256": "4978d5a27da406ef6b72f2fdc460486e6695d14d3eaa29a3a196c0ac08291ee5"
+    },
+    {
+      "id": "kraken",
+      "name": "Kraken",
+      "parts": 184,
+      "nativeJoints": 12,
+      "glbSha256": "f24df0973b19d61c560fa30c3109d80a11fa2e8e28b2e2110c5298a87e66bda1"
+    }
+  ],
+  "reviewImages": {
+    "encoding": "WebP quality88; PNG source renders remain reproducible",
+    "files": [
+      "docs/bestiary40/images/before-after.webp",
+      "docs/bestiary40/images/creatures-40-adults.webp",
+      "docs/bestiary40/images/heroes/carangueperola.webp",
+      "docs/bestiary40/images/heroes/cinzelo.webp",
+      "docs/bestiary40/images/heroes/fenix.webp",
+      "docs/bestiary40/images/heroes/folhuco.webp",
+      "docs/bestiary40/images/heroes/kraken.webp",
+      "docs/bestiary40/images/stages/abissauro.webp",
+      "docs/bestiary40/images/stages/aeronimbo.webp",
+      "docs/bestiary40/images/stages/ancestravore.webp",
+      "docs/bestiary40/images/stages/aracnoflora.webp",
+      "docs/bestiary40/images/stages/bambunim.webp",
+      "docs/bestiary40/images/stages/bolhinho.webp",
+      "docs/bestiary40/images/stages/brasebode.webp",
+      "docs/bestiary40/images/stages/brotinho.webp",
+      "docs/bestiary40/images/stages/carangueperola.webp",
+      "docs/bestiary40/images/stages/caudalume.webp",
+      "docs/bestiary40/images/stages/cinzavento.webp",
+      "docs/bestiary40/images/stages/cinzelo.webp",
+      "docs/bestiary40/images/stages/colossodune.webp",
+      "docs/bestiary40/images/stages/coralote.webp",
+      "docs/bestiary40/images/stages/cristalince.webp",
+      "docs/bestiary40/images/stages/dunatatu.webp",
+      "docs/bestiary40/images/stages/escorpiodra.webp",
+      "docs/bestiary40/images/stages/esfingeolito.webp",
+      "docs/bestiary40/images/stages/fenix.webp",
+      "docs/bestiary40/images/stages/fenixfuligem.webp",
+      "docs/bestiary40/images/stages/folhuco.webp",
+      "docs/bestiary40/images/stages/graozinho.webp",
+      "docs/bestiary40/images/stages/kraken.webp",
+      "docs/bestiary40/images/stages/lodinho.webp",
+      "docs/bestiary40/images/stages/lumissapo.webp",
+      "docs/bestiary40/images/stages/magmarau.webp",
+      "docs/bestiary40/images/stages/magmaterra.webp",
+      "docs/bestiary40/images/stages/marilisco.webp",
+      "docs/bestiary40/images/stages/maritromba.webp",
+      "docs/bestiary40/images/stages/nectarim.webp",
+      "docs/bestiary40/images/stages/nevoamusgo.webp",
+      "docs/bestiary40/images/stages/nimburso.webp",
+      "docs/bestiary40/images/stages/penugem.webp",
+      "docs/bestiary40/images/stages/reinevoento.webp",
+      "docs/bestiary40/images/stages/tempestalia.webp",
+      "docs/bestiary40/images/stages/trovoraptor.webp",
+      "docs/bestiary40/images/stages/vagalumorte.webp",
+      "docs/bestiary40/images/stages/vaporino.webp",
+      "docs/bestiary40/images/stages/ventanil.webp",
+      "docs/bestiary40/images/stages/vulcanodrago.webp"
+    ]
+  }
+}

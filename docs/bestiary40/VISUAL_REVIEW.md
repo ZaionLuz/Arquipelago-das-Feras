@@ -1,11 +1,13 @@
 # Revisão visual da geometria exportada
 
-Foram inspecionadas as pranchas de trabalho das 40 espécies, incluindo as versões refinadas de Cristalince e Maritromba, e o render final ampliado de Cinzelo. São reconstruções Blender dos volumes do runtime, sem execução do renderer Roblox.
+Foram inspecionados os 40 renders finais dos adultos em uma prancha temporária montada a partir de `docs/bestiary40/images/adults`, além dos renders ampliados finais de Cinzelo, Caranguepérola, Fênix e Kraken. A revisão incluiu as versões refinadas de Cristalince e Maritromba. São reconstruções Blender dos volumes do runtime, sem execução do renderer Roblox.
 
 As silhuetas distinguem quadrúpedes, aves, serpentiformes, artrópodes e criaturas bípedes. O tórax e o pescoço sustentam os rostos; patas com apoio e dedos dão mais peso aos quadrúpedes. A salamandra-fornalha, a raposa vegetal e o crustáceo perolado preservam os motivos da direção de arte. As novas espécies têm proporções e motivos distintos: bambu, chifres curvos, brânquias de coral, placas desérticas, nuvens, lanternas, pétalas, cristais e tromba/nadadeiras.
 
 Os refinamentos de Cristalince melhoraram o perfil das orelhas e as transições das patas. Maritromba usa nadadeiras dianteiras com volume e extremidades largas. O Kraken tem uma silhueta radial de braços curvos, manto vertical, bico e rosto destacados, em uma combinação própria de índigo, cobre e azul-verde.
 
-Nas pranchas inspecionadas, não foram observados cortes de câmera evidentes ou membros visualmente soltos. A verificação de integridade dos rigs e das formas é automatizada separadamente. As pranchas finais mantêm margem de enquadramento calculada a partir dos limites projetados da geometria.
+Nos 40 renders finais dos adultos, não foram observados cortes de câmera evidentes ou membros visualmente soltos. O render ampliado da Fênix preserva as pontas das duas asas, o halo e as caudas; o do Kraken preserva os extremos dos braços, a coroa e o manto. Braços traseiros ficam parcialmente ocultos pela própria criatura nesse ângulo; a contagem e a integridade dos oito braços são verificadas separadamente pelo teste nativo. A margem de enquadramento usa os limites projetados da geometria.
+
+Esta inspeção final cobre as vistas frontais oblíquas dos adultos e os destaques mencionados. As 116 formas têm verificações estruturais automatizadas, mas não se afirma que todas as 232 vistas de frente/costas tenham recebido aprovação estética individual. A alteração incremental do filhote de Névoamusgo foi regenerada e sua vista frontal conferida antes de fechar os artefatos; a comparação automatizada também exige que a geometria distribuída coincida com o código atual.
 
 A linguagem visual continua sendo uma modelagem estilizada por volumes nativos: algumas junções de elipsoides são visíveis e penas/aletas usam cunhas. Essa solução dá contornos e articulações próprios sem exigir meshes externos. Ela não representa uma escultura orgânica contínua nem uma validação de desempenho de hardware. Aprovação estética, aparência com a iluminação do jogo e movimentos durante o Play devem seguir o roteiro de conferência no Studio.
