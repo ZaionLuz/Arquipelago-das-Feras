@@ -27,3 +27,12 @@ docs/sculpt/images/**/*.png
 docs/sculpt/images/*.png
 
 !releases/Galeria-Criaturas-3D-Leve.rbxl
+
+# Bestiário de 40 espécies: fontes, galeria e artefatos finais.
+!releases/Feras-Bestiario-40.rbxlx
+!releases/Galeria-40-Feras.rbxl
+!releases/Galeria-40-Feras-Leve.rbxl
+assets/bestiary40/glb/
+assets/bestiary40/baseline/
+docs/bestiary40/images/**/*.png
+docs/bestiary40/images/*.png

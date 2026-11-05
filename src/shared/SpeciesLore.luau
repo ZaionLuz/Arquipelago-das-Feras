@@ -152,4 +152,54 @@ return {
 		personality = "Majestosa",
 		family = Text.AVE_SOLAR_LENDARIA_06397E,
 	},
+	bambunim = {
+		description = "Capivara de bambu que carrega brotos nas costas e abre trilhas para seus companheiros.",
+		personality = "Sereno",
+		family = "Capivara dos bambuzais",
+	},
+	brasebode = {
+		description = "Seus chifres de cobre guardam calor; bate os cascos para afastar cinzas das encostas.",
+		personality = "Valente",
+		family = "Caprino de cobre e brasa",
+	},
+	coralote = {
+		description = "Anfíbio de guelras corais que cultiva pequenas flores marinhas ao redor do pescoço.",
+		personality = "Brincalhão",
+		family = "Anfíbio dos corais",
+	},
+	dunatatu = {
+		description = "Protege o focinho sob placas de cerâmica e desenha espirais na areia com sua cauda.",
+		personality = "Cauteloso",
+		family = "Tatu de cerâmica",
+	},
+	nimburso = {
+		description = "Urso envolto em nuvens macias; seus passos silenciosos anunciam a chegada da neblina.",
+		personality = "Gentil",
+		family = "Urso das nuvens",
+	},
+	lumissapo = {
+		description = "Acende a bolsa de sua garganta para guiar viajantes por caminhos seguros do pântano.",
+		personality = "Vigilante",
+		family = "Anuro de luz noturna",
+	},
+	nectarim = {
+		description = "Guarda néctar em um abdômen brilhante e espalha pólen com asas que lembram pétalas.",
+		personality = "Dedicado",
+		family = "Abelha das orquídeas",
+	},
+	cristalince = {
+		description = "As pontas de quartzo de suas orelhas vibram antes das tempestades de areia.",
+		personality = "Perspicaz",
+		family = "Felino de quartzo",
+	},
+	maritromba = {
+		description = "Mamífero das marés com tromba curta e presas de marfim; navega entre bancos de coral.",
+		personality = "Sociável",
+		family = "Elefante das marés",
+	},
+	kraken = {
+		description = "Guardião adulto das profundezas, reconhecido por oito braços curvos e uma coroa de coral antigo. Surge raramente no Recife e não participa de cruzamentos.",
+		personality = "Majestoso",
+		family = "Cefalópode lendário",
+	},
 }

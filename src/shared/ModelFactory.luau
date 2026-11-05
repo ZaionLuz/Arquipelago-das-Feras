@@ -11,6 +11,8 @@ for _, family in
 		require(script.Parent.SculptSky),
 		require(script.Parent.SculptMystic),
 		require(script.Parent.SculptDrakes),
+		require(script.Parent.SculptExpansionA),
+		require(script.Parent.SculptExpansionB),
 	}
 do
 	for id, build in family do

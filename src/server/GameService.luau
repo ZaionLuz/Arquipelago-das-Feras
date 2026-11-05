@@ -289,15 +289,22 @@ function A.Breed(p, a, b)
 	if a == b or not d.creatures[a] or not d.creatures[b] then
 		return fail(Text.ESCOLHA_DUAS_FERAS_DIFERENTES_D70C07)
 	end
+	local Species = require(RS.Shared.SpeciesRules)
+	if not Species.isBreedable(d.creatures[a].id) or not Species.isBreedable(d.creatures[b].id) then
+		return fail("Uma das espécies escolhidas não participa da reprodução.")
+	end
 	if #d.eggs >= Balance.IncubatorSlots then
 		return fail(Text.CHOCADEIRA_CHEIA_3D3160)
 	end
 	if d.gold < BREED_COST then
 		return fail(Text.PRECISA_DE_3C22C8 .. BREED_COST .. " ouro")
 	end
+	local id = B.pick(d.creatures[a].id, d.creatures[b].id, rng)
+	if not id or not C.ById[id] then
+		return fail("Este par não pode gerar um ovo.")
+	end
 	d.gold -= BREED_COST
 	bump(d, "breed")
-	local id = B.pick(d.creatures[a].id, d.creatures[b].id, rng)
 	local r = C.ById[id].rar
 	table.insert(d.eggs, {
 		id = id,

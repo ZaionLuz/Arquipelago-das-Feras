@@ -686,4 +686,240 @@ function M.vaporino(c)
 	return { body = body, head = head }
 end
 
+-- Polimento de perfis: formas secundárias resolvem a anatomia sem esconder a silhueta principal.
+local function location(c, part)
+	return part.CFrame.Position / c.scale
+end
+local function brow(c, head, color, stern)
+	if c.young then
+		return
+	end
+	for _, side in { -1, 1 } do
+		local eye = c.model:FindFirstChild(side < 0 and "EyeL" or "EyeR")
+		if eye then
+			local center = location(c, eye)
+			local dimensions = eye.Size / c.scale
+			c:segment(
+				"CanopyBrow" .. side,
+				center + c.V(-dimensions.X * 0.43, dimensions.Y * 0.31 + side * stern, dimensions.Z * 0.27),
+				center + c.V(dimensions.X * 0.43, dimensions.Y * 0.31 - side * stern, dimensions.Z * 0.27),
+				0.09,
+				0.1,
+				color,
+				head
+			)
+		end
+	end
+end
+local refine = {}
+refine.brotinho = function(c, a)
+	local V = c.V
+	local h, b = location(c, a.head), location(c, a.body)
+	local jade, light = Color3.fromRGB(86, 132, 76), Color3.fromRGB(160, 190, 94)
+	-- Os quatro apoios se abrem como raízes; o caule ganha um cálice, em vez de brotar de uma esfera.
+	c:sphere("SeedCalyx", V(c.young and 0.96 or 1.2, 0.58, 0.99), h + V(0, -0.57, -0.11), jade, a.body)
+	for _, side in { -1, 1 } do
+		local start = b + V(side * 0.53, -0.2, 0.05)
+		c:leaf(
+			"SeedSideMantle" .. side,
+			start,
+			start + V(side * (c.young and 0.29 or 0.56), -0.52, -0.36),
+			0.55,
+			light,
+			a.body
+		)
+		if c.adult then
+			local base = b + V(side * 0.56, -0.89, 0.31)
+			c:segment(
+				"RootButtress" .. side,
+				base,
+				base + V(side * 0.49, -0.35, 0.46),
+				0.22,
+				0.25,
+				Color3.fromRGB(142, 106, 70),
+				a.body
+			)
+		end
+	end
+	if not c.young then
+		brow(c, a.head, jade, -0.012)
+		c:leaf("PetalNape", h + V(0, 0.27, -0.47), h + V(0, -0.72, -0.62), 0.86, jade, a.head)
+	end
+end
+refine.ancestravore = function(c, a)
+	local V = c.V
+	local h, b = location(c, a.head), location(c, a.body)
+	local bark, moss = Color3.fromRGB(115, 88, 65), Color3.fromRGB(117, 151, 87)
+	brow(c, a.head, bark, 0.02)
+	c:sphere(
+		"StagThroat",
+		V(0.92, c.young and 0.84 or 1.13, 0.8),
+		h + V(0, -0.66, -0.13),
+		Color3.fromRGB(165, 130, 84),
+		a.body
+	)
+	if not c.young then
+		-- Massas de dorsal e cintura criam contraposto de guardião, mantendo o coração à vista.
+		for _, side in { -1, 1 } do
+			c:leaf(
+				"BarkScapula" .. side,
+				b + V(side * 0.71, 0.57, -0.37),
+				b + V(side * 1.14, -0.33, -0.62),
+				0.84,
+				bark,
+				a.body
+			)
+			c:sphere(
+				"GrownKnee" .. side,
+				V(0.6, 0.61, 0.58),
+				V(side * 0.76, (c.stage == 2 and 1.85 or 2.35) * 0.48, 0.13),
+				bark,
+				c.model:FindFirstChild("LegTrunk" .. side) or a.body
+			)
+		end
+	end
+	if c.adult then
+		for _, side in { -1, 1 } do
+			local base = h + V(side * 0.41, 0.71, -0.03)
+			c:leaf("AntlerCalyx" .. side, base, base + V(side * 0.22, 0.61, -0.12), 0.51, moss, a.head)
+		end
+	end
+end
+refine.graozinho = function(c, a)
+	local V, A = c.V, c.A
+	local h, b = location(c, a.head), location(c, a.body)
+	local sand, edge, gem = Color3.fromRGB(180, 151, 110), Color3.fromRGB(218, 190, 145), Color3.fromRGB(142, 137, 184)
+	brow(c, a.head, sand, -0.005)
+	-- Geodo partido em duas abas protege o rosto e faz os cristais crescerem do casco.
+	for _, side in { -1, 1 } do
+		c:sphere(
+			"GeodeCheekPlate" .. side,
+			V(c.young and 0.4 or 0.56, 0.69, 0.77),
+			h + V(side * 0.6, -0.1, -0.11),
+			sand,
+			a.head
+		)
+		if not c.young then
+			c:wedge(
+				"GeodeShoulderFacet" .. side,
+				V(0.65, 0.71, 1.13),
+				b + V(side * 0.89, 0.42, 0.13),
+				edge,
+				a.body,
+				false,
+				A(0.12, side * 0.25, side * -0.23)
+			)
+		end
+	end
+	if c.adult then
+		c:wedge("CrownCrystalSocket", V(0.8, 0.48, 0.97), b + V(0, 0.82, -0.23), sand, a.body, false, A(0, math.pi, 0))
+		c:sphere("GeodeCoreWindow", V(0.46, 0.38, 0.2), h + V(0, 0.44, 0.48), gem, a.head)
+	end
+end
+refine.colossodune = function(c, a)
+	local V, A = c.V, c.A
+	local h, b = location(c, a.head), location(c, a.body)
+	local stone, edge, teal = Color3.fromRGB(157, 130, 94), Color3.fromRGB(213, 183, 132), Color3.fromRGB(88, 143, 145)
+	if c.young then
+		for _, side in { -1, 1 } do
+			c:sphere("SeedRuinLobe" .. side, V(0.5, 0.46, 0.74), b + V(side * 0.77, 0.06, -0.69), stone, a.body)
+		end
+		return
+	end
+	brow(c, a.head, stone, 0)
+	-- Contrafortes inclinados distribuem o peso. O vão do tórax continua realmente aberto.
+	for _, side in { -1, 1 } do
+		local hip = b + V(side * 0.87, 0.02, -0.34)
+		c:wedge("HipButtress" .. side, V(0.55, 1.03, 1.14), hip, edge, a.body, false, A(0, side * 0.16, side * -0.17))
+		c:block(
+			"TempleCheek" .. side,
+			V(0.29, 0.65, 0.62),
+			h + V(side * 0.66, -0.22, 0.32),
+			edge,
+			a.head,
+			false,
+			A(0.04, side * 0.13, side * 0.08)
+		)
+		if c.adult then
+			c:leaf(
+				"RoyalNapePanel" .. side,
+				h + V(side * 0.57, 0.14, -0.48),
+				h + V(side * 0.93, -0.78, -0.66),
+				0.5,
+				teal,
+				a.head
+			)
+		end
+	end
+	if c.adult then
+		c:wedge("LintelKeystone", V(0.51, 0.64, 0.61), h + V(0, -0.54, 0.18), stone, a.body, false, A(0, math.pi, 0))
+	end
+end
+refine.lodinho = function(c, a)
+	local V = c.V
+	local h, b = location(c, a.head), location(c, a.body)
+	local mud, belly, moss = a.body.Color, Color3.fromRGB(164, 151, 166), Color3.fromRGB(133, 163, 104)
+	-- Um bordo contínuo de sola e uma quilha de musgo tornam o movimento de lesma legível.
+	for _, side in { -1, 1 } do
+		c:segment(
+			"SlimeFootRim" .. side,
+			b + V(side * 0.81, -0.59, -0.85),
+			b + V(side * 0.91, -0.59, 0.61),
+			0.28,
+			0.31,
+			belly,
+			a.body
+		)
+	end
+	c:sphere("CyclopsLowerLid", V(c.young and 0.88 or 0.99, 0.19, 0.23), h + V(0, -0.08, 0.76), mud, a.head)
+	if not c.young then
+		c:leaf("SlugMossKeel", b + V(0, 0.36, -0.92), b + V(0, 0.8, -0.1), 1.01, moss, a.body)
+	end
+	if c.adult then
+		for _, side in { -1, 1 } do
+			c:leaf(
+				"AdultMushroomGills" .. side,
+				b + V(side * 0.47, 0.43, -0.34),
+				b + V(side * 1.1, 0.12, -0.46),
+				0.52,
+				belly,
+				a.body
+			)
+		end
+	end
+end
+refine.vaporino = function(c, a)
+	local V = c.V
+	local h, b = location(c, a.head), location(c, a.body)
+	local copper, patina = Color3.fromRGB(191, 130, 101), Color3.fromRGB(111, 170, 171)
+	brow(c, a.head, Color3.fromRGB(139, 98, 94), -0.01)
+	-- Os ombros viram manoplas de nadadeira e a caldeira ganha uma silhueta de chaleira.
+	for _, side in { -1, 1 } do
+		c:sphere("BoilerShoulder" .. side, V(0.5, 0.65, 0.76), b + V(side * 0.77, 0.14, 0.08), copper, a.body)
+		if not c.young then
+			c:leaf(
+				"SteamCheekFlange" .. side,
+				h + V(side * 0.66, -0.14, 0.03),
+				h + V(side * 0.98, -0.46, -0.32),
+				0.43,
+				patina,
+				a.head
+			)
+		end
+	end
+	if c.adult then
+		local mouth = h + V(0, -0.26, 0.81)
+		c:segment("KettleSpoutRoot", mouth, mouth + V(0, 0.02, 0.45), 0.36, 0.32, copper, a.head)
+		c:segment("KettleSpoutLip", mouth + V(0, 0.02, 0.45), mouth + V(0, 0.18, 0.64), 0.29, 0.27, patina, a.head)
+	end
+end
+for id, polish in refine do
+	local build = M[id]
+	M[id] = function(c)
+		local anatomy = build(c)
+		polish(c, anatomy)
+		return anatomy
+	end
+end
+
 return M

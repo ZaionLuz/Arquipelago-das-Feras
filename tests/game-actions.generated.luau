@@ -622,6 +622,21 @@ add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
 C.ById.fenix.acquisition = "special"
 C.ById.fenix.minStage = 3
 C.ById.fenix.futureStage = { target = 4, enabled = false, mechanic = Text.RENASCIMENTO_FUTURO_EE24AE }
+-- Novas espécies: IDs legados e sua ordem permanecem preservados.
+add("bambunim", "Bambunim", Text.NATUREZA_FB1ED9, 1, "Floresta", "Beast")
+add("brasebode", "Brasebode", Text.FOGO_F77A3C, 2, "Brasa", "Beast")
+add("coralote", "Coralote", Text.AGUA_F11A05, 1, "Recife", "Beast")
+add("dunatatu", "Dunatatu", Text.TERRA_16D3AE, 2, "Dunas", "Beast")
+add("nimburso", "Nimburso", Text.AR_B623FF, 2, "Picos", "Beast")
+add("lumissapo", "Lumissapo", Text.SOMBRA_94B135, 2, "Pantano", "Beast")
+add("nectarim", "Nectarim", Text.NATUREZA_FB1ED9, 3, "Floresta", "Insect")
+add("cristalince", "Cristalince", Text.TERRA_16D3AE, 3, "Dunas", "Beast")
+add("maritromba", "Maritromba", Text.AGUA_F11A05, 2, "Recife", "Beast")
+add("kraken", "Kraken", Text.AGUA_F11A05, 4, "Recife", "Beast")
+-- Guardião abissal selvagem: não usa nem altera a missão especial da Fênix.
+C.ById.kraken.minStage = 3
+C.ById.kraken.breedable = false
+C.ById.kraken.encounterWeight = 0.18
 function C.stage(lv, id)
 	local normal = lv >= 15 and 3 or lv >= 7 and 2 or 1
 	return math.max(normal, (id and C.ById[id] and C.ById[id].minStage) or 1)
@@ -851,6 +866,17 @@ local S = { SpecialId = "fenix" }
 function S.isGeneral(id)
 	return typeof(id) == "string" and C.ById[id] ~= nil and C.ById[id].acquisition ~= "special"
 end
+function S.isBreedable(value)
+	local def
+	if typeof(value) == "string" then
+		def = C.ById[value]
+	elseif typeof(value) == "table" then
+		def = value
+	else
+		return false
+	end
+	return typeof(def) == "table" and typeof(def.id) == "string" and C.ById[def.id] == def and def.breedable ~= false
+end
 function S.get(id)
 	return typeof(id) == "string" and C.ById[id] or nil
 end
@@ -865,12 +891,16 @@ local B = {}
 -- Cruzamento: 25% de híbrido (elementos diferentes); senão sorteia por raridade. Lendário exige pais raros+.
 function B.pick(a, b, rng)
 	local A, Z = C.ById[a], C.ById[b]
+	if not Species.isBreedable(A) or not Species.isBreedable(Z) then
+		return nil
+	end
 	if A.el ~= Z.el and rng:NextNumber() < 0.25 then
 		local pool = {}
 		for _, c in C.List do
 			local h = c.hybrid
 			if
 				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
 				and h
 				and ((h[1] == A.el and h[2] == Z.el) or (h[1] == Z.el and h[2] == A.el))
 			then
@@ -887,7 +917,13 @@ function B.pick(a, b, rng)
 	end
 	local pool, tot = {}, 0
 	for _, c in C.List do
-		if Species.isGeneral(c.id) and not c.hybrid and c.rar <= cap and (c.el == A.el or c.el == Z.el) then
+		if
+			Species.isGeneral(c.id)
+			and Species.isBreedable(c)
+			and not c.hybrid
+			and c.rar <= cap
+			and (c.el == A.el or c.el == Z.el)
+		then
 			local w = 1 / (c.rar * c.rar)
 			table.insert(pool, { c.id, w })
 			tot += w
@@ -905,7 +941,7 @@ end
 -- Distribuição exata do algoritmo pick: mesma regra, sem mudar receitas existentes.
 function B.outcomes(a, b)
 	local A, Z = C.ById[a], C.ById[b]
-	if not A or not Z then
+	if not Species.isBreedable(A) or not Species.isBreedable(Z) then
 		return {}
 	end
 	local out = {}
@@ -915,6 +951,7 @@ function B.outcomes(a, b)
 			local h = c.hybrid
 			if
 				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
 				and h
 				and ((h[1] == A.el and h[2] == Z.el) or (h[2] == A.el and h[1] == Z.el))
 			then
@@ -934,7 +971,13 @@ function B.outcomes(a, b)
 		local total = 0
 		local pool = {}
 		for _, c in C.List do
-			if Species.isGeneral(c.id) and not c.hybrid and c.rar <= cap and (c.el == A.el or c.el == Z.el) then
+			if
+				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
+				and not c.hybrid
+				and c.rar <= cap
+				and (c.el == A.el or c.el == Z.el)
+			then
 				local weight = 1 / (c.rar * c.rar)
 				pool[c.id] = weight
 				total += weight
@@ -1092,6 +1135,13 @@ local C = M_Creatures
 local Species = M_SpeciesRules
 local Bands = M_LevelBands
 local P = {}
+local function weight(def)
+	local multiplier = def.encounterWeight or 1
+	if typeof(multiplier) ~= "number" or multiplier ~= multiplier or multiplier <= 0 or multiplier == math.huge then
+		return 0
+	end
+	return multiplier / def.rar ^ 2
+end
 function P.list(region, commercial)
 	local pool = {}
 	for _, def in C.List do
@@ -1110,10 +1160,12 @@ function P.list(region, commercial)
 end
 function P.pick(region, rng, commercial, counts)
 	local pool = P.list(region, commercial)
-	local total = 0
+	local total, last = 0, nil
 	for _, d in pool do
-		if not counts or (counts[d.id] or 0) < (d.rar == 4 and 1 or 2) then
-			total += 1 / d.rar ^ 2
+		local value = weight(d)
+		if value > 0 and (not counts or (counts[d.id] or 0) < (d.rar == 4 and 1 or 2)) then
+			total += value
+			last = d
 		end
 	end
 	if total == 0 then
@@ -1121,14 +1173,16 @@ function P.pick(region, rng, commercial, counts)
 	end
 	local roll = rng:NextNumber() * total
 	for _, d in pool do
-		if not counts or (counts[d.id] or 0) < (d.rar == 4 and 1 or 2) then
-			roll -= 1 / d.rar ^ 2
+		local value = weight(d)
+		if value > 0 and (not counts or (counts[d.id] or 0) < (d.rar == 4 and 1 or 2)) then
+			roll -= value
 			if roll <= 0 then
 				return d
 			end
 		end
 	end
-	return pool[#pool]
+	-- O limite superior e o arredondamento só podem escolher o último candidato elegível.
+	return last
 end
 function P.rollLevel(region, rarity, rng)
 	local band = Bands.ById[region]
@@ -2146,15 +2200,22 @@ function A.Breed(p, a, b)
 	if a == b or not d.creatures[a] or not d.creatures[b] then
 		return fail(Text.ESCOLHA_DUAS_FERAS_DIFERENTES_D70C07)
 	end
+	local Species = M_SpeciesRules
+	if not Species.isBreedable(d.creatures[a].id) or not Species.isBreedable(d.creatures[b].id) then
+		return fail("Uma das espécies escolhidas não participa da reprodução.")
+	end
 	if #d.eggs >= Balance.IncubatorSlots then
 		return fail(Text.CHOCADEIRA_CHEIA_3D3160)
 	end
 	if d.gold < BREED_COST then
 		return fail(Text.PRECISA_DE_3C22C8 .. BREED_COST .. " ouro")
 	end
+	local id = B.pick(d.creatures[a].id, d.creatures[b].id, rng)
+	if not id or not C.ById[id] then
+		return fail("Este par não pode gerar um ovo.")
+	end
 	d.gold -= BREED_COST
 	bump(d, "breed")
-	local id = B.pick(d.creatures[a].id, d.creatures[b].id, rng)
 	local r = C.ById[id].rar
 	table.insert(d.eggs, {
 		id = id,
@@ -2412,3 +2473,10 @@ for _,region in {"Alvorecer","Brasa","Recife","Floresta","Dunas","Picos","Pantan
 assert(not G.Actions.Unlock(a,"inexistente").ok)
 a.Character={FindFirstChild=function() return {} end};assert(G.Actions.Travel(a,"Pantano").ok and d.playerLevel==1 and d.gold==0)
 print("PASS: viagens de iniciante e ação legada Unlock não exigem nível nem gastam ouro")
+
+-- Kraken não pode gerar ovos: recusa antes de gastar ouro/estatísticas.
+d.gold=1000;d.eggs={};d.creatures.uKraken={id="kraken",lv=30,xp=0}
+local oldBreed=d.stats.breed or 0;local beforeGold=d.gold
+assert(not G.Actions.Breed(a,"uKraken","u1").ok)
+assert(d.gold==beforeGold and #d.eggs==0 and (d.stats.breed or 0)==oldBreed)
+print("PASS catálogo40: Kraken recusado como pai antes de débito")

@@ -47,23 +47,23 @@
     {
       "chance": 0.04,
       "executions": 100000,
-      "meanAttempts": 25.05711,
+      "meanAttempts": 25.07962,
       "scenario": "sem preparo",
-      "within15": 0.4557
+      "within15": 0.4554
     },
     {
       "chance": 0.09278080000000002,
       "executions": 100000,
-      "meanAttempts": 10.78357,
+      "meanAttempts": 10.80656,
       "scenario": "médio",
-      "within15": 0.76788
+      "within15": 0.76613
     },
     {
       "chance": 0.20629880000000003,
       "executions": 100000,
-      "meanAttempts": 4.84456,
+      "meanAttempts": 4.84521,
       "scenario": "ótimo",
-      "within15": 0.96831
+      "within15": 0.96863
     }
   ],
   "seed": 718

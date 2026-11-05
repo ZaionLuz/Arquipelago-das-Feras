@@ -1,0 +1,86 @@
+{
+  "models": [
+    {
+      "armRoots": 8,
+      "armSegments": 40,
+      "detail": "full",
+      "inlays": 48,
+      "level": 1,
+      "parts": 185,
+      "stage": 3,
+      "suckers": 48
+    },
+    {
+      "armRoots": 8,
+      "armSegments": 40,
+      "detail": "full",
+      "inlays": 48,
+      "level": 7,
+      "parts": 185,
+      "stage": 3,
+      "suckers": 48
+    },
+    {
+      "armRoots": 8,
+      "armSegments": 40,
+      "detail": "full",
+      "inlays": 48,
+      "level": 15,
+      "parts": 185,
+      "stage": 3,
+      "suckers": 48
+    },
+    {
+      "armRoots": 8,
+      "armSegments": 40,
+      "detail": "full",
+      "inlays": 48,
+      "level": 60,
+      "parts": 185,
+      "stage": 3,
+      "suckers": 48
+    },
+    {
+      "armRoots": 8,
+      "armSegments": 40,
+      "detail": "low",
+      "inlays": 0,
+      "level": 1,
+      "parts": 105,
+      "stage": 3,
+      "suckers": 24
+    },
+    {
+      "armRoots": 8,
+      "armSegments": 40,
+      "detail": "low",
+      "inlays": 0,
+      "level": 7,
+      "parts": 105,
+      "stage": 3,
+      "suckers": 24
+    },
+    {
+      "armRoots": 8,
+      "armSegments": 40,
+      "detail": "low",
+      "inlays": 0,
+      "level": 15,
+      "parts": 105,
+      "stage": 3,
+      "suckers": 24
+    },
+    {
+      "armRoots": 8,
+      "armSegments": 40,
+      "detail": "low",
+      "inlays": 0,
+      "level": 60,
+      "parts": 105,
+      "stage": 3,
+      "suckers": 24
+    }
+  ],
+  "physicsExecuted": false,
+  "species": "kraken"
+}

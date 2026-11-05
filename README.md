@@ -1,14 +1,21 @@
-# Arquipélago das Feras — 30 criaturas remodeladas em 3D
+# Arquipélago das Feras — bestiário de 40 criaturas em 3D
 
-Nova passagem dedicada exclusivamente à modelagem das30 espécies:88 formas, anatomias próprias, rostos em camadas e membros/caudas/asas articulados. Gameplay, save, mapa e economia preservados; caches e animações receberam otimizações para PCs mais fracos.
+Os 30 modelos anteriores receberam uma nova passagem de anatomia, rostos e acabamento. Entram dez espécies originais, incluindo o **Kraken lendário**, com oito braços articulados, ventosas e coroa de coral. São **116 formas distintas**: 38 espécies com três estágios, mais Fênix e Kraken adultos.
 
-- **Inspecionar os modelos sem DataStore:** abra [releases/Galeria-Criaturas-3D.rbxl](releases/Galeria-Criaturas-3D.rbxl) no Roblox Studio. As88 formas já estão montadas.
-- **Jogar com os modelos novos:** [releases/Feras-Creature-Sculpt.rbxlx](releases/Feras-Creature-Sculpt.rbxlx).
-- [Relatório e direção das30 espécies](docs/sculpt/README.md), [pranchas de revisão offline](assets/sculpt/review.html) e [meshes GLB](assets/sculpt/meshes.zip).
-- **Modo leve:** cerca de 19% menos peças nos adultos, previews fora da tela pausados e ajuste automático no Médio. Há também [galeria leve](releases/Galeria-Criaturas-3D-Leve.rbxl).
-- Testar: `bash scripts/sculpt/test`. Renderizar: `python scripts/sculpt/render_models.py`.
+- **Inspecionar os modelos:** abra [releases/Galeria-40-Feras.rbxl](releases/Galeria-40-Feras.rbxl) no Roblox Studio; as 116 formas já estão montadas. Há também uma [galeria leve](releases/Galeria-40-Feras-Leve.rbxl).
+- **Jogar com o bestiário ampliado:** [releases/Feras-Bestiario-40.rbxlx](releases/Feras-Bestiario-40.rbxlx).
+- [Pranchas de revisão offline](assets/bestiary40/review.html), [40 meshes GLB para revisão 3D](assets/bestiary40/meshes.zip), [relatório](docs/bestiary40/README.md) e [referências consultadas](docs/bestiary40/REFERENCIAS.md).
+- Testar: `bash scripts/bestiary40/test`. Renderizar: `python scripts/sculpt/render_models.py --expected-species 40 --expected-forms 116`.
 
-Rigs nativos, clones, regressão e serialização foram verificados. Play/animação no renderer Roblox e desempenho real aguardam conferência no Studio. As imagens são renders Blender da geometria real exportada.
+As novas espécies participam dos sistemas existentes de encontros, captura, equipe, companheiro e bestiário. O Kraken não participa de reprodução nem dos ovos comerciais. Os IDs e atributos das 30 espécies anteriores, os perfis e o esquema 6 do DataStore foram preservados.
+
+Os modelos usam rigs nativos e versões leves; animações e previews mantêm as otimizações da entrega anterior. Renders Blender mostram a geometria exportada do jogo. Validação no renderer Roblox e medições reais de FPS dependem do [roteiro no Studio](docs/bestiary40/STUDIO_QA.md).
+
+---
+
+## Histórico — 30 criaturas remodeladas
+
+A entrega anterior permanece em [Feras-Creature-Sculpt.rbxlx](releases/Feras-Creature-Sculpt.rbxlx), [galeria de 88 formas](releases/Galeria-Criaturas-3D.rbxl), [relatório](docs/sculpt/README.md) e [revisão offline](assets/sculpt/review.html). Seus renders e métricas são preservados como histórico; a entrega atual é o bestiário de 40 espécies acima.
 
 ---
 

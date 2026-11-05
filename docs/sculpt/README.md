@@ -1,5 +1,7 @@
 # Esculturas 3D — 30 feras
 
+Este documento registra a entrega anterior. Na branch atual, use o [bestiário de 40 espécies](../bestiary40/README.md) e `bash scripts/bestiary40/test`; os artefatos abaixo permanecem como histórico. Para reproduzir exatamente esta fase, use a branch `creature-sculpt`.
+
 Esta entrega muda exclusivamente os modelos das criaturas. As 30 espécies receberam anatomias próprias, com volumes conectados, rostos em camadas, membros, caudas e apêndices construídos em 3D. A direção é fantasia acolhedora: cores quentes, creme, sombras azul-violeta, formas expressivas e silhuetas fáceis de reconhecer, tomando a imagem fornecida como referência de estilo.
 
 Há **88 formas**: três estágios para 29 espécies e a Fênix solar somente adulta. Nomes, IDs, elementos, atributos de combate, marcos de evolução e aquisição foram preservados. O estágio 4 da Fênix continua futuro. O trabalho de recursos em andamento ficou separado desta branch.

@@ -5,12 +5,16 @@ local B = {}
 -- Cruzamento: 25% de híbrido (elementos diferentes); senão sorteia por raridade. Lendário exige pais raros+.
 function B.pick(a, b, rng)
 	local A, Z = C.ById[a], C.ById[b]
+	if not Species.isBreedable(A) or not Species.isBreedable(Z) then
+		return nil
+	end
 	if A.el ~= Z.el and rng:NextNumber() < 0.25 then
 		local pool = {}
 		for _, c in C.List do
 			local h = c.hybrid
 			if
 				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
 				and h
 				and ((h[1] == A.el and h[2] == Z.el) or (h[1] == Z.el and h[2] == A.el))
 			then
@@ -27,7 +31,13 @@ function B.pick(a, b, rng)
 	end
 	local pool, tot = {}, 0
 	for _, c in C.List do
-		if Species.isGeneral(c.id) and not c.hybrid and c.rar <= cap and (c.el == A.el or c.el == Z.el) then
+		if
+			Species.isGeneral(c.id)
+			and Species.isBreedable(c)
+			and not c.hybrid
+			and c.rar <= cap
+			and (c.el == A.el or c.el == Z.el)
+		then
 			local w = 1 / (c.rar * c.rar)
 			table.insert(pool, { c.id, w })
 			tot += w
@@ -45,7 +55,7 @@ end
 -- Distribuição exata do algoritmo pick: mesma regra, sem mudar receitas existentes.
 function B.outcomes(a, b)
 	local A, Z = C.ById[a], C.ById[b]
-	if not A or not Z then
+	if not Species.isBreedable(A) or not Species.isBreedable(Z) then
 		return {}
 	end
 	local out = {}
@@ -55,6 +65,7 @@ function B.outcomes(a, b)
 			local h = c.hybrid
 			if
 				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
 				and h
 				and ((h[1] == A.el and h[2] == Z.el) or (h[2] == A.el and h[1] == Z.el))
 			then
@@ -74,7 +85,13 @@ function B.outcomes(a, b)
 		local total = 0
 		local pool = {}
 		for _, c in C.List do
-			if Species.isGeneral(c.id) and not c.hybrid and c.rar <= cap and (c.el == A.el or c.el == Z.el) then
+			if
+				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
+				and not c.hybrid
+				and c.rar <= cap
+				and (c.el == A.el or c.el == Z.el)
+			then
 				local weight = 1 / (c.rar * c.rar)
 				pool[c.id] = weight
 				total += weight

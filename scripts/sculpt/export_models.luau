@@ -5,6 +5,8 @@ local serde = require("@lune/serde")
 local process = require("@lune/process")
 local base = process.args[1] or "."
 local destination = process.args[2] or "/tmp/feras-sculpt-geometry.json"
+local detail = process.args[3] or "full"
+assert(detail == "full" or detail == "low", "Detail must be full or low")
 local load = Loader.new()
 local C = load(base .. "/src/shared/Creatures.luau")
 local F = load(base .. "/src/shared/ModelFactory.luau")
@@ -12,11 +14,17 @@ local function vector(v)
 	return { v.X, v.Y, v.Z }
 end
 local out = {
-	format = 1,
+	format = 2,
+	detail = detail,
+	catalog = {},
 	description = "Native Roblox static geometry; DCC reconstruction, not Studio screenshots",
 	models = {},
 }
 for _, def in C.List do
+	table.insert(
+		out.catalog,
+		{ id = def.id, name = def.name, minStage = def.minStage or 1, rarity = def.rar, island = def.island }
+	)
 	local stages = {}
 	for _, level in { 1, 7, 15 } do
 		local stage = C.stage(level, def.id)
@@ -24,10 +32,21 @@ for _, def in C.List do
 			continue
 		end
 		stages[stage] = true
-		local succeeded, model = pcall(F.build, def, level, { preview = true })
+		local succeeded, model = pcall(F.build, def, level, { preview = true, detail = detail })
 		assert(succeeded, def.id .. " stage " .. stage .. ": " .. tostring(model))
-		local row =
-			{ id = def.id, name = def.name, stage = stage, level = level, element = def.el, parts = {}, joints = {} }
+		local row = {
+			id = def.id,
+			name = def.name,
+			stage = stage,
+			level = level,
+			element = def.el,
+			rarity = def.rar,
+			minStage = def.minStage or 1,
+			island = def.island,
+			detail = detail,
+			parts = {},
+			joints = {},
+		}
 		for _, obj in model:GetDescendants() do
 			if obj:IsA("BasePart") and obj.Name ~= "Root" then
 				local mesh = obj:FindFirstChildOfClass("SpecialMesh")
@@ -42,6 +61,7 @@ for _, def in C.List do
 					mesh = mesh and tostring(mesh.MeshType) or "",
 					meshScale = mesh and vector(mesh.Scale) or { 1, 1, 1 },
 					alpha = 1 - obj.Transparency,
+					lodDetail = obj:GetAttribute("LODDetail") == true,
 				})
 			elseif obj:IsA("Motor6D") then
 				table.insert(row.joints, {

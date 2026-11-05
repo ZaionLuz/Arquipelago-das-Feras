@@ -1,0 +1,711 @@
+{
+  "adultFull": 3191,
+  "adultLow": 2599,
+  "adultReduction": 0.18552178000626762,
+  "cloneRigsValid": true,
+  "essentialVolumesPreserved": true,
+  "forms": 116,
+  "fpsMeasured": false,
+  "fullParts": 7414,
+  "lowParts": 6123,
+  "maxVariantsPerSpeciesStage": 1,
+  "models": [
+    {
+      "full": 44,
+      "id": "cinzelo",
+      "low": 38,
+      "stage": 1
+    },
+    {
+      "full": 59,
+      "id": "cinzelo",
+      "low": 47,
+      "stage": 2
+    },
+    {
+      "full": 77,
+      "id": "cinzelo",
+      "low": 61,
+      "stage": 3
+    },
+    {
+      "full": 48,
+      "id": "magmarau",
+      "low": 42,
+      "stage": 1
+    },
+    {
+      "full": 62,
+      "id": "magmarau",
+      "low": 56,
+      "stage": 2
+    },
+    {
+      "full": 69,
+      "id": "magmarau",
+      "low": 63,
+      "stage": 3
+    },
+    {
+      "full": 78,
+      "id": "fenixfuligem",
+      "low": 61,
+      "stage": 1
+    },
+    {
+      "full": 92,
+      "id": "fenixfuligem",
+      "low": 71,
+      "stage": 2
+    },
+    {
+      "full": 102,
+      "id": "fenixfuligem",
+      "low": 82,
+      "stage": 3
+    },
+    {
+      "full": 58,
+      "id": "vulcanodrago",
+      "low": 44,
+      "stage": 1
+    },
+    {
+      "full": 74,
+      "id": "vulcanodrago",
+      "low": 56,
+      "stage": 2
+    },
+    {
+      "full": 84,
+      "id": "vulcanodrago",
+      "low": 66,
+      "stage": 3
+    },
+    {
+      "full": 41,
+      "id": "bolhinho",
+      "low": 33,
+      "stage": 1
+    },
+    {
+      "full": 45,
+      "id": "bolhinho",
+      "low": 36,
+      "stage": 2
+    },
+    {
+      "full": 51,
+      "id": "bolhinho",
+      "low": 41,
+      "stage": 3
+    },
+    {
+      "full": 39,
+      "id": "marilisco",
+      "low": 31,
+      "stage": 1
+    },
+    {
+      "full": 49,
+      "id": "marilisco",
+      "low": 41,
+      "stage": 2
+    },
+    {
+      "full": 55,
+      "id": "marilisco",
+      "low": 47,
+      "stage": 3
+    },
+    {
+      "full": 56,
+      "id": "carangueperola",
+      "low": 47,
+      "stage": 1
+    },
+    {
+      "full": 76,
+      "id": "carangueperola",
+      "low": 63,
+      "stage": 2
+    },
+    {
+      "full": 88,
+      "id": "carangueperola",
+      "low": 73,
+      "stage": 3
+    },
+    {
+      "full": 51,
+      "id": "abissauro",
+      "low": 47,
+      "stage": 1
+    },
+    {
+      "full": 59,
+      "id": "abissauro",
+      "low": 55,
+      "stage": 2
+    },
+    {
+      "full": 65,
+      "id": "abissauro",
+      "low": 61,
+      "stage": 3
+    },
+    {
+      "full": 45,
+      "id": "brotinho",
+      "low": 37,
+      "stage": 1
+    },
+    {
+      "full": 56,
+      "id": "brotinho",
+      "low": 47,
+      "stage": 2
+    },
+    {
+      "full": 65,
+      "id": "brotinho",
+      "low": 56,
+      "stage": 3
+    },
+    {
+      "full": 51,
+      "id": "folhuco",
+      "low": 45,
+      "stage": 1
+    },
+    {
+      "full": 68,
+      "id": "folhuco",
+      "low": 62,
+      "stage": 2
+    },
+    {
+      "full": 85,
+      "id": "folhuco",
+      "low": 75,
+      "stage": 3
+    },
+    {
+      "full": 61,
+      "id": "aracnoflora",
+      "low": 53,
+      "stage": 1
+    },
+    {
+      "full": 77,
+      "id": "aracnoflora",
+      "low": 68,
+      "stage": 2
+    },
+    {
+      "full": 104,
+      "id": "aracnoflora",
+      "low": 89,
+      "stage": 3
+    },
+    {
+      "full": 52,
+      "id": "ancestravore",
+      "low": 48,
+      "stage": 1
+    },
+    {
+      "full": 68,
+      "id": "ancestravore",
+      "low": 64,
+      "stage": 2
+    },
+    {
+      "full": 85,
+      "id": "ancestravore",
+      "low": 81,
+      "stage": 3
+    },
+    {
+      "full": 38,
+      "id": "graozinho",
+      "low": 24,
+      "stage": 1
+    },
+    {
+      "full": 48,
+      "id": "graozinho",
+      "low": 30,
+      "stage": 2
+    },
+    {
+      "full": 58,
+      "id": "graozinho",
+      "low": 40,
+      "stage": 3
+    },
+    {
+      "full": 61,
+      "id": "escorpiodra",
+      "low": 53,
+      "stage": 1
+    },
+    {
+      "full": 72,
+      "id": "escorpiodra",
+      "low": 62,
+      "stage": 2
+    },
+    {
+      "full": 82,
+      "id": "escorpiodra",
+      "low": 72,
+      "stage": 3
+    },
+    {
+      "full": 40,
+      "id": "esfingeolito",
+      "low": 34,
+      "stage": 1
+    },
+    {
+      "full": 63,
+      "id": "esfingeolito",
+      "low": 55,
+      "stage": 2
+    },
+    {
+      "full": 76,
+      "id": "esfingeolito",
+      "low": 66,
+      "stage": 3
+    },
+    {
+      "full": 25,
+      "id": "colossodune",
+      "low": 24,
+      "stage": 1
+    },
+    {
+      "full": 65,
+      "id": "colossodune",
+      "low": 55,
+      "stage": 2
+    },
+    {
+      "full": 78,
+      "id": "colossodune",
+      "low": 68,
+      "stage": 3
+    },
+    {
+      "full": 56,
+      "id": "penugem",
+      "low": 45,
+      "stage": 1
+    },
+    {
+      "full": 82,
+      "id": "penugem",
+      "low": 65,
+      "stage": 2
+    },
+    {
+      "full": 95,
+      "id": "penugem",
+      "low": 74,
+      "stage": 3
+    },
+    {
+      "full": 79,
+      "id": "ventanil",
+      "low": 62,
+      "stage": 1
+    },
+    {
+      "full": 91,
+      "id": "ventanil",
+      "low": 70,
+      "stage": 2
+    },
+    {
+      "full": 97,
+      "id": "ventanil",
+      "low": 77,
+      "stage": 3
+    },
+    {
+      "full": 48,
+      "id": "trovoraptor",
+      "low": 38,
+      "stage": 1
+    },
+    {
+      "full": 54,
+      "id": "trovoraptor",
+      "low": 44,
+      "stage": 2
+    },
+    {
+      "full": 70,
+      "id": "trovoraptor",
+      "low": 60,
+      "stage": 3
+    },
+    {
+      "full": 39,
+      "id": "aeronimbo",
+      "low": 35,
+      "stage": 1
+    },
+    {
+      "full": 55,
+      "id": "aeronimbo",
+      "low": 47,
+      "stage": 2
+    },
+    {
+      "full": 63,
+      "id": "aeronimbo",
+      "low": 55,
+      "stage": 3
+    },
+    {
+      "full": 31,
+      "id": "lodinho",
+      "low": 30,
+      "stage": 1
+    },
+    {
+      "full": 42,
+      "id": "lodinho",
+      "low": 41,
+      "stage": 2
+    },
+    {
+      "full": 48,
+      "id": "lodinho",
+      "low": 47,
+      "stage": 3
+    },
+    {
+      "full": 32,
+      "id": "caudalume",
+      "low": 28,
+      "stage": 1
+    },
+    {
+      "full": 39,
+      "id": "caudalume",
+      "low": 35,
+      "stage": 2
+    },
+    {
+      "full": 49,
+      "id": "caudalume",
+      "low": 45,
+      "stage": 3
+    },
+    {
+      "full": 47,
+      "id": "vagalumorte",
+      "low": 43,
+      "stage": 1
+    },
+    {
+      "full": 53,
+      "id": "vagalumorte",
+      "low": 49,
+      "stage": 2
+    },
+    {
+      "full": 88,
+      "id": "vagalumorte",
+      "low": 78,
+      "stage": 3
+    },
+    {
+      "full": 36,
+      "id": "reinevoento",
+      "low": 32,
+      "stage": 1
+    },
+    {
+      "full": 45,
+      "id": "reinevoento",
+      "low": 41,
+      "stage": 2
+    },
+    {
+      "full": 56,
+      "id": "reinevoento",
+      "low": 52,
+      "stage": 3
+    },
+    {
+      "full": 39,
+      "id": "vaporino",
+      "low": 33,
+      "stage": 1
+    },
+    {
+      "full": 52,
+      "id": "vaporino",
+      "low": 44,
+      "stage": 2
+    },
+    {
+      "full": 63,
+      "id": "vaporino",
+      "low": 54,
+      "stage": 3
+    },
+    {
+      "full": 46,
+      "id": "magmaterra",
+      "low": 40,
+      "stage": 1
+    },
+    {
+      "full": 73,
+      "id": "magmaterra",
+      "low": 57,
+      "stage": 2
+    },
+    {
+      "full": 80,
+      "id": "magmaterra",
+      "low": 64,
+      "stage": 3
+    },
+    {
+      "full": 93,
+      "id": "tempestalia",
+      "low": 69,
+      "stage": 1
+    },
+    {
+      "full": 106,
+      "id": "tempestalia",
+      "low": 81,
+      "stage": 2
+    },
+    {
+      "full": 123,
+      "id": "tempestalia",
+      "low": 93,
+      "stage": 3
+    },
+    {
+      "full": 48,
+      "id": "nevoamusgo",
+      "low": 44,
+      "stage": 1
+    },
+    {
+      "full": 62,
+      "id": "nevoamusgo",
+      "low": 58,
+      "stage": 2
+    },
+    {
+      "full": 76,
+      "id": "nevoamusgo",
+      "low": 69,
+      "stage": 3
+    },
+    {
+      "full": 58,
+      "id": "cinzavento",
+      "low": 50,
+      "stage": 1
+    },
+    {
+      "full": 65,
+      "id": "cinzavento",
+      "low": 55,
+      "stage": 2
+    },
+    {
+      "full": 77,
+      "id": "cinzavento",
+      "low": 67,
+      "stage": 3
+    },
+    {
+      "full": 194,
+      "id": "fenix",
+      "low": 147,
+      "stage": 3
+    },
+    {
+      "full": 44,
+      "id": "bambunim",
+      "low": 36,
+      "stage": 1
+    },
+    {
+      "full": 52,
+      "id": "bambunim",
+      "low": 44,
+      "stage": 2
+    },
+    {
+      "full": 72,
+      "id": "bambunim",
+      "low": 52,
+      "stage": 3
+    },
+    {
+      "full": 46,
+      "id": "brasebode",
+      "low": 42,
+      "stage": 1
+    },
+    {
+      "full": 55,
+      "id": "brasebode",
+      "low": 51,
+      "stage": 2
+    },
+    {
+      "full": 63,
+      "id": "brasebode",
+      "low": 59,
+      "stage": 3
+    },
+    {
+      "full": 49,
+      "id": "coralote",
+      "low": 45,
+      "stage": 1
+    },
+    {
+      "full": 64,
+      "id": "coralote",
+      "low": 48,
+      "stage": 2
+    },
+    {
+      "full": 74,
+      "id": "coralote",
+      "low": 58,
+      "stage": 3
+    },
+    {
+      "full": 53,
+      "id": "dunatatu",
+      "low": 49,
+      "stage": 1
+    },
+    {
+      "full": 60,
+      "id": "dunatatu",
+      "low": 53,
+      "stage": 2
+    },
+    {
+      "full": 69,
+      "id": "dunatatu",
+      "low": 61,
+      "stage": 3
+    },
+    {
+      "full": 40,
+      "id": "nimburso",
+      "low": 34,
+      "stage": 1
+    },
+    {
+      "full": 50,
+      "id": "nimburso",
+      "low": 38,
+      "stage": 2
+    },
+    {
+      "full": 63,
+      "id": "nimburso",
+      "low": 51,
+      "stage": 3
+    },
+    {
+      "full": 41,
+      "id": "lumissapo",
+      "low": 27,
+      "stage": 1
+    },
+    {
+      "full": 62,
+      "id": "lumissapo",
+      "low": 33,
+      "stage": 2
+    },
+    {
+      "full": 71,
+      "id": "lumissapo",
+      "low": 35,
+      "stage": 3
+    },
+    {
+      "full": 51,
+      "id": "nectarim",
+      "low": 47,
+      "stage": 1
+    },
+    {
+      "full": 62,
+      "id": "nectarim",
+      "low": 54,
+      "stage": 2
+    },
+    {
+      "full": 68,
+      "id": "nectarim",
+      "low": 59,
+      "stage": 3
+    },
+    {
+      "full": 58,
+      "id": "cristalince",
+      "low": 48,
+      "stage": 1
+    },
+    {
+      "full": 66,
+      "id": "cristalince",
+      "low": 52,
+      "stage": 2
+    },
+    {
+      "full": 74,
+      "id": "cristalince",
+      "low": 60,
+      "stage": 3
+    },
+    {
+      "full": 34,
+      "id": "maritromba",
+      "low": 25,
+      "stage": 1
+    },
+    {
+      "full": 44,
+      "id": "maritromba",
+      "low": 33,
+      "stage": 2
+    },
+    {
+      "full": 49,
+      "id": "maritromba",
+      "low": 36,
+      "stage": 3
+    },
+    {
+      "full": 185,
+      "id": "kraken",
+      "low": 105,
+      "stage": 3
+    }
+  ],
+  "peakTemplates": 116
+}

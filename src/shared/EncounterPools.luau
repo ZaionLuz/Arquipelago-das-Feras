@@ -3,6 +3,13 @@ local C = require(script.Parent.Creatures)
 local Species = require(script.Parent.SpeciesRules)
 local Bands = require(script.Parent.LevelBands)
 local P = {}
+local function weight(def)
+	local multiplier = def.encounterWeight or 1
+	if typeof(multiplier) ~= "number" or multiplier ~= multiplier or multiplier <= 0 or multiplier == math.huge then
+		return 0
+	end
+	return multiplier / def.rar ^ 2
+end
 function P.list(region, commercial)
 	local pool = {}
 	for _, def in C.List do
@@ -21,10 +28,12 @@ function P.list(region, commercial)
 end
 function P.pick(region, rng, commercial, counts)
 	local pool = P.list(region, commercial)
-	local total = 0
+	local total, last = 0, nil
 	for _, d in pool do
-		if not counts or (counts[d.id] or 0) < (d.rar == 4 and 1 or 2) then
-			total += 1 / d.rar ^ 2
+		local value = weight(d)
+		if value > 0 and (not counts or (counts[d.id] or 0) < (d.rar == 4 and 1 or 2)) then
+			total += value
+			last = d
 		end
 	end
 	if total == 0 then
@@ -32,14 +41,16 @@ function P.pick(region, rng, commercial, counts)
 	end
 	local roll = rng:NextNumber() * total
 	for _, d in pool do
-		if not counts or (counts[d.id] or 0) < (d.rar == 4 and 1 or 2) then
-			roll -= 1 / d.rar ^ 2
+		local value = weight(d)
+		if value > 0 and (not counts or (counts[d.id] or 0) < (d.rar == 4 and 1 or 2)) then
+			roll -= value
 			if roll <= 0 then
 				return d
 			end
 		end
 	end
-	return pool[#pool]
+	-- O limite superior e o arredondamento só podem escolher o último candidato elegível.
+	return last
 end
 function P.rollLevel(region, rarity, rng)
 	local band = Bands.ById[region]

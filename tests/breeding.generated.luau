@@ -578,6 +578,21 @@ add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
 C.ById.fenix.acquisition = "special"
 C.ById.fenix.minStage = 3
 C.ById.fenix.futureStage = { target = 4, enabled = false, mechanic = Text.RENASCIMENTO_FUTURO_EE24AE }
+-- Novas espécies: IDs legados e sua ordem permanecem preservados.
+add("bambunim", "Bambunim", Text.NATUREZA_FB1ED9, 1, "Floresta", "Beast")
+add("brasebode", "Brasebode", Text.FOGO_F77A3C, 2, "Brasa", "Beast")
+add("coralote", "Coralote", Text.AGUA_F11A05, 1, "Recife", "Beast")
+add("dunatatu", "Dunatatu", Text.TERRA_16D3AE, 2, "Dunas", "Beast")
+add("nimburso", "Nimburso", Text.AR_B623FF, 2, "Picos", "Beast")
+add("lumissapo", "Lumissapo", Text.SOMBRA_94B135, 2, "Pantano", "Beast")
+add("nectarim", "Nectarim", Text.NATUREZA_FB1ED9, 3, "Floresta", "Insect")
+add("cristalince", "Cristalince", Text.TERRA_16D3AE, 3, "Dunas", "Beast")
+add("maritromba", "Maritromba", Text.AGUA_F11A05, 2, "Recife", "Beast")
+add("kraken", "Kraken", Text.AGUA_F11A05, 4, "Recife", "Beast")
+-- Guardião abissal selvagem: não usa nem altera a missão especial da Fênix.
+C.ById.kraken.minStage = 3
+C.ById.kraken.breedable = false
+C.ById.kraken.encounterWeight = 0.18
 function C.stage(lv, id)
 	local normal = lv >= 15 and 3 or lv >= 7 and 2 or 1
 	return math.max(normal, (id and C.ById[id] and C.ById[id].minStage) or 1)
@@ -591,6 +606,17 @@ local C = M_Creatures
 local S = { SpecialId = "fenix" }
 function S.isGeneral(id)
 	return typeof(id) == "string" and C.ById[id] ~= nil and C.ById[id].acquisition ~= "special"
+end
+function S.isBreedable(value)
+	local def
+	if typeof(value) == "string" then
+		def = C.ById[value]
+	elseif typeof(value) == "table" then
+		def = value
+	else
+		return false
+	end
+	return typeof(def) == "table" and typeof(def.id) == "string" and C.ById[def.id] == def and def.breedable ~= false
 end
 function S.get(id)
 	return typeof(id) == "string" and C.ById[id] or nil
@@ -606,12 +632,16 @@ local B = {}
 -- Cruzamento: 25% de híbrido (elementos diferentes); senão sorteia por raridade. Lendário exige pais raros+.
 function B.pick(a, b, rng)
 	local A, Z = C.ById[a], C.ById[b]
+	if not Species.isBreedable(A) or not Species.isBreedable(Z) then
+		return nil
+	end
 	if A.el ~= Z.el and rng:NextNumber() < 0.25 then
 		local pool = {}
 		for _, c in C.List do
 			local h = c.hybrid
 			if
 				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
 				and h
 				and ((h[1] == A.el and h[2] == Z.el) or (h[1] == Z.el and h[2] == A.el))
 			then
@@ -628,7 +658,13 @@ function B.pick(a, b, rng)
 	end
 	local pool, tot = {}, 0
 	for _, c in C.List do
-		if Species.isGeneral(c.id) and not c.hybrid and c.rar <= cap and (c.el == A.el or c.el == Z.el) then
+		if
+			Species.isGeneral(c.id)
+			and Species.isBreedable(c)
+			and not c.hybrid
+			and c.rar <= cap
+			and (c.el == A.el or c.el == Z.el)
+		then
 			local w = 1 / (c.rar * c.rar)
 			table.insert(pool, { c.id, w })
 			tot += w
@@ -646,7 +682,7 @@ end
 -- Distribuição exata do algoritmo pick: mesma regra, sem mudar receitas existentes.
 function B.outcomes(a, b)
 	local A, Z = C.ById[a], C.ById[b]
-	if not A or not Z then
+	if not Species.isBreedable(A) or not Species.isBreedable(Z) then
 		return {}
 	end
 	local out = {}
@@ -656,6 +692,7 @@ function B.outcomes(a, b)
 			local h = c.hybrid
 			if
 				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
 				and h
 				and ((h[1] == A.el and h[2] == Z.el) or (h[2] == A.el and h[1] == Z.el))
 			then
@@ -675,7 +712,13 @@ function B.outcomes(a, b)
 		local total = 0
 		local pool = {}
 		for _, c in C.List do
-			if Species.isGeneral(c.id) and not c.hybrid and c.rar <= cap and (c.el == A.el or c.el == Z.el) then
+			if
+				Species.isGeneral(c.id)
+				and Species.isBreedable(c)
+				and not c.hybrid
+				and c.rar <= cap
+				and (c.el == A.el or c.el == Z.el)
+			then
 				local weight = 1 / (c.rar * c.rar)
 				pool[c.id] = weight
 				total += weight
@@ -698,11 +741,15 @@ function rng:NextNumber() seed=(seed*48271)%2147483647;return seed/2147483647 en
 function rng:NextInteger(a,b) return a+math.floor(self:NextNumber()*(b-a+1)) end
 local pairsChecked=0
 for _,a in C.List do for _,b in C.List do
- local chances=B.outcomes(a.id,b.id);local sum=0
- for id,chance in chances do assert(C.ById[id]);assert(chance>0 and chance<=1);sum+=chance end
- assert(math.abs(sum-1)<.000001,"Probabilidades não somam 1")
- for _=1,30 do local pick=B.pick(a.id,b.id,rng);assert(chances[pick],"Sorteio fora dos resultados possíveis") end
- pairsChecked+=1
+ if a.breedable==false or b.breedable==false then
+  assert(next(B.outcomes(a.id,b.id))==nil and B.pick(a.id,b.id,rng)==nil)
+ else
+  local chances=B.outcomes(a.id,b.id);local sum=0
+  for id,chance in chances do assert(C.ById[id] and C.ById[id].breedable~=false);assert(chance>0 and chance<=1);sum+=chance end
+  assert(math.abs(sum-1)<.000001,"Probabilidades não somam 1")
+  for _=1,30 do local pick=B.pick(a.id,b.id,rng);assert(chances[pick],"Sorteio fora dos resultados possíveis") end
+  pairsChecked+=1
+ end
 end end
 assert(C.stage(1)==1 and C.stage(6)==1 and C.stage(7)==2 and C.stage(14)==2 and C.stage(15)==3)
 assert(next(B.outcomes("invalido","cinzelo"))==nil)

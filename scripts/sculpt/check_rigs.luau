@@ -45,15 +45,15 @@ for _, def in C.List do
 	end
 	table.insert(summaries, { id = def.id, stages = entries })
 end
-assert(layouts == 88 and #summaries == 30)
+assert(layouts == 116 and #summaries == 40)
 fs.writeFile(
-	"docs/sculpt/RIG_METRICS.json",
+	"docs/bestiary40/RIG_METRICS.json",
 	serde.encode("json", {
 		species = #summaries,
 		forms = layouts,
 		requests = requests,
 		maxParts = maximum,
-		totalParts88 = total,
+		totalParts = total,
 		cloneIsolation = true,
 		graphValidated = true,
 		physicsExecuted = false,
@@ -61,7 +61,7 @@ fs.writeFile(
 	}, true)
 )
 print(
-	"PASS esculturas: 30 espécies / 88 formas /",
+	"PASS esculturas: 40 espécies / 116 formas /",
 	requests,
 	"construções; rig íntegro, clones isolados; máximo",
 	maximum,

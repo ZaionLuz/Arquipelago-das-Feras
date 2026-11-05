@@ -22,14 +22,14 @@ lights.Ambient = rb.Color3.fromRGB(113, 107, 144)
 lights.OutdoorAmbient = rb.Color3.fromRGB(137, 133, 165)
 lights.GlobalShadows = true
 local gallery = rb.Instance.new("Folder")
-gallery.Name, gallery.Parent = "Galeria30Especies88Formas", world
+gallery.Name, gallery.Parent = "Galeria40Especies116Formas", world
 local function floor(name, size, point, color, kind)
 	local part = rb.Instance.new(kind or "Part")
 	part.Name, part.Size, part.Position, part.Color = name, size, point, color
 	part.Anchored, part.Parent = true, world
 	return part
 end
-floor("PisoDaGaleria", V(340, 1, 270), V(125, -1, 100), rb.Color3.fromRGB(229, 215, 180))
+floor("PisoDaGaleria", V(340, 1, 345), V(125, -1, 135), rb.Color3.fromRGB(229, 215, 180))
 local spawn = floor("Entrada", V(12, 1, 12), V(0, 0, -15), rb.Color3.fromRGB(244, 184, 70), "SpawnLocation")
 spawn.Neutral = true
 local models, parts = 0, 0
@@ -69,18 +69,15 @@ for index, def in C.List do
 		parts += report.parts
 	end
 end
-assert(models == 88)
+assert(models == 116)
 local blob = rb.serializePlace(place)
 local restored = rb.deserializePlace(blob)
 local count = #restored:GetService("Workspace"):FindFirstChild(gallery.Name):GetChildren()
-assert(count == 88, "Galeria incompleta após serialização")
+assert(count == 116, "Galeria incompleta após serialização")
 for _, model in restored:GetService("Workspace"):FindFirstChild(gallery.Name):GetChildren() do
 	F.validate(model)
 end
-fs.writeFile(
-	detail == "low" and "releases/Galeria-Criaturas-3D-Leve.rbxl" or "releases/Galeria-Criaturas-3D.rbxl",
-	blob
-)
+fs.writeFile(detail == "low" and "releases/Galeria-40-Feras-Leve.rbxl" or "releases/Galeria-40-Feras.rbxl", blob)
 print(
 	"PASS galeria nativa:",
 	detail,

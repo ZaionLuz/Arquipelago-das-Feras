@@ -785,4 +785,236 @@ function S.nevoamusgo(c)
 	return { body = body, head = head }
 end
 
+-- Segunda passagem de escultura: planos de rosto, apoios e massas secundárias.
+-- O rig base continua íntegro; os volumes abaixo fazem parte da anatomia, não de efeitos.
+local function point(c, part)
+	return part.CFrame.Position / c.scale
+end
+local function size(c, part)
+	return part.Size / c.scale
+end
+local function lids(c, head, color, angle)
+	if c.young then
+		return
+	end
+	for _, side in { -1, 1 } do
+		local eye = c.model:FindFirstChild(side < 0 and "EyeL" or "EyeR")
+		if eye then
+			local at, dimensions = point(c, eye), size(c, eye)
+			c:segment(
+				"UpperEyelid" .. side,
+				at + V(-dimensions.X * 0.43, dimensions.Y * 0.29 + side * angle, dimensions.Z * 0.28),
+				at + V(dimensions.X * 0.43, dimensions.Y * 0.29 - side * angle, dimensions.Z * 0.28),
+				0.1,
+				0.11,
+				color,
+				head
+			)
+		end
+	end
+end
+local function haunchSupport(c, body, name, color, width)
+	for _, side in { -1, 1 } do
+		local foot = c.model:FindFirstChild(name .. side .. "_-1")
+		if foot then
+			local at = point(c, foot)
+			local weld = foot:FindFirstChildOfClass("WeldConstraint")
+			local anchor = weld and weld.Part0 or body
+			c:sphere("HockSupport" .. side, V(width, 0.58, 0.68), at + V(0, 0.31, -0.16), color, anchor)
+		end
+	end
+end
+local finish = {}
+finish.cinzelo = function(c, a)
+	local head, body = a.head, a.body
+	local h, b = point(c, head), point(c, body)
+	local skin, copper = head.Color, rgb(174, 95, 64)
+	lids(c, head, skin, 0.015)
+	-- Uma mandíbula larga com cantos e saco gular evita a antiga cabeça de esfera solta.
+	c:sphere("GularThroat", V(c.young and 1.25 or 1.65, 0.55, 0.9), h + V(0, -0.51, -0.23), c.cream, head)
+	for _, side in { -1, 1 } do
+		c:sphere(
+			"ShoulderWeb" .. side,
+			V(0.59, 0.55, 0.79),
+			b + V(side * (c.young and 1.04 or 1.4), -0.13, 0.63),
+			skin,
+			body
+		)
+		if not c.young then
+			local from = h + V(side * 0.91, -0.19, 0.53)
+			c:segment("JawCorner" .. side, from, from + V(side * 0.18, 0.21, -0.45), 0.2, 0.25, copper, head)
+		end
+	end
+	if c.adult then
+		local arch = c.model:FindFirstChild("SideKilnArch-1")
+		if arch then
+			local pos = point(c, arch)
+			c:sphere("KilnDoorShoulder", V(0.2, 1.06, 1.08), pos + V(-0.03, 0, 0), copper, body)
+			c:sphere("KilnDoorInset", V(0.15, 0.76, 0.78), pos + V(-0.15, 0.02, 0.01), rgb(249, 177, 75), body)
+		end
+	end
+end
+finish.magmarau = function(c, a)
+	local h, b = point(c, a.head), point(c, a.body)
+	local skin, mane = a.head.Color, rgb(84, 47, 64)
+	lids(c, a.head, mane, c.adult and 0.035 or 0.015)
+	-- Massas escapulares e máscara de focinho dão peso de javali, não um cão com presas.
+	for _, side in { -1, 1 } do
+		c:sphere(
+			"ScapularMass" .. side,
+			V(c.young and 0.65 or 0.9, c.young and 1.0 or 1.4, 1.25),
+			b + V(side * (c.young and 0.95 or 1.3), 0.22, 0.65),
+			skin,
+			a.body
+		)
+		if not c.young then
+			c:leaf(
+				"JowlWhorl" .. side,
+				h + V(side * 0.71, -0.12, 0.48),
+				h + V(side * 1.1, -0.54, 0.02),
+				0.5,
+				mane,
+				a.head
+			)
+		end
+	end
+	if c.adult then
+		c:segment("NasalBridge", h + V(0, 0.11, 0.45), h + V(0, 0.03, 1.2), 0.43, 0.32, rgb(237, 135, 66), a.head)
+		c:leaf("WitherFlame", b + V(0, 0.84, 0.77), b + V(0, 1.64, 0.5), 0.75, rgb(237, 135, 66), a.body)
+	end
+end
+finish.folhuco = function(c, a)
+	local h, b = point(c, a.head), point(c, a.body)
+	local rust = rgb(169, 82, 62)
+	lids(c, a.head, rust, -0.015)
+	-- Ponte do focinho e pescoço posterior conectam cabeça, cernelha e peito felpudo.
+	c:sphere(
+		"FoxNeckNape",
+		V(c.young and 0.93 or 1.13, c.young and 0.9 or 1.35, 0.98),
+		(h + b) * 0.5 + V(0, 0.15, 0.25),
+		a.head.Color,
+		a.body
+	)
+	if not c.young then
+		for _, side in { -1, 1 } do
+			local cheek = h + V(side * 0.8, -0.18, 0.1)
+			c:leaf(
+				"RuffFlare" .. side,
+				cheek,
+				cheek + V(side * (c.adult and 0.59 or 0.38), -0.1, -0.28),
+				0.54,
+				c.cream,
+				a.head
+			)
+			local hip = b + V(side * 0.67, -0.22, -0.83)
+			c:sphere("FoxThigh" .. side, V(0.65, 0.84, 0.83), hip, rust, a.body)
+		end
+	end
+	if c.adult then
+		c:sphere("FoxNasalPlane", V(0.54, 0.29, 0.76), h + V(0, -0.16, 0.74), a.head.Color, a.head)
+	end
+end
+finish.esfingeolito = function(c, a)
+	local h, b = point(c, a.head), point(c, a.body)
+	local lapis, sand = rgb(60, 118, 139), rgb(220, 184, 121)
+	lids(c, a.head, lapis, 0)
+	c:sphere(
+		"SphinxThroat",
+		V(c.young and 1.1 or 1.4, c.young and 0.8 or 1.1, 0.72),
+		h + V(0, -0.71, -0.18),
+		sand,
+		a.body
+	)
+	if not c.young then
+		for _, side in { -1, 1 } do
+			local start = b + V(side * 0.94, 0.72, 0.59)
+			c:leaf("NemesShoulder" .. side, start, start + V(side * 0.5, -0.62, -0.16), 0.73, lapis, a.body)
+			c:segment(
+				"ForearmCuff" .. side,
+				V(side * 0.8, 0.62, 1.37),
+				V(side * 0.8, 0.85, 1.32),
+				0.69,
+				0.74,
+				lapis,
+				c.model:FindFirstChild("LegFore" .. side) or a.body
+			)
+		end
+	end
+	if c.adult then
+		c:sphere("SphinxBreastGem", V(0.59, 0.68, 0.2), h + V(0, -1.25, 0.53), rgb(112, 178, 171), a.body)
+		c:leaf("NemesBackFan", h + V(0, 0.2, -0.6), h + V(0, -1.09, -0.87), 1.46, lapis, a.head)
+	end
+end
+finish.magmaterra = function(c, a)
+	local h, b = point(c, a.head), point(c, a.body)
+	local clay, basalt, lava = rgb(154, 99, 76), rgb(78, 60, 75), rgb(241, 150, 69)
+	lids(c, a.head, basalt, 0.015)
+	c:segment(
+		"TortoiseNeckFold",
+		h - V(0, 0.15, 0.64),
+		h - V(0, 0.13, 0.12),
+		c.young and 1.18 or 1.45,
+		0.93,
+		a.head.Color,
+		a.body
+	)
+	haunchSupport(c, a.body, "TortoiseFoot", clay, c.young and 0.58 or 0.76)
+	if not c.young then
+		for _, side in { -1, 1 } do
+			c:leaf(
+				"LateralLavaShelf" .. side,
+				b + V(side * 1.23, 1.11, -0.38),
+				b + V(side * (c.adult and 2.01 or 1.73), 0.73, -0.65),
+				0.81,
+				clay,
+				a.body
+			)
+		end
+	end
+	if c.adult then
+		for _, side in { -1, 1 } do
+			local from = b + V(side * 1.01, 1.55, 0.5)
+			c:segment("LavaRidge" .. side, from, from + V(side * 0.46, -0.39, 0.28), 0.19, 0.2, lava, a.body)
+		end
+	end
+end
+finish.nevoamusgo = function(c, a)
+	local h, b = point(c, a.head), point(c, a.body)
+	local bark, mist = rgb(85, 107, 86), rgb(173, 157, 189)
+	lids(c, a.head, bark, -0.025)
+	if c.young then
+		-- Mandíbula e escápulas arredondadas dão apoio ao perfil do filhote.
+		c:sphere("FawnLowerJaw", V(1.04, 0.3, 0.9), h + V(0, -0.88, 0.6), c.cream, a.head)
+		for _, side in { -1, 1 } do
+			c:sphere("FawnShoulder" .. side, V(0.45, 0.72, 0.56), b + V(side * 0.62, -0.12, 1.05), bark, a.body)
+		end
+	end
+	-- A crista de cernelha e o focinho alongado separam o cervo adulto de um filhote genérico.
+	if not c.young then
+		c:leaf("WitherMantle", b + V(0, 0.64, 0.38), b + V(0, 1.21, -0.48), 1.06, rgb(124, 155, 100), a.body)
+		for _, side in { -1, 1 } do
+			c:sphere("DeerHindThigh" .. side, V(0.57, 0.86, 0.75), b + V(side * 0.82, -0.38, -0.97), bark, a.body)
+			c:leaf(
+				"FogCheek" .. side,
+				h + V(side * 0.65, -0.28, -0.11),
+				h + V(side * 0.91, -0.75, -0.38),
+				0.38,
+				mist,
+				a.head
+			)
+		end
+	end
+	if c.adult then
+		c:sphere("StagNasalPlane", V(0.65, 0.33, 0.89), h + V(0, -0.36, 0.75), rgb(178, 195, 132), a.head)
+	end
+end
+for id, polish in finish do
+	local build = S[id]
+	S[id] = function(c)
+		local anatomy = build(c)
+		polish(c, anatomy)
+		return anatomy
+	end
+end
+
 return S

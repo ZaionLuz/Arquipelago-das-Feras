@@ -80,3 +80,33 @@ end
 local remoteHabitat=D.validate(old);remoteHabitat.sanctuary.Pantano={slot=8,level=1};remoteHabitat.habitat.Pantano={"u99"};remoteHabitat.habitat.Brasa={"u1"}
 local reloaded=D.validate(remoteHabitat);assert(reloaded.unlocked.Pantano and reloaded.habitat.Pantano[1]=="u99")
 print("PASS open world: cancelamento do load antes/depois do lease sem perfil fantasma; habitat em região livre preservado")
+
+-- Bestiário40: novos IDs sobrevivem à validação, snapshot e ao save/load do mesmo schema6.
+local expansionIds={"bambunim","brasebode","coralote","dunatatu","nimburso","lumissapo","nectarim","cristalince","maritromba","kraken"}
+local expanded=copy(old);expanded.creatures=copy(old.creatures);expanded.habitat={Brasa={"u1"},Recife={"u99"}}
+expanded.eggs={};expanded.discovered={};expanded.gold=9876;expanded.gems=321
+for index,id in expansionIds do
+ local uid="u"..(300+index);expanded.creatures[uid]={id=id,lv=15+index,xp=100+index,legacyCounter=index}
+ expanded.discovered[id]=true
+ if id~="kraken" then table.insert(expanded.eggs,{id=id,ready=400+index,legacyQuality=index}) end
+end
+expanded.companion="u310"
+store.values.P400=copy(expanded);local collector=who(400);assert(D.load(collector))
+local owned=D.get(collector);assert(owned.v==6 and owned.gold==9876 and owned.gems==321 and owned.companion=="u310")
+local public=D.snapshot(collector)
+for index,id in expansionIds do
+ local uid="u"..(300+index)
+ assert(owned.creatures[uid].id==id and public.creatures[uid].id==id and public.discovered[id])
+ assert(owned.creatures[uid].legacyCounter==index and owned.creatures[uid].lv==15+index)
+end
+assert(#owned.eggs==9 and owned.creatures.u1.id=="cinzelo" and owned.creatures.u99.id=="bolhinho")
+assert(D.save(collector));D.release(collector);local reopened=who(400);assert(Other.load(reopened))
+local after=Other.get(reopened);assert(after.v==6 and after.gold==9876 and after.gems==321 and after.companion=="u310" and #after.eggs==9)
+for index,id in expansionIds do
+ local row=after.creatures["u"..(300+index)]
+ assert(row.id==id and row.lv==15+index and row.xp==100+index and row.legacyCounter==index and after.discovered[id])
+ if index<=9 then assert(after.eggs[index].id==id and after.eggs[index].legacyQuality==index) end
+end
+assert(after.creatures.u1.lv==20 and after.creatures.u99.lv==100 and after.habitat.Brasa[1]=="u1" and after.habitat.Recife[1]=="u99")
+Other.release(reopened)
+print("PASS bestiário40: 10 novos IDs, Kraken companion, 9 ovos elegíveis e criaturas/inventários legados preservados em snapshot e round-trip schema6")

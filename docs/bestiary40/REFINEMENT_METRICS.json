@@ -1,0 +1,805 @@
+{
+  "baselineSha256": "13116374e2bb08260bfa01463bd68045cea6be06e8961a36173dffff3fce7f6e",
+  "legacySpecies": 30,
+  "legacyForms": 88,
+  "refinedAdultSpecies": 30,
+  "ignoresNamesColorsMaterials": true,
+  "method": "Multiset of shape, size and world transform, rounded to 1e-4; no subjective art score",
+  "forms": [
+    {
+      "id": "cinzelo",
+      "stage": 1,
+      "beforeVolumes": 40,
+      "afterVolumes": 43,
+      "unchangedGeometry": 40,
+      "addedOrMovedVolumes": 3,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "cinzelo",
+      "stage": 2,
+      "beforeVolumes": 51,
+      "afterVolumes": 58,
+      "unchangedGeometry": 51,
+      "addedOrMovedVolumes": 7,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "cinzelo",
+      "stage": 3,
+      "beforeVolumes": 67,
+      "afterVolumes": 76,
+      "unchangedGeometry": 67,
+      "addedOrMovedVolumes": 9,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "magmarau",
+      "stage": 1,
+      "beforeVolumes": 45,
+      "afterVolumes": 47,
+      "unchangedGeometry": 45,
+      "addedOrMovedVolumes": 2,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "magmarau",
+      "stage": 2,
+      "beforeVolumes": 55,
+      "afterVolumes": 61,
+      "unchangedGeometry": 55,
+      "addedOrMovedVolumes": 6,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "magmarau",
+      "stage": 3,
+      "beforeVolumes": 60,
+      "afterVolumes": 68,
+      "unchangedGeometry": 60,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "fenixfuligem",
+      "stage": 1,
+      "beforeVolumes": 73,
+      "afterVolumes": 77,
+      "unchangedGeometry": 45,
+      "addedOrMovedVolumes": 32,
+      "removedOrMovedVolumes": 28
+    },
+    {
+      "id": "fenixfuligem",
+      "stage": 2,
+      "beforeVolumes": 85,
+      "afterVolumes": 91,
+      "unchangedGeometry": 49,
+      "addedOrMovedVolumes": 42,
+      "removedOrMovedVolumes": 36
+    },
+    {
+      "id": "fenixfuligem",
+      "stage": 3,
+      "beforeVolumes": 97,
+      "afterVolumes": 101,
+      "unchangedGeometry": 49,
+      "addedOrMovedVolumes": 52,
+      "removedOrMovedVolumes": 48
+    },
+    {
+      "id": "vulcanodrago",
+      "stage": 1,
+      "beforeVolumes": 50,
+      "afterVolumes": 57,
+      "unchangedGeometry": 50,
+      "addedOrMovedVolumes": 7,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "vulcanodrago",
+      "stage": 2,
+      "beforeVolumes": 62,
+      "afterVolumes": 73,
+      "unchangedGeometry": 62,
+      "addedOrMovedVolumes": 11,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "vulcanodrago",
+      "stage": 3,
+      "beforeVolumes": 70,
+      "afterVolumes": 83,
+      "unchangedGeometry": 68,
+      "addedOrMovedVolumes": 15,
+      "removedOrMovedVolumes": 2
+    },
+    {
+      "id": "bolhinho",
+      "stage": 1,
+      "beforeVolumes": 36,
+      "afterVolumes": 40,
+      "unchangedGeometry": 36,
+      "addedOrMovedVolumes": 4,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "bolhinho",
+      "stage": 2,
+      "beforeVolumes": 40,
+      "afterVolumes": 44,
+      "unchangedGeometry": 40,
+      "addedOrMovedVolumes": 4,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "bolhinho",
+      "stage": 3,
+      "beforeVolumes": 46,
+      "afterVolumes": 50,
+      "unchangedGeometry": 46,
+      "addedOrMovedVolumes": 4,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "marilisco",
+      "stage": 1,
+      "beforeVolumes": 32,
+      "afterVolumes": 38,
+      "unchangedGeometry": 28,
+      "addedOrMovedVolumes": 10,
+      "removedOrMovedVolumes": 4
+    },
+    {
+      "id": "marilisco",
+      "stage": 2,
+      "beforeVolumes": 40,
+      "afterVolumes": 48,
+      "unchangedGeometry": 34,
+      "addedOrMovedVolumes": 14,
+      "removedOrMovedVolumes": 6
+    },
+    {
+      "id": "marilisco",
+      "stage": 3,
+      "beforeVolumes": 44,
+      "afterVolumes": 54,
+      "unchangedGeometry": 36,
+      "addedOrMovedVolumes": 18,
+      "removedOrMovedVolumes": 8
+    },
+    {
+      "id": "carangueperola",
+      "stage": 1,
+      "beforeVolumes": 49,
+      "afterVolumes": 55,
+      "unchangedGeometry": 47,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 2
+    },
+    {
+      "id": "carangueperola",
+      "stage": 2,
+      "beforeVolumes": 69,
+      "afterVolumes": 75,
+      "unchangedGeometry": 67,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 2
+    },
+    {
+      "id": "carangueperola",
+      "stage": 3,
+      "beforeVolumes": 81,
+      "afterVolumes": 87,
+      "unchangedGeometry": 79,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 2
+    },
+    {
+      "id": "abissauro",
+      "stage": 1,
+      "beforeVolumes": 45,
+      "afterVolumes": 50,
+      "unchangedGeometry": 36,
+      "addedOrMovedVolumes": 14,
+      "removedOrMovedVolumes": 9
+    },
+    {
+      "id": "abissauro",
+      "stage": 2,
+      "beforeVolumes": 53,
+      "afterVolumes": 58,
+      "unchangedGeometry": 32,
+      "addedOrMovedVolumes": 26,
+      "removedOrMovedVolumes": 21
+    },
+    {
+      "id": "abissauro",
+      "stage": 3,
+      "beforeVolumes": 59,
+      "afterVolumes": 64,
+      "unchangedGeometry": 36,
+      "addedOrMovedVolumes": 28,
+      "removedOrMovedVolumes": 23
+    },
+    {
+      "id": "brotinho",
+      "stage": 1,
+      "beforeVolumes": 41,
+      "afterVolumes": 44,
+      "unchangedGeometry": 41,
+      "addedOrMovedVolumes": 3,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "brotinho",
+      "stage": 2,
+      "beforeVolumes": 49,
+      "afterVolumes": 55,
+      "unchangedGeometry": 49,
+      "addedOrMovedVolumes": 6,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "brotinho",
+      "stage": 3,
+      "beforeVolumes": 56,
+      "afterVolumes": 64,
+      "unchangedGeometry": 56,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "folhuco",
+      "stage": 1,
+      "beforeVolumes": 49,
+      "afterVolumes": 50,
+      "unchangedGeometry": 49,
+      "addedOrMovedVolumes": 1,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "folhuco",
+      "stage": 2,
+      "beforeVolumes": 60,
+      "afterVolumes": 67,
+      "unchangedGeometry": 60,
+      "addedOrMovedVolumes": 7,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "folhuco",
+      "stage": 3,
+      "beforeVolumes": 76,
+      "afterVolumes": 84,
+      "unchangedGeometry": 76,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "aracnoflora",
+      "stage": 1,
+      "beforeVolumes": 57,
+      "afterVolumes": 60,
+      "unchangedGeometry": 57,
+      "addedOrMovedVolumes": 3,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "aracnoflora",
+      "stage": 2,
+      "beforeVolumes": 73,
+      "afterVolumes": 76,
+      "unchangedGeometry": 66,
+      "addedOrMovedVolumes": 10,
+      "removedOrMovedVolumes": 7
+    },
+    {
+      "id": "aracnoflora",
+      "stage": 3,
+      "beforeVolumes": 95,
+      "afterVolumes": 103,
+      "unchangedGeometry": 86,
+      "addedOrMovedVolumes": 17,
+      "removedOrMovedVolumes": 9
+    },
+    {
+      "id": "ancestravore",
+      "stage": 1,
+      "beforeVolumes": 50,
+      "afterVolumes": 51,
+      "unchangedGeometry": 50,
+      "addedOrMovedVolumes": 1,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "ancestravore",
+      "stage": 2,
+      "beforeVolumes": 60,
+      "afterVolumes": 67,
+      "unchangedGeometry": 60,
+      "addedOrMovedVolumes": 7,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "ancestravore",
+      "stage": 3,
+      "beforeVolumes": 75,
+      "afterVolumes": 84,
+      "unchangedGeometry": 75,
+      "addedOrMovedVolumes": 9,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "graozinho",
+      "stage": 1,
+      "beforeVolumes": 35,
+      "afterVolumes": 37,
+      "unchangedGeometry": 35,
+      "addedOrMovedVolumes": 2,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "graozinho",
+      "stage": 2,
+      "beforeVolumes": 41,
+      "afterVolumes": 47,
+      "unchangedGeometry": 41,
+      "addedOrMovedVolumes": 6,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "graozinho",
+      "stage": 3,
+      "beforeVolumes": 49,
+      "afterVolumes": 57,
+      "unchangedGeometry": 49,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "escorpiodra",
+      "stage": 1,
+      "beforeVolumes": 54,
+      "afterVolumes": 60,
+      "unchangedGeometry": 51,
+      "addedOrMovedVolumes": 9,
+      "removedOrMovedVolumes": 3
+    },
+    {
+      "id": "escorpiodra",
+      "stage": 2,
+      "beforeVolumes": 65,
+      "afterVolumes": 71,
+      "unchangedGeometry": 60,
+      "addedOrMovedVolumes": 11,
+      "removedOrMovedVolumes": 5
+    },
+    {
+      "id": "escorpiodra",
+      "stage": 3,
+      "beforeVolumes": 75,
+      "afterVolumes": 81,
+      "unchangedGeometry": 68,
+      "addedOrMovedVolumes": 13,
+      "removedOrMovedVolumes": 7
+    },
+    {
+      "id": "esfingeolito",
+      "stage": 1,
+      "beforeVolumes": 38,
+      "afterVolumes": 39,
+      "unchangedGeometry": 38,
+      "addedOrMovedVolumes": 1,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "esfingeolito",
+      "stage": 2,
+      "beforeVolumes": 55,
+      "afterVolumes": 62,
+      "unchangedGeometry": 55,
+      "addedOrMovedVolumes": 7,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "esfingeolito",
+      "stage": 3,
+      "beforeVolumes": 66,
+      "afterVolumes": 75,
+      "unchangedGeometry": 66,
+      "addedOrMovedVolumes": 9,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "colossodune",
+      "stage": 1,
+      "beforeVolumes": 22,
+      "afterVolumes": 24,
+      "unchangedGeometry": 22,
+      "addedOrMovedVolumes": 2,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "colossodune",
+      "stage": 2,
+      "beforeVolumes": 58,
+      "afterVolumes": 64,
+      "unchangedGeometry": 58,
+      "addedOrMovedVolumes": 6,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "colossodune",
+      "stage": 3,
+      "beforeVolumes": 68,
+      "afterVolumes": 77,
+      "unchangedGeometry": 68,
+      "addedOrMovedVolumes": 9,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "penugem",
+      "stage": 1,
+      "beforeVolumes": 53,
+      "afterVolumes": 55,
+      "unchangedGeometry": 43,
+      "addedOrMovedVolumes": 12,
+      "removedOrMovedVolumes": 10
+    },
+    {
+      "id": "penugem",
+      "stage": 2,
+      "beforeVolumes": 77,
+      "afterVolumes": 81,
+      "unchangedGeometry": 47,
+      "addedOrMovedVolumes": 34,
+      "removedOrMovedVolumes": 30
+    },
+    {
+      "id": "penugem",
+      "stage": 3,
+      "beforeVolumes": 86,
+      "afterVolumes": 94,
+      "unchangedGeometry": 50,
+      "addedOrMovedVolumes": 44,
+      "removedOrMovedVolumes": 36
+    },
+    {
+      "id": "ventanil",
+      "stage": 1,
+      "beforeVolumes": 74,
+      "afterVolumes": 78,
+      "unchangedGeometry": 44,
+      "addedOrMovedVolumes": 34,
+      "removedOrMovedVolumes": 30
+    },
+    {
+      "id": "ventanil",
+      "stage": 2,
+      "beforeVolumes": 84,
+      "afterVolumes": 90,
+      "unchangedGeometry": 45,
+      "addedOrMovedVolumes": 45,
+      "removedOrMovedVolumes": 39
+    },
+    {
+      "id": "ventanil",
+      "stage": 3,
+      "beforeVolumes": 92,
+      "afterVolumes": 96,
+      "unchangedGeometry": 43,
+      "addedOrMovedVolumes": 53,
+      "removedOrMovedVolumes": 49
+    },
+    {
+      "id": "trovoraptor",
+      "stage": 1,
+      "beforeVolumes": 43,
+      "afterVolumes": 47,
+      "unchangedGeometry": 43,
+      "addedOrMovedVolumes": 4,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "trovoraptor",
+      "stage": 2,
+      "beforeVolumes": 49,
+      "afterVolumes": 53,
+      "unchangedGeometry": 49,
+      "addedOrMovedVolumes": 4,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "trovoraptor",
+      "stage": 3,
+      "beforeVolumes": 57,
+      "afterVolumes": 69,
+      "unchangedGeometry": 37,
+      "addedOrMovedVolumes": 32,
+      "removedOrMovedVolumes": 20
+    },
+    {
+      "id": "aeronimbo",
+      "stage": 1,
+      "beforeVolumes": 33,
+      "afterVolumes": 38,
+      "unchangedGeometry": 28,
+      "addedOrMovedVolumes": 10,
+      "removedOrMovedVolumes": 5
+    },
+    {
+      "id": "aeronimbo",
+      "stage": 2,
+      "beforeVolumes": 48,
+      "afterVolumes": 54,
+      "unchangedGeometry": 41,
+      "addedOrMovedVolumes": 13,
+      "removedOrMovedVolumes": 7
+    },
+    {
+      "id": "aeronimbo",
+      "stage": 3,
+      "beforeVolumes": 55,
+      "afterVolumes": 62,
+      "unchangedGeometry": 46,
+      "addedOrMovedVolumes": 16,
+      "removedOrMovedVolumes": 9
+    },
+    {
+      "id": "lodinho",
+      "stage": 1,
+      "beforeVolumes": 27,
+      "afterVolumes": 30,
+      "unchangedGeometry": 27,
+      "addedOrMovedVolumes": 3,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "lodinho",
+      "stage": 2,
+      "beforeVolumes": 37,
+      "afterVolumes": 41,
+      "unchangedGeometry": 37,
+      "addedOrMovedVolumes": 4,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "lodinho",
+      "stage": 3,
+      "beforeVolumes": 41,
+      "afterVolumes": 47,
+      "unchangedGeometry": 41,
+      "addedOrMovedVolumes": 6,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "caudalume",
+      "stage": 1,
+      "beforeVolumes": 29,
+      "afterVolumes": 31,
+      "unchangedGeometry": 29,
+      "addedOrMovedVolumes": 2,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "caudalume",
+      "stage": 2,
+      "beforeVolumes": 34,
+      "afterVolumes": 38,
+      "unchangedGeometry": 34,
+      "addedOrMovedVolumes": 4,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "caudalume",
+      "stage": 3,
+      "beforeVolumes": 40,
+      "afterVolumes": 48,
+      "unchangedGeometry": 40,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "vagalumorte",
+      "stage": 1,
+      "beforeVolumes": 44,
+      "afterVolumes": 46,
+      "unchangedGeometry": 44,
+      "addedOrMovedVolumes": 2,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "vagalumorte",
+      "stage": 2,
+      "beforeVolumes": 48,
+      "afterVolumes": 52,
+      "unchangedGeometry": 47,
+      "addedOrMovedVolumes": 5,
+      "removedOrMovedVolumes": 1
+    },
+    {
+      "id": "vagalumorte",
+      "stage": 3,
+      "beforeVolumes": 79,
+      "afterVolumes": 87,
+      "unchangedGeometry": 68,
+      "addedOrMovedVolumes": 19,
+      "removedOrMovedVolumes": 11
+    },
+    {
+      "id": "reinevoento",
+      "stage": 1,
+      "beforeVolumes": 32,
+      "afterVolumes": 35,
+      "unchangedGeometry": 32,
+      "addedOrMovedVolumes": 3,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "reinevoento",
+      "stage": 2,
+      "beforeVolumes": 39,
+      "afterVolumes": 44,
+      "unchangedGeometry": 39,
+      "addedOrMovedVolumes": 5,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "reinevoento",
+      "stage": 3,
+      "beforeVolumes": 46,
+      "afterVolumes": 55,
+      "unchangedGeometry": 46,
+      "addedOrMovedVolumes": 9,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "vaporino",
+      "stage": 1,
+      "beforeVolumes": 36,
+      "afterVolumes": 38,
+      "unchangedGeometry": 36,
+      "addedOrMovedVolumes": 2,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "vaporino",
+      "stage": 2,
+      "beforeVolumes": 45,
+      "afterVolumes": 51,
+      "unchangedGeometry": 45,
+      "addedOrMovedVolumes": 6,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "vaporino",
+      "stage": 3,
+      "beforeVolumes": 54,
+      "afterVolumes": 62,
+      "unchangedGeometry": 54,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "magmaterra",
+      "stage": 1,
+      "beforeVolumes": 42,
+      "afterVolumes": 45,
+      "unchangedGeometry": 42,
+      "addedOrMovedVolumes": 3,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "magmaterra",
+      "stage": 2,
+      "beforeVolumes": 65,
+      "afterVolumes": 72,
+      "unchangedGeometry": 65,
+      "addedOrMovedVolumes": 7,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "magmaterra",
+      "stage": 3,
+      "beforeVolumes": 70,
+      "afterVolumes": 79,
+      "unchangedGeometry": 70,
+      "addedOrMovedVolumes": 9,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "tempestalia",
+      "stage": 1,
+      "beforeVolumes": 86,
+      "afterVolumes": 92,
+      "unchangedGeometry": 50,
+      "addedOrMovedVolumes": 42,
+      "removedOrMovedVolumes": 36
+    },
+    {
+      "id": "tempestalia",
+      "stage": 2,
+      "beforeVolumes": 103,
+      "afterVolumes": 105,
+      "unchangedGeometry": 55,
+      "addedOrMovedVolumes": 50,
+      "removedOrMovedVolumes": 48
+    },
+    {
+      "id": "tempestalia",
+      "stage": 3,
+      "beforeVolumes": 116,
+      "afterVolumes": 122,
+      "unchangedGeometry": 60,
+      "addedOrMovedVolumes": 62,
+      "removedOrMovedVolumes": 56
+    },
+    {
+      "id": "nevoamusgo",
+      "stage": 1,
+      "beforeVolumes": 44,
+      "afterVolumes": 47,
+      "unchangedGeometry": 44,
+      "addedOrMovedVolumes": 3,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "nevoamusgo",
+      "stage": 2,
+      "beforeVolumes": 54,
+      "afterVolumes": 61,
+      "unchangedGeometry": 54,
+      "addedOrMovedVolumes": 7,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "nevoamusgo",
+      "stage": 3,
+      "beforeVolumes": 67,
+      "afterVolumes": 75,
+      "unchangedGeometry": 67,
+      "addedOrMovedVolumes": 8,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "cinzavento",
+      "stage": 1,
+      "beforeVolumes": 52,
+      "afterVolumes": 57,
+      "unchangedGeometry": 52,
+      "addedOrMovedVolumes": 5,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "cinzavento",
+      "stage": 2,
+      "beforeVolumes": 59,
+      "afterVolumes": 64,
+      "unchangedGeometry": 59,
+      "addedOrMovedVolumes": 5,
+      "removedOrMovedVolumes": 0
+    },
+    {
+      "id": "cinzavento",
+      "stage": 3,
+      "beforeVolumes": 67,
+      "afterVolumes": 76,
+      "unchangedGeometry": 52,
+      "addedOrMovedVolumes": 24,
+      "removedOrMovedVolumes": 15
+    },
+    {
+      "id": "fenix",
+      "stage": 3,
+      "beforeVolumes": 189,
+      "afterVolumes": 193,
+      "unchangedGeometry": 97,
+      "addedOrMovedVolumes": 96,
+      "removedOrMovedVolumes": 92
+    }
+  ],
+  "refinedLegacyForms": 88,
+  "minimumChangedVolumesPerForm": 1,
+  "minimumChangedVolumesPerAdult": 3
+}

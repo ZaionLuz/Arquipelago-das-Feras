@@ -46,7 +46,7 @@ for _, def in C.List do
 		restored:Destroy()
 	end
 end
-assert(forms == 88 and peak == 88 and adultsLow < adultsFull * 0.85)
+assert(forms == 116 and peak == 116 and adultsLow < adultsFull * 0.85)
 -- O modo manual Alto vence um sinal adaptativo antigo já no primeiro render.
 local quality, adaptive = "Alto", true
 local clientF = Loader.new({
@@ -80,13 +80,13 @@ assert(clientF.detailKey({ detail = "full" }) == "full")
 F.clearCache()
 assert(F.cacheStats().templates == 0 and F.cacheStats().parts == 0)
 fs.writeFile(
-	"docs/sculpt/LOD_METRICS.json",
+	"docs/bestiary40/LOD_METRICS.json",
 	serde.encode("json", {
 		forms = forms,
 		peakTemplates = peak,
 		maxVariantsPerSpeciesStage = 1,
-		fullParts88 = fullTotal,
-		lowParts88 = lowTotal,
+		fullParts = fullTotal,
+		lowParts = lowTotal,
 		adultFull = adultsFull,
 		adultLow = adultsLow,
 		adultReduction = 1 - adultsLow / adultsFull,
@@ -97,7 +97,7 @@ fs.writeFile(
 	}, true)
 )
 print(
-	"PASS LOD: 88 formas válidas, volumes essenciais preservados, cache máximo88; adultos",
+	"PASS LOD: 116 formas válidas, volumes essenciais preservados, cache máximo116; adultos",
 	adultsFull,
 	"→",
 	adultsLow,

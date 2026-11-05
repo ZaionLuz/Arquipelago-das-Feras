@@ -579,6 +579,21 @@ add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
 C.ById.fenix.acquisition = "special"
 C.ById.fenix.minStage = 3
 C.ById.fenix.futureStage = { target = 4, enabled = false, mechanic = Text.RENASCIMENTO_FUTURO_EE24AE }
+-- Novas espécies: IDs legados e sua ordem permanecem preservados.
+add("bambunim", "Bambunim", Text.NATUREZA_FB1ED9, 1, "Floresta", "Beast")
+add("brasebode", "Brasebode", Text.FOGO_F77A3C, 2, "Brasa", "Beast")
+add("coralote", "Coralote", Text.AGUA_F11A05, 1, "Recife", "Beast")
+add("dunatatu", "Dunatatu", Text.TERRA_16D3AE, 2, "Dunas", "Beast")
+add("nimburso", "Nimburso", Text.AR_B623FF, 2, "Picos", "Beast")
+add("lumissapo", "Lumissapo", Text.SOMBRA_94B135, 2, "Pantano", "Beast")
+add("nectarim", "Nectarim", Text.NATUREZA_FB1ED9, 3, "Floresta", "Insect")
+add("cristalince", "Cristalince", Text.TERRA_16D3AE, 3, "Dunas", "Beast")
+add("maritromba", "Maritromba", Text.AGUA_F11A05, 2, "Recife", "Beast")
+add("kraken", "Kraken", Text.AGUA_F11A05, 4, "Recife", "Beast")
+-- Guardião abissal selvagem: não usa nem altera a missão especial da Fênix.
+C.ById.kraken.minStage = 3
+C.ById.kraken.breedable = false
+C.ById.kraken.encounterWeight = 0.18
 function C.stage(lv, id)
 	local normal = lv >= 15 and 3 or lv >= 7 and 2 or 1
 	return math.max(normal, (id and C.ById[id] and C.ById[id].minStage) or 1)
@@ -1100,6 +1115,17 @@ local C = M_Creatures
 local S = { SpecialId = "fenix" }
 function S.isGeneral(id)
 	return typeof(id) == "string" and C.ById[id] ~= nil and C.ById[id].acquisition ~= "special"
+end
+function S.isBreedable(value)
+	local def
+	if typeof(value) == "string" then
+		def = C.ById[value]
+	elseif typeof(value) == "table" then
+		def = value
+	else
+		return false
+	end
+	return typeof(def) == "table" and typeof(def.id) == "string" and C.ById[def.id] == def and def.breedable ~= false
 end
 function S.get(id)
 	return typeof(id) == "string" and C.ById[id] or nil

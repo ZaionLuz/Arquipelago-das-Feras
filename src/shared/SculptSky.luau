@@ -24,7 +24,7 @@ local function feet(c, body, y, spread, z, color, heavy)
 			heavy and rgb(255, 222, 151) or body.Color,
 			body
 		)
-		for tuft = 1, 2 do
+		for tuft = 1, 1 do
 			local from = hip:Lerp(knee, 0.2 + tuft * 0.12) + V(side * 0.12, 0, 0.22)
 			c:leaf(
 				"HockFeather" .. side .. "_" .. tuft,
@@ -35,8 +35,9 @@ local function feet(c, body, y, spread, z, color, heavy)
 				thigh
 			)
 		end
-		c:segment("Leg" .. side, knee, ankle, heavy and 0.25 or 0.15, heavy and 0.3 or 0.19, color, body)
-		local foot = c:sphere("Foot" .. side, V(heavy and 0.48 or 0.34, 0.22, 0.56), ankle, color, body)
+		local shin =
+			c:segment("Leg" .. side, knee, ankle, heavy and 0.25 or 0.15, heavy and 0.3 or 0.19, color, thigh, true)
+		local foot = c:sphere("Foot" .. side, V(heavy and 0.48 or 0.34, 0.22, 0.56), ankle, color, shin)
 		for toe = 1, 3 do
 			c:segment(
 				"Toe" .. side .. "_" .. toe,
@@ -47,13 +48,57 @@ local function feet(c, body, y, spread, z, color, heavy)
 				color,
 				foot
 			)
+			if c.stage == 3 and toe == 2 then
+				local tip = ankle + V((toe - 2) * (heavy and 0.28 or 0.18), -0.07, 0.48)
+				c:leaf("TalonTip" .. side .. "_" .. toe, tip, tip + V((toe - 2) * 0.03, -0.09, 0.18), 0.105, navy, foot)
+			end
 		end
 	end
 end
 
+local function eyeRim(c, head, center, spacing, radius, color)
+	-- A sobrancelha se apoia sobre a órbita; não é outra antena flutuante.
+	for _, side in { -1, 1 } do
+		local eye = center + V(side * spacing * 0.5, radius * 0.91, radius * 0.16)
+		c:segment(
+			"OrbitalRim" .. side,
+			eye + V(-radius * 0.78, side * radius * 0.09, 0),
+			eye + V(radius * 0.78, -side * radius * 0.09, 0.015),
+			radius * 0.38,
+			radius * 0.42,
+			color,
+			head
+		)
+	end
+end
+
 local function beak(c, head, center, width, length, color)
-	c:wedge("UpperBeak", V(width, width * 0.6, length), center, color, head, false, A(0, math.pi, 0))
-	c:sphere("LowerBeak", V(width * 0.8, width * 0.2, length * 0.72), center + V(0, -width * 0.24, -0.04), color, head)
+	local upper =
+		c:sphere("UpperBeak", V(width, width * 0.52, length * 0.77), center, color, head, false, A(-0.1, 0, 0))
+	c:leaf(
+		"BeakHook",
+		center + V(0, width * 0.03, length * 0.25),
+		center + V(0, -width * 0.34, length * 0.57),
+		width * 0.62,
+		color,
+		upper
+	)
+	c:sphere(
+		"LowerBeak",
+		V(width * 0.78, width * 0.18, length * 0.69),
+		center + V(0, -width * 0.24, -0.025),
+		color,
+		head
+	)
+	c:segment(
+		"BeakInlay",
+		center + V(-width * 0.36, -width * 0.16, length * 0.11),
+		center + V(width * 0.36, -width * 0.16, length * 0.11),
+		width * 0.065,
+		width * 0.08,
+		navy,
+		head
+	)
 	for _, side in { -1, 1 } do
 		c:sphere(
 			"Nostril" .. side,
@@ -65,6 +110,27 @@ local function beak(c, head, center, width, length, color)
 	end
 end
 
+-- Ponta de pena em prisma afilado: a cunha é orientada no plano da asa, não de perfil.
+local function flightTip(c, name, from, to, width, color, parent)
+	local direction = (to - from).Unit
+	local normal = V(0, 0, 1) - direction * direction:Dot(V(0, 0, 1))
+	if normal.Magnitude < 0.05 then
+		normal = V(0, 1, 0) - direction * direction:Dot(V(0, 1, 0))
+	end
+	normal = normal.Unit
+	local right = direction:Cross(normal).Unit
+	local frame = CFrame.fromMatrix(V(0, 0, 0), -normal, right, -direction)
+	return c:wedge(
+		name,
+		V(width * 0.24, width, (to - from).Magnitude),
+		(from + to) * 0.5 + right * width * 0.2,
+		color,
+		parent,
+		false,
+		frame
+	)
+end
+
 -- Leques de penas sobrepostos no plano frontal; ombro e antebraço ficam sob a plumagem.
 local function broadWing(c, body, side, shoulder, span, sweep, primary, cover, lining, count, lifted)
 	local wing = c:sphere("Wing" .. (side < 0 and "L" or "R"), V(0.42, 0.5, 0.52), shoulder, cover, body, true)
@@ -73,6 +139,8 @@ local function broadWing(c, body, side, shoulder, span, sweep, primary, cover, l
 	local wrist = shoulder + V(side * span * (folded and 0.3 or 0.69), folded and -0.78 or lifted * 0.8, -0.25)
 	c:segment("WingUpper", shoulder, elbow, 0.48, 0.5, cover, wing)
 	c:segment("WingForearm", elbow, wrist, 0.34, 0.4, cover, wing)
+	local mantleTip = elbow:Lerp(wrist, 0.66) + V(side * span * 0.045, folded and -0.25 or -0.12, 0.03)
+	c:leaf("WingMantleWeb", shoulder + V(0, -0.04, 0.08), mantleTip, math.max(0.72, span * 0.32), cover, wing)
 	for feather = 1, count do
 		local t = (feather - 1) / math.max(1, count - 1)
 		local from, tip, width
@@ -81,7 +149,7 @@ local function broadWing(c, body, side, shoulder, span, sweep, primary, cover, l
 			tip = shoulder + V(side * span * (0.16 + t * 0.32), -sweep * (0.67 + t * 0.2), -0.2 - t * 0.15)
 			width = math.max(0.42, span * 0.42)
 		else
-			from = shoulder + V(side * span * (0.05 + t * 0.11), 0.04 + t * 0.28, -0.04 - t * 0.1)
+			from = shoulder + V(side * span * (0.06 + t * 0.16), 0.04 + t * 0.3, -0.04 - t * 0.1)
 			tip = shoulder
 				+ V(
 					side * span * (0.4 + math.sin(t * math.pi * 0.5) * 0.62),
@@ -90,27 +158,49 @@ local function broadWing(c, body, side, shoulder, span, sweep, primary, cover, l
 				)
 			width = math.max(0.45, span * 0.13 + 0.15)
 		end
-		local featherPart = c:leaf("PrimaryFeather" .. feather, from, tip, width, primary, wing)
-		local middleFrom = from + V(0, 0.01, 0.13)
-		c:leaf(
-			"FeatherMiddle" .. feather,
-			middleFrom,
-			from:Lerp(tip, 0.77) + V(0, 0.01, 0.13),
-			width * 0.82,
-			cover,
+		local bend = from:Lerp(tip, 0.66) + V(side * width * 0.16, width * 0.08, 0.035)
+		local featherPart = c:leaf(
+			"PrimaryFeather" .. feather,
+			from - (bend - from) * 0.1,
+			bend + (tip - bend) * 0.19,
+			width,
+			primary,
+			wing
+		)
+		flightTip(
+			c,
+			"FlightFeatherTip" .. feather,
+			bend - (bend - from) * 0.16,
+			tip,
+			width * 0.76,
+			primary,
 			featherPart
 		)
-		c:leaf(
-			"FeatherInner" .. feather,
-			from + V(0, 0.02, 0.24),
-			from:Lerp(tip, 0.42) + V(0, 0.02, 0.24),
-			width * 0.63,
-			lining,
-			featherPart
-		)
+		-- Coberturas alternadas e mais largas evitam três peles sobrepostas em toda rêmige.
+		if feather % 2 == 1 or feather == count then
+			local middleFrom = from + V(0, 0.01, 0.13)
+			c:leaf(
+				"FeatherMiddle" .. feather,
+				middleFrom,
+				from:Lerp(tip, 0.77) + V(0, 0.01, 0.13),
+				width * 1.02,
+				cover,
+				featherPart
+			)
+		end
+		if feather % 2 == 0 or feather == 1 then
+			c:leaf(
+				"FeatherInner" .. feather,
+				from + V(0, 0.02, 0.24),
+				from:Lerp(tip, 0.42) + V(0, 0.02, 0.24),
+				width * 0.82,
+				lining,
+				featherPart
+			)
+		end
 	end
-	for feather = 1, math.max(2, count - 2) do
-		local t = feather / math.max(2, count - 2)
+	for feather = 1, math.max(2, count - 3), 2 do
+		local t = feather / math.max(2, count - 3)
 		local from = shoulder + V(side * (0.12 + t * span * (folded and 0.12 or 0.27)), t * lifted * 0.25 + 0.1, 0.28)
 		local to = from + V(side * 0.15, folded and -0.43 or -0.27, 0.02)
 		c:leaf("WingCover" .. feather, from, to, folded and 0.48 or 0.58, cover, wing)
@@ -124,11 +214,12 @@ local function curvedTail(c, body, origin, paths, mainColor, tipColor, width)
 		local previous = origin + V((strand - (#paths + 1) * 0.5) * width * 0.3, 0, 0)
 		for index, point in path do
 			local overlap = (point - previous) * 0.12
-			c:leaf(
+			c:segment(
 				"TailRibbon" .. strand .. "_" .. index,
 				previous - overlap,
 				point + overlap,
-				width * (1 - index / (#path + 2) * 0.4),
+				width * (1 - index / (#path + 2) * 0.48),
+				width * (1 - index / (#path + 2) * 0.48) * 0.48,
 				mainColor,
 				root
 			)
@@ -165,6 +256,7 @@ function S.fenixfuligem(c)
 	c:segment("Neck", V(0, height + 0.35, 0.16), neck, 0.94, 0.9, soot, body)
 	local head = c:sphere("Head", V(stage == 1 and 1.5 or 1.3, 1.2, 1.16), neck + V(0, 0.4, 0.18), soot, body, true)
 	c:eyes(head, neck + V(0, 0.5, 0.7), 0.72, stage == 1 and 0.29 or 0.24, gold, -0.09)
+	eyeRim(c, head, neck + V(0, 0.5, 0.7), 0.72, stage == 1 and 0.29 or 0.24, wingColor)
 	beak(c, head, neck + V(0, 0.13, 1.0), 0.46, 0.67, rgb(214, 157, 91))
 	for _, side in { -1, 1 } do
 		c:segment(
@@ -270,6 +362,7 @@ function S.penugem(c)
 		end
 	end
 	c:eyes(head, headCenter + V(0, 0.06, 0.84), 0.88, stage == 1 and 0.3 or 0.28, rgb(91, 126, 151), -0.04)
+	eyeRim(c, head, headCenter + V(0, 0.06, 0.84), 0.88, stage == 1 and 0.3 or 0.28, down)
 	beak(c, head, headCenter + V(0, -0.29, 1.03), 0.26, 0.36, buff)
 	feet(c, body, 0.65, 0.39, 0.13, buff, false)
 	curvedTail(c, body, V(0, y - 0.44, -0.6), {
@@ -304,6 +397,7 @@ function S.ventanil(c)
 	c:segment("NeckArch", V(0, y + 0.72, 0.62), neckTop, stage == 1 and 0.55 or 0.48, 0.54, pale, body)
 	local head = c:sphere("Head", V(1.0, 0.93, 1.17), neckTop + V(0, 0.18, 0.1), teal, body, true)
 	c:eyes(head, neckTop + V(0, 0.24, 0.65), 0.59, 0.2, lavender, -0.04)
+	eyeRim(c, head, neckTop + V(0, 0.24, 0.65), 0.59, 0.2, teal)
 	beak(
 		c,
 		head,
@@ -365,7 +459,10 @@ function S.aeronimbo(c)
 			y + math.sin(t * math.pi) * 0.35,
 			-0.55 - t * (1.5 + stage * 0.82)
 		)
-		c:segment("Coil" .. i, previous, point, 1.05 - t * 0.7, 1.1 - t * 0.7, blue, tail)
+		local coil = c:segment("Coil" .. i, previous, point, 1.12 - t * 0.75, 1.15 - t * 0.72, blue, tail)
+		if i % 2 == 0 then
+			c:leaf("CloudSpine" .. i, point + V(0, 0.27, 0), point + V(0.13, 0.64, -0.49), 0.3, cloud, coil)
+		end
 		if i % 2 == 0 then
 			c:sphere("CloudBack" .. i, V(0.78 - t * 0.25, 0.44, 0.65), point + V(0, 0.38, 0), cloud, tail)
 		end
@@ -382,11 +479,15 @@ function S.aeronimbo(c)
 		)
 	end
 	local headCenter = V(0, y + (stage == 1 and 0.75 or 1.15), 1.0)
-	c:segment("CloudNeck", V(0, y + 0.35, 0.4), headCenter + V(0, -0.15, -0.12), 1.0, 1.04, blue, body)
+	local neckBend = V(0, y + (stage == 1 and 0.54 or 0.83), 0.88)
+	c:segment("CloudNeck", V(0, y + 0.32, 0.27), neckBend, 1.03, 1.06, blue, body)
+	c:segment("CloudNeckArch", neckBend - V(0, 0.08, 0), headCenter + V(0, -0.1, -0.12), 0.83, 0.91, blue, body)
 	local head = c:sphere("Head", V(stage == 1 and 1.8 or 1.9, 1.3, 1.55), headCenter, blue, body, true)
-	c:sphere("CreamMuzzle", V(1.2, 0.69, 0.74), headCenter + V(0, -0.26, 0.74), cloud, head)
+	c:sphere("CreamMuzzle", V(1.2, 0.65, 0.9), headCenter + V(0, -0.26, 0.79), cloud, head)
+	c:sphere("CloudJaw", V(1.28, 0.33, 1.04), headCenter + V(0, -0.48, 0.59), cloud, head)
 	c:sphere("Nose", V(0.33, 0.2, 0.19), headCenter + V(0, -0.1, 1.1), mauve, head)
 	c:eyes(head, headCenter + V(0, 0.15, 0.71), 1.02, stage == 1 and 0.26 or 0.23, rgb(95, 121, 165), -0.1)
+	eyeRim(c, head, headCenter + V(0, 0.15, 0.71), 1.02, stage == 1 and 0.26 or 0.23, blue)
 	for _, side in { -1, 1 } do
 		local earBase = headCenter + V(side * 0.63, 0.35, -0.2)
 		c:leaf(
@@ -471,6 +572,7 @@ function S.tempestalia(c)
 	c:segment("Neck", V(0, y + 0.48, 0.12), headCenter, 0.97, 0.95, storm, body)
 	local head = c:sphere("Head", V(1.4, 1.23, 1.34), headCenter, sky, body, true)
 	c:eyes(head, headCenter + V(0, 0.13, 0.64), 0.81, stage == 1 and 0.26 or 0.22, gold, 0.07)
+	eyeRim(c, head, headCenter + V(0, 0.13, 0.64), 0.81, stage == 1 and 0.26 or 0.22, storm)
 	beak(c, head, headCenter + V(0, -0.2, 0.94), 0.35, 0.62, gold)
 	for _, side in { -1, 1 } do
 		c:leaf(
@@ -543,12 +645,13 @@ function S.fenix(c)
 	local cream, sunlight = rgb(255, 233, 171), rgb(255, 196, 72)
 	local body = c:sphere("Body", V(2.05, 2.85, 1.95), V(0, 2.6, 0), crimson, c.root, true, A(-0.13, 0, 0))
 	c:sphere("SolarBreast", V(1.52, 2.34, 0.72), V(0, 2.78, 0.86), cream, body, false, A(-0.12, 0, 0))
-	c:segment("NeckLower", V(0, 3.5, 0.26), V(0, 4.2, 0.74), 1.04, 1.08, cream, body)
-	c:segment("NeckSwan", V(0, 4.04, 0.7), V(0, 4.84, 0.63), 0.78, 0.86, cream, body)
+	c:segment("NeckLower", V(0, 3.5, 0.26), V(0, 4.22, 0.95), 1.04, 1.08, cream, body)
+	c:segment("NeckSwan", V(0, 4.03, 0.89), V(0, 4.86, 0.64), 0.78, 0.86, cream, body)
 	local headCenter = V(0, 5.01, 0.85)
 	local head = c:sphere("Head", V(1.32, 1.23, 1.52), headCenter, scarlet, body, true, A(-0.06, 0, 0))
 	c:sphere("SolarMask", V(1.09, 0.79, 0.35), headCenter + V(0, -0.05, 0.68), orange, head)
 	c:eyes(head, headCenter + V(0, 0.15, 0.76), 0.77, 0.21, sunlight, 0.08)
+	eyeRim(c, head, headCenter + V(0, 0.15, 0.76), 0.77, 0.21, crimson)
 	beak(c, head, headCenter + V(0, -0.16, 1.16), 0.35, 0.9, sunlight)
 	for _, side in { -1, 1 } do
 		local jaw = headCenter + V(side * 0.43, -0.27, 0.2)

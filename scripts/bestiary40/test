@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+mkdir -p docs/bestiary40 releases
+bash scripts/test
+"${LUNE_BIN:-lune}" run scripts/bestiary40/check_catalog.luau
+"${LUNE_BIN:-lune}" run scripts/bestiary40/check_anatomy.luau
+python3 scripts/bestiary40/check_refinements.py
+"${LUNE_BIN:-lune}" run scripts/sculpt/check_rigs.luau
+"${LUNE_BIN:-lune}" run scripts/sculpt/check_lod.luau
+"${LUNE_BIN:-lune}" run scripts/sculpt/check_performance.luau
+"${LUNE_BIN:-lune}" run scripts/sculpt/check_viewport_perf.luau
+python3 scripts/bestiary40/check_scope.py
+"${LUNE_BIN:-lune}" run scripts/sculpt/build_gallery.luau
+"${LUNE_BIN:-lune}" run scripts/sculpt/build_gallery.luau low
+"${SELENE_BIN:-selene}" src
+"${STYLUA_BIN:-stylua}" --syntax Luau --check src scripts
+"${ROJO_BIN:-rojo}" build -o releases/Feras-Bestiario-40.rbxlx
+"${LUNE_BIN:-lune}" run scripts/check_bundle.luau releases/Feras-Bestiario-40.rbxlx
+python3 scripts/check_bundle_sources.py releases/Feras-Bestiario-40.rbxlx
+if [[ "${1:-}" == "--native-only" ]]; then
+  printf '%s\n' 'PASS bestiário40 nativo: catálogo, 116 rigs/LOD, regressão, escopo, galerias e bundle. Assets Blender ainda devem passar check_assets.py; execução/FPS no Studio pendentes.'
+else
+  python3 scripts/bestiary40/check_assets.py
+  printf '%s\n' 'PASS bestiário40: catálogo, 116 rigs/LOD, regressão, escopo, galerias, bundle e assets; execução/FPS no Studio pendentes.'
+fi

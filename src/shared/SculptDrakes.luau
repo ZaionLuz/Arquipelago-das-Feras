@@ -10,6 +10,7 @@ local function palette(a, b, d, e)
 end
 local function foot(c, name, hip, knee, ankle, width, color, claw, parent, digits)
 	local upper = c:segment("Leg" .. name, hip, knee, width, width * 0.95, color, parent, true)
+	c:sphere("Knee" .. name, V(width * 0.82, width * 0.78, width * 0.82), knee, color, upper)
 	local lower = c:segment("Shin" .. name, knee, ankle, width * 0.65, width * 0.7, color, upper)
 	local paw = c:sphere(
 		"Paw" .. name,
@@ -54,9 +55,22 @@ D.vulcanodrago = function(c)
 	)
 	local headY, headZ = shoulder + (young and 1 or 1.45), length * 0.43
 	local ratio = young and 1.16 or 1
-	local head = c:sphere("Head", V(2.05, 1.65, 1.95) * ratio, V(0, headY, headZ), p[2], neck, true)
+	local head = c:sphere(
+		"Head",
+		V(adult and 1.94 or 2.05, adult and 1.52 or 1.65, adult and 2.15 or 1.95) * ratio,
+		V(0, headY, headZ),
+		p[2],
+		neck,
+		true
+	)
 	c:sphere("Jaw", V(1.8, 0.48, 1.55) * ratio, V(0, headY - 0.58, headZ + 0.65), p[4], head)
-	c:sphere("Muzzle", V(1.52, 0.65, 1.3) * ratio, V(0, headY - 0.27, headZ + 0.85), p[2], head)
+	c:sphere(
+		"Muzzle",
+		V(adult and 1.62 or 1.52, 0.65, adult and 1.5 or 1.3) * ratio,
+		V(0, headY - 0.27, headZ + 0.85),
+		p[2],
+		head
+	)
 	c:eyes(head, V(0, headY + 0.2, headZ + 0.87 * ratio), 1.12 * ratio, young and 0.29 or 0.25, p[3], 0.1)
 	for _, side in { -1, 1 } do
 		c:sphere(
@@ -153,6 +167,49 @@ D.vulcanodrago = function(c)
 			end
 		end
 	end
+	-- As faces ósseas prolongam o crânio; o peito sustenta o pescoço.
+	c:sphere(
+		"ThroatKeel",
+		V(young and 0.9 or 1.15, young and 1.1 or 1.65, 0.7),
+		V(0, shoulder + 0.53, length * 0.34 + 0.37),
+		p[4],
+		neck,
+		false,
+		A(-0.25, 0, 0)
+	)
+	for _, side in { -1, 1 } do
+		c:segment(
+			"BasaltBrow" .. side,
+			V(side * 0.32, headY + 0.48, headZ + 0.88),
+			V(side * 0.85, headY + 0.58, headZ + 0.72),
+			young and 0.13 or 0.19,
+			0.16,
+			p[1],
+			head
+		)
+		if not young then
+			c:sphere("JawHinge" .. side, V(0.52, 0.62, 0.67), V(side * 0.8, headY - 0.22, headZ + 0.18), p[1], head)
+			c:leaf(
+				"IvoryFang" .. side,
+				V(side * 0.57, headY - 0.33, headZ + 1.28),
+				V(side * 0.59, headY - 0.68, headZ + 1.37),
+				0.18,
+				p[4],
+				head
+			)
+		end
+		if adult then
+			c:sphere(
+				"ShoulderScute" .. side,
+				V(0.64, 1.1, 1.32),
+				V(side * 1.0, shoulder + 0.12, length * 0.12),
+				p[1],
+				body,
+				false,
+				A(0.18, 0, side * 0.24)
+			)
+		end
+	end
 	return { body = body, head = head }
 end
 
@@ -170,11 +227,11 @@ D.trovoraptor = function(c)
 		A(-0.25, 0, 0)
 	)
 	c:sphere("Chest", V(1.27, 1.55, 1.65), V(0, hipY + 0.95, 0.35), p[4], body, false, A(-0.23, 0, 0))
-	local neckTop = V(0, hipY + (young and 1.05 or 1.85), 1.03)
+	local neckTop = V(0, hipY + (young and 1.05 or adult and 1.72 or 1.85), adult and 1.32 or 1.03)
 	local neck = c:segment("Neck", V(0, hipY + 0.85, 0.3), neckTop, young and 0.8 or 0.93, 0.86, p[2], body)
 	local head = c:sphere(
 		"Head",
-		V(young and 1.7 or 1.45, young and 1.4 or 1.2, young and 1.7 or 1.9),
+		V(young and 1.7 or 1.45, young and 1.4 or 1.2, young and 1.7 or adult and 2.15 or 1.9),
 		neckTop,
 		p[2],
 		neck,
@@ -270,6 +327,44 @@ D.trovoraptor = function(c)
 			end
 		end
 	end
+	for _, side in { -1, 1 } do
+		c:segment(
+			"RaptorBrow" .. side,
+			neckTop + V(side * 0.22, 0.42, 0.86),
+			neckTop + V(side * 0.66, 0.51, 0.67),
+			young and 0.11 or 0.15,
+			0.13,
+			p[1],
+			head
+		)
+		if adult then
+			local clawBase = V(side * 0.78, 0.31, -0.02)
+			local knuckle = c:sphere(
+				"SickleKnuckle" .. side,
+				V(0.31, 0.31, 0.35),
+				clawBase,
+				p[3],
+				c.model:FindFirstChild("PawHind" .. side) or body
+			)
+			c:segment("SickleClawRoot" .. side, clawBase, clawBase + V(0, 0.18, 0.36), 0.23, 0.22, p[4], knuckle)
+			c:leaf(
+				"SickleClawTip" .. side,
+				clawBase + V(0, 0.18, 0.29),
+				clawBase + V(0, -0.1, 0.65),
+				0.17,
+				p[4],
+				knuckle
+			)
+			c:leaf(
+				"SternumFeather" .. side,
+				V(side * 0.35, hipY + 1.42, 0.9),
+				V(side * 0.57, hipY + 0.64, 1.1),
+				0.48,
+				p[4],
+				body
+			)
+		end
+	end
 	return { body = body, head = head }
 end
 
@@ -358,6 +453,46 @@ D.caudalume = function(c)
 			)
 		end
 	end
+	for _, side in { -1, 1 } do
+		c:segment(
+			"LanternLid" .. side,
+			V(side * 0.24, hy + 0.4, 2.07),
+			V(side * 0.67, hy + 0.48, 1.98),
+			0.105,
+			0.085,
+			p[2],
+			head
+		)
+		if not young then
+			c:leaf(
+				"PelvicFin" .. side,
+				V(side * 0.57, 1.05, 0.18),
+				V(side * (adult and 1.65 or 1.19), 0.55, -0.45),
+				adult and 0.72 or 0.5,
+				p[3],
+				body
+			)
+		end
+		if adult then
+			c:segment(
+				"LanternGill" .. side,
+				V(side * 0.85, hy - 0.1, 1.25),
+				V(side * 1.02, hy - 0.45, 1.03),
+				0.22,
+				0.19,
+				p[3],
+				head
+			)
+			c:leaf(
+				"CrescentLobe" .. side,
+				V(side * 0.72, hy + 0.5, 0.98),
+				V(side * 1.18, hy + 1.13, 0.73),
+				0.53,
+				p[2],
+				head
+			)
+		end
+	end
 	return { body = body, head = head }
 end
 
@@ -410,9 +545,23 @@ D.vagalumorte = function(c)
 			)
 		end
 	end
-	local head = c:sphere("Head", V(1.65, 1.35, 1.25), V(0, height + 0.25, 0.95), p[2], body, true)
+	local head = c:sphere(
+		"Head",
+		V(young and 1.65 or adult and 1.48 or 1.6, adult and 1.48 or 1.35, 1.25),
+		V(0, height + 0.25, 0.95),
+		p[2],
+		body,
+		true
+	)
 	c:sphere("FaceMask", V(1.45, 1.1, 0.4), V(0, height + 0.24, 1.48), p[4], head)
-	c:eyes(head, V(0, height + 0.35, 1.63), 0.97, young and 0.28 or 0.25, p[3], -0.08)
+	c:eyes(
+		head,
+		V(0, height + 0.35, 1.63),
+		adult and 0.85 or 0.97,
+		young and 0.28 or adult and 0.22 or 0.25,
+		p[3],
+		-0.08
+	)
 	c:sphere("MothNose", V(0.19, 0.16, 0.12), V(0, height + 0.05, 1.74), p[1], head)
 	for _, side in { -1, 1 } do
 		local antenna = c:segment(
@@ -535,6 +684,34 @@ D.vagalumorte = function(c)
 			)
 		end
 	end
+	for _, side in { -1, 1 } do
+		c:leaf(
+			"MothCheekTuft" .. side,
+			V(side * 0.5, height + 0.05, 1.1),
+			V(side * 0.89, height - 0.36, 1.2),
+			young and 0.3 or 0.45,
+			p[4],
+			head
+		)
+		if adult then
+			for edge = 1, 2 do
+				local x = side * (2.6 + edge * 0.53)
+				c:leaf(
+					"ScallopedWing" .. side .. edge,
+					V(x, height + 0.63, 0.55),
+					V(x + side * 0.33, height + 0.08, 0.56),
+					0.66,
+					p[2],
+					c.model:FindFirstChild("Wing" .. side) or body
+				)
+			end
+		end
+	end
+	if not young then
+		local prob =
+			c:segment("Proboscis1", V(0, height - 0.02, 1.71), V(0.12, height - 0.24, 1.88), 0.12, 0.12, p[1], head)
+		c:segment("Proboscis2", V(0.12, height - 0.24, 1.88), V(0.29, height - 0.21, 1.82), 0.09, 0.09, p[1], prob)
+	end
 	return { body = body, head = head }
 end
 
@@ -639,6 +816,48 @@ D.reinevoento = function(c)
 		c:sphere("HeartJewelRim", V(0.7, 0.85, 0.3), V(0, top - 1.2, 0.7), p[4], body)
 		c:sphere("HeartJewel", V(0.44, 0.57, 0.31), V(0, top - 1.18, 0.86), p[3], body)
 	end
+	c:sphere("CarvedJaw", V(young and 1.0 or 1.14, 0.34, 0.43), V(0, top - 0.57, 0.68), p[4], head)
+	for _, side in { -1, 1 } do
+		c:segment(
+			"RoyalBrow" .. side,
+			V(side * 0.18, top + 0.32, 0.96),
+			V(side * 0.61, top + 0.4, 0.86),
+			0.12,
+			0.1,
+			p[2],
+			head
+		)
+		if not young then
+			c:sphere(
+				"CloakFold" .. side,
+				V(0.55, top * 0.48, 0.58),
+				V(side * 0.88, top * 0.42, 0.27),
+				p[2],
+				body,
+				false,
+				A(0, 0, -side * 0.13)
+			)
+		end
+		if adult then
+			c:leaf(
+				"RoyalBeard" .. side,
+				V(side * 0.22, top - 0.67, 0.74),
+				V(side * 0.46, top - 1.34, 0.82),
+				0.32,
+				p[3],
+				head
+			)
+			c:segment(
+				"SpectralFinger" .. side,
+				V(side * 1.9, top - 2.05, 0.1),
+				V(side * 2.03, top - 2.45, 0.31),
+				0.17,
+				0.16,
+				p[3],
+				c.model:FindFirstChild("SpectralHand" .. side) or body
+			)
+		end
+	end
 	return { body = body, head = head }
 end
 
@@ -651,7 +870,13 @@ D.cinzavento = function(c)
 	local neck = c:segment("Neck", V(0, h + 0.45, 0.7), V(0, h + 1.15, 1.6), 1.1, 1, p[2], body)
 	local headPos = V(0, h + 1.35, 1.7)
 	local head = c:sphere("Head", V(young and 1.9 or 1.7, young and 1.6 or 1.4, 1.8), headPos, p[2], neck, true)
-	c:sphere("SweptMuzzle", V(1.3, 0.68, 1.5), headPos + V(0, -0.3, 0.8), p[2], head)
+	c:sphere(
+		"SweptMuzzle",
+		V(adult and 1.18 or 1.3, 0.68, adult and 1.78 or 1.5),
+		headPos + V(0, -0.3, 0.8),
+		p[2],
+		head
+	)
 	c:sphere("LowerJaw", V(1.2, 0.26, 1.4), headPos + V(0, -0.57, 0.82), p[3], head)
 	c:eyes(head, headPos + V(0, 0.17, 0.82), 1.02, young and 0.27 or 0.22, p[4], 0.06)
 	smile(c, head, headPos + V(0, -0.36, 1.48), 0.4, c.dark)
@@ -687,7 +912,7 @@ D.cinzavento = function(c)
 		local spread = young and 1.7 or adult and 4.4 or 3.2
 		local shoulder = V(side * 0.8, h + 0.45, 0.3)
 		local elbow = V(side * spread * 0.6, h + 1.05, 0.1)
-		local tip = V(side * spread, h + 1.6, -1.1)
+		local tip = V(side * spread, h + 1.6 + (adult and side * 0.16 or 0), -1.1)
 		local wing = c:segment("Wing" .. side, shoulder, elbow, 0.38, 0.38, p[1], body, true)
 		c:segment("WingForearm" .. side, elbow, tip, 0.27, 0.3, p[2], wing)
 		for i = 1, young and 3 or adult and 6 or 4 do
@@ -725,6 +950,45 @@ D.cinzavento = function(c)
 	end
 	for i = 1, s + 1 do
 		c:leaf("NapeCrest" .. i, V(0, h + 0.8, 0.9 - i * 0.5), V(0, h + 1.4, 0.7 - i * 0.5), 0.55, p[4], body)
+	end
+	c:sphere(
+		"ThroatKeel",
+		V(0.87, young and 1.15 or 1.65, 0.71),
+		V(0, h + 0.68, 1.16),
+		p[3],
+		neck,
+		false,
+		A(-0.28, 0, 0)
+	)
+	for _, side in { -1, 1 } do
+		c:segment(
+			"AshBrow" .. side,
+			headPos + V(side * 0.23, 0.4, 0.88),
+			headPos + V(side * 0.69, 0.48, 0.72),
+			0.13,
+			0.11,
+			p[1],
+			head
+		)
+		if adult then
+			c:sphere(
+				"CheekPlane" .. side,
+				V(0.47, 0.52, 0.73),
+				headPos + V(side * 0.72, -0.18, 0.13),
+				p[1],
+				head,
+				false,
+				A(0, side * 0.2, side * 0.16)
+			)
+			c:leaf(
+				"CrestBridge" .. side,
+				headPos + V(side * 0.56, 0.49, -0.18),
+				headPos + V(side * 0.67, 0.83, -0.7),
+				0.5,
+				p[4],
+				head
+			)
+		end
 	end
 	return { body = body, head = head }
 end

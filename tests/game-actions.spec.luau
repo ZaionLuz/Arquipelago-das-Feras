@@ -40,3 +40,10 @@ for _,region in {"Alvorecer","Brasa","Recife","Floresta","Dunas","Picos","Pantan
 assert(not G.Actions.Unlock(a,"inexistente").ok)
 a.Character={FindFirstChild=function() return {} end};assert(G.Actions.Travel(a,"Pantano").ok and d.playerLevel==1 and d.gold==0)
 print("PASS: viagens de iniciante e ação legada Unlock não exigem nível nem gastam ouro")
+
+-- Kraken não pode gerar ovos: recusa antes de gastar ouro/estatísticas.
+d.gold=1000;d.eggs={};d.creatures.uKraken={id="kraken",lv=30,xp=0}
+local oldBreed=d.stats.breed or 0;local beforeGold=d.gold
+assert(not G.Actions.Breed(a,"uKraken","u1").ok)
+assert(d.gold==beforeGold and #d.eggs==0 and (d.stats.breed or 0)==oldBreed)
+print("PASS catálogo40: Kraken recusado como pai antes de débito")

@@ -22,7 +22,7 @@ fs.writeFile(
 	"docs/MODEL_METRICS.json",
 	serde.encode("json", {
 		constructionRequests = result.total,
-		uniqueLayouts = 88,
+		uniqueLayouts = #loader.load("src/shared/Creatures.luau").List * 3 - 4,
 		minDistance = result.minimum,
 		closest = result.closest,
 		scene40Parts = scene,

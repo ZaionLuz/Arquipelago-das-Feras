@@ -9,23 +9,23 @@ def walk(x):
   if '$path' in x:assert (root/x['$path']).exists()
   for v in x.values():walk(v)
 walk(config)
-assert len(re.findall(r'^add\(', (root/'src/shared/Creatures.luau').read_text(),re.M))==30
+assert len(re.findall(r'^add\(', (root/'src/shared/Creatures.luau').read_text(),re.M))==40
 if original and original.exists():
  with zipfile.ZipFile(original) as z:
   for name in ['Elements','Sounds']:
    p=f'src/shared/{name}.luau';assert z.read(p)==(root/p).read_bytes(),p
-print('PASS: Rojo paths, JSON, 30 espécies e catálogos originais preservados')
+print('PASS: Rojo paths, JSON, 40 espécies e catálogos originais preservados')
 designs=(root/'src/shared/CreatureDesigns.luau').read_text()
 ids=set(re.findall(r'^add\(\s*"([^"]+)"', (root/'src/shared/Creatures.luau').read_text(),re.M))
 design_ids=set(re.findall(r'\{\s*"([a-z]+)",\s*"(?:mineral|quadruped|winged|draconic|aquatic|serpentine|arthropod|vegetal|biped|spectral)"',designs,re.M))
 assert ids==design_ids,(ids-design_ids,design_ids-ids)
-print('PASS: 30 designs próprios, sem IDs ausentes ou órfãos')
+print('PASS: 40 designs próprios, sem IDs ausentes ou órfãos')
 
 if original and original.exists():
  with zipfile.ZipFile(original) as z:
   legacy=set(re.findall(r'^add\(\s*"([^"]+)"',z.read('src/shared/Creatures.luau').decode(),re.M))
-  assert legacy <= ids and ids-legacy=={'fenix'}
-print('PASS: todos os IDs legados preservados; somente fenix adicionada')
+  assert legacy <= ids and ids-legacy=={'fenix','bambunim','brasebode','coralote','dunatatu','nimburso','lumissapo','nectarim','cristalince','maritromba','kraken'}
+print('PASS: todos os IDs legados preservados; Fênix e dez novas espécies adicionadas')
 
 original_ids={'Brasa','Recife','Floresta','Dunas','Picos','Pantano'}
 island_source=(root/'src/shared/Islands.luau').read_text()
@@ -37,7 +37,7 @@ print('PASS: seis IDs de ilha preservados e Alvorecer adicionado')
 lore=(root/'src/shared/SpeciesLore.luau').read_text()
 lore_ids=set(re.findall(r'(\w+)\s*=\s*\{\s*description\s*=',lore))
 assert lore_ids==ids
-print('PASS: fichas e personalidades das 30 espécies integradas')
+print('PASS: fichas e personalidades das 40 espécies integradas')
 
 legacy_fixture=json.loads((root/'tests/fixtures/legacy-ids.json').read_text())
 assert set(legacy_fixture['creatures']) <= ids
