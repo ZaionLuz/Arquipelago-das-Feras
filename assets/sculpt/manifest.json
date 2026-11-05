@@ -1,0 +1,265 @@
+{
+  "format": 1,
+  "source": "native Roblox ModelFactory static geometry",
+  "renderer": "Blender Cycles CPU",
+  "studioScreenshots": false,
+  "legacyHeadApproximation": "The old Roblox Head mesh is reconstructed as an ellipsoid; new sculpts use exported sphere/wedge/cylinder parts.",
+  "forms": 88,
+  "adults": 30,
+  "meshArchive": "meshes.zip",
+  "meshArchiveSha256": "6cf515cf951f23d4b66b9ee9c223a686b414835c94a526c2f0fa105ab3cc8693",
+  "sourceGeometryCanonicalSha256": "fec4c1c6c73395896b46d2a950ab7f0fb94aff9512521f5f41a7fb07e72dd840",
+  "models": [
+    {
+      "id": "cinzelo",
+      "name": "Cinzelo",
+      "parts": 67,
+      "nativeJoints": 11,
+      "glbSha256": "700017fcc93fdcdcf9261543f94b65d003c2ca658f01c045f06c0b57f39da2a9"
+    },
+    {
+      "id": "magmarau",
+      "name": "Magmarau",
+      "parts": 60,
+      "nativeJoints": 12,
+      "glbSha256": "8e5d8e2986eae0a6924f5e501cbdf3811f4bfccbc8fea902651a0d240e409749"
+    },
+    {
+      "id": "fenixfuligem",
+      "name": "Fênix Fuligem",
+      "parts": 97,
+      "nativeJoints": 7,
+      "glbSha256": "4b3934a11be15784871faca5041e184f6983e314cac43c7fb73afe7c80b6eb62"
+    },
+    {
+      "id": "vulcanodrago",
+      "name": "Vulcanodrago",
+      "parts": 70,
+      "nativeJoints": 11,
+      "glbSha256": "68b1e94553a9c8ee621a4147218ef71f147da62446b6c60c7f110f5b6ca1a15b"
+    },
+    {
+      "id": "bolhinho",
+      "name": "Bolhinho",
+      "parts": 46,
+      "nativeJoints": 9,
+      "glbSha256": "f9b6b72433175fa4d2efe728a277b433742f83dc097417d66e0be9e1fd8cc91c"
+    },
+    {
+      "id": "marilisco",
+      "name": "Marilisco",
+      "parts": 44,
+      "nativeJoints": 14,
+      "glbSha256": "4c30b15da4fe9c7a95779356af00bcaf228760f8f223e49ff432cc79e23614e4"
+    },
+    {
+      "id": "carangueperola",
+      "name": "Caranguepérola",
+      "parts": 81,
+      "nativeJoints": 24,
+      "glbSha256": "af1e488cb761477ea23b2b65ae4f74c79291218a6d4dbd23e28304b094d01088"
+    },
+    {
+      "id": "abissauro",
+      "name": "Abissauro",
+      "parts": 59,
+      "nativeJoints": 13,
+      "glbSha256": "503eb598280b9267328f0b5e1931339442a9c78d3be7ad36490705d35d374ed7"
+    },
+    {
+      "id": "brotinho",
+      "name": "Brotinho",
+      "parts": 56,
+      "nativeJoints": 12,
+      "glbSha256": "adcbb88b087a32532cd390a7dabbe2ec3bc52bbcb9f4cc0c78a7ec0acaeffe9d"
+    },
+    {
+      "id": "folhuco",
+      "name": "Folhuço",
+      "parts": 76,
+      "nativeJoints": 13,
+      "glbSha256": "6ba5fa426048fe343653768194589335e88fb4225cc7e7af05326fc995c1929b"
+    },
+    {
+      "id": "aracnoflora",
+      "name": "Aracnoflora",
+      "parts": 95,
+      "nativeJoints": 30,
+      "glbSha256": "0e592f97215bf79bad5ab7da124f2057674d325748af23b8f5558773b17e3126"
+    },
+    {
+      "id": "ancestravore",
+      "name": "Ancestrávore",
+      "parts": 75,
+      "nativeJoints": 10,
+      "glbSha256": "da1fb196ff17947d814e1373c907601eab5118526c00fb2bc1dc3b67aecc4789"
+    },
+    {
+      "id": "graozinho",
+      "name": "Grãozinho",
+      "parts": 49,
+      "nativeJoints": 5,
+      "glbSha256": "7c207444b7169937b1098b4b4124d0100f6cd642109ef2b383108182d5700345"
+    },
+    {
+      "id": "escorpiodra",
+      "name": "Escorpiodra",
+      "parts": 75,
+      "nativeJoints": 31,
+      "glbSha256": "f3f6d03c62d00605ee35b980794f207b531b66e62088ebf90af01effb990032d"
+    },
+    {
+      "id": "esfingeolito",
+      "name": "Esfingeolito",
+      "parts": 66,
+      "nativeJoints": 12,
+      "glbSha256": "632cc360210a00984e49532dda16e1cd65dfe8a56eb05f0da43308657a39569c"
+    },
+    {
+      "id": "colossodune",
+      "name": "Colossodune",
+      "parts": 68,
+      "nativeJoints": 8,
+      "glbSha256": "adaa81a4314c1b191ee77e4a9cdc07d77adf37de20b812679c2e619608c017a8"
+    },
+    {
+      "id": "penugem",
+      "name": "Penugem",
+      "parts": 86,
+      "nativeJoints": 7,
+      "glbSha256": "3d5d1b65f31707c94aa576fda338a4f558fd79886d33389f16f526c257f9b1e8"
+    },
+    {
+      "id": "ventanil",
+      "name": "Ventanil",
+      "parts": 92,
+      "nativeJoints": 7,
+      "glbSha256": "bb62453bc145f9e3dcace1b92c4f09fe395d0405da6719ba6a6a3f6536dfa545"
+    },
+    {
+      "id": "trovoraptor",
+      "name": "Trovoraptor",
+      "parts": 57,
+      "nativeJoints": 9,
+      "glbSha256": "5ab96c73c2dbbd5d0410a37daf87b8418241eb5c94b599aeb0cb600c0b4afed6"
+    },
+    {
+      "id": "aeronimbo",
+      "name": "Aeronimbo",
+      "parts": 55,
+      "nativeJoints": 5,
+      "glbSha256": "8f4f3b206b5fd27628fc86d1f186f0bbce4f46ba2bbcb3aa085425756e8a0d11"
+    },
+    {
+      "id": "lodinho",
+      "name": "Lodinho",
+      "parts": 41,
+      "nativeJoints": 6,
+      "glbSha256": "0a957e3717950a519f6c86ec0535315d5472a28c72934183391a9b429d225c45"
+    },
+    {
+      "id": "caudalume",
+      "name": "Caudalume",
+      "parts": 40,
+      "nativeJoints": 5,
+      "glbSha256": "f97244092b50508fde486cef85859b65778b06525dfae7d612ae1e2453b5c064"
+    },
+    {
+      "id": "vagalumorte",
+      "name": "Vagalumorte",
+      "parts": 79,
+      "nativeJoints": 12,
+      "glbSha256": "d2ef7f84b26a8d2b3d8b18c4e234dab046b7fe905466c615c0d71bbf8e6b2457"
+    },
+    {
+      "id": "reinevoento",
+      "name": "Rei Nevoento",
+      "parts": 46,
+      "nativeJoints": 6,
+      "glbSha256": "746bb47f3ace975f8c0c117cd50ff5abb9d831f0e022c930a053aa4df7945500"
+    },
+    {
+      "id": "vaporino",
+      "name": "Vaporino",
+      "parts": 54,
+      "nativeJoints": 9,
+      "glbSha256": "57b01160cc00fb2b99db8f89cf8d8b2b37934f54b3622cd61136d69e54230c59"
+    },
+    {
+      "id": "magmaterra",
+      "name": "Magmaterra",
+      "parts": 70,
+      "nativeJoints": 10,
+      "glbSha256": "3281be0f2a01cf1240691e79036056c28f7842c80ee9c2f1ae9551dbc7c06b87"
+    },
+    {
+      "id": "tempestalia",
+      "name": "Tempestália",
+      "parts": 116,
+      "nativeJoints": 7,
+      "glbSha256": "a311472ba58f890933e141c63db0a45b0070ac8663046eaf188a93f48720854f"
+    },
+    {
+      "id": "nevoamusgo",
+      "name": "Névoamusgo",
+      "parts": 67,
+      "nativeJoints": 12,
+      "glbSha256": "64aca4bfe76fc930c97d7abdeb7c5489af2f1e907950d5aac95d7dd1599c0eea"
+    },
+    {
+      "id": "cinzavento",
+      "name": "Cinzavento",
+      "parts": 67,
+      "nativeJoints": 9,
+      "glbSha256": "b43c915a8814d98077593d8b7049d0a94181b328c5f42a345f0ac6dcfbaec2b3"
+    },
+    {
+      "id": "fenix",
+      "name": "Fênix",
+      "parts": 189,
+      "nativeJoints": 7,
+      "glbSha256": "f01774ae8b3352dc6c65686fc94be134b44f2348afc2993feaf54268b78a8e36"
+    }
+  ],
+  "reviewImages": {
+    "encoding": "WebP quality88; PNG source renders remain reproducible",
+    "files": [
+      "docs/sculpt/images/before-after.webp",
+      "docs/sculpt/images/creatures-30-adults.webp",
+      "docs/sculpt/images/heroes/carangueperola.webp",
+      "docs/sculpt/images/heroes/cinzelo.webp",
+      "docs/sculpt/images/heroes/fenix.webp",
+      "docs/sculpt/images/heroes/folhuco.webp",
+      "docs/sculpt/images/stages/abissauro.webp",
+      "docs/sculpt/images/stages/aeronimbo.webp",
+      "docs/sculpt/images/stages/ancestravore.webp",
+      "docs/sculpt/images/stages/aracnoflora.webp",
+      "docs/sculpt/images/stages/bolhinho.webp",
+      "docs/sculpt/images/stages/brotinho.webp",
+      "docs/sculpt/images/stages/carangueperola.webp",
+      "docs/sculpt/images/stages/caudalume.webp",
+      "docs/sculpt/images/stages/cinzavento.webp",
+      "docs/sculpt/images/stages/cinzelo.webp",
+      "docs/sculpt/images/stages/colossodune.webp",
+      "docs/sculpt/images/stages/escorpiodra.webp",
+      "docs/sculpt/images/stages/esfingeolito.webp",
+      "docs/sculpt/images/stages/fenix.webp",
+      "docs/sculpt/images/stages/fenixfuligem.webp",
+      "docs/sculpt/images/stages/folhuco.webp",
+      "docs/sculpt/images/stages/graozinho.webp",
+      "docs/sculpt/images/stages/lodinho.webp",
+      "docs/sculpt/images/stages/magmarau.webp",
+      "docs/sculpt/images/stages/magmaterra.webp",
+      "docs/sculpt/images/stages/marilisco.webp",
+      "docs/sculpt/images/stages/nevoamusgo.webp",
+      "docs/sculpt/images/stages/penugem.webp",
+      "docs/sculpt/images/stages/reinevoento.webp",
+      "docs/sculpt/images/stages/tempestalia.webp",
+      "docs/sculpt/images/stages/trovoraptor.webp",
+      "docs/sculpt/images/stages/vagalumorte.webp",
+      "docs/sculpt/images/stages/vaporino.webp",
+      "docs/sculpt/images/stages/ventanil.webp",
+      "docs/sculpt/images/stages/vulcanodrago.webp"
+    ]
+  }
+}

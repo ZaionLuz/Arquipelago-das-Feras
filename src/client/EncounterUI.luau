@@ -13,6 +13,7 @@ local Animator = require(script.Parent.CreatureAnimator)
 local Stage = require(script.Parent.BattleStage)
 local Art = require(RS.Shared.ArtTokens)
 local Icons = require(script.Parent.PixelIcons)
+local visible = require(script.Parent.CollectionUI).visible
 local UI = {}
 function UI.start(gui, getOwned, onClose, onOpen)
 	local net = RS:WaitForChild("EncounterNet")
@@ -25,6 +26,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 	local viewport
 	local figures
 	local foeModel
+	local foeKey
 	local allyModel
 	local allyKey
 	local actions
@@ -53,6 +55,14 @@ function UI.start(gui, getOwned, onClose, onOpen)
 	end
 	gui.Destroying:Once(function()
 		CAS:UnbindAction("FerasEncounterMovement")
+		if resize then
+			resize:Disconnect()
+			resize = nil
+		end
+		-- Respostas atrasadas não remontam modelos dentro de um GUI removido.
+		root = nil
+		state = nil
+		animation += 1
 	end)
 	local function pose(model, x)
 		local cf, size = model:GetBoundingBox()
@@ -63,6 +73,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		if
 			game:GetService("Players").LocalPlayer:GetAttribute("MotionReduced")
 			or game:GetService("Players").LocalPlayer:GetAttribute("GraphicsQuality") == "Baixo"
+			or game:GetService("Players").LocalPlayer:GetAttribute("AdaptiveDetailLow") == true
 		then
 			return
 		end
@@ -150,7 +161,15 @@ function UI.start(gui, getOwned, onClose, onOpen)
 			:Play()
 	end
 	render = function(animate)
-		if not root then
+		if
+			not root
+			or not root.Parent
+			or not viewport
+			or not viewport.Parent
+			or not figures
+			or not figures.Parent
+			or not visible(viewport)
+		then
 			return
 		end
 		animation += 1
@@ -177,30 +196,48 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		local pet = state.active and state.party[state.active]
 		health(hpFoe, state.foe, Text.SELVAGEM_959EBB)
 		health(hpMine, pet, pet and C.ById[pet.id].name or Text.SUA_EQUIPE_C6DEB4)
-		if not foeModel or not foeModel.Parent then
-			foeModel = MF.build(C.ById[state.foe.id], state.foe.lv, { preview = true })
+		local detail = MF.detailKey()
+		local newFoeKey = state.foe.id .. ":" .. C.stage(state.foe.lv, state.foe.id) .. ":" .. detail
+		if newFoeKey ~= foeKey or not foeModel or not foeModel.Parent then
+			if foeModel then
+				foeModel:Destroy()
+			end
+			foeModel = MF.build(C.ById[state.foe.id], state.foe.lv, { preview = true, detail = detail })
 			foeModel.Parent = figures
 			pose(foeModel, 8)
 			Animator.register(foeModel, function()
 				return root ~= nil
+					and root.Parent ~= nil
+					and viewport ~= nil
+					and viewport.Parent ~= nil
+					and visible(viewport)
 			end)
+			foeKey = newFoeKey
 		end
+		foeModel:SetAttribute("Level", state.foe.lv)
 		local foe = foeModel
-		local key = pet and state.active .. ":" .. pet.lv or "none"
-		if key ~= allyKey then
+		local key = pet and pet.id .. ":" .. C.stage(pet.lv, pet.id) .. ":" .. detail or "none"
+		if key ~= allyKey or (pet and (not allyModel or not allyModel.Parent)) then
 			if allyModel then
 				allyModel:Destroy()
 				allyModel = nil
 			end
 			if pet then
-				allyModel = MF.build(C.ById[pet.id], pet.lv, { preview = true })
+				allyModel = MF.build(C.ById[pet.id], pet.lv, { preview = true, detail = detail })
 				allyModel.Parent = figures
 				pose(allyModel, -8)
 				Animator.register(allyModel, function()
 					return root ~= nil
+						and root.Parent ~= nil
+						and viewport ~= nil
+						and viewport.Parent ~= nil
+						and visible(viewport)
 				end)
 			end
 			allyKey = key
+		end
+		if allyModel and pet then
+			allyModel:SetAttribute("Level", pet.lv)
 		end
 		local ally = allyModel
 		local teamLevel = pet and pet.lv or 1
@@ -222,7 +259,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 			presenting = true
 			task.spawn(function()
 				for _, event in state.log do
-					if not root or not foe.Parent or animation ~= job then
+					if not root or not foe.Parent or animation ~= job or not visible(viewport) then
 						break
 					end
 					status.Text = event.text
@@ -435,6 +472,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 			return Enum.ContextActionResult.Sink
 		end, false, 3000, table.unpack(Enum.PlayerActions:GetEnumItems()))
 		foeModel = nil
+		foeKey = nil
 		allyModel = nil
 		allyKey = nil
 		root = Instance.new("Frame")
@@ -518,7 +556,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		grid.CellPadding = UDim2.fromOffset(8, 8)
 		grid.Parent = actions
 		render(false)
-		if state.intro == "phoenix" then
+		if state.intro == "phoenix" and foeModel and foeModel.Parent and visible(viewport) then
 			presenting = true
 			local introJob = animation
 			task.spawn(function()

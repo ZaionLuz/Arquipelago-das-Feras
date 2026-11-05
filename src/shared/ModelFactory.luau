@@ -2,6 +2,7 @@
 local C = require(script.Parent.Creatures)
 local D = require(script.Parent.CreatureDesigns)
 local Context = require(script.Parent.SculptContext)
+local LOD = require(script.Parent.SculptLOD)
 local builders = {}
 for _, family in
 	{
@@ -125,15 +126,44 @@ local function template(def, stage)
 	local anatomy = builder(context)
 	assert(anatomy and anatomy.body and anatomy.head, "Estrutura anatômica ausente")
 	assert(anatomy.body.Name == "Body" and anatomy.head.Name == "Head", "Corpo/cabeça não identificados")
+	LOD.annotate(m)
 	Factory.validate(m)
 	return m
+end
+function Factory.detailKey(options)
+	if options and options.detail then
+		return options.detail == "low" and "low" or "full"
+	end
+	local success, detail = pcall(function()
+		if not game:GetService("RunService"):IsClient() then
+			return "full"
+		end
+		local p = game:GetService("Players").LocalPlayer
+		local quality = p and p:GetAttribute("GraphicsQuality")
+		return p and (quality == "Baixo" or quality ~= "Alto" and p:GetAttribute("AdaptiveDetailLow") == true) and "low"
+			or "full"
+	end)
+	return success and detail or "full"
 end
 function Factory.build(def, level, options)
 	options = options or {}
 	local stage = C.stage(level, def.id)
-	local key = def.id .. ":" .. stage
+	local base = def.id .. ":" .. stage .. ":"
+	local detail = Factory.detailKey(options)
+	local key = base .. detail
 	if not cache[key] then
-		cache[key] = template(def, stage)
+		local made = template(def, stage)
+		if detail == "low" then
+			LOD.reduce(made)
+			Factory.validate(made)
+		end
+		-- Uma variante por espécie/estágio: mudar qualidade não duplica a memória dos templates.
+		local other = base .. (detail == "low" and "full" or "low")
+		if cache[other] then
+			cache[other]:Destroy()
+			cache[other] = nil
+		end
+		cache[key] = made
 	end
 	local model = cache[key]:Clone()
 	model.Name = def.name
@@ -163,5 +193,17 @@ function Factory.clearCache()
 		m:Destroy()
 	end
 	cache = {}
+end
+function Factory.cacheStats()
+	local templates, parts = 0, 0
+	for _, model in cache do
+		templates += 1
+		for _, part in model:GetDescendants() do
+			if part:IsA("BasePart") then
+				parts += 1
+			end
+		end
+	end
+	return { templates = templates, parts = parts }
 end
 return Factory

@@ -1,3 +1,15 @@
+# Abrir os30 monstros novos em 3D
+
+1. Extraia o ZIP.
+2. No Roblox Studio, escolha File → Open from File.
+3. Abra **releases/Galeria-Criaturas-3D.rbxl** para ver as88 formas já montadas, sem precisar de Play ou DataStore.
+4. Em computadores mais fracos, você pode inspecionar a versão **releases/Galeria-Criaturas-3D-Leve.rbxl**.
+5. Para jogar, abra **releases/Feras-Creature-Sculpt.rbxlx** e pressione Play. O projeto mantém a configuração de persistência da fase anterior.
+
+Detalhes e pranchas: [docs/sculpt/README.md](docs/sculpt/README.md). As instruções abaixo são históricas.
+
+---
+
 # Versão atual: mundo aberto
 
 Abra **releases/Feras-Open-World.rbxlx** pelo menu File → Open from File do Roblox Studio e pressione Play. O mapa aparece durante a execução. Não precisa instalar Node ou colar scripts para abrir esse arquivo. Para editar `src/`, reconstrua com Rojo ou sincronize pelo plugin.

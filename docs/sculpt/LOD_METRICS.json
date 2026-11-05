@@ -1,0 +1,543 @@
+{
+  "adultFull": 2173,
+  "adultLow": 1755,
+  "adultReduction": 0.19236079153244368,
+  "cloneRigsValid": true,
+  "essentialVolumesPreserved": true,
+  "forms": 88,
+  "fpsMeasured": false,
+  "fullParts88": 5200,
+  "lowParts88": 4224,
+  "maxVariantsPerSpeciesStage": 1,
+  "models": [
+    {
+      "full": 41,
+      "id": "cinzelo",
+      "low": 35,
+      "stage": 1
+    },
+    {
+      "full": 52,
+      "id": "cinzelo",
+      "low": 40,
+      "stage": 2
+    },
+    {
+      "full": 68,
+      "id": "cinzelo",
+      "low": 52,
+      "stage": 3
+    },
+    {
+      "full": 46,
+      "id": "magmarau",
+      "low": 40,
+      "stage": 1
+    },
+    {
+      "full": 56,
+      "id": "magmarau",
+      "low": 50,
+      "stage": 2
+    },
+    {
+      "full": 61,
+      "id": "magmarau",
+      "low": 55,
+      "stage": 3
+    },
+    {
+      "full": 74,
+      "id": "fenixfuligem",
+      "low": 53,
+      "stage": 1
+    },
+    {
+      "full": 86,
+      "id": "fenixfuligem",
+      "low": 61,
+      "stage": 2
+    },
+    {
+      "full": 98,
+      "id": "fenixfuligem",
+      "low": 70,
+      "stage": 3
+    },
+    {
+      "full": 51,
+      "id": "vulcanodrago",
+      "low": 37,
+      "stage": 1
+    },
+    {
+      "full": 63,
+      "id": "vulcanodrago",
+      "low": 45,
+      "stage": 2
+    },
+    {
+      "full": 71,
+      "id": "vulcanodrago",
+      "low": 53,
+      "stage": 3
+    },
+    {
+      "full": 37,
+      "id": "bolhinho",
+      "low": 29,
+      "stage": 1
+    },
+    {
+      "full": 41,
+      "id": "bolhinho",
+      "low": 32,
+      "stage": 2
+    },
+    {
+      "full": 47,
+      "id": "bolhinho",
+      "low": 37,
+      "stage": 3
+    },
+    {
+      "full": 33,
+      "id": "marilisco",
+      "low": 25,
+      "stage": 1
+    },
+    {
+      "full": 41,
+      "id": "marilisco",
+      "low": 33,
+      "stage": 2
+    },
+    {
+      "full": 45,
+      "id": "marilisco",
+      "low": 37,
+      "stage": 3
+    },
+    {
+      "full": 50,
+      "id": "carangueperola",
+      "low": 41,
+      "stage": 1
+    },
+    {
+      "full": 70,
+      "id": "carangueperola",
+      "low": 57,
+      "stage": 2
+    },
+    {
+      "full": 82,
+      "id": "carangueperola",
+      "low": 67,
+      "stage": 3
+    },
+    {
+      "full": 46,
+      "id": "abissauro",
+      "low": 42,
+      "stage": 1
+    },
+    {
+      "full": 54,
+      "id": "abissauro",
+      "low": 50,
+      "stage": 2
+    },
+    {
+      "full": 60,
+      "id": "abissauro",
+      "low": 56,
+      "stage": 3
+    },
+    {
+      "full": 42,
+      "id": "brotinho",
+      "low": 34,
+      "stage": 1
+    },
+    {
+      "full": 50,
+      "id": "brotinho",
+      "low": 41,
+      "stage": 2
+    },
+    {
+      "full": 57,
+      "id": "brotinho",
+      "low": 48,
+      "stage": 3
+    },
+    {
+      "full": 50,
+      "id": "folhuco",
+      "low": 44,
+      "stage": 1
+    },
+    {
+      "full": 61,
+      "id": "folhuco",
+      "low": 55,
+      "stage": 2
+    },
+    {
+      "full": 77,
+      "id": "folhuco",
+      "low": 67,
+      "stage": 3
+    },
+    {
+      "full": 58,
+      "id": "aracnoflora",
+      "low": 50,
+      "stage": 1
+    },
+    {
+      "full": 74,
+      "id": "aracnoflora",
+      "low": 65,
+      "stage": 2
+    },
+    {
+      "full": 96,
+      "id": "aracnoflora",
+      "low": 86,
+      "stage": 3
+    },
+    {
+      "full": 51,
+      "id": "ancestravore",
+      "low": 47,
+      "stage": 1
+    },
+    {
+      "full": 61,
+      "id": "ancestravore",
+      "low": 57,
+      "stage": 2
+    },
+    {
+      "full": 76,
+      "id": "ancestravore",
+      "low": 72,
+      "stage": 3
+    },
+    {
+      "full": 36,
+      "id": "graozinho",
+      "low": 22,
+      "stage": 1
+    },
+    {
+      "full": 42,
+      "id": "graozinho",
+      "low": 24,
+      "stage": 2
+    },
+    {
+      "full": 50,
+      "id": "graozinho",
+      "low": 32,
+      "stage": 3
+    },
+    {
+      "full": 55,
+      "id": "escorpiodra",
+      "low": 47,
+      "stage": 1
+    },
+    {
+      "full": 66,
+      "id": "escorpiodra",
+      "low": 56,
+      "stage": 2
+    },
+    {
+      "full": 76,
+      "id": "escorpiodra",
+      "low": 66,
+      "stage": 3
+    },
+    {
+      "full": 39,
+      "id": "esfingeolito",
+      "low": 33,
+      "stage": 1
+    },
+    {
+      "full": 56,
+      "id": "esfingeolito",
+      "low": 48,
+      "stage": 2
+    },
+    {
+      "full": 67,
+      "id": "esfingeolito",
+      "low": 57,
+      "stage": 3
+    },
+    {
+      "full": 23,
+      "id": "colossodune",
+      "low": 22,
+      "stage": 1
+    },
+    {
+      "full": 59,
+      "id": "colossodune",
+      "low": 49,
+      "stage": 2
+    },
+    {
+      "full": 69,
+      "id": "colossodune",
+      "low": 59,
+      "stage": 3
+    },
+    {
+      "full": 54,
+      "id": "penugem",
+      "low": 44,
+      "stage": 1
+    },
+    {
+      "full": 78,
+      "id": "penugem",
+      "low": 57,
+      "stage": 2
+    },
+    {
+      "full": 87,
+      "id": "penugem",
+      "low": 62,
+      "stage": 3
+    },
+    {
+      "full": 75,
+      "id": "ventanil",
+      "low": 54,
+      "stage": 1
+    },
+    {
+      "full": 85,
+      "id": "ventanil",
+      "low": 60,
+      "stage": 2
+    },
+    {
+      "full": 93,
+      "id": "ventanil",
+      "low": 65,
+      "stage": 3
+    },
+    {
+      "full": 44,
+      "id": "trovoraptor",
+      "low": 34,
+      "stage": 1
+    },
+    {
+      "full": 50,
+      "id": "trovoraptor",
+      "low": 40,
+      "stage": 2
+    },
+    {
+      "full": 58,
+      "id": "trovoraptor",
+      "low": 48,
+      "stage": 3
+    },
+    {
+      "full": 34,
+      "id": "aeronimbo",
+      "low": 30,
+      "stage": 1
+    },
+    {
+      "full": 49,
+      "id": "aeronimbo",
+      "low": 41,
+      "stage": 2
+    },
+    {
+      "full": 56,
+      "id": "aeronimbo",
+      "low": 48,
+      "stage": 3
+    },
+    {
+      "full": 28,
+      "id": "lodinho",
+      "low": 27,
+      "stage": 1
+    },
+    {
+      "full": 38,
+      "id": "lodinho",
+      "low": 37,
+      "stage": 2
+    },
+    {
+      "full": 42,
+      "id": "lodinho",
+      "low": 41,
+      "stage": 3
+    },
+    {
+      "full": 30,
+      "id": "caudalume",
+      "low": 26,
+      "stage": 1
+    },
+    {
+      "full": 35,
+      "id": "caudalume",
+      "low": 31,
+      "stage": 2
+    },
+    {
+      "full": 41,
+      "id": "caudalume",
+      "low": 37,
+      "stage": 3
+    },
+    {
+      "full": 45,
+      "id": "vagalumorte",
+      "low": 41,
+      "stage": 1
+    },
+    {
+      "full": 49,
+      "id": "vagalumorte",
+      "low": 45,
+      "stage": 2
+    },
+    {
+      "full": 80,
+      "id": "vagalumorte",
+      "low": 70,
+      "stage": 3
+    },
+    {
+      "full": 33,
+      "id": "reinevoento",
+      "low": 29,
+      "stage": 1
+    },
+    {
+      "full": 40,
+      "id": "reinevoento",
+      "low": 36,
+      "stage": 2
+    },
+    {
+      "full": 47,
+      "id": "reinevoento",
+      "low": 43,
+      "stage": 3
+    },
+    {
+      "full": 37,
+      "id": "vaporino",
+      "low": 31,
+      "stage": 1
+    },
+    {
+      "full": 46,
+      "id": "vaporino",
+      "low": 38,
+      "stage": 2
+    },
+    {
+      "full": 55,
+      "id": "vaporino",
+      "low": 46,
+      "stage": 3
+    },
+    {
+      "full": 43,
+      "id": "magmaterra",
+      "low": 37,
+      "stage": 1
+    },
+    {
+      "full": 66,
+      "id": "magmaterra",
+      "low": 50,
+      "stage": 2
+    },
+    {
+      "full": 71,
+      "id": "magmaterra",
+      "low": 55,
+      "stage": 3
+    },
+    {
+      "full": 87,
+      "id": "tempestalia",
+      "low": 59,
+      "stage": 1
+    },
+    {
+      "full": 104,
+      "id": "tempestalia",
+      "low": 71,
+      "stage": 2
+    },
+    {
+      "full": 117,
+      "id": "tempestalia",
+      "low": 78,
+      "stage": 3
+    },
+    {
+      "full": 45,
+      "id": "nevoamusgo",
+      "low": 41,
+      "stage": 1
+    },
+    {
+      "full": 55,
+      "id": "nevoamusgo",
+      "low": 51,
+      "stage": 2
+    },
+    {
+      "full": 68,
+      "id": "nevoamusgo",
+      "low": 61,
+      "stage": 3
+    },
+    {
+      "full": 53,
+      "id": "cinzavento",
+      "low": 45,
+      "stage": 1
+    },
+    {
+      "full": 60,
+      "id": "cinzavento",
+      "low": 50,
+      "stage": 2
+    },
+    {
+      "full": 68,
+      "id": "cinzavento",
+      "low": 58,
+      "stage": 3
+    },
+    {
+      "full": 190,
+      "id": "fenix",
+      "low": 129,
+      "stage": 3
+    }
+  ],
+  "peakTemplates": 88
+}

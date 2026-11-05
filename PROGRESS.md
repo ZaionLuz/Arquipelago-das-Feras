@@ -1,3 +1,9 @@
+# Fase atual — esculturas3D
+
+30 espécies/88 formas remodeladas em anatomias próprias, com revisão de silhuetas, evoluções, rostos e apêndices. Fênix solar adulta com asas em três camadas. Galeria estática de88 formas independente de DataStore e jogo com nova ModelFactory. Veja docs/sculpt/README.md. Rigs/regressão/serialização verificados; renderer Roblox/FPS pendentes. Modo leve reduz 19% das peças nos adultos e limita animação a seis criaturas; cache sem variantes duplicadas e previews fora da tela pausados. Recursos/grind em andamento ficou separado desta entrega.
+
+---
+
 # Fase atual — mundo aberto
 
 Sete regiões grandes conectadas e livres desde o início, dificuldade regional, checkpoints, população por proximidade e acampamento opcional. Schema 6 no mesmo DataStore. Regressão e bundle aprovados por `bash scripts/open_world/test`; resultados em [docs/open_world/README.md](docs/open_world/README.md). Física, streaming, visual, multiplayer e DataStore reais aguardam Studio. Abra `releases/Feras-Open-World.rbxlx`.

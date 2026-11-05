@@ -174,10 +174,12 @@ function J.render(parent, s, render)
 			end
 			local top = parent.AbsolutePosition.Y
 			local y = tile.AbsolutePosition.Y
-			local visible = parent.Visible and y + 140 >= top and y < top + parent.AbsoluteSize.Y
-			if visible and not mini then
+			local visible = Preview.visible(tile) and y + 140 >= top and y < top + parent.AbsoluteSize.Y
+			if visible then
 				mini = Preview.preview(tile, entry, 1, not found)
-				mini.Size = UDim2.fromScale(1, 0.72)
+				if mini then
+					mini.Size = UDim2.fromScale(1, 0.72)
+				end
 			elseif not visible and mini then
 				mini:Destroy()
 				mini = nil

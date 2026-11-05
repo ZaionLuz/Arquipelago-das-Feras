@@ -1,4 +1,19 @@
-# Arquipélago das Feras — mundo aberto
+# Arquipélago das Feras — 30 criaturas remodeladas em 3D
+
+Nova passagem dedicada exclusivamente à modelagem das30 espécies:88 formas, anatomias próprias, rostos em camadas e membros/caudas/asas articulados. Gameplay, save, mapa e economia preservados; caches e animações receberam otimizações para PCs mais fracos.
+
+- **Inspecionar os modelos sem DataStore:** abra [releases/Galeria-Criaturas-3D.rbxl](releases/Galeria-Criaturas-3D.rbxl) no Roblox Studio. As88 formas já estão montadas.
+- **Jogar com os modelos novos:** [releases/Feras-Creature-Sculpt.rbxlx](releases/Feras-Creature-Sculpt.rbxlx).
+- [Relatório e direção das30 espécies](docs/sculpt/README.md), [pranchas de revisão offline](assets/sculpt/review.html) e [meshes GLB](assets/sculpt/meshes.zip).
+- **Modo leve:** cerca de 19% menos peças nos adultos, previews fora da tela pausados e ajuste automático no Médio. Há também [galeria leve](releases/Galeria-Criaturas-3D-Leve.rbxl).
+- Testar: `bash scripts/sculpt/test`. Renderizar: `python scripts/sculpt/render_models.py`.
+
+Rigs nativos, clones, regressão e serialização foram verificados. Play/animação no renderer Roblox e desempenho real aguardam conferência no Studio. As imagens são renders Blender da geometria real exportada.
+
+---
+
+## Histórico — fase de mundo aberto
+
 
 Fase atual: aventura, batalha e captura em **sete regiões de 840 studs de diâmetro**, conectadas por caminhos de 64 studs. Todas podem ser visitadas desde o início; o perigo cresce pelos níveis próprios de cada região. O acampamento e a criação continuam como atividades opcionais.
 

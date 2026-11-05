@@ -2,6 +2,7 @@
 local Run = game:GetService("RunService")
 local Players = game:GetService("Players")
 local Art = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
+local Performance = require(game:GetService("ReplicatedStorage").Shared.CreaturePerformance)
 local A = {}
 local records = setmetatable({}, { __mode = "k" })
 local started = false
@@ -145,18 +146,32 @@ function A.start()
 	end
 	started = true
 	local accumulated, scan = 0, 0
+	local adaptive = Performance.new()
 	Run.Heartbeat:Connect(function(dt)
-		accumulated += dt
-		scan += dt
-		if accumulated < 1 / 30 then
+		if type(dt) ~= "number" or dt ~= dt or dt <= 0 or dt > 0.5 then
 			return
 		end
-		accumulated = 0
+		local player = Players.LocalPlayer
+		local quality = player:GetAttribute("GraphicsQuality") or "Médio"
+		local changed = Performance.step(adaptive, dt, quality)
+		if changed ~= nil then
+			player:SetAttribute("AdaptiveDetailLow", changed)
+		end
+		local budget = Performance.settings(quality, player:GetAttribute("AdaptiveDetailLow"))
+		accumulated += dt
+		scan += dt
+		local tickInterval = 1 / budget.nearRate
+		if accumulated + 1e-6 < tickInterval then
+			return
+		end
+		-- Mantém a fração restante: descartar o resto tornava o modo15Hz irregular.
+		local ticks = math.floor((accumulated + 1e-6) / tickInterval)
+		accumulated = math.max(0, accumulated - ticks * tickInterval)
 		local camera = workspace.CurrentCamera
 		if not camera then
 			return
 		end
-		if scan > 0.5 then
+		if scan > (budget.detailLow and 1 or 0.5) then
 			scan = 0
 			for _, name in
 				{ "Criaturas", "Selvagens", "Companheiros", "Guardioes", Run:IsStudio() and "GaleriaV7" or "" }
@@ -171,8 +186,7 @@ function A.start()
 				end
 			end
 		end
-		local quality = Players.LocalPlayer:GetAttribute("GraphicsQuality") or "Médio"
-		local reduced = Players.LocalPlayer:GetAttribute("MotionReduced")
+		local reduced = player:GetAttribute("MotionReduced")
 		local candidates = {}
 		local time = os.clock()
 		for model, record in records do
@@ -182,16 +196,21 @@ function A.start()
 			end
 			local distance = record.visible and 0 or (model.PrimaryPart.Position - camera.CFrame.Position).Magnitude
 			local shown = not record.visible or record.visible()
-			local hidden = distance > 300 or not shown
-			if record.hidden ~= hidden then
+			local hidden = distance > budget.hideDistance or not shown
+			if record.hidden ~= hidden or record.detailLow ~= budget.detailLow then
 				record.hidden = hidden
+				record.detailLow = budget.detailLow
 				for _, part in record.parts do
 					if part.Parent then
-						part.LocalTransparencyModifier = hidden and 1 or 0
+						part.LocalTransparencyModifier = (
+							hidden or budget.detailLow and part:GetAttribute("LODDetail") == true
+						)
+								and 1
+							or 0
 					end
 				end
 			end
-			local effectsOn = quality ~= "Baixo" and distance < 70 and shown
+			local effectsOn = not budget.detailLow and distance < budget.nearDistance and shown
 			if record.effectsOn ~= effectsOn then
 				record.effectsOn = effectsOn
 				for _, effect in record.effects do
@@ -200,19 +219,21 @@ function A.start()
 					end
 				end
 			end
-			if shown and distance < (quality == "Baixo" and 70 or 150) then
+			if shown and distance < budget.animationDistance then
 				table.insert(candidates, { model = model, record = record, distance = distance })
 			end
 		end
 		table.sort(candidates, function(a, b)
 			return a.distance < b.distance
 		end)
-		for index = 1, math.min(quality == "Baixo" and 8 or quality == "Alto" and 24 or 16, #candidates) do
+		for index = 1, math.min(budget.animateLimit, #candidates) do
 			local item = candidates[index]
-			local interval = item.distance < 70 and 1 / 30 or 1 / 15
-			if time - item.record.last >= interval then
-				item.record.last = time
-				apply(item.model, item.record, time, item.distance < 70, reduced)
+			local interval = item.distance < budget.nearDistance and 1 / budget.nearRate or 1 / budget.farRate
+			local elapsed = time - item.record.last
+			if elapsed + 1e-6 >= interval then
+				-- Uma atualização por pulso, sem rajadas de catch-up após travadas.
+				item.record.last += math.floor((elapsed + 1e-6) / interval) * interval
+				apply(item.model, item.record, time, item.distance < budget.nearDistance, reduced)
 			end
 		end
 	end)

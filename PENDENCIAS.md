@@ -1,3 +1,9 @@
+# Conferência atual — modelagem 3D
+
+Abrir releases/Galeria-Criaturas-3D.rbxl e revisar as88 formas no Studio; depois conferir no jogo enquadramento de câmera, animações, contato dos pés e performance real. Renders Blender e validação nativa estão em docs/sculpt. O modo leve e o ajuste adaptativo foram testados por regras/agendamento; ainda é preciso medir FPS e memória em hardware de entrada. Não há publicação de MeshParts/IDs externos nesta entrega; GLBs adicionais são meshes estáticos para ferramentas 3D.
+
+---
+
 # Pendências atuais — mundo aberto
 
 Executar [o roteiro no Studio](docs/open_world/STUDIO_QA.md): caminhar nas sete estradas e 21 rampas, conferir streaming e fauna, viagens/morte, dois clientes, persistência real, UI mobile e desempenho. A suíte headless e o bundle passaram; a execução no Roblox não foi realizada aqui. Os itens abaixo registram as fases anteriores e não representam bloqueios de entrada nas áreas atuais.

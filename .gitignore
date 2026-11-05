@@ -11,3 +11,19 @@ __pycache__/
 !releases/Feras-Art-Overhaul.rbxlx
 
 !releases/Feras-Open-World.rbxlx
+
+# Entrega da modelagem3D; caches e renders intermediários são regeneráveis.
+!releases/Feras-Creature-Sculpt.rbxlx
+!releases/Galeria-Criaturas-3D.rbxl
+assets/sculpt/glb/
+assets/sculpt/baseline/
+docs/sculpt/images/adults/
+docs/sculpt/images/forms/
+docs/sculpt/images/comparison/
+*.sha256
+
+# PNGs de revisão sem perda permanecem regeneráveis; a distribuição usa WebP.
+docs/sculpt/images/**/*.png
+docs/sculpt/images/*.png
+
+!releases/Galeria-Criaturas-3D-Leve.rbxl

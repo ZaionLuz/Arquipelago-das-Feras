@@ -7,10 +7,35 @@ local Animator = require(script.Parent.CreatureAnimator)
 local Theme = require(script.Parent.UITheme)
 local Icons = require(script.Parent.PixelIcons)
 local UI = { rebuilds = 0 }
+local function rect(object)
+	local available, size, pos = pcall(function()
+		return object.AbsoluteSize, object.AbsolutePosition
+	end)
+	if available and size and pos and size.X > 0 and size.Y > 0 then
+		return pos.X, pos.Y, pos.X + size.X, pos.Y + size.Y
+	end
+	return nil
+end
 function UI.visible(object)
+	local left, top, right, bottom
+	if object and object:IsA("GuiObject") then
+		left, top, right, bottom = rect(object)
+	end
 	while object do
-		if object:IsA("GuiObject") and not object.Visible then
-			return false
+		if object:IsA("GuiObject") then
+			if not object.Visible then
+				return false
+			end
+			if left and object.ClipsDescendants then
+				local clipLeft, clipTop, clipRight, clipBottom = rect(object)
+				if clipLeft then
+					left, top = math.max(left, clipLeft), math.max(top, clipTop)
+					right, bottom = math.min(right, clipRight), math.min(bottom, clipBottom)
+					if right <= left or bottom <= top then
+						return false
+					end
+				end
+			end
 		end
 		if object:IsA("ScreenGui") and not object.Enabled then
 			return false
@@ -33,8 +58,16 @@ local function label(parent, text, pos, size)
 	return t
 end
 function UI.preview(parent, def, lv, unknown)
-	local key = def.id .. ":" .. C.stage(lv, def.id) .. ":" .. tostring(unknown)
+	if not parent then
+		return nil
+	end
 	local v = parent:FindFirstChild("CreaturePreview")
+	-- A visualização só é montada quando o contêiner está visível.
+	if not UI.visible(parent) then
+		return v
+	end
+	local detail = MF.detailKey()
+	local key = def.id .. ":" .. C.stage(lv, def.id) .. ":" .. tostring(unknown) .. ":" .. detail
 	if v and v:GetAttribute("PreviewKey") == key then
 		return v
 	end
@@ -53,7 +86,11 @@ function UI.preview(parent, def, lv, unknown)
 	v:SetAttribute("PreviewKey", key)
 	local world = Instance.new("WorldModel")
 	world.Parent = v
-	local model = MF.build(unknown and def.acquisition == "special" and C.ById.cinzelo or def, lv, { preview = true })
+	local model = MF.build(
+		unknown and def.acquisition == "special" and C.ById.cinzelo or def,
+		lv,
+		{ preview = true, detail = detail }
+	)
 	UI.rebuilds += 1
 	for _, obj in model:GetDescendants() do
 		if obj:IsA("BillboardGui") then
@@ -90,7 +127,7 @@ function UI.preview(parent, def, lv, unknown)
 	camera.Parent = v
 	v.CurrentCamera = camera
 	Animator.register(model, function()
-		return v.Parent ~= nil and UI.visible(v)
+		return model.Parent ~= nil and v.Parent ~= nil and UI.visible(v)
 	end, { camera = camera, center = center, distance = distance })
 	return v
 end
@@ -111,8 +148,8 @@ function UI.card(parent, def, lv, known, order)
 		end
 		local y = card.AbsolutePosition.Y
 		local top = parent.AbsolutePosition.Y
-		local shown = y + card.AbsoluteSize.Y >= top and y <= top + parent.AbsoluteSize.Y
-		if shown and not preview then
+		local shown = UI.visible(card) and y + card.AbsoluteSize.Y >= top and y <= top + parent.AbsoluteSize.Y
+		if shown then
 			preview = UI.preview(card, def, lv, not known)
 		elseif not shown and preview then
 			preview:Destroy()
