@@ -1,0 +1,1504 @@
+{
+  "creatures": {
+    "flamiris": {
+      "name": "Flamiris",
+      "element": "Fogo",
+      "family": "quadruped",
+      "shape": "Fox",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "carvunio": {
+      "name": "Carv\u00fanio",
+      "element": "Fogo",
+      "family": "quadruped",
+      "shape": "Wolf",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "brasegato": {
+      "name": "Brasegato",
+      "element": "Fogo",
+      "family": "quadruped",
+      "shape": "Feline",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "orvalume": {
+      "name": "Orvalume",
+      "element": "\u00c1gua",
+      "family": "quadruped",
+      "shape": "Fox",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "coralina": {
+      "name": "Coralina",
+      "element": "\u00c1gua",
+      "family": "quadruped",
+      "shape": "Feline",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "pelaguir": {
+      "name": "Pelaguir",
+      "element": "\u00c1gua",
+      "family": "aquatic",
+      "shape": "Marine",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "musgalte": {
+      "name": "Musgalte",
+      "element": "Natureza",
+      "family": "quadruped",
+      "shape": "Wolf",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "bambuja": {
+      "name": "Bambuj\u00e1",
+      "element": "Natureza",
+      "family": "quadruped",
+      "shape": "Feline",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "florabelha": {
+      "name": "Florabelha",
+      "element": "Natureza",
+      "family": "arthropod",
+      "shape": "Insect",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "marmure": {
+      "name": "Marmur\u00e9",
+      "element": "Terra",
+      "family": "quadruped",
+      "shape": "Feline",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "litorisco": {
+      "name": "Litorisco",
+      "element": "Terra",
+      "family": "mineral",
+      "shape": "Golem",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "sementauro": {
+      "name": "Sementauro",
+      "element": "Terra",
+      "family": "quadruped",
+      "shape": "Vegetal",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "sibilobo": {
+      "name": "Sibilobo",
+      "element": "Ar",
+      "family": "quadruped",
+      "shape": "Wolf",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "cirrandor": {
+      "name": "Cirrandor",
+      "element": "Ar",
+      "family": "winged",
+      "shape": "Bird",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "nimboreo": {
+      "name": "Nimb\u00f3reo",
+      "element": "Ar",
+      "family": "draconic",
+      "shape": "Dragon",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "velune": {
+      "name": "Velun\u00e9",
+      "element": "Sombra",
+      "family": "quadruped",
+      "shape": "Fox",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "obsidauro": {
+      "name": "Obsidauro",
+      "element": "Sombra",
+      "family": "quadruped",
+      "shape": "Wolf",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "velumosa": {
+      "name": "Velumosa",
+      "element": "Sombra",
+      "family": "winged",
+      "shape": "Moth",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "glaurina": {
+      "name": "Glaurina",
+      "element": "Gelo",
+      "family": "quadruped",
+      "shape": "Fox",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "niveor": {
+      "name": "N\u00edveor",
+      "element": "Gelo",
+      "family": "quadruped",
+      "shape": "Wolf",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "gelifoca": {
+      "name": "Gelifoca",
+      "element": "Gelo",
+      "family": "aquatic",
+      "shape": "Marine",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "fulgarru": {
+      "name": "Fulgarru",
+      "element": "El\u00e9trico",
+      "family": "quadruped",
+      "shape": "Wolf",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "ampelince": {
+      "name": "Ampelince",
+      "element": "El\u00e9trico",
+      "family": "quadruped",
+      "shape": "Feline",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "trovissideo": {
+      "name": "Troviss\u00eddeo",
+      "element": "El\u00e9trico",
+      "family": "arthropod",
+      "shape": "Insect",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "aurifita": {
+      "name": "Aurifita",
+      "element": "Luz",
+      "family": "quadruped",
+      "shape": "Fox",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "lunarru": {
+      "name": "Lunarru",
+      "element": "Luz",
+      "family": "quadruped",
+      "shape": "Wolf",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "candeira": {
+      "name": "Cande\u00edra",
+      "element": "Luz",
+      "family": "arthropod",
+      "shape": "Insect",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "ferrunila": {
+      "name": "Ferrunila",
+      "element": "Metal",
+      "family": "quadruped",
+      "shape": "Fox",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        },
+        "stage3": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.4,
+          "detail": 3,
+          "suffix": "Adulto"
+        }
+      }
+    },
+    "fiaranha": {
+      "name": "Fiaranha",
+      "element": "Metal",
+      "family": "arthropod",
+      "shape": "Arachnid",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    },
+    "metafalcao": {
+      "name": "Metafalc\u00e3o",
+      "element": "Metal",
+      "family": "winged",
+      "shape": "Bird",
+      "stages": {
+        "stage1": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 0.7,
+          "detail": 1,
+          "suffix": "Filhote"
+        },
+        "stage2": {
+          "parts": [
+            "Body",
+            "Head",
+            "Leg1",
+            "Leg2",
+            "Leg3",
+            "Leg4",
+            "Tail1",
+            "Tail2",
+            "WingL",
+            "WingR"
+          ],
+          "scale": 1.0,
+          "detail": 2,
+          "suffix": "Jovem"
+        }
+      }
+    }
+  },
+  "version": 1,
+  "timestamp": 1794748683
+}

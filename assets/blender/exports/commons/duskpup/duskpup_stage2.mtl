@@ -1,0 +1,17 @@
+# Material file for duskpup_stage2
+
+newmtl duskpup_stage2_base
+Ka 0.060 0.030 0.090
+Kd 0.200 0.100 0.300
+Ks 0.2 0.2 0.2
+Ns 32
+d 1.0
+illum 2
+
+newmtl duskpup_stage2_accent
+Ka 0.250 0.150 0.350
+Kd 0.500 0.300 0.700
+Ks 0.5 0.5 0.5
+Ns 64
+d 1.0
+illum 2

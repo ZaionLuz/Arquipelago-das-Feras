@@ -1,0 +1,17 @@
+# Material file for bambuja_stage2
+
+newmtl bambuja_stage2_base
+Ka 0.060 0.210 0.060
+Kd 0.200 0.700 0.200
+Ks 0.2 0.2 0.2
+Ns 32
+d 1.0
+illum 2
+
+newmtl bambuja_stage2_accent
+Ka 0.250 0.500 0.200
+Kd 0.500 1.000 0.400
+Ks 0.5 0.5 0.5
+Ns 64
+d 1.0
+illum 2
