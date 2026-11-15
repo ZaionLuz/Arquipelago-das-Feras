@@ -23,6 +23,32 @@ require(script.Parent.SanctuaryBuilder).build()
 local Net = Instance.new("RemoteFunction")
 Net.Name = "Net"
 Net.Parent = RS
+
+local EvoRemotes = Instance.new("Folder")
+EvoRemotes.Name = "EvolutionRemotes"
+EvoRemotes.Parent = RS
+
+local RequestEvolution = Instance.new("RemoteFunction")
+RequestEvolution.Name = "RequestEvolution"
+RequestEvolution.Parent = EvoRemotes
+
+local TriggerEvolutionCutscene = Instance.new("RemoteEvent")
+TriggerEvolutionCutscene.Name = "TriggerEvolutionCutscene"
+TriggerEvolutionCutscene.Parent = EvoRemotes
+
+local GetEvolutionInfo = Instance.new("RemoteFunction")
+GetEvolutionInfo.Name = "GetEvolutionInfo"
+GetEvolutionInfo.Parent = EvoRemotes
+
+local CancelEvolution = Instance.new("RemoteEvent")
+CancelEvolution.Name = "CancelEvolution"
+CancelEvolution.Parent = EvoRemotes
+
+local EvolutionHistory = Instance.new("RemoteFunction")
+EvolutionHistory.Name = "EvolutionHistory"
+EvolutionHistory.Parent = EvoRemotes
+
+require(script.Parent.EvolutionService)
 local last = {}
 local busy = {}
 local function argument(v)
