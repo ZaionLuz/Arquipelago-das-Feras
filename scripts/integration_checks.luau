@@ -5,10 +5,13 @@ local Lore=Loader.load("src/shared/SpeciesLore.luau")
 local Evo=Loader.load("src/shared/EvolutionSystem.luau")
 local Registry=Loader.load("src/shared/BlenderModels.luau")
 local F=Loader.load("src/shared/ModelFactory.luau")
+local Elements=Loader.load("src/shared/Elements.luau")
+local Skills=Loader.load("src/shared/Skills.luau")
 local seen={}
 for _,def in C.List do
  assert(not seen[def.id]);seen[def.id]=true
  assert(typeof(def.name)=="string" and #def.name>0 and typeof(def.el)=="string")
+ assert(Elements.Color[def.el] and Skills[def.shape],"Elemento ou habilidade ausente: "..def.id)
  assert(Lore[def.id] and typeof(Lore[def.id].description)=="string")
  for _,lv in {1,6,7,14,15,100} do
   local info=assert(Evo.info({id=def.id,lv=lv}))

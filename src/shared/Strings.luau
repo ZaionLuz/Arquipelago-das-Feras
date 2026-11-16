@@ -658,4 +658,7 @@ S.Text.VITORIA_FERAS_EXAUSTAS_NAO_PODEM_SER_CAPTURADAS_08B05D = "Vitória! Feras
 S.Text.VOCE_SE_APROXIMOU_COM_CUIDADO_VINCULO_555F67 = "Você se aproximou com cuidado. Vínculo "
 S.Text.VOCE_VOLTOU_A_EXPLORACAO_29EB17 = "Você voltou à exploração."
 S.Text.VULCANODRAGO_CEB8E4 = "Vulcanodrago"
+S.Text.METAL_B0BEC5 = "Metal"
+S.Text.CRISTAL_E1BEE7 = "Cristal"
+S.Text.ARCANO_CE93D8 = "Arcano"
 return S

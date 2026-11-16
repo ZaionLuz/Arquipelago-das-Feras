@@ -4,6 +4,7 @@ local Text = require(script.Parent.Strings).Text
 local C = require(script.Parent.Creatures)
 local Elements = require(script.Parent.Elements)
 local Skills = require(script.Parent.Skills)
+local Shape = require(script.Parent.CombatShape)
 local CaptureMath = require(script.Parent.CaptureMath)
 local R = {
 	MaxTurns = 40,
@@ -24,7 +25,7 @@ function R.stats(id, lv)
 		maxHp = math.floor(def.hp * scale),
 		atk = def.atk * scale,
 		def = 4 + def.rar * 3 + lv * 0.35,
-		speed = ({ Blob = 9, Beast = 15, Bird = 20, Dragon = 13, Serpent = 16, Insect = 18 })[def.shape] + lv,
+		speed = ({ Blob = 9, Beast = 15, Bird = 20, Dragon = 13, Serpent = 16, Insect = 18 })[Shape.resolve(def.shape)] + lv,
 		el = def.el,
 	}
 end
