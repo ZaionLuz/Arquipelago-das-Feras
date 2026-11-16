@@ -1,8 +1,9 @@
 {
-  "sourceCommit": "5df497aaa5a1f521397728990c8007066b4ba435",
-  "validationRun": "https://github.com/ZaionLuz/Arquipelago-das-Feras/actions/runs/43799007047",
-  "sha256": "52ee1de8f4f596084327eb8d3195038c451dc8598e6af5fec0ce16c71749d18e",
-  "bytes": 398614,
+  "sourceCommit": "b18dc6a159d71edee5f90b935a37983ccbbbfaf5",
+  "sourceBuildRun": "https://github.com/ZaionLuz/Arquipelago-das-Feras/actions/runs/43799667073",
+  "validationWorkflow": "https://github.com/ZaionLuz/Arquipelago-das-Feras/actions/workflows/validate.yml",
+  "sha256": "bf08124ebe9e81983dcb2b2ce7bc3d5eb267025e47423fcaccf0ac544d716487",
+  "bytes": 398669,
   "files": [
     "Feras-Tester.rbxlx",
     "Feras-Art-Overhaul.rbxlx",

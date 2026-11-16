@@ -17,12 +17,13 @@ Compatibilidade adicional: categorias anatômicas da expansão usam perfis de co
 
 ## Resultado executado
 
-[Regressão e build aprovadas](https://github.com/ZaionLuz/Arquipelago-das-Feras/actions/runs/43799007047) para o código 5df497aaa5a1f521397728990c8007066b4ba435.
+A validação atual está no workflow [Validate Roblox build](https://github.com/ZaionLuz/Arquipelago-das-Feras/actions/workflows/validate.yml).
 
+- Fonte de runtime usada na geração: b18dc6a159d71edee5f90b935a37983ccbbbfaf5.
 - Catálogo: 120 IDs únicos.
 - Modelos: 361 construções nativas headless; cena de 40 criaturas com 1553 peças (limite 3200).
 - Bundle: 74 scripts/módulos, comparados com src após o build.
-- Sintaxe Luau, combate/captura, concessão e débito únicos, leases/migração, dados corrompidos, remotes, perfis herdados, prefab/fallback, controle de origem da Fênix, progressão e simulações aprovados.
-- Três arquivos de releases com SHA256 52ee1de8f4f596084327eb8d3195038c451dc8598e6af5fec0ce16c71749d18e; o manifesto de proveniência está em releases/BUILD-MANIFEST.json.
+- Sintaxe Luau, combate/captura, concessão e débito únicos, leases/migração, dados corrompidos, remotes, perfis herdados, prefab/fallback, preparação no Studio, contrato Content.fromUri/cache sem rede, restrições da Fênix, progressão e simulações aprovados na etapa de fontes/build.
+- Três arquivos de releases com SHA256 bf08124ebe9e81983dcb2b2ce7bc3d5eb267025e47423fcaccf0ac544d716487; o manifesto de proveniência está em releases/BUILD-MANIFEST.json. A etapa Verify committed tester releases valida esses arquivos contra src e o hash esperado.
 
 Liberado para teste funcional controlado no Studio, **não** como homologação visual/performance. Para avaliar os meshes Blender exatos, conclua a importação descrita em IMPORTAR-MODELOS.md.
