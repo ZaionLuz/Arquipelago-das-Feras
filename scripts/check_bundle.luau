@@ -18,13 +18,13 @@ for _, obj in place:GetDescendants() do
 	end
 end
 local expected = 0
-for _, folder in { "client", "server", "shared" } do
-	for _, name in fs.readDir("src/" .. folder) do
-		if name:match("%.luau$") then
-			expected += 1
-		end
-	end
+local function countSources(folder)
+ for _,name in fs.readDir(folder) do
+  local path=folder.."/"..name
+  if fs.isDir(path) then countSources(path) elseif name:match("%.luau$") then expected+=1 end
+ end
 end
+countSources("src")
 assert(scripts == expected, "Mapeamento de scripts incorreto: " .. scripts .. " / " .. expected)
 assert(place:GetService("Workspace").StreamingEnabled)
 print("PASS: bundle Rojo desserializado com " .. scripts .. " scripts/módulos e streaming habilitado")

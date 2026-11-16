@@ -39,5 +39,13 @@ fallback:Destroy()
 local unsafe=rb.Instance.new("Script");unsafe.Parent=prefab
 local safe=factory.build(def,1,{preview=true})
 assert(safe:GetAttribute("GeometrySource")=="ProceduralFallback")
-safe:Destroy();rs:Destroy()
+safe:Destroy();unsafe:Destroy()
+local dangling=rb.Instance.new("Part");dangling.Name="Unlinked";dangling.Parent=prefab
+local rejected=factory.build(def,1,{preview=true});assert(rejected:GetAttribute("GeometrySource")=="ProceduralFallback");rejected:Destroy();dangling:Destroy()
+local joint
+for _,obj in prefab:GetDescendants() do if obj:IsA("Motor6D") then joint=obj;break end end
+local original=joint.Part0
+local external=rb.Instance.new("Part");joint.Part0=external
+rejected=factory.build(def,1,{preview=true});assert(rejected:GetAttribute("GeometrySource")=="ProceduralFallback");rejected:Destroy()
+joint.Part0=original;external:Destroy();rs:Destroy()
 print("PASS: catálogo",#C.List,"IDs únicos, fichas, marcos por nível, prefab preferido, clone local e fallback seguro")

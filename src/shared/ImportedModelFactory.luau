@@ -21,6 +21,7 @@ local function normalize(model,def,stage)
  assert(root and root:IsA("BasePart"),"Root ausente")
  model.PrimaryPart=root;model.ModelStreamingMode=Enum.ModelStreamingMode.Atomic
  local count=0
+ local edges={}
  for _,obj in model:GetDescendants() do
   assert(not obj:IsA("LuaSourceContainer"),"Script não permitido dentro de uma criatura")
   if obj:IsA("BasePart") then
@@ -29,11 +30,20 @@ local function normalize(model,def,stage)
    obj.CollisionGroup="Creatures"
    assert(obj.Size.X>0 and obj.Size.Y>0 and obj.Size.Z>0,"Tamanho inválido")
   elseif obj:IsA("Motor6D") then
-   assert(obj.Part0 and obj.Part1,"Joint desconectado")
+   assert(obj.Part0 and obj.Part1 and obj.Part0:IsDescendantOf(model) and obj.Part1:IsDescendantOf(model),"Joint desconectado ou externo")
+   table.insert(edges,{obj.Part0,obj.Part1})
    if not obj:GetAttribute("Role") then obj:SetAttribute("Role",obj.Name:gsub("^J_","")) end
    if not obj:GetAttribute("Phase") then obj:SetAttribute("Phase",0) end
+  elseif obj:IsA("WeldConstraint") then
+   assert(obj.Part0 and obj.Part1 and obj.Part0:IsDescendantOf(model) and obj.Part1:IsDescendantOf(model),"Weld desconectado ou externo")
+   table.insert(edges,{obj.Part0,obj.Part1})
   end
  end
+ local linked={[root]=true}
+ for _=1,count do
+  for _,edge in edges do if linked[edge[1]] or linked[edge[2]] then linked[edge[1]]=true;linked[edge[2]]=true end end
+ end
+ for _,obj in model:GetDescendants() do if obj:IsA("BasePart") then assert(linked[obj],"Parte visual sem ligação ao Root") end end
  assert(count>1 and count<=Designs[def.id].budget[stage],"Orçamento de peças excedido")
  root.Transparency=1
  return metadata(model,def,stage)
@@ -65,7 +75,7 @@ local function registryModel(def,stage,assetService)
  if not ok then m:Destroy();error(result) end
  return result
 end
-function I.tryBuild(def,stage)
+function I.tryBuild(def,stage,validate)
  if not game or not game.GetService then return nil end
  local ok,rs=pcall(function() return game:GetService("ReplicatedStorage") end)
  if not ok or not rs or typeof(rs.FindFirstChild)~="function" then return nil end
@@ -73,7 +83,11 @@ function I.tryBuild(def,stage)
  local prefab=folder and folder:FindFirstChild(def.id.."_Stage"..stage)
  if prefab then
   local clone=prefab:Clone()
-  local good,model=pcall(normalize,clone,def,stage)
+  local good,model=pcall(function()
+   normalize(clone,def,stage)
+   if validate then validate(clone) end
+   return clone
+  end)
   if good then return model end
   clone:Destroy()
   local key=def.id..":"..stage..":prefab"
@@ -82,7 +96,7 @@ function I.tryBuild(def,stage)
  local key=def.id..":"..stage
  if cache[key] then return cache[key]:Clone() end
  if failed[key] or not Registry.GetStage(def.id,stage) then return nil end
- local good,model=pcall(function() return registryModel(def,stage,game:GetService("AssetService")) end)
+ local good,model=pcall(function() local result=registryModel(def,stage,game:GetService("AssetService")); if result and validate then validate(result) end;return result end)
  if good and model then cache[key]=model;return model:Clone() end
  failed[key]=true
  warn("Mesh indisponível; usando receita local:",key,model)

@@ -12,3 +12,5 @@ Base: 31c94bec76ce9680004a96aa4263c4d938def82c.
 - Compilação, execução de suites e arquivos gerados são publicados pelo workflow Validate Roblox build. Resultado final registrado junto da build.
 
 Roblox Studio, renderização, física multiplayer e FPS não foram executados neste ambiente. Importar/publicar os OBJ/FBX é uma etapa necessária para os visuais Blender exatos; a build headless contém as receitas locais e a integração pronta.
+
+Compatibilidade adicional: categorias anatômicas da expansão usam perfis de combate legados; seis elementos novos têm nomes/cores válidos e relações neutras, sem alterar o multiplicador entre os elementos antigos. Um erro de vírgula em Strings foi corrigido. Importações com scripts, partes soltas ou joints externos são recusadas com fallback.
