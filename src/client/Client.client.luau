@@ -1,4 +1,4 @@
---!nonstrict
+﻿--!strict
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local RS = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -15,10 +15,36 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
 gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
-local S, tab, isl, pick, snapAt = nil, Text.FERAS_EF033A, "Alvorecer", {}, os.clock()
-local render
-local tabBtn = {}
-local tutorial
+
+export type ClientState = {
+	playerLevel: number?,
+	gold: number,
+	gems: number,
+	seals: number?,
+	creatures: {[string]: {id: string, lv: number}},
+	discovered: {[string]: boolean},
+	unlocked: {[string]: boolean},
+	access: {[string]: {ok: boolean, reason: string, unlockReason: string}}?,
+	eggCount: number?,
+	stats: {[string]: number},
+	claimed: {[string]: boolean},
+	quest: {stage: number, title: string?, hint: string?, nextAttemptAt: number?, captured: boolean?}?,
+	event: {el: string, left: number},
+	streak: number,
+	materials: {[string]: number},
+	sealStock: {[string]: number}?,
+	playerXp: number?,
+	companion: string?,
+	eggs: {{id: string, left: number}}?,
+	tut: boolean?,
+}
+
+local S: ClientState?, tab: string, isl: string, pick: {string}, snapAt: number
+local shopCategory: string = "items"
+S, tab, isl, pick, snapAt = nil, Text.FERAS_EF033A, "Alvorecer", {}, os.clock()
+local render: () -> ()
+local tabBtn: {[string]: TextButton} = {}
+local tutorial: () -> ()
 local CollectionUI = require(script.Parent.CollectionUI)
 local inFlight = false
 local Breeding = require(RS.Shared.Breeding)
@@ -38,6 +64,12 @@ local Strings = require(RS.Shared.Strings)
 local Bands = require(RS.Shared.LevelBands)
 local LocalPlayer = Players.LocalPlayer
 LocalPlayer:SetAttribute("GraphicsQuality", Text.MEDIO_4F48C1)
+
+-- New UI modules
+local TeamUI = require(script.Parent.TeamUI)
+local TradeUI = require(script.Parent.TradeUI)
+local ShopUI = require(script.Parent.ShopUI)
+local SettingsUI = require(script.Parent.SettingsUI)
 local function mk(cls, props, parent)
 	local o = Instance.new(cls)
 	for k, v in props do
@@ -151,7 +183,7 @@ local function sfx(n)
 	end)
 	s:Play()
 end
--- Efeito de golpe por elemento: projétil com trajetória própria + explosão de partículas + onda de choque.
+-- Efeito de golpe por elemento: projÃ©til com trajetÃ³ria prÃ³pria + explosÃ£o de partÃ­culas + onda de choque.
 local FX = {
 	Fogo = { shape = "Ball", size = 3, path = "line", n = 45, spd = 34 },
 	[Text.AGUA_F11A05] = { shape = "Ball", size = 2.5, path = "arc", n = 35, spd = 22 },
@@ -224,7 +256,7 @@ local function fx(el, a, b)
 		ring:Destroy()
 	end)
 end
--- Batalha animada: o servidor decide o resultado; aqui só se reproduz o log de golpes.
+-- Batalha animada: o servidor decide o resultado; aqui sÃ³ se reproduz o log de golpes.
 local function playBattle(b)
 	local MF = require(RS.Shared.ModelFactory)
 	local cam = workspace.CurrentCamera
@@ -444,7 +476,7 @@ render = function()
 	xpFill.Size = UDim2.fromScale(math.clamp((S.playerXp or 0) / Progression.playerCost(S.playerLevel or 1), 0, 1), 1)
 	local objectiveChapter = Story.current(S)
 	objective.Text = objectiveChapter
-			and (objectiveChapter.name .. " • " .. Story.progress(S, objectiveChapter) .. "/" .. objectiveChapter.goal)
+			and (objectiveChapter.name .. " â€¢ " .. Story.progress(S, objectiveChapter) .. "/" .. objectiveChapter.goal)
 		or Text.PRIMEIRA_EXPEDICAO_CONCLUIDA_CONTINUE_EXPLORANDO_04DB58
 	local nextIsland
 	for _, id in Bands.Order do
@@ -549,7 +581,7 @@ render = function()
 	elseif tab == Text.MISSOES_FAE2D2 then
 		if S.quest and S.quest.stage > 0 then
 			local q = S.quest
-			local text = (q.title or Text.VESTIGIOS_513BA0) .. " · " .. q.stage .. "/3\n" .. q.hint
+			local text = (q.title or Text.VESTIGIOS_513BA0) .. " Â· " .. q.stage .. "/3\n" .. q.hint
 			if q.nextAttemptAt then
 				text ..= "\n" .. (q.captured and Text.ALTAR_EM_REPOUSO_64BE88 or Text.NOVA_TENTATIVA_EM_CA2FA0 .. math.max(
 					0,
@@ -560,7 +592,7 @@ render = function()
 		end
 		local quest = Story.current(S)
 		if quest then
-			row(Text.MAIA_2FE34E .. quest.name .. " — " .. Story.progress(S, quest) .. "/" .. quest.goal, {
+			row(Text.MAIA_2FE34E .. quest.name .. " â€” " .. Story.progress(S, quest) .. "/" .. quest.goal, {
 				{
 					Story.canClaim(S, quest.id) and Text.RECEBER_CAPITULO_3ACD37 or Text.EM_ANDAMENTO_5CA373,
 					function()
@@ -585,7 +617,7 @@ render = function()
 			local done = S.claimed[m.id]
 			row((Text.S_D_D_A1F15E):format(m.text, math.min(pr, m.goal), m.goal), {
 				{
-					done and "Concluída"
+					done and "ConcluÃ­da"
 						or (pr >= m.goal and Text.RESGATAR_76A111 or "+" .. m.gold .. Text.OURO_6C9D60),
 					function()
 						if not done and pr >= m.goal then
@@ -602,11 +634,11 @@ render = function()
 			row(
 				Text.SELO_8CBE0B
 					.. recipe.name
-					.. " • "
+					.. " â€¢ "
 					.. count
 					.. Text.NIVEL_002242
 					.. recipe.level
-					.. (recipe.material and " • " .. recipe.amount .. Text.ESSENCIA_2D0983 .. recipe.material or ""),
+					.. (recipe.material and " â€¢ " .. recipe.amount .. Text.ESSENCIA_2D0983 .. recipe.material or ""),
 				{
 					{
 						Text.CRIAR_BD03AE .. recipe.cost .. Text.OURO_6C9D60,
@@ -621,7 +653,7 @@ render = function()
 		for _, def in I.List do
 			if S.unlocked[def.id] then
 				row(
-					Text.OVO_DE_763A79 .. def.name .. " — " .. (80 * def.idx) .. Text.OURO_6C9D60,
+					Text.OVO_DE_763A79 .. def.name .. " â€” " .. (80 * def.idx) .. Text.OURO_6C9D60,
 					{ {
 						Text.COMPRAR_F8AAD3,
 						function()
@@ -631,6 +663,50 @@ render = function()
 				)
 			end
 		end
+	elseif tab == "Equipe" then
+		TeamUI.render(list, S.creatures, S.companion,
+			function(uid: string)
+				if uid:sub(1, 4) == "add_" then
+				else
+					TeamUI.showDetail(uid, S.creatures[uid])
+				end
+			end,
+			function(uid: string, target: string)
+				call("Battle", uid, target)
+			end,
+			function(uid: string)
+				call("Companion", uid)
+			end
+		)
+	elseif tab == "Troca" then
+		TradeUI.render(list, {phase = "idle"}, S.creatures,
+			function(uid: string) call("TradeAddOffer", uid) end,
+			function(uid: string) call("TradeRemoveOffer", uid) end,
+			function() call("TradeAccept") end,
+			function() call("TradeCancel") end,
+			function() call("TradeConfirm") end
+		)
+	elseif tab == "Loja" then
+		ShopUI.render(list,
+			{
+				gold = S.gold,
+				gems = S.gems,
+				seals = S.seals or 0,
+				playerLevel = S.playerLevel or 1,
+				unlocked = S.unlocked,
+				shopCategory = shopCategory
+			},
+			function(itemId: string) call("ShopBuy", itemId) end,
+			function(cat: string)
+				shopCategory = cat
+				render()
+			end
+		)
+	elseif tab == "Config" then
+		SettingsUI.render(list, SettingsUI.loadFromPlayer(),
+			function(key: string, value: any)
+			end
+		)
 	elseif tab == Text.ILHAS_577072 then
 		for _, def in I.List do
 			local band = Bands.ById[def.id]
@@ -643,11 +719,11 @@ render = function()
 				.. S.playerLevel
 				.. Text.SELVAGENS_492B94
 				.. band.min
-				.. "–"
+				.. "â€“"
 				.. band.max
 				.. Text.GUARDIAO_6B7FE6
 				.. band.guardian
-				.. " · "
+				.. " Â· "
 				.. def.cost
 				.. Text.OURO_028C29
 				.. Strings.reason(S.unlocked[def.id] and state.reason or state.unlockReason)
@@ -715,7 +791,7 @@ render = function()
 		end
 		for uid, cr in S.creatures do
 			local on = table.find(pick, uid)
-			row((on and "Selecionada · " or "") .. crText(cr), {
+			row((on and "Selecionada Â· " or "") .. crText(cr), {
 				{
 					on and Text.TIRAR_F409BD or Text.ESCOLHER_D7B72C,
 					function()
@@ -741,6 +817,10 @@ local tabs = {
 	Text.MISSOES_FAE2D2,
 	Text.LOJA_B9614D,
 	Text.OPCOES_4C8DF5,
+	"Equipe",
+	"Troca",
+	"Loja",
+	"Config",
 }
 local bar = mk("Frame", {
 	Visible = false,
@@ -899,7 +979,7 @@ mb.Activated:Connect(function()
 		music.Volume = muted and 0 or 0.25
 	end
 end)
--- Feras respiram e se viram devagar (animação local, só visual).
+-- Feras respiram e se viram devagar (animaÃ§Ã£o local, sÃ³ visual).
 require(script.Parent.CreatureAnimator).start()
 require(script.Parent.CompanionClient).start()
 require(script.Parent.EnvironmentArt).start()
@@ -915,7 +995,7 @@ msg:GetPropertyChangedSignal("Text"):Connect(function()
 	loading.message(msg.Text)
 	objective.Visible = not drawerOpen and msg.Text == ""
 end)
--- Clima e hora do dia mudam conforme a ilha mais próxima.
+-- Clima e hora do dia mudam conforme a ilha mais prÃ³xima.
 local cur
 task.spawn(function()
 	while true do
@@ -941,7 +1021,7 @@ task.spawn(function()
 		end
 	end
 end)
--- Tutorial guiado: cada passo some quando o objetivo é cumprido; o progresso vem dos stats salvos.
+-- Tutorial guiado: cada passo some quando o objetivo Ã© cumprido; o progresso vem dos stats salvos.
 local TUT = {
 	{
 		Text.COLETE_OURO_OU_ENCONTRE_UMA_FERA_SELVAGEM_ABRA_M_40C94E,
@@ -1047,7 +1127,7 @@ tutorial = function()
 	ptxt.Text = step[1]
 	stroke.Parent = step[2]()
 end
--- Entrada pode preceder o término de UpdateAsync/consulta de passes.
+-- Entrada pode preceder o tÃ©rmino de UpdateAsync/consulta de passes.
 task.spawn(function()
 	for _ = 1, 20 do
 		call("Get")
@@ -1073,3 +1153,5 @@ end, function()
 	panel.Visible = false
 	stroke.Parent = nil
 end)
+
+

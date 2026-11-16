@@ -1,7 +1,11 @@
 --!nonstrict
+-- Serviço de dados: gerenciamento de perfil, saves, migração, proteção contra corrupção
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local DSS = game:GetService("DataStoreService")
 local RS = game:GetService("ReplicatedStorage")
+local Http = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+
 local C = require(RS.Shared.Creatures)
 local I = require(RS.Shared.Islands)
 local M = require(RS.Shared.Missions)
@@ -12,13 +16,18 @@ local Quest = require(RS.Shared.PhoenixQuest)
 local Access = require(RS.Shared.Access)
 local Grant = require(RS.Shared.CreatureGrant)
 local CaptureRules = require(RS.Shared.CaptureRules)
+local Progression = require(RS.Shared.Progression)
+local Config = require(RS.Shared.Config)
+
 local store = DSS:GetDataStore("ArquipelagoV1")
 local D = {}
 local profiles = {}
-local VERSION = require(RS.Shared.Config).ProfileVersion
 local sessions = {}
-local Http = game:GetService("HttpService")
+local VERSION = Config.ProfileVersion
 local LEASE = 180
+local AUTOSAVE_INTERVAL = 60 -- segundos
+
+-- Deep clone para imutabilidade
 local function clone(t)
 	local out = {}
 	for k, v in t do
@@ -26,15 +35,17 @@ local function clone(t)
 	end
 	return out
 end
+
+-- Perfil padrão para novos jogadores
 local function default()
 	local result = {
 		v = VERSION,
 		gold = 100,
 		gems = 5,
 		seals = 5,
+		sealStock = {},
 		playerLevel = 1,
 		playerXp = 0,
-		sealStock = {},
 		companion = nil,
 		storyClaimed = {},
 		guardians = {},
@@ -59,35 +70,48 @@ local function default()
 		unlocked = { Alvorecer = true },
 		legacyGrandfathered = {},
 		grants = {},
-		phoenix = { glyphs = {}, sanctuaryOpen = false, attempts = 0, nextAttemptAt = 0, captured = false },
+		phoenix = { glyphs = {}, sanctuaryOpen = false, attempts = 0, nextAttemptAt = 0, captured = false, captureCount = 0 },
 		legacyEggPermits = {},
 		discovered = {},
+		prestige = 0,
+		prestigeBonus = 0,
+		offlineGold = 0,
+		offlineCreatureXp = 0,
 	}
+	-- Starter creatures
 	assert(Grant.grant(result, "brotinho", "starter", "starter:1"))
 	assert(Grant.grant(result, "folhuco", "starter", "starter:2"))
 	return result
 end
--- Registro corrompido é recusado. Nunca substituir um perfil real por padrões.
+
+-- Validação rigorosa do perfil (nunca substitui perfil real por padrão)
 function D.validate(raw)
 	if raw ~= nil then
 		local migrated, reason = Migration.run(raw)
 		assert(migrated, reason)
 		raw = migrated
 	end
+
 	local d = default()
 	if raw == nil then
 		return d
 	end
-	local seeds = d
+
 	d = clone(raw)
+
+	-- Preenche campos faltando com defaults
+	local seeds = default()
 	for key, value in seeds do
 		if d[key] == nil then
 			d[key] = value
 		end
 	end
+
+	-- Validação numérica segura
 	local function num(x, f, _mx)
 		return (typeof(x) == "number" and x == x and x >= 0 and x < math.huge) and math.floor(x) or f
 	end
+
 	d.seals = num(raw.seals, 5, 10000)
 	d.sealStock = clone(raw.sealStock or {})
 	for kind in CaptureRules.Seals do
@@ -95,6 +119,7 @@ function D.validate(raw)
 			d.sealStock[kind] = num(raw.sealStock[kind], 0, 10000)
 		end
 	end
+
 	d.gold = num(raw.gold, d.gold, 1e12)
 	d.gems = num(raw.gems, d.gems, 1e9)
 	d.wins = num(raw.wins, 0, 1e9)
@@ -104,6 +129,8 @@ function D.validate(raw)
 	d.legacyEggPermits = Migration.clone(raw.legacyEggPermits or {})
 	d.phoenix = Migration.clone(raw.phoenix or d.phoenix)
 	d.last = num(raw.last, os.time(), 1e12)
+
+	-- Criaturas: valida cada uma
 	local cr, n = {}, 0
 	for uid, c in raw.creatures do
 		if typeof(uid) == "string" and typeof(c) == "table" and C.ById[c.id] then
@@ -114,6 +141,8 @@ function D.validate(raw)
 		end
 	end
 	assert(n > 0, "CORRUPT_PROFILE")
+
+	-- Atualiza nextId baseado nos UIDs existentes
 	for uid in cr do
 		local uidNumber = tonumber(string.match(uid, "^u(%d+)$"))
 		if uidNumber then
@@ -121,6 +150,8 @@ function D.validate(raw)
 		end
 	end
 	d.creatures = cr
+
+	-- Descobertas
 	d.discovered = clone(raw.discovered or {})
 	for _, c in cr do
 		d.discovered[c.id] = true
@@ -132,6 +163,8 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Ilhas desbloqueadas
 	d.unlocked = clone(raw.unlocked or {})
 	d.unlocked.Alvorecer = true
 	if typeof(raw.unlocked) == "table" then
@@ -141,6 +174,7 @@ function D.validate(raw)
 			end
 		end
 	end
+
 	d.playerLevel = math.max(num(raw.playerLevel, 1, 100), 1)
 	d.playerXp = num(raw.playerXp, 0, 1e9)
 	d.companion = typeof(raw.companion) == "string" and cr[raw.companion] and raw.companion or nil
@@ -148,6 +182,7 @@ function D.validate(raw)
 	d.visited = clone(raw.visited or {})
 	d.materials = clone(raw.materials or {})
 	d.gatherAt = clone(raw.gatherAt or {})
+
 	for _, def in I.List do
 		if typeof(raw.guardians) == "table" and raw.guardians[def.id] == true then
 			d.guardians[def.id] = true
@@ -162,6 +197,7 @@ function D.validate(raw)
 			d.materials[def.el] = num(raw.materials[def.el], 0, 10000)
 		end
 	end
+
 	d.storyClaimed = clone(raw.storyClaimed or {})
 	if typeof(raw.storyClaimed) == "table" then
 		for id, claimed in raw.storyClaimed do
@@ -170,9 +206,11 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Santuário
 	if typeof(raw.sanctuary) == "table" then
 		d.sanctuary = clone(raw.sanctuary)
-	else -- Migração: habitats legados recebem posição própria; nenhuma criatura é removida.
+	else
 		d.sanctuary = {}
 		local slot = 0
 		for _, def in I.List do
@@ -182,6 +220,8 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Habitat: valida UIDs contra criaturas existentes
 	d.habitat = {}
 	local seen = {}
 	if typeof(raw.habitat) == "table" then
@@ -198,6 +238,8 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Garante que habitats com criaturas tenham slot no santuário
 	for id, list in d.habitat do
 		if #list > 0 and not d.sanctuary[id] then
 			for slot = 1, 9 do
@@ -208,6 +250,7 @@ function D.validate(raw)
 			end
 		end
 	end
+
 	d.stats = {}
 	d.claimed = clone(raw.claimed or {})
 	if typeof(raw.stats) == "table" then
@@ -224,12 +267,14 @@ function D.validate(raw)
 			end
 		end
 	end
+
 	d.trophies = num(raw.trophies, 0, 1e9)
 	d.tut = raw.tut == true
 	d.receipts = {}
 	d.pass = {}
 	d.dailyDay = num(raw.dailyDay, 0, 1e9)
 	d.streak = num(raw.streak, 0, 1e6)
+
 	if typeof(raw.receipts) == "table" then
 		for k, value in raw.receipts do
 			if value == true and typeof(k) == "string" then
@@ -237,6 +282,7 @@ function D.validate(raw)
 			end
 		end
 	end
+
 	d.eggs = {}
 	if typeof(raw.eggs) == "table" then
 		for _, e in raw.eggs do
@@ -252,28 +298,41 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Prestígio
+	d.prestige = num(raw.prestige, 0, 100)
+	d.prestigeBonus = typeof(raw.prestigeBonus) == "number" and raw.prestigeBonus or 0
+
 	return d
 end
--- Lease gravado atomicamente no MESMO registro legado (sem trocar a chave).
+
+-- Carrega perfil com session locking
 function D.load(p)
 	local token = Http:GenerateGUID(false)
 	local raw, ok
+
 	for attempt = 1, 3 do
 		ok, raw = pcall(function()
 			return store:UpdateAsync("P" .. p.UserId, function(old)
+				-- Rejeita perfil corrompido ou versão futura
 				if
 					old ~= nil
 					and (typeof(old) ~= "table" or typeof(old.creatures) ~= "table" or (old.v or 1) > VERSION)
 				then
 					error(Text.PERFIL_INVALIDO_OU_VERSAO_FUTURA_RECUPERACAO_MAN_C36F9F)
 				end
+
 				local lock = old and old._session
 				if lock and typeof(lock) ~= "table" then
 					error(Text.LEASE_INVALIDO_1F2C7F)
 				end
+
+				-- Verifica lease expirado
 				if lock and lock.token ~= token and (lock.expires or 0) > os.time() then
-					return nil
+					return nil -- Sessão ativa em outro servidor
 				end
+
+				-- Migração se necessário
 				local migrated
 				if old ~= nil then
 					local reason
@@ -282,30 +341,46 @@ function D.load(p)
 						error(reason)
 					end
 				end
+
 				local data = old == nil and default() or D.validate(migrated)
 				data._session = { token = token, expires = os.time() + LEASE }
 				return data
 			end)
 		end)
+
 		if ok then
 			break
 		end
 		task.wait(attempt)
 	end
+
 	if not ok or not raw then
 		p:Kick(Text.DADOS_INDISPONIVEIS_OU_SESSAO_AINDA_ATIVA_AGUARD_97BBDC)
 		return false
 	end
+
 	profiles[p] = D.validate(raw)
-	-- Uma sessão recuperada nunca retoma um encontro do processo anterior.
+
+	-- Limpa encontro de fênix de sessão anterior
 	profiles[p].phoenix.encounterId = nil
+
+	-- Calcula progresso offline
+	local now = os.time()
+	local offline = Progression.calculateOfflineProgress(profiles[p], now)
+	profiles[p].offlineGold = offline.gold
+	profiles[p].offlineCreatureXp = offline.creatureXp
+	-- Ovos chocados offline serão processados no cliente via snapshot
+
 	sessions[p] =
 		{ token = token, expires = raw._session.expires, busy = false, region = "Alvorecer", lastSafe = "Alvorecer" }
+
 	return true
 end
+
 function D.session(p)
 	return sessions[p]
 end
+
 function D.get(p)
 	local session = sessions[p]
 	if not session or session.expires <= os.time() or session.closing then
@@ -313,6 +388,8 @@ function D.get(p)
 	end
 	return profiles[p]
 end
+
+-- Snapshot para o cliente (sem dados sensíveis)
 function D.snapshot(p)
 	local d = clone(profiles[p])
 	d.receipts = nil
@@ -332,20 +409,27 @@ function D.snapshot(p)
 	end
 	local el, left = M.event(os.time())
 	d.event = { el = el, left = left }
+	d.offlineGold = d.offlineGold or 0
+	d.offlineCreatureXp = d.offlineCreatureXp or 0
 	return d
 end
+
+-- Salva perfil (atomicamente com session lock)
 function D.save(p, release)
 	local session = sessions[p]
 	local d = profiles[p]
 	if not session or not d then
 		return false
 	end
+
 	while session.busy do
 		task.wait()
 	end
+
 	if sessions[p] ~= session then
 		return false
 	end
+
 	session.busy = true
 	local payload = clone(d)
 	payload.pass = nil
@@ -353,21 +437,26 @@ function D.save(p, release)
 	for _, egg in payload.eggs do
 		egg.left = nil
 	end
+
 	local expiry = os.time() + LEASE
 	payload._session = not release and { token = session.token, expires = expiry } or nil
+
 	local ok, result = pcall(function()
 		return store:UpdateAsync("P" .. p.UserId, function(old)
 			if not old or not old._session or old._session.token ~= session.token then
-				return nil
+				return nil -- Token inválido (outra sessão salvou)
 			end
 			return payload
 		end)
 	end)
+
 	session.busy = false
+
 	if ok and result then
 		session.expires = expiry
 		return true
 	end
+
 	warn(Text.FALHA_AO_SALVAR_PERFIL_DE_B99672 .. p.Name)
 	if ok or os.time() >= session.expires then
 		session.closing = true
@@ -375,6 +464,8 @@ function D.save(p, release)
 	end
 	return false
 end
+
+-- Libera sessão (salva final)
 function D.release(p)
 	local session = sessions[p]
 	if not session then
@@ -390,11 +481,30 @@ function D.release(p)
 	profiles[p] = nil
 	sessions[p] = nil
 end
+
+-- Auto-save periódico
+task.spawn(function()
+	while true do
+		task.wait(AUTOSAVE_INTERVAL)
+		for p in profiles do
+			if sessions[p] and not sessions[p].closing then
+				D.save(p)
+			end
+		end
+	end
+end)
+
+-- BindToClose: salva todos ao fechar servidor
+game:BindToClose(function()
+	D.closeAll()
+end)
+
 function D.saveAll()
 	for p in profiles do
 		D.save(p)
 	end
 end
+
 function D.closeAll()
 	local pending = 0
 	for p in profiles do
@@ -409,4 +519,38 @@ function D.closeAll()
 		task.wait(0.1)
 	end
 end
+
+-- Aplica recompensas offline ao carregar
+function D.applyOfflineRewards(p)
+	local d = profiles[p]
+	if not d then return end
+
+	if (d.offlineGold or 0) > 0 then
+		d.gold = math.min(1e12, (d.gold or 0) + d.offlineGold)
+		d.offlineGold = 0
+	end
+
+	if (d.offlineCreatureXp or 0) > 0 then
+		-- Distribui XP entre criaturas no santuário
+		local creaturesInSanctuary = {}
+		if d.habitat then
+			for _, list in d.habitat do
+				for _, uid in list do
+					if d.creatures[uid] then
+						table.insert(creaturesInSanctuary, uid)
+					end
+				end
+			end
+		end
+
+		if #creaturesInSanctuary > 0 then
+			local xpEach = math.floor(d.offlineCreatureXp / #creaturesInSanctuary)
+			for _, uid in creaturesInSanctuary do
+				Progression.awardCreature(d.creatures[uid], xpEach)
+			end
+		end
+		d.offlineCreatureXp = 0
+	end
+end
+
 return D
