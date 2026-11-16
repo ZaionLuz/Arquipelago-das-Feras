@@ -1,9 +1,9 @@
 from pathlib import Path
 r=Path(__file__).resolve().parents[1]
 mods=[('C','Creatures'),('E','Elements'),('Designs','CreatureDesigns'),('Features','CreatureFeatures'),('Factory','ModelFactory')]
-parts=[(r/'tests/roblox-structure-stub.luau').read_text()]
+parts=[(r/'tests/roblox-structure-stub.luau').read_text(encoding='utf-8')]
 for var,name in mods:
- s=(r/f'src/shared/{name}.luau').read_text()
+ s=(r/f'src/shared/{name}.luau').read_text(encoding='utf-8')
  for old,new in [('Creatures','C'),('Elements','E'),('CreatureDesigns','Designs'),('CreatureFeatures','Features')]:s=s.replace(f'require(script.Parent.{old})',new)
  parts.append(f'local {var}=(function()\n{s}\nend)()')
 parts.append('''local total,maxParts=0,0
@@ -22,4 +22,4 @@ for _,def in C.List do
 end
 print("PASS: "..total.." modelos em stub estrutural (sem render/física); máximo "..maxParts.." partes")
 ''')
-(r/'tests/models.generated.luau').write_text('\n'.join(parts))
+(r/'tests/models.generated.luau').write_text('\n'.join(parts), encoding='utf-8')

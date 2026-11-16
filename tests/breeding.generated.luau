@@ -167,6 +167,186 @@ S.Text = {
 	FALHA_AO_SALVAR_PERFIL_DE_B99672 = "Falha ao salvar perfil de ",
 	FECHAR_7B2006 = "Fechar",
 	FENIX_A08C9E = "Fênix",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
 	FENIX_FULIGEM_64EF6D = "Fênix Fuligem",
 	FENIX_LENDARIA_NV_60_A1FE17 = "FÊNIX · LENDÁRIA · Nv. 60",
 	FERAS_EF033A = "Feras",
@@ -289,6 +469,9 @@ S.Text = {
 	RARO_851816 = "Raro",
 	RECEBER_CAPITULO_3ACD37 = "Receber capítulo",
 	RECIFE_CRISTALINO_8D7A14 = "Recife Cristalino",
+	ILHA_DE_INVERNO_8F4E2A = "Ilha de Inverno",
+	ILHA_DO_TROVAO_9E5F3B = "Ilha do Trovão",
+	ILHA_CELESTIAL_A0F1C2 = "Ilha Celestial",
 	RECOMPENSA_DIARIA_SEQUENCIA_B9C689 = "Recompensa diária (sequência ",
 	REFORCADO_A930AC = "Reforçado",
 	REGIAO_BLOQUEADA_47B5A8 = "Região bloqueada: ",
@@ -327,6 +510,9 @@ S.Text = {
 	SEU_SANTUARIO_9_POSICOES_SELECIONE_UMA_POSICAO_E_400064 = "Seu santuário • 9 posições\nSelecione uma posição e construa ou mova um habitat.",
 	SOCIAVEL_3658F4 = "Sociável",
 	SOMBRA_94B135 = "Sombra",
+	GELO_4A90D9 = "Gelo",
+	ELETRICO_FFD600 = "Elétrico",
+	LUZ_FFF9C4 = "Luz",
 	SOM_OFF_D3D9A2 = "Som OFF",
 	SOM_ON_ACD88F = "Som ON",
 	SOPRO_ANCESTRAL_8CD748 = "Sopro ancestral",
@@ -380,6 +566,9 @@ S.Text = {
 	VOLTAR_A_EXPLORACAO_8F4A4A = "Voltar à exploração",
 	VOLTE_AMANHA_E195DE = "Volte amanhã!",
 	VULCOES_E_RIOS_DE_MAGMA_300BD6 = "Vulcões e rios de magma.",
+	CITADELA_DE_GELO_E_AURORA_BOREAL_1A3B4C = "Cidadela de gelo, caverna dos cristais e aurora boreal.",
+	TORRE_DO_RELAMPAGO_E_TEMPORTE_PERPETUA_2B4D6E = "Torre do relâmpago, núcleo energético e tempestade perpétua.",
+	OBSERVATORIO_COSMICO_E_ESTRELAS_VIVAS_3C5E7F = "Observatório cósmico, jardim das estrelas e constelações vivas."
 	XP_DA_FERA_1A37A2 = " XP da fera.",
 	XP_E_5EFA95 = " XP e +",
 }
@@ -565,6 +754,97 @@ add(
 	"Dragon",
 	{ Text.FOGO_F77A3C, Text.AR_B623FF }
 )
+add("flamiris", Text.FLAMIRIS_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("carvunio", Text.CARVUNIO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("brasegato", Text.BRASEGATO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("orvalume", Text.ORVALUME_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("coralina", Text.CORALINA_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("pelaguir", Text.PELAGUIR_NAME, Text.AGUA_F11A05, 2, "Recife", "Aquatic")
+add("musgalte", Text.MUSGALTE_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("bambuja", Text.BAMBUJA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("florabelha", Text.FLORABELHA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Arthropod")
+add("marmure", Text.MARMURE_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("litorisco", Text.LITORISCO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Mineral")
+add("sementauro", Text.SEMENTAURO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("sibilobo", Text.SIBILOBO_NAME, Text.AR_B623FF, 2, "Picos", "Quadruped")
+add("cirrandor", Text.CIRRANDOR_NAME, Text.AR_B623FF, 2, "Picos", "Winged")
+add("nimboreo", Text.NIMBOREO_NAME, Text.AR_B623FF, 2, "Picos", "Draconic")
+add("velune", Text.VELUNE_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("obsidauro", Text.OBSIDAURO_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("velumosa", Text.VELUMOSA_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Winged")
+add("glaurina", Text.GLAURINA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("niveor", Text.NIVEOR_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("gelifoca", Text.GELIFOCA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Aquatic")
+add("fulgarru", Text.FULGARRU_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("ampelince", Text.AMPELINCE_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("trovissideo", Text.TROVISSIDEO_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Arthropod")
+add("aurifita", Text.AURIFITA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("lunarru", Text.LUNARRU_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("candeira", Text.CANDEIRA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Arthropod")
+add("ferrunila", Text.FERRUNILA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Quadruped")
+add("fiaranha", Text.FIARANHA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Arthropod")
+add("metafalcao", Text.METAFALCAO_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Winged")
+add("cindrel", Text.CINDREL_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Mineral")
+add("emberkit", Text.EMBERKIT_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("sparkpup", Text.SPARKPUP_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("flamecub", Text.FLAMECUB_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("coalcrawler", Text.COALCRAWLER_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Arthropod")
+add("aquasprite", Text.AQUASPRITE_NAME, Text.AGUA_F11A05, 1, "Recife", "Aquatic")
+add("droplet", Text.DROPLET_NAME, Text.AGUA_F11A05, 1, "Recife", "Mineral")
+add("finling", Text.FINLING_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("tidepup", Text.TIDEPUP_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("coralkit", Text.CORALKIT_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("leaflet", Text.LEAFLET_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Vegetal")
+add("seedling", Text.SEEDLING_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Mineral")
+add("sprou", Text.SPROU_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("vinecub", Text.VINECUB_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("petalpaw", Text.PETALPAW_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("pebblin", Text.PEBBLIN_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("rockling", Text.ROCKLING_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("sandpup", Text.SANDPUP_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("dunecub", Text.DUNECUB_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("geodette", Text.GEODETTE_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Arthropod")
+add("zephyr", Text.ZEPHYR_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("cloudpuff", Text.CLOUDPUFF_NAME, Text.AR_B623FF, 1, "Picos", "Mineral")
+add("breezekit", Text.BREEZEKIT_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("galehatch", Text.GALEHATCH_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("windling", Text.WINDLING_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("shade", Text.SHADE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Spectral")
+add("shadowmite", Text.SHADOWMITE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Mineral")
+add("gloomkit", Text.GLOOMKIT_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("duskpup", Text.DUSKPUP_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("nightmoth", Text.NIGHTMOTH_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Arthropod")
+add("frostbit", Text.FROSTBIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("icecrystal", Text.ICECRYSTAL_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("snowkit", Text.SNOWKIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("glaciercub", Text.GLACIERCUB_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("frostling", Text.FROSTLING_NAME, Text.GELO_4A90D9, 1, "Dunas", "Winged")
+add("voltkit", Text.VOLTKIT_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("sparkling", Text.SPARKLING_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Mineral")
+add("jolteon", Text.JOLTEON_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("zapcub", Text.ZAPCUB_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("buzzbug", Text.BUZZBUG_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Arthropod")
+add("lumikit", Text.LUMIKIT_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("gloworb", Text.GLOWORB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Mineral")
+add("solarpup", Text.SOLARPUP_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("raycub", Text.RAYCUB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("prismfly", Text.PRISMFLY_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Arthropod")
+add("ironkit", Text.IRONKIT_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("scraplet", Text.SCRAPLET_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Mineral")
+add("boltpup", Text.BOLTPUP_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("gearcub", Text.GEARCUB_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("rivetbug", Text.RIVETBUG_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Arthropod")
+add("gemling", Text.GEMLING_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("shardlet", Text.SHARDLET_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("crystalkit", Text.CRYSTALKIT_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("prismpup", Text.PRISMPUP_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("facetbug", Text.FACETBUG_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Arthropod")
+add("runeling", Text.RUNELING_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Spectral")
+add("mysticorb", Text.MYSTICORB_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Mineral")
+add("arcankit", Text.ARCANKIT_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("voidpup", Text.VOIDPUP_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("sigilbug", Text.SIGILBUG_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Arthropod")
+
 -- Fênix é uma espécie adicional; Fênix Fuligem e seus IDs permanecem intactos.
 add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
 C.ById.fenix.acquisition = "special"

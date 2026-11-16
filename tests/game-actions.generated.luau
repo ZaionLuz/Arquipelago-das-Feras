@@ -211,6 +211,186 @@ S.Text = {
 	FALHA_AO_SALVAR_PERFIL_DE_B99672 = "Falha ao salvar perfil de ",
 	FECHAR_7B2006 = "Fechar",
 	FENIX_A08C9E = "Fênix",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
 	FENIX_FULIGEM_64EF6D = "Fênix Fuligem",
 	FENIX_LENDARIA_NV_60_A1FE17 = "FÊNIX · LENDÁRIA · Nv. 60",
 	FERAS_EF033A = "Feras",
@@ -333,6 +513,9 @@ S.Text = {
 	RARO_851816 = "Raro",
 	RECEBER_CAPITULO_3ACD37 = "Receber capítulo",
 	RECIFE_CRISTALINO_8D7A14 = "Recife Cristalino",
+	ILHA_DE_INVERNO_8F4E2A = "Ilha de Inverno",
+	ILHA_DO_TROVAO_9E5F3B = "Ilha do Trovão",
+	ILHA_CELESTIAL_A0F1C2 = "Ilha Celestial",
 	RECOMPENSA_DIARIA_SEQUENCIA_B9C689 = "Recompensa diária (sequência ",
 	REFORCADO_A930AC = "Reforçado",
 	REGIAO_BLOQUEADA_47B5A8 = "Região bloqueada: ",
@@ -371,6 +554,9 @@ S.Text = {
 	SEU_SANTUARIO_9_POSICOES_SELECIONE_UMA_POSICAO_E_400064 = "Seu santuário • 9 posições\nSelecione uma posição e construa ou mova um habitat.",
 	SOCIAVEL_3658F4 = "Sociável",
 	SOMBRA_94B135 = "Sombra",
+	GELO_4A90D9 = "Gelo",
+	ELETRICO_FFD600 = "Elétrico",
+	LUZ_FFF9C4 = "Luz",
 	SOM_OFF_D3D9A2 = "Som OFF",
 	SOM_ON_ACD88F = "Som ON",
 	SOPRO_ANCESTRAL_8CD748 = "Sopro ancestral",
@@ -424,6 +610,9 @@ S.Text = {
 	VOLTAR_A_EXPLORACAO_8F4A4A = "Voltar à exploração",
 	VOLTE_AMANHA_E195DE = "Volte amanhã!",
 	VULCOES_E_RIOS_DE_MAGMA_300BD6 = "Vulcões e rios de magma.",
+	CITADELA_DE_GELO_E_AURORA_BOREAL_1A3B4C = "Cidadela de gelo, caverna dos cristais e aurora boreal.",
+	TORRE_DO_RELAMPAGO_E_TEMPORTE_PERPETUA_2B4D6E = "Torre do relâmpago, núcleo energético e tempestade perpétua.",
+	OBSERVATORIO_COSMICO_E_ESTRELAS_VIVAS_3C5E7F = "Observatório cósmico, jardim das estrelas e constelações vivas."
 	XP_DA_FERA_1A37A2 = " XP da fera.",
 	XP_E_5EFA95 = " XP e +",
 }
@@ -609,6 +798,97 @@ add(
 	"Dragon",
 	{ Text.FOGO_F77A3C, Text.AR_B623FF }
 )
+add("flamiris", Text.FLAMIRIS_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("carvunio", Text.CARVUNIO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("brasegato", Text.BRASEGATO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("orvalume", Text.ORVALUME_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("coralina", Text.CORALINA_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("pelaguir", Text.PELAGUIR_NAME, Text.AGUA_F11A05, 2, "Recife", "Aquatic")
+add("musgalte", Text.MUSGALTE_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("bambuja", Text.BAMBUJA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("florabelha", Text.FLORABELHA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Arthropod")
+add("marmure", Text.MARMURE_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("litorisco", Text.LITORISCO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Mineral")
+add("sementauro", Text.SEMENTAURO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("sibilobo", Text.SIBILOBO_NAME, Text.AR_B623FF, 2, "Picos", "Quadruped")
+add("cirrandor", Text.CIRRANDOR_NAME, Text.AR_B623FF, 2, "Picos", "Winged")
+add("nimboreo", Text.NIMBOREO_NAME, Text.AR_B623FF, 2, "Picos", "Draconic")
+add("velune", Text.VELUNE_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("obsidauro", Text.OBSIDAURO_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("velumosa", Text.VELUMOSA_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Winged")
+add("glaurina", Text.GLAURINA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("niveor", Text.NIVEOR_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("gelifoca", Text.GELIFOCA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Aquatic")
+add("fulgarru", Text.FULGARRU_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("ampelince", Text.AMPELINCE_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("trovissideo", Text.TROVISSIDEO_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Arthropod")
+add("aurifita", Text.AURIFITA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("lunarru", Text.LUNARRU_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("candeira", Text.CANDEIRA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Arthropod")
+add("ferrunila", Text.FERRUNILA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Quadruped")
+add("fiaranha", Text.FIARANHA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Arthropod")
+add("metafalcao", Text.METAFALCAO_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Winged")
+add("cindrel", Text.CINDREL_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Mineral")
+add("emberkit", Text.EMBERKIT_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("sparkpup", Text.SPARKPUP_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("flamecub", Text.FLAMECUB_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("coalcrawler", Text.COALCRAWLER_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Arthropod")
+add("aquasprite", Text.AQUASPRITE_NAME, Text.AGUA_F11A05, 1, "Recife", "Aquatic")
+add("droplet", Text.DROPLET_NAME, Text.AGUA_F11A05, 1, "Recife", "Mineral")
+add("finling", Text.FINLING_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("tidepup", Text.TIDEPUP_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("coralkit", Text.CORALKIT_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("leaflet", Text.LEAFLET_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Vegetal")
+add("seedling", Text.SEEDLING_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Mineral")
+add("sprou", Text.SPROU_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("vinecub", Text.VINECUB_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("petalpaw", Text.PETALPAW_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("pebblin", Text.PEBBLIN_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("rockling", Text.ROCKLING_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("sandpup", Text.SANDPUP_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("dunecub", Text.DUNECUB_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("geodette", Text.GEODETTE_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Arthropod")
+add("zephyr", Text.ZEPHYR_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("cloudpuff", Text.CLOUDPUFF_NAME, Text.AR_B623FF, 1, "Picos", "Mineral")
+add("breezekit", Text.BREEZEKIT_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("galehatch", Text.GALEHATCH_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("windling", Text.WINDLING_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("shade", Text.SHADE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Spectral")
+add("shadowmite", Text.SHADOWMITE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Mineral")
+add("gloomkit", Text.GLOOMKIT_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("duskpup", Text.DUSKPUP_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("nightmoth", Text.NIGHTMOTH_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Arthropod")
+add("frostbit", Text.FROSTBIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("icecrystal", Text.ICECRYSTAL_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("snowkit", Text.SNOWKIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("glaciercub", Text.GLACIERCUB_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("frostling", Text.FROSTLING_NAME, Text.GELO_4A90D9, 1, "Dunas", "Winged")
+add("voltkit", Text.VOLTKIT_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("sparkling", Text.SPARKLING_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Mineral")
+add("jolteon", Text.JOLTEON_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("zapcub", Text.ZAPCUB_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("buzzbug", Text.BUZZBUG_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Arthropod")
+add("lumikit", Text.LUMIKIT_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("gloworb", Text.GLOWORB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Mineral")
+add("solarpup", Text.SOLARPUP_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("raycub", Text.RAYCUB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("prismfly", Text.PRISMFLY_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Arthropod")
+add("ironkit", Text.IRONKIT_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("scraplet", Text.SCRAPLET_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Mineral")
+add("boltpup", Text.BOLTPUP_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("gearcub", Text.GEARCUB_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("rivetbug", Text.RIVETBUG_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Arthropod")
+add("gemling", Text.GEMLING_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("shardlet", Text.SHARDLET_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("crystalkit", Text.CRYSTALKIT_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("prismpup", Text.PRISMPUP_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("facetbug", Text.FACETBUG_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Arthropod")
+add("runeling", Text.RUNELING_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Spectral")
+add("mysticorb", Text.MYSTICORB_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Mineral")
+add("arcankit", Text.ARCANKIT_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("voidpup", Text.VOIDPUP_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("sigilbug", Text.SIGILBUG_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Arthropod")
+
 -- Fênix é uma espécie adicional; Fênix Fuligem e seus IDs permanecem intactos.
 add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
 C.ById.fenix.acquisition = "special"
@@ -623,22 +903,134 @@ return C
 end)()
 local M_LevelBands=(function()
 --!strict
-local L = { Order = { "Alvorecer", "Brasa", "Recife", "Floresta", "Dunas", "Picos", "Pantano" }, ById = {} }
+-- Bandas de nível por ilha (10 ilhas, 12 capítulos)
+-- Cada banda define: nível mínimo/máximo, guardião, custo de desbloqueio
+
+local L = {
+	Order = { "Alvorecer", "Brasa", "Recife", "Floresta", "Dunas", "Picos", "Pantano", "Inverno", "Trovao", "Celestial" },
+	ById = {}
+}
+
+-- Configuração por ilha: minLevel, maxLevel, guardianLevel, unlockCost, chapter
+local BAND_DATA = {
+	Alvorecer  = { min = 1,   max = 9,   guardian = 11, cost = 0,      chapter = 1,  name = "Capítulo 1: O Despertar" },
+	Brasa      = { min = 10,  max = 17,  guardian = 19, cost = 1440,   chapter = 2,  name = "Capítulo 2: Brasas Eternas" },
+	Recife     = { min = 18,  max = 25,  guardian = 27, cost = 3384,   chapter = 3,  name = "Capítulo 3: Marés de Cristal" },
+	Floresta   = { min = 26,  max = 33,  guardian = 35, cost = 5112,   chapter = 4,  name = "Capítulo 4: Sussurros da Floresta" },
+	Dunas      = { min = 34,  max = 41,  guardian = 43, cost = 6840,   chapter = 5,  name = "Capítulo 5: Ruínas da Areia" },
+	Picos      = { min = 42,  max = 49,  guardian = 51, cost = 8568,   chapter = 6,  name = "Capítulo 6: Ventos Celestes" },
+	Pantano    = { min = 50,  max = 57,  guardian = 59, cost = 10296,  chapter = 7,  name = "Capítulo 7: Sombras do Pântano" },
+	Inverno    = { min = 58,  max = 67,  guardian = 69, cost = 15000,  chapter = 8,  name = "Capítulo 8: Gelo Eterno" },
+	Trovao     = { min = 68,  max = 77,  guardian = 79, cost = 22000,  chapter = 9,  name = "Capítulo 9: Tempestade Perpétua" },
+	Celestial  = { min = 78,  max = 89,  guardian = 91, cost = 35000,  chapter = 10, name = "Capítulo 10: Observatório Cósmico" },
+}
+
+-- Ilhas pós-jogo (prestígio/lendárias) - capítulos 11-12
+local POSTGAME_BANDS = {
+	Prestigio  = { min = 90,  max = 100, guardian = 105, cost = 50000, chapter = 11, name = "Capítulo 11: Caminho do Prestígio" },
+	Lendarias  = { min = 100, max = 200, guardian = 210, cost = 100000, chapter = 12, name = "Capítulo 12: Ascensão Lendária" },
+}
+
 for index, id in L.Order do
-	local minimum = ({ 1, 10, 18, 26, 34, 42, 50 })[index]
-	local maximum = ({ 9, 17, 25, 33, 41, 49, 57 })[index]
+	local data = BAND_DATA[id]
+	local previous = L.Order[index - 1]
+
 	L.ById[id] = {
 		id = id,
 		index = index,
-		min = minimum,
-		max = maximum,
-		guardian = maximum + 2,
-		previous = L.Order[index - 1],
-		cost = ({ 0, 1440, 3384, 5112, 6840, 8568, 10296 })[index],
+		min = data.min,
+		max = data.max,
+		guardian = data.guardian,
+		previous = previous,
+		cost = data.cost,
+		chapter = data.chapter,
+		chapterName = data.name,
 	}
 end
-return L
 
+-- Adiciona bandas de pós-jogo
+L.ById.Prestigio = {
+	id = "Prestigio",
+	index = 11,
+	min = POSTGAME_BANDS.Prestigio.min,
+	max = POSTGAME_BANDS.Prestigio.max,
+	guardian = POSTGAME_BANDS.Prestigio.guardian,
+	previous = "Celestial",
+	cost = POSTGAME_BANDS.Prestigio.cost,
+	chapter = POSTGAME_BANDS.Prestigio.chapter,
+	chapterName = POSTGAME_BANDS.Prestigio.name,
+	isPostgame = true,
+}
+
+L.ById.Lendarias = {
+	id = "Lendarias",
+	index = 12,
+	min = POSTGAME_BANDS.Lendarias.min,
+	max = POSTGAME_BANDS.Lendarias.max,
+	guardian = POSTGAME_BANDS.Lendarias.guardian,
+	previous = "Prestigio",
+	cost = POSTGAME_BANDS.Lendarias.cost,
+	chapter = POSTGAME_BANDS.Lendarias.chapter,
+	chapterName = POSTGAME_BANDS.Lendarias.name,
+	isPostgame = true,
+}
+
+-- Retorna a banda para um nível de jogador
+function L.bandForLevel(level: number)
+	for _, id in L.Order do
+		local b = L.ById[id]
+		if level >= b.min and level <= b.max then
+			return b
+		end
+	end
+	-- Pós-jogo
+	if level >= L.ById.Prestigio.min and level <= L.ById.Prestigio.max then
+		return L.ById.Prestigio
+	end
+	if level >= L.ById.Lendarias.min then
+		return L.ById.Lendarias
+	end
+	return L.ById.Alvorecer
+end
+
+-- Próxima banda desbloqueável
+function L.nextUnlocked(profile)
+	for _, id in L.Order do
+		if not (profile.unlocked and profile.unlocked[id]) then
+			return L.ById[id]
+		end
+	end
+	if profile.prestige and profile.prestige > 0 and not profile.unlocked.Prestigio then
+		return L.ById.Prestigio
+	end
+	return nil
+end
+
+-- Verifica se uma banda está disponível para desbloqueio
+function L.canUnlock(profile, bandId: string)
+	local band = L.ById[bandId]
+	if not band then return false, "UNKNOWN_BAND" end
+
+	if profile.unlocked and profile.unlocked[bandId] then
+		return false, "ALREADY_UNLOCKED"
+	end
+
+	if band.previous and not (profile.unlocked and profile.unlocked[band.previous]) then
+		return false, "PREVIOUS_LOCKED"
+	end
+
+	if (profile.playerLevel or 1) < band.min then
+		return false, "LEVEL_TOO_LOW"
+	end
+
+	if (profile.gold or 0) < band.cost then
+		return false, "NOT_ENOUGH_GOLD"
+	end
+
+	return true, "OK"
+end
+
+return L
 end)()
 local M_Islands=(function()
 --!nonstrict
@@ -1307,89 +1699,383 @@ return S
 end)()
 local M_Progression=(function()
 --!strict
+-- Progressão de nível (1-100), curvas de XP, growth de stats e prestígio para lendários
 local Bands = M_LevelBands
-local P = { MaxLevel = 100, EncountersPerHour = 50 }
-local checkpoints = {
-	{ level = 1, hours = 0 },
-	{ level = 10, hours = 0.75 },
-	{ level = 18, hours = 2 },
-	{ level = 26, hours = 4 },
-	{ level = 34, hours = 7 },
-	{ level = 42, hours = 11 },
-	{ level = 50, hours = 16 },
+local Creatures = M_Creatures
+
+local P = {
+	MaxLevel = 100,
+	PrestigeMaxLevel = 100, -- Prestígio vai até 100 (nível efetivo 200)
+	EncountersPerHour = 50,
+	CreatureXpPerLevel = 15, -- XP base por nível de criatura
 }
+
+-- Curva suave de XP para jogador: logarítmica com escalonamento por faixa
+-- Fórmula: baseXP * (level ^ 1.35) com ajustes por checkpoints
+local CHECKPOINTS = {
+	{ level = 1,   baseXp = 60,   mult = 1.00 },
+	{ level = 10,  baseXp = 60,   mult = 1.00 },
+	{ level = 18,  baseXp = 70,   mult = 1.10 },
+	{ level = 26,  baseXp = 80,   mult = 1.20 },
+	{ level = 34,  baseXp = 90,   mult = 1.30 },
+	{ level = 42,  baseXp = 100,  mult = 1.40 },
+	{ level = 50,  baseXp = 110,  mult = 1.50 },
+	{ level = 60,  baseXp = 125,  mult = 1.65 },
+	{ level = 70,  baseXp = 140,  mult = 1.80 },
+	{ level = 80,  baseXp = 160,  mult = 2.00 },
+	{ level = 90,  baseXp = 185,  mult = 2.25 },
+	{ level = 100, baseXp = 220,  mult = 2.50 },
+}
+
+-- XP necessário para próximo nível do jogador
 function P.playerCost(level: number): number
-	for index = 1, #checkpoints - 1 do
-		local a, b = checkpoints[index], checkpoints[index + 1]
-		if level >= a.level and level < b.level then
-			return math.floor((b.hours - a.hours) / (b.level - a.level) * P.EncountersPerHour * (60 + index * 10) + 0.5)
+	if level >= P.MaxLevel then
+		return 1e9 -- Máximo atingido
+	end
+
+	-- Encontrar faixa
+	local idx = 1
+	for i = 1, #CHECKPOINTS - 1 do
+		if level >= CHECKPOINTS[i].level and level < CHECKPOINTS[i + 1].level then
+			idx = i
+			break
 		end
 	end
-	return 2200 + (level - 50) * 75
+
+	local a = CHECKPOINTS[idx]
+	local b = CHECKPOINTS[idx + 1]
+	local progress = (level - a.level) / (b.level - a.level)
+	local baseXp = a.baseXp + (b.baseXp - a.baseXp) * progress
+	local mult = a.mult + (b.mult - a.mult) * progress
+
+	-- Fórmula: baseXP * level^1.35 * mult
+	return math.floor(baseXp * (level ^ 1.35) * mult + 0.5)
 end
+
+-- XP total acumulado até um nível (para cálculos de progresso)
+function P.totalPlayerXpTo(level: number): number
+	local total = 0
+	for l = 1, level - 1 do
+		total += P.playerCost(l)
+	end
+	return total
+end
+
+-- Recompensas de encontro baseadas na região, nível do inimigo, raridade e nível da equipe
 function P.rewards(region: string, foeLevel: number, rarity: number, teamLevel: number)
-	local band = assert(Bands.ById[region], "Região de recompensa desconhecida")
+	local band = assert(Bands.ById[region], "Região de recompensa desconhecida: " .. region)
 	local gap = teamLevel - foeLevel
+
+	-- Penalidade de nível: se muito forte, ganha menos
 	local penalty = gap >= 15 and 0.1 or gap >= 8 and 0.5 or 1
+
+	local rarityMult = 1 + (rarity - 1) * 0.15
+	local bandMult = 1 + band.index * 0.08
+
 	return {
-		gold = 30 * band.index ^ 2 + foeLevel * 2 + rarity * 3,
-		xp = math.max(1, math.floor((60 + band.index * 10 + (rarity - 1) * 5) * penalty)),
-		creatureXp = math.max(1, math.floor((45 + band.index * 8 + (rarity - 1) * 5) * penalty)),
+		gold = math.floor(25 * bandMult * rarityMult + foeLevel * 1.5 + rarity * 2),
+		xp = math.max(1, math.floor((55 + band.index * 8 + (rarity - 1) * 4) * penalty * bandMult * rarityMult)),
+		creatureXp = math.max(1, math.floor((40 + band.index * 6 + (rarity - 1) * 3) * penalty * bandMult * rarityMult)),
 		penalty = penalty,
 	}
 end
+
+-- XP necessário para próximo nível da criatura (curva similar mas mais suave)
 function P.creatureCost(level: number): number
-	return 35 + level * 15
+	if level >= P.MaxLevel then
+		return 1e9
+	end
+	-- 35 + level * 15 + level^1.2 * 2
+	return math.floor(35 + level * 15 + (level ^ 1.2) * 2 + 0.5)
 end
+
+-- XP total acumulado da criatura até um nível
+function P.totalCreatureXpTo(level: number): number
+	local total = 0
+	for l = 1, level - 1 do
+		total += P.creatureCost(l)
+	end
+	return total
+end
+
+-- Growth de stats por nível (base stats * growth factor ^ level)
+-- HP: base 30 + rar * 25, growth 1.08 per level
+-- ATK: base 6 + rar * 5, growth 1.06 per level
+function P.statGrowth(base: number, growth: number, level: number): number
+	return math.floor(base * (growth ^ (level - 1)) + 0.5)
+end
+
+-- Calcula stats finais da criatura no nível atual
+function P.computeStats(creatureData: { id: string, lv: number, rarity: number? })
+	local species = Creatures.ById[creatureData.id]
+	if not species then
+		return { hp = 30, atk = 6 }
+	end
+
+	local rar = creatureData.rarity or species.rar or 1
+	local baseHp = 30 + rar * 25
+	local baseAtk = 6 + rar * 5
+
+	return {
+		hp = P.statGrowth(baseHp, 1.08, creatureData.lv),
+		atk = P.statGrowth(baseAtk, 1.06, creatureData.lv),
+		gpm = rar * rar * 2 + 2, -- gold por minuto no santuário
+	}
+end
+
+-- Adiciona XP ao jogador e processa level up
 function P.award(data: any, amount: number)
 	data.playerXp = math.min(1e9, (data.playerXp or 0) + math.max(0, math.floor(amount)))
 	data.playerLevel = data.playerLevel or 1
+
 	while data.playerLevel < P.MaxLevel and data.playerXp >= P.playerCost(data.playerLevel) do
 		data.playerXp -= P.playerCost(data.playerLevel)
 		data.playerLevel += 1
 	end
+
+	-- Prestígio (pós-100): reseta nível para 1 mas ganha prestígio
+	if data.playerLevel >= P.MaxLevel and data.playerXp >= P.playerCost(P.MaxLevel) then
+		data.playerLevel = P.MaxLevel
+		data.playerXp = P.playerCost(P.MaxLevel) -- Cap no máximo
+	end
 end
+
+-- Adiciona XP à criatura e processa level up
 function P.awardCreature(creature: any, amount: number)
 	creature.xp = math.min(1e9, (creature.xp or 0) + math.max(0, math.floor(amount)))
+	creature.lv = creature.lv or 1
+
 	while creature.lv < P.MaxLevel and creature.xp >= P.creatureCost(creature.lv) do
 		creature.xp -= P.creatureCost(creature.lv)
 		creature.lv += 1
 	end
 end
-return P
 
+-- Prestígio para lendárias: após capturar uma lendária e chegar ao nível 100,
+-- pode resetar para ganhar "Prestígio" (nível efetivo 101-200)
+function P.canPrestige(data: any): boolean
+	if data.playerLevel < P.MaxLevel then
+		return false
+	end
+	-- Verifica se tem pelo menos uma lendária capturada
+	if not data.creatures then return false end
+	for _, c in data.creatures do
+		local sp = Creatures.ById[c.id]
+		if sp and sp.rar == 4 then
+			return true
+		end
+	end
+	return false
+end
+
+function P.applyPrestige(data: any)
+	if not P.canPrestige(data) then return false end
+
+	data.prestige = (data.prestige or 0) + 1
+	data.playerLevel = 1
+	data.playerXp = 0
+
+	-- Bonus de prestígio: +5% stats em todas as criaturas
+	data.prestigeBonus = (data.prestigeBonus or 0) + 0.05
+
+	return true
+end
+
+-- Calcula nível efetivo (incluindo prestígio)
+function P.effectiveLevel(data: any): number
+	return (data.playerLevel or 1) + (data.prestige or 0) * P.MaxLevel
+end
+
+-- Offline progress: calcula produção de santuário e chocagem de ovos
+function P.calculateOfflineProgress(data: any, now: number): { gold: number, creatureXp: number, hatchedEggs: { any } }
+	local last = data.last or now
+	local hoursOffline = math.max(0, (now - last) / 3600)
+
+	if hoursOffline < 0.01 then -- Menos de 36 segundos
+		return { gold = 0, creatureXp = 0, hatchedEggs = {} }
+	end
+
+	-- Cap em 24 horas de progresso offline
+	hoursOffline = math.min(hoursOffline, 24)
+
+	-- Ouro do santuário
+	local totalGpm = 0
+	if data.sanctuary then
+		for islandId, entry in data.sanctuary do
+			if data.habitat and data.habitat[islandId] then
+				for _, uid in data.habitat[islandId] do
+					local creature = data.creatures[uid]
+					if creature then
+						local stats = P.computeStats(creature)
+						totalGpm += stats.gpm
+					end
+				end
+			end
+		end
+	end
+
+	local offlineGold = math.floor(totalGpm * hoursOffline * 60)
+
+	-- XP de criatura distribuído entre as do santuário
+	local totalCreatureXp = math.floor(offlineGold * 0.3) -- 30% do ouro em XP
+
+	-- Chocagem de ovos
+	local hatchedEggs = {}
+	if data.eggs then
+		local remainingEggs = {}
+		for _, egg in data.eggs do
+			if egg.ready <= now then
+				table.insert(hatchedEggs, egg)
+			else
+				table.insert(remainingEggs, egg)
+			end
+		end
+		-- Nota: a remoção real dos ovos chocados é feita no DataService
+	end
+
+	return {
+		gold = offlineGold,
+		creatureXp = totalCreatureXp,
+		hatchedEggs = hatchedEggs,
+	}
+end
+
+-- Calcula tempo até próximo nível (em encontros)
+function P.encountersToNextLevel(data: any): number
+	local currentCost = P.playerCost(data.playerLevel or 1)
+	local remaining = currentCost - (data.playerXp or 0)
+	if remaining <= 0 then return 0 end
+
+	-- XP médio por encontro na região atual
+	local avgXp = 60 -- Estimativa conservadora
+	return math.ceil(remaining / avgXp)
+end
+
+return P
 end)()
 local M_Elements=(function()
---!nonstrict
--- Seis elementos. Strong[atacante] = alvos que sofrem dano dobrado.
-local E = { List = { "Fogo", "Água", "Natureza", "Terra", "Ar", "Sombra" } }
+--!strict
+-- 12 Elementos. Strong[atacante] = alvos que sofrem dano dobrado.
+-- Weak[atacante] = alvos que sofrem metade do dano (defesa forte contra atacante)
+-- Immune[atacante] = alvos que não sofrem dano (imunidade total)
+local E = {
+	List = {
+		"Fogo", "Água", "Natureza", "Terra", "Ar", "Sombra",
+		"Gelo", "Elétrico", "Luz", "Metal", "Cristal", "Arcano"
+	},
+}
+
+-- Vantagens ofensivas (dano 2x)
 E.Strong = {
-	Fogo = { "Natureza" },
-	["Água"] = { "Fogo", "Terra" },
-	Natureza = { "Água", "Terra" },
-	Terra = { "Fogo", "Ar" },
-	Ar = { "Natureza" },
-	Sombra = { "Ar", "Água" },
+	Fogo     = { "Natureza", "Gelo", "Metal", "Cristal" },
+	["Água"] = { "Fogo", "Terra", "Metal" },
+	Natureza = { "Água", "Terra", "Gelo" },
+	Terra    = { "Fogo", "Elétrico", "Metal", "Arcano" },
+	Ar       = { "Natureza", "Luz", "Arcano" },
+	Sombra   = { "Ar", "Água", "Luz", "Cristal" },
+	Gelo     = { "Natureza", "Terra", "Ar", "Dragao" }, -- Dragao não existe, remover
+	Elétrico = { "Água", "Ar", "Metal", "Cristal" },
+	Luz      = { "Sombra", "Arcano", "Gelo" },
+	Metal    = { "Gelo", "Natureza", "Fada" }, -- Fada não existe
+	Cristal  = { "Fogo", "Terra", "Ar", "Sombra" },
+	Arcano   = { "Sombra", "Luz", "Metal" },
 }
+
+-- Resistências (dano 0.5x) - calculado inversamente do Strong
+E.Resist = {}
+for att, defs in E.Strong do
+	for _, def in defs do
+		E.Resist[def] = E.Resist[def] or {}
+		table.insert(E.Resist[def], att)
+	end
+end
+
+-- Imunidades (dano 0x)
+E.Immune = {
+	Elétrico = { "Terra" },
+	Terra    = { "Elétrico" }, -- Terra é imune a Elétrico (já coberto acima)
+	Normal   = { "Sombra" },   -- Se houver tipo Normal
+	Voador   = { "Terra" },    -- Se houver tipo Voador
+	-- Adicionar imunidades customizadas se necessário
+}
+
 E.Color = {
-	Fogo = Color3.fromRGB(255, 110, 50),
-	["Água"] = Color3.fromRGB(70, 160, 255),
-	Natureza = Color3.fromRGB(110, 210, 80),
-	Terra = Color3.fromRGB(190, 140, 80),
-	Ar = Color3.fromRGB(200, 230, 255),
-	Sombra = Color3.fromRGB(140, 80, 200),
+	Fogo      = Color3.fromRGB(255, 110, 50),
+	["Água"]  = Color3.fromRGB(70, 160, 255),
+	Natureza  = Color3.fromRGB(110, 210, 80),
+	Terra     = Color3.fromRGB(190, 140, 80),
+	Ar        = Color3.fromRGB(200, 230, 255),
+	Sombra    = Color3.fromRGB(140, 80, 200),
+	Gelo      = Color3.fromRGB(125, 210, 255),
+	Elétrico  = Color3.fromRGB(255, 200, 20),
+	Luz       = Color3.fromRGB(255, 250, 150),
+	Metal     = Color3.fromRGB(176, 190, 197),
+	Cristal   = Color3.fromRGB(216, 180, 254),
+	Arcano    = Color3.fromRGB(196, 181, 253),
 }
-function E.mult(att, def)
+
+-- Calcular multiplicador de dano
+-- Retorna: 2 (super effective), 1 (normal), 0.5 (not very effective), 0 (no effect)
+function E.mult(att: string, def: string): number
+	-- Imunidade tem prioridade máxima
+	if E.Immune[att] and table.find(E.Immune[att], def) then
+		return 0
+	end
+	if E.Immune[def] and table.find(E.Immune[def], att) then
+		return 0
+	end
+
+	-- Super efetivo
 	if table.find(E.Strong[att] or {}, def) then
 		return 2
 	end
-	if table.find(E.Strong[def] or {}, att) then
+
+	-- Não muito efetivo
+	if table.find(E.Resist[att] or {}, def) then
 		return 0.5
 	end
+
 	return 1
 end
-return E
 
+-- Obter string de eficácia para UI
+function E.effectivenessText(mult: number): string
+	if mult >= 2 then return "Super efetivo!" end
+	if mult <= 0.5 and mult > 0 then return "Não muito efetivo..." end
+	if mult == 0 then return "Não tem efeito..." end
+	return ""
+end
+
+-- Obter cor da eficácia
+function E.effectivenessColor(mult: number): Color3
+	if mult >= 2 then return Color3.fromRGB(255, 100, 100) end
+	if mult <= 0.5 and mult > 0 then return Color3.fromRGB(255, 200, 100) end
+	if mult == 0 then return Color3.fromRGB(150, 150, 150) end
+	return Color3.fromRGB(255, 255, 255)
+end
+
+-- Verificar se elemento existe
+function E.exists(element: string): boolean
+	return table.find(E.List, element) ~= nil
+end
+
+-- Obter todos os elementos efetivos contra um tipo
+function E.getSuperEffectiveAgainst(def: string): { string }
+	local result = {}
+	for att, defs in E.Strong do
+		if table.find(defs, def) then
+			table.insert(result, att)
+		end
+	end
+	return result
+end
+
+-- Obter todos os elementos que resistem a um tipo
+function E.getResistsAgainst(att: string): { string }
+	return E.Resist[att] or {}
+end
+
+return E
 end)()
 local M_Skills=(function()
 --!strict
@@ -1438,63 +2124,973 @@ end
 return M
 
 end)()
+local M_Moves=(function()
+--!strict
+-- Moves.luau - All moves: power, accuracy, PP, effects, animation refs
+-- Pure data module, no services or instances
+
+local Moves = {}
+
+export type MoveEffect = {
+	type: "status" | "stat" | "heal" | "drain" | "multiHit" | "recharge" | "flinch" | "critBoost" | "protect",
+	status: string?,          -- For status effects: "burn", "freeze", "paralyze", "poison", "sleep", "confuse", "fear", "curse", "bless"
+	duration: number?,        -- Duration in turns
+	chance: number?,          -- 0-1 probability
+	stat: string?,            -- For stat changes: "atk", "def", "speed", "spAtk", "spDef", "accuracy", "evasion"
+	stages: number?,          -- Number of stages (-6 to +6)
+	amount: number?,          -- For heal/drain: ratio of max HP
+	drainRatio: number?,      -- For drain moves: ratio of damage healed
+	turns: number?,           -- For recharge: turns to wait
+}
+
+export type MoveData = {
+	id: string,
+	name: string,
+	element: string,
+	category: "physical" | "special" | "status",
+	power: number,            -- Base power (0 for status moves)
+	accuracy: number,         -- 0-1 (1 = never misses)
+	pp: number,               -- Base PP
+	priority: number,         -- Move priority (higher = acts first)
+	effect: MoveEffect?,      -- Additional effect
+	animation: string,        -- Animation reference
+	description: string,
+	target: "enemy" | "self" | "allies" | "all",
+	flags: { string },        -- "contact", "sound", "punch", "bite", "powder", "pulse", "ball", "dance", etc.
+}
+
+-- Shape-based signature moves (from Skills)
+local ShapeMoves = {
+	Blob = { id = "vital_pulse", name = "Pulso Vital", element = "Natureza", power = 60, effect = { type = "heal", amount = 0.125 } },
+	Beast = { id = "fierce_charge", name = "Investida Feroz", element = "Terra", power = 90 },
+	Bird = { id = "evasive_gust", name = "Rajada Evasiva", element = "Ar", power = 70, effect = { type = "stat", stat = "evasion", stages = 1, chance = 1 } },
+	Dragon = { id = "ancestral_breath", name = "Sopro Ancestral", element = "Fogo", power = 100 },
+	Serpent = { id = "weakening_coil", name = "Maré Debilitante", element = "Água", power = 65, effect = { type = "stat", stat = "atk", stages = -1, chance = 0.3 } },
+	Insect = { id = "sticky_web", name = "Trama Aderente", element = "Natureza", power = 65, effect = { type = "stat", stat = "speed", stages = -1, chance = 0.3 } },
+	Quadruped = { id = "tackle", name = "Investida", element = "Normal", power = 50 },
+	Winged = { id = "wing_attack", name = "Ataque de Asa", element = "Ar", power = 60 },
+	Aquatic = { id = "water_gun", name = "Jato d'Água", element = "Água", power = 45 },
+	Arthropod = { id = "bug_bite", name = "Picada", element = "Natureza", power = 55 },
+	Mineral = { id = "rock_throw", name = "Lançamento de Rocha", element = "Terra", power = 50 },
+	Spectral = { id = "shadow_sneak", name = "Golpe Sombrio", element = "Sombra", power = 50, priority = 1 },
+	Vegetal = { id = "vine_whip", name = "Chicote de Vinha", element = "Natureza", power = 50 },
+	Draconic = { id = "dragon_rage", name = "Fúria Draconica", element = "Fogo", power = 80 },
+}
+
+-- Universal moves available to many creatures
+local UniversalMoves: { [string]: MoveData } = {
+	-- Physical moves
+	tackle = {
+		id = "tackle", name = "Investida", element = "Normal", category = "physical",
+		power = 40, accuracy = 1, pp = 35, priority = 0,
+		animation = "tackle", description = "Uma investida física básica.", target = "enemy", flags = { "contact" }
+	},
+	scratch = {
+		id = "scratch", name = "Arranhão", element = "Normal", category = "physical",
+		power = 40, accuracy = 1, pp = 35, priority = 0,
+		animation = "scratch", description = "Arranha o inimigo com garras afiadas.", target = "enemy", flags = { "contact" }
+	},
+	quick_attack = {
+		id = "quick_attack", name = "Ataque Rápido", element = "Normal", category = "physical",
+		power = 40, accuracy = 1, pp = 30, priority = 1,
+		animation = "quick_attack", description = "Ataca primeiro. Sempre acerta.", target = "enemy", flags = { "contact" }
+	},
+	-- Fire moves
+	ember = {
+		id = "ember", name = "Brasa", element = "Fogo", category = "special",
+		power = 40, accuracy = 1, pp = 25, priority = 0,
+		effect = { type = "status", status = "burn", chance = 0.1, duration = 3 },
+		animation = "ember", description = "Pequena chance de queimar.", target = "enemy", flags = {}
+	},
+	flamethrower = {
+		id = "flamethrower", name = "Lança-Chamas", element = "Fogo", category = "special",
+		power = 90, accuracy = 1, pp = 15, priority = 0,
+		effect = { type = "status", status = "burn", chance = 0.1, duration = 3 },
+		animation = "flamethrower", description = "Chamas intensas que podem queimar.", target = "enemy", flags = {}
+	},
+	fire_blast = {
+		id = "fire_blast", name = "Explosão de Fogo", element = "Fogo", category = "special",
+		power = 110, accuracy = 0.85, pp = 5, priority = 0,
+		effect = { type = "status", status = "burn", chance = 0.1, duration = 3 },
+		animation = "fire_blast", description = "Poderoso, mas impreciso.", target = "enemy", flags = {}
+	},
+	flare_blitz = {
+		id = "flare_blitz", name = "Ímpeto de Chamas", element = "Fogo", category = "physical",
+		power = 120, accuracy = 1, pp = 15, priority = 0,
+		effect = { type = "status", status = "burn", chance = 0.1, duration = 3 },
+		animation = "flare_blitz", description = "Usuário recebe dano de recuo.", target = "enemy", flags = { "contact", "recoil" }
+	},
+	-- Water moves
+	water_gun = {
+		id = "water_gun", name = "Jato d'Água", element = "Água", category = "special",
+		power = 40, accuracy = 1, pp = 25, priority = 0,
+		animation = "water_gun", description = "Jato de água pressurizada.", target = "enemy", flags = {}
+	},
+	bubble = {
+		id = "bubble", name = "Bolha", element = "Água", category = "special",
+		power = 40, accuracy = 1, pp = 30, priority = 0,
+		effect = { type = "stat", stat = "speed", stages = -1, chance = 0.1 },
+		animation = "bubble", description = "Pode reduzir velocidade.", target = "enemy", flags = {}
+	},
+	hydro_pump = {
+		id = "hydro_pump", name = "Hidro Bomba", element = "Água", category = "special",
+		power = 110, accuracy = 0.8, pp = 5, priority = 0,
+		animation = "hydro_pump", description = "Poderoso, mas impreciso.", target = "enemy", flags = {}
+	},
+	surf = {
+		id = "surf", name = "Surfar", element = "Água", category = "special",
+		power = 90, accuracy = 1, pp = 15, priority = 0,
+		animation = "surf", description = "Onda massiva atinge o alvo.", target = "enemy", flags = {}
+	},
+	aquajet = {
+		id = "aquajet", name = "Jato Aquático", element = "Água", category = "physical",
+		power = 40, accuracy = 1, pp = 20, priority = 1,
+		animation = "aquajet", description = "Ataca primeiro.", target = "enemy", flags = { "contact" }
+	},
+	-- Nature/Grass moves
+	vine_whip = {
+		id = "vine_whip", name = "Chicote de Vinha", element = "Natureza", category = "physical",
+		power = 45, accuracy = 1, pp = 25, priority = 0,
+		animation = "vine_whip", description = "Chicoteia com vinhas.", target = "enemy", flags = { "contact" }
+	},
+	razor_leaf = {
+		id = "razor_leaf", name = "Folha Navalha", element = "Natureza", category = "special",
+		power = 55, accuracy = 0.95, pp = 25, priority = 0,
+		animation = "razor_leaf", description = "Alta taxa de crítico.", target = "enemy", flags = {}
+	},
+	seed_bomb = {
+		id = "seed_bomb", name = "Bomba de Sementes", element = "Natureza", category = "physical",
+		power = 80, accuracy = 1, pp = 15, priority = 0,
+		animation = "seed_bomb", description = "Explosão de sementes duras.", target = "enemy", flags = { "bullet" }
+	},
+	petal_dance = {
+		id = "petal_dance", name = "Dança de Pétalas", element = "Natureza", category = "special",
+		power = 120, accuracy = 1, pp = 10, priority = 0,
+		effect = { type = "recharge", turns = 1 },
+		animation = "petal_dance", description = "Ataca por 2-3 turnos, então confunde.", target = "enemy", flags = {}
+	},
+	-- Earth/Ground moves
+	rock_throw = {
+		id = "rock_throw", name = "Lançamento de Rocha", element = "Terra", category = "physical",
+		power = 50, accuracy = 0.9, pp = 15, priority = 0,
+		animation = "rock_throw", description = "Arremessa pedras.", target = "enemy", flags = {}
+	},
+	mud_shot = {
+		id = "mud_shot", name = "Tiro de Lama", element = "Terra", category = "special",
+		power = 55, accuracy = 0.95, pp = 15, priority = 0,
+		effect = { type = "stat", stat = "speed", stages = -1, chance = 1 },
+		animation = "mud_shot", description = "Sempre reduz velocidade.", target = "enemy", flags = {}
+	},
+	earthquake = {
+		id = "earthquake", name = "Terremoto", element = "Terra", category = "physical",
+		power = 100, accuracy = 1, pp = 10, priority = 0,
+		animation = "earthquake", description = "Atinge todos adjacentes.", target = "all", flags = {}
+	},
+	drill_run = {
+		id = "drill_run", name = "Perfuradora", element = "Terra", category = "physical",
+		power = 80, accuracy = 0.95, pp = 10, priority = 0,
+		animation = "drill_run", description = "Alta taxa de crítico.", target = "enemy", flags = { "contact" }
+	},
+	-- Air/Flying moves
+	wing_attack = {
+		id = "wing_attack", name = "Ataque de Asa", element = "Ar", category = "physical",
+		power = 60, accuracy = 1, pp = 35, priority = 0,
+		animation = "wing_attack", description = "Bate as asas com força.", target = "enemy", flags = { "contact" }
+	},
+	gust = {
+		id = "gust", name = "Rajada", element = "Ar", category = "special",
+		power = 40, accuracy = 1, pp = 35, priority = 0,
+		animation = "gust", description = "Vento forte.", target = "enemy", flags = {}
+	},
+	air_slash = {
+		id = "air_slash", name = "Corte de Ar", element = "Ar", category = "special",
+		power = 75, accuracy = 0.95, pp = 15, priority = 0,
+		effect = { type = "flinch", chance = 0.3 },
+		animation = "air_slash", description = "Pode fazer o alvo recuar.", target = "enemy", flags = {}
+	},
+	hurricane = {
+		id = "hurricane", name = "Furacão", element = "Ar", category = "special",
+		power = 110, accuracy = 0.7, pp = 10, priority = 0,
+		effect = { type = "status", status = "confuse", chance = 0.3, duration = 2 },
+		animation = "hurricane", description = "Pode confundir.", target = "enemy", flags = {}
+	},
+	-- Shadow/Dark moves
+	shadow_sneak = {
+		id = "shadow_sneak", name = "Golpe Sombrio", element = "Sombra", category = "physical",
+		power = 40, accuracy = 1, pp = 30, priority = 1,
+		animation = "shadow_sneak", description = "Ataca primeiro.", target = "enemy", flags = { "contact" }
+	},
+	dark_pulse = {
+		id = "dark_pulse", name = "Pulso Sombrio", element = "Sombra", category = "special",
+		power = 80, accuracy = 1, pp = 15, priority = 0,
+		effect = { type = "flinch", chance = 0.2 },
+		animation = "dark_pulse", description = "Onda de energia sombria.", target = "enemy", flags = {}
+	},
+	night_slash = {
+		id = "night_slash", name = "Golpe Noturno", element = "Sombra", category = "physical",
+		power = 70, accuracy = 1, pp = 15, priority = 0,
+		animation = "night_slash", description = "Alta taxa de crítico.", target = "enemy", flags = { "contact" }
+	},
+	-- Ice moves
+	ice_shard = {
+		id = "ice_shard", name = "Estilhaço de Gelo", element = "Gelo", category = "physical",
+		power = 40, accuracy = 1, pp = 30, priority = 1,
+		animation = "ice_shard", description = "Ataca primeiro.", target = "enemy", flags = { "contact" }
+	},
+	ice_beam = {
+		id = "ice_beam", name = "Raio de Gelo", element = "Gelo", category = "special",
+		power = 90, accuracy = 1, pp = 10, priority = 0,
+		effect = { type = "status", status = "freeze", chance = 0.1, duration = 3 },
+		animation = "ice_beam", description = "Pode congelar.", target = "enemy", flags = {}
+	},
+	blizzard = {
+		id = "blizzard", name = "Nevasca", element = "Gelo", category = "special",
+		power = 110, accuracy = 0.7, pp = 5, priority = 0,
+		effect = { type = "status", status = "freeze", chance = 0.1, duration = 3 },
+		animation = "blizzard", description = "Pode congelar. Impreciso.", target = "enemy", flags = {}
+	},
+	-- Electric moves
+	thunder_shock = {
+		id = "thunder_shock", name = "Choque do Trovão", element = "Elétrico", category = "special",
+		power = 40, accuracy = 1, pp = 30, priority = 0,
+		effect = { type = "status", status = "paralyze", chance = 0.1, duration = 3 },
+		animation = "thunder_shock", description = "Pode paralisar.", target = "enemy", flags = {}
+	},
+	thunderbolt = {
+		id = "thunderbolt", name = "Raio", element = "Elétrico", category = "special",
+		power = 90, accuracy = 1, pp = 15, priority = 0,
+		effect = { type = "status", status = "paralyze", chance = 0.1, duration = 3 },
+		animation = "thunderbolt", description = "Pode paralisar.", target = "enemy", flags = {}
+	},
+	thunder = {
+		id = "thunder", name = "Trovão", element = "Elétrico", category = "special",
+		power = 110, accuracy = 0.7, pp = 10, priority = 0,
+		effect = { type = "status", status = "paralyze", chance = 0.3, duration = 3 },
+		animation = "thunder", description = "Pode paralisar. Impreciso.", target = "enemy", flags = {}
+	},
+	volt_tackle = {
+		id = "volt_tackle", name = "Investida Elétrica", element = "Elétrico", category = "physical",
+		power = 120, accuracy = 1, pp = 15, priority = 0,
+		effect = { type = "status", status = "paralyze", chance = 0.1, duration = 3 },
+		animation = "volt_tackle", description = "Recuo forte. Pode paralisar.", target = "enemy", flags = { "contact", "recoil" }
+	},
+	-- Light moves
+	flash = {
+		id = "flash", name = "Flash", element = "Luz", category = "status",
+		power = 0, accuracy = 1, pp = 20, priority = 0,
+		effect = { type = "stat", stat = "accuracy", stages = -1, chance = 1 },
+		animation = "flash", description = "Reduz precisão do inimigo.", target = "enemy", flags = {}
+	},
+	dazzling_gleam = {
+		id = "dazzling_gleam", name = "Brilho Ofuscante", element = "Luz", category = "special",
+		power = 80, accuracy = 1, pp = 10, priority = 0,
+		animation = "dazzling_gleam", description = "Luz mágica atinge o alvo.", target = "enemy", flags = {}
+	},
+	morning_sun = {
+		id = "morning_sun", name = "Sol da Manhã", element = "Luz", category = "status",
+		power = 0, accuracy = 1, pp = 5, priority = 0,
+		effect = { type = "heal", amount = 0.5 },
+		animation = "morning_sun", description = "Recupera 50% do HP máximo.", target = "self", flags = {}
+	},
+	-- Metal/Steel moves
+	metal_claw = {
+		id = "metal_claw", name = "Garra Metálica", element = "Metal", category = "physical",
+		power = 50, accuracy = 0.95, pp = 35, priority = 0,
+		effect = { type = "stat", stat = "atk", stages = 1, chance = 0.1 },
+		animation = "metal_claw", description = "Pode aumentar ataque.", target = "enemy", flags = { "contact" }
+	},
+	iron_head = {
+		id = "iron_head", name = "Cabeçada de Ferro", element = "Metal", category = "physical",
+		power = 80, accuracy = 1, pp = 15, priority = 0,
+		effect = { type = "flinch", chance = 0.3 },
+		animation = "iron_head", description = "Pode fazer recuar.", target = "enemy", flags = { "contact" }
+	},
+	flash_cannon = {
+		id = "flash_cannon", name = "Canhão de Luz", element = "Metal", category = "special",
+		power = 80, accuracy = 1, pp = 10, priority = 0,
+		effect = { type = "stat", stat = "spDef", stages = -1, chance = 0.1 },
+		animation = "flash_cannon", description = "Pode reduzir def. especial.", target = "enemy", flags = {}
+	},
+	-- Crystal moves
+	power_gem = {
+		id = "power_gem", name = "Joia de Poder", element = "Cristal", category = "special",
+		power = 80, accuracy = 1, pp = 20, priority = 0,
+		animation = "power_gem", description = "Dispara joias afiadas.", target = "enemy", flags = {}
+	},
+	diamond_storm = {
+		id = "diamond_storm", name = "Tempestade de Diamantes", element = "Cristal", category = "physical",
+		power = 100, accuracy = 0.95, pp = 5, priority = 0,
+		effect = { type = "stat", stat = "def", stages = 2, chance = 0.5 },
+		animation = "diamond_storm", description = "Pode aumentar defesa drasticamente.", target = "enemy", flags = {}
+	},
+	-- Arcane/Psychic moves
+	confusion = {
+		id = "confusion", name = "Confusão", element = "Arcano", category = "special",
+		power = 50, accuracy = 1, pp = 25, priority = 0,
+		effect = { type = "status", status = "confuse", chance = 0.1, duration = 2 },
+		animation = "confusion", description = "Pode confundir.", target = "enemy", flags = {}
+	},
+	psychic = {
+		id = "psychic", name = "Psíquico", element = "Arcano", category = "special",
+		power = 90, accuracy = 1, pp = 10, priority = 0,
+		effect = { type = "stat", stat = "spDef", stages = -1, chance = 0.1 },
+		animation = "psychic", description = "Pode reduzir def. especial.", target = "enemy", flags = {}
+	},
+	future_sight = {
+		id = "future_sight", name = "Previsão Futura", element = "Arcano", category = "special",
+		power = 120, accuracy = 1, pp = 10, priority = 0,
+		effect = { type = "recharge", turns = 2 },
+		animation = "future_sight", description = "Acerta 2 turnos depois.", target = "enemy", flags = {}
+	},
+	-- Status moves
+	growl = {
+		id = "growl", name = "Rosnado", element = "Normal", category = "status",
+		power = 0, accuracy = 1, pp = 40, priority = 0,
+		effect = { type = "stat", stat = "atk", stages = -1, chance = 1 },
+		animation = "growl", description = "Reduz ataque do inimigo.", target = "enemy", flags = { "sound" }
+	},
+	tail_whip = {
+		id = "tail_whip", name = "Chicote de Cauda", element = "Normal", category = "status",
+		power = 0, accuracy = 1, pp = 30, priority = 0,
+		effect = { type = "stat", stat = "def", stages = -1, chance = 1 },
+		animation = "tail_whip", description = "Reduz defesa do inimigo.", target = "enemy", flags = {}
+	},
+	harden = {
+		id = "harden", name = "Endurecer", element = "Normal", category = "status",
+		power = 0, accuracy = 1, pp = 30, priority = 0,
+		effect = { type = "stat", stat = "def", stages = 1, chance = 1 },
+		animation = "harden", description = "Aumenta própria defesa.", target = "self", flags = {}
+	},
+	recover = {
+		id = "recover", name = "Recuperação", element = "Normal", category = "status",
+		power = 0, accuracy = 1, pp = 10, priority = 0,
+		effect = { type = "heal", amount = 0.5 },
+		animation = "recover", description = "Recupera 50% do HP.", target = "self", flags = {}
+	},
+	protect = {
+		id = "protect", name = "Proteção", element = "Normal", category = "status",
+		power = 0, accuracy = 1, pp = 10, priority = 4,
+		effect = { type = "protect" },
+		animation = "protect", description = "Evita todos os efeitos do turno.", target = "self", flags = {}
+	},
+	rest = {
+		id = "rest", name = "Descanso", element = "Normal", category = "status",
+		power = 0, accuracy = 1, pp = 5, priority = 0,
+		effect = { type = "heal", amount = 1, status = "sleep", duration = 2 },
+		animation = "rest", description = "Cura tudo, mas dorme 2 turnos.", target = "self", flags = {}
+	},
+	calm_mind = {
+		id = "calm_mind", name = "Mente Calma", element = "Arcano", category = "status",
+		power = 0, accuracy = 1, pp = 20, priority = 0,
+		effect = { type = "stat", stat = "spAtk", stages = 1, chance = 1 },
+		animation = "calm_mind", description = "Aumenta atq. e def. especial.", target = "self", flags = {}
+	},
+	swords_dance = {
+		id = "swords_dance", name = "Dança de Espadas", element = "Normal", category = "status",
+		power = 0, accuracy = 1, pp = 20, priority = 0,
+		effect = { type = "stat", stat = "atk", stages = 2, chance = 1 },
+		animation = "swords_dance", description = "Aumenta ataque drasticamente.", target = "self", flags = { "dance" }
+	},
+	-- Signature moves for legendaries
+	solar_flare = {
+		id = "solar_flare", name = "Erupção Solar", element = "Fogo", category = "special",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "status", status = "burn", chance = 0.3, duration = 4 },
+		animation = "solar_flare", description = "Chamas solares devastadoras.", target = "enemy", flags = {}
+	},
+	abyssal_depths = {
+		id = "abyssal_depths", name = "Profundezas Abissais", element = "Água", category = "special",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "stat", stat = "spDef", stages = -2, chance = 0.3 },
+		animation = "abyssal_depths", description = "Pressão das profundezas.", target = "enemy", flags = {}
+	},
+	primordial_force = {
+		id = "primordial_force", name = "Força Primordial", element = "Natureza", category = "physical",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "heal", amount = 0.25, drainRatio = 0.5 },
+		animation = "primordial_force", description = "Cura 25% do dano causado.", target = "enemy", flags = { "contact" }
+	},
+	tectonic_upheaval = {
+		id = "tectonic_upheaval", name = "Reviravolta Tectônica", element = "Terra", category = "physical",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "stat", stat = "speed", stages = -1, chance = 1 },
+		animation = "tectonic_upheaval", description = "Sempre reduz velocidade.", target = "all", flags = {}
+	},
+	celestial_winds = {
+		id = "celestial_winds", name = "Ventos Celestiais", element = "Ar", category = "special",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "flinch", chance = 0.3 },
+		animation = "celestial_winds", description = "Ventos divinos.", target = "enemy", flags = {}
+	},
+	shadow_realm = {
+		id = "shadow_realm", name = "Reino das Sombras", element = "Sombra", category = "special",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "status", status = "fear", chance = 0.3, duration = 3 },
+		animation = "shadow_realm", description = "Mergulha o alvo no medo.", target = "enemy", flags = {}
+	},
+	absolute_zero = {
+		id = "absolute_zero", name = "Zero Absoluto", element = "Gelo", category = "special",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "status", status = "freeze", chance = 0.3, duration = 4 },
+		animation = "absolute_zero", description = "Frio impossível.", target = "enemy", flags = {}
+	},
+	bolt_strike = {
+		id = "bolt_strike", name = "Golpe do Raio", element = "Elétrico", category = "physical",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "status", status = "paralyze", chance = 0.3, duration = 4 },
+		animation = "bolt_strike", description = "Raio concentrado.", target = "enemy", flags = { "contact" }
+	},
+	holy_nova = {
+		id = "holy_nova", name = "Nova Sagrada", element = "Luz", category = "special",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "heal", amount = 0.25 },
+		animation = "holy_nova", description = "Luz purificadora cura o usuário.", target = "enemy", flags = {}
+	},
+	metal_burst = {
+		id = "metal_burst", name = "Explosão Metálica", element = "Metal", category = "physical",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "stat", stat = "def", stages = 2, chance = 0.5 },
+		animation = "metal_burst", description = "Fragmentos metálicos.", target = "enemy", flags = {}
+	},
+	crystal_prison = {
+		id = "crystal_prison", name = "Prisão de Cristal", element = "Cristal", category = "special",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "status", status = "confuse", chance = 0.3, duration = 3 },
+		animation = "crystal_prison", description = "Prende em cristais.", target = "enemy", flags = {}
+	},
+	void_rend = {
+		id = "void_rend", name = "Rasgo do Vazio", element = "Arcano", category = "special",
+		power = 130, accuracy = 0.9, pp = 5, priority = 0,
+		effect = { type = "stat", stat = "spDef", stages = -2, chance = 0.3 },
+		animation = "void_rend", description = "Rasga a realidade.", target = "enemy", flags = {}
+	},
+}
+
+-- Creature-specific move pools (learnsets)
+local Learnsets: { [string]: { string } } = {}
+
+-- Initialize learnsets based on creature data
+local C = M_Creatures
+local Elements = M_Elements
+
+for id, def in C.ById do
+	if def.acquisition == "special" then
+		-- Legendary/mythical get signature + powerful moves
+		Learnsets[id] = {}
+	else
+		-- Regular creatures get moves based on element and shape
+		Learnsets[id] = {}
+		local element = def.el
+		local shape = def.shape
+
+		-- Add shape signature move
+		if ShapeMoves[shape] then
+			table.insert(Learnsets[id], ShapeMoves[shape].id)
+		end
+
+		-- Add element-appropriate moves
+		local elementMoves = {
+			Fogo = { "ember", "flamethrower", "fire_blast", "flare_blitz" },
+			Água = { "water_gun", "bubble", "hydro_pump", "surf", "aquajet" },
+			Natureza = { "vine_whip", "razor_leaf", "seed_bomb", "petal_dance" },
+			Terra = { "rock_throw", "mud_shot", "earthquake", "drill_run" },
+			Ar = { "wing_attack", "gust", "air_slash", "hurricane" },
+			Sombra = { "shadow_sneak", "dark_pulse", "night_slash" },
+			Gelo = { "ice_shard", "ice_beam", "blizzard" },
+			Elétrico = { "thunder_shock", "thunderbolt", "thunder", "volt_tackle" },
+			Luz = { "flash", "dazzling_gleam", "morning_sun" },
+			Metal = { "metal_claw", "iron_head", "flash_cannon" },
+			Cristal = { "power_gem", "diamond_storm" },
+			Arcano = { "confusion", "psychic", "future_sight", "calm_mind" },
+		}
+
+		local moves = elementMoves[element] or {}
+		for _, moveId in ipairs(moves) do
+			if UniversalMoves[moveId] then
+				table.insert(Learnsets[id], moveId)
+			end
+		end
+
+		-- Add some universal physical moves for variety
+		if def.shape == "Beast" or def.shape == "Quadruped" or def.shape == "Draconic" then
+			for _, moveId in ipairs({ "tackle", "scratch", "quick_attack" }) do
+				if UniversalMoves[moveId] then table.insert(Learnsets[id], moveId) end
+			end
+		end
+	end
+end
+
+-- Export functions
+function Moves.getMove(speciesId: string, isSkill: boolean): MoveData?
+	if isSkill and ShapeMoves[C.ById[speciesId] and C.ById[speciesId].shape or ""] then
+		local shapeMove = ShapeMoves[C.ById[speciesId].shape]
+		return UniversalMoves[shapeMove.id]
+	end
+	-- Return first available move for basic strike
+	local learnset = Learnsets[speciesId] or {}
+	for _, moveId in ipairs(learnset) do
+		local move = UniversalMoves[moveId]
+		if move and move.category ~= "status" then
+			return move
+		end
+	end
+	return UniversalMoves.tackle
+end
+
+function Moves.getLearnset(speciesId: string): { MoveData }
+	local learnset = Learnsets[speciesId] or {}
+	local result = {}
+	for _, moveId in ipairs(learnset) do
+		if UniversalMoves[moveId] then
+			table.insert(result, UniversalMoves[moveId])
+		end
+	end
+	return result
+end
+
+function Moves.getMoveById(moveId: string): MoveData?
+	return UniversalMoves[moveId]
+end
+
+function Moves.getAllMoves(): { MoveData }
+	local result = {}
+	for _, move in UniversalMoves do
+		table.insert(result, move)
+	end
+	table.sort(result, function(a, b) return a.name < b.name end)
+	return result
+end
+
+function Moves.getMovesByElement(element: string): { MoveData }
+	local result = {}
+	for _, move in UniversalMoves do
+		if move.element == element then
+			table.insert(result, move)
+		end
+	end
+	return result
+end
+
+function Moves.getMovesByCategory(category: string): { MoveData }
+	local result = {}
+	for _, move in UniversalMoves do
+		if move.category == category then
+			table.insert(result, move)
+		end
+	end
+	return result
+end
+
+-- Animation reference mapping
+Moves.Animations = {
+	tackle = "rbxassetid://anim_tackle",
+	scratch = "rbxassetid://anim_scratch",
+	quick_attack = "rbxassetid://anim_quick_attack",
+	ember = "rbxassetid://anim_ember",
+	flamethrower = "rbxassetid://anim_flamethrower",
+	fire_blast = "rbxassetid://anim_fire_blast",
+	flare_blitz = "rbxassetid://anim_flare_blitz",
+	water_gun = "rbxassetid://anim_water_gun",
+	bubble = "rbxassetid://anim_bubble",
+	hydro_pump = "rbxassetid://anim_hydro_pump",
+	surf = "rbxassetid://anim_surf",
+	aquajet = "rbxassetid://anim_aquajet",
+	vine_whip = "rbxassetid://anim_vine_whip",
+	razor_leaf = "rbxassetid://anim_razor_leaf",
+	seed_bomb = "rbxassetid://anim_seed_bomb",
+	petal_dance = "rbxassetid://anim_petal_dance",
+	rock_throw = "rbxassetid://anim_rock_throw",
+	mud_shot = "rbxassetid://anim_mud_shot",
+	earthquake = "rbxassetid://anim_earthquake",
+	drill_run = "rbxassetid://anim_drill_run",
+	wing_attack = "rbxassetid://anim_wing_attack",
+	gust = "rbxassetid://anim_gust",
+	air_slash = "rbxassetid://anim_air_slash",
+	hurricane = "rbxassetid://anim_hurricane",
+	shadow_sneak = "rbxassetid://anim_shadow_sneak",
+	dark_pulse = "rbxassetid://anim_dark_pulse",
+	night_slash = "rbxassetid://anim_night_slash",
+	ice_shard = "rbxassetid://anim_ice_shard",
+	ice_beam = "rbxassetid://anim_ice_beam",
+	blizzard = "rbxassetid://anim_blizzard",
+	thunder_shock = "rbxassetid://anim_thunder_shock",
+	thunderbolt = "rbxassetid://anim_thunderbolt",
+	thunder = "rbxassetid://anim_thunder",
+	volt_tackle = "rbxassetid://anim_volt_tackle",
+	flash = "rbxassetid://anim_flash",
+	dazzling_gleam = "rbxassetid://anim_dazzling_gleam",
+	morning_sun = "rbxassetid://anim_morning_sun",
+	metal_claw = "rbxassetid://anim_metal_claw",
+	iron_head = "rbxassetid://anim_iron_head",
+	flash_cannon = "rbxassetid://anim_flash_cannon",
+	power_gem = "rbxassetid://anim_power_gem",
+	diamond_storm = "rbxassetid://anim_diamond_storm",
+	confusion = "rbxassetid://anim_confusion",
+	psychic = "rbxassetid://anim_psychic",
+	future_sight = "rbxassetid://anim_future_sight",
+	growl = "rbxassetid://anim_growl",
+	tail_whip = "rbxassetid://anim_tail_whip",
+	harden = "rbxassetid://anim_harden",
+	recover = "rbxassetid://anim_recover",
+	protect = "rbxassetid://anim_protect",
+	rest = "rbxassetid://anim_rest",
+	calm_mind = "rbxassetid://anim_calm_mind",
+	swords_dance = "rbxassetid://anim_swords_dance",
+	solar_flare = "rbxassetid://anim_solar_flare",
+	abyssal_depths = "rbxassetid://anim_abyssal_depths",
+	primordial_force = "rbxassetid://anim_primordial_force",
+	tectonic_upheaval = "rbxassetid://anim_tectonic_upheaval",
+	celestial_winds = "rbxassetid://anim_celestial_winds",
+	shadow_realm = "rbxassetid://anim_shadow_realm",
+	absolute_zero = "rbxassetid://anim_absolute_zero",
+	bolt_strike = "rbxassetid://anim_bolt_strike",
+	holy_nova = "rbxassetid://anim_holy_nova",
+	metal_burst = "rbxassetid://anim_metal_burst",
+	crystal_prison = "rbxassetid://anim_crystal_prison",
+	void_rend = "rbxassetid://anim_void_rend",
+	vital_pulse = "rbxassetid://anim_vital_pulse",
+	fierce_charge = "rbxassetid://anim_fierce_charge",
+	evasive_gust = "rbxassetid://anim_evasive_gust",
+	ancestral_breath = "rbxassetid://anim_ancestral_breath",
+	weakening_coil = "rbxassetid://anim_weakening_coil",
+	sticky_web = "rbxassetid://anim_sticky_web",
+	investida = "rbxassetid://anim_tackle",
+	ataque_de_asa = "rbxassetid://anim_wing_attack",
+	jato_dagua = "rbxassetid://anim_water_gun",
+	chicote_de_vinha = "rbxassetid://anim_vine_whip",
+	lancamento_de_rocha = "rbxassetid://anim_rock_throw",
+	golpe_sombrio = "rbxassetid://anim_shadow_sneak",
+	estilhaco_de_gelo = "rbxassetid://anim_ice_shard",
+	choque_do_trovao = "rbxassetid://anim_thunder_shock",
+}
+
+return Moves
+end)()
 local M_CombatRules=(function()
---!nonstrict
+--!strict
+-- CombatRules.luau - Pure combat logic: type chart, damage formulas, status effects
+-- No services, no instances, no clock, no client-informed state.
+
 local Text = M_Strings.Text
--- Regras puras: sem serviços, instâncias, relógio ou recursos informados pelo cliente.
 local C = M_Creatures
 local Elements = M_Elements
 local Skills = M_Skills
 local CaptureMath = M_CaptureMath
+local Moves = M_Moves
+
 local R = {
 	MaxTurns = 40,
 	MaxParty = 3,
 	LevelGrowth = 0.005,
 	TameHealth = 1.08,
 	TamePower = 1.085,
-	DamageVariance = 0.5,
+	DamageVariance = 0.15,
 	PressureStart = 7,
 	PressureBase = 1.6,
+	MaxStatusDuration = 5,
+	StatusChanceBase = 0.3,
+	CriticalRate = 0.0625,
+	CriticalMultiplier = 1.5,
+	EscapeAttempts = 3,
+	-- Double battle config
+	MaxPartyDouble = 4,
+	-- Horde battle config
+	HordeSize = 5,
+	-- Guardian raid config
+	RaidMaxPlayers = 4,
 }
-function R.stats(id, lv)
+
+-- Status Effect Types
+export type StatusEffect =
+	| "burn"
+	| "freeze"
+	| "paralyze"
+	| "poison"
+	| "sleep"
+	| "confuse"
+	| "fear"
+	| "curse"
+	| "bless"
+
+export type StatusData = {
+	type: StatusEffect,
+	duration: number,
+	source: string?,
+	potency: number?, -- For damage-over-time effects
+}
+
+export type Combatant = {
+	id: string,
+	lv: number,
+	maxHp: number,
+	hp: number,
+	atk: number,
+	def: number,
+	speed: number,
+	el: string,
+	isLegendary: boolean?,
+	nextSkill: number?,
+	evade: boolean?,
+	status: { [StatusEffect]: StatusData }?,
+	statStages: {
+		atk: number,
+		def: number,
+		speed: number,
+		spAtk: number,
+		spDef: number,
+		accuracy: number,
+		evasion: number
+	}?,
+	-- Ascension fields
+	ascended: boolean?,
+	ascensionTurn: number?,
+}
+
+export type BattleState = {
+	foe: Combatant,
+	party: { [string]: Combatant },
+	active: string?,
+	bond: number,
+	turn: number,
+	version: number,
+	status: "active" | "won" | "lost" | "captured" | "escaped",
+	log: { { text: string, kind: string, amount: number?, health: number?, mult: number? } },
+	attempts: number,
+	capturable: boolean,
+	isLegendary: boolean?,
+	sealKind: string?,
+	spentSeal: boolean?,
+	captureBase: number?,
+	message: string?,
+	intro: string?,
+	-- Double battle fields
+	battleType: "wild" | "double" | "horde" | "guardian" | "special" | "raid",
+	foes: { Combatant }?, -- For multiple foes
+	field: {
+		weather: string?,
+		terrain: string?,
+		gravity: number,
+		trickRoom: boolean,
+		tailwind: { [string]: number },
+	}?,
+}
+
+-- Type effectiveness is handled by Elements.mult (2, 1, 0.5, 0)
+
+function R.stats(id: string, lv: number): Combatant
 	local def = assert(C.ById[id], Text.ESPECIE_DE_COMBATE_DESCONHECIDA_6A7E80)
 	local scale = 1 + R.LevelGrowth * (lv - 1)
+	local shapeSpeed = ({ Blob = 9, Beast = 15, Bird = 20, Dragon = 13, Serpent = 16, Insect = 18, Quadruped = 14, Winged = 19, Aquatic = 12, Arthropod = 16, Mineral = 8, Spectral = 17, Vegetal = 10, Draconic = 15 })[def.shape] or 12
 	return {
 		id = id,
 		lv = lv,
 		maxHp = math.floor(def.hp * scale),
 		atk = def.atk * scale,
 		def = 4 + def.rar * 3 + lv * 0.35,
-		speed = ({ Blob = 9, Beast = 15, Bird = 20, Dragon = 13, Serpent = 16, Insect = 18 })[def.shape] + lv,
+		speed = shapeSpeed + lv,
 		el = def.el,
+		nextSkill = 0,
+		statStages = { atk = 0, def = 0, speed = 0, spAtk = 0, spDef = 0, accuracy = 0, evasion = 0 },
+		status = {},
 	}
 end
-function R.damage(a, b, power, guard)
-	local gap = math.clamp(a.lv - b.lv, -30, 30)
-	local pressure = 1.008 ^ gap
-		* R.PressureBase ^ (math.max(0, math.abs(gap) - R.PressureStart) * (gap >= 0 and 1 or -1))
-	if a.isLegendary or b.isLegendary then
-		pressure = 1.008 ^ gap
+
+function R.damage(attacker: Combatant, defender: Combatant, power: number, guard: boolean, move: Moves.MoveData?): number
+	local levelGap = math.clamp(attacker.lv - defender.lv, -30, 30)
+	local pressure = 1.008 ^ levelGap
+		* R.PressureBase ^ (math.max(0, math.abs(levelGap) - R.PressureStart) * (levelGap >= 0 and 1 or -1))
+	if attacker.isLegendary or defender.isLegendary then
+		pressure = 1.008 ^ levelGap
 	end
-	return math.max(
-		1,
-		a.atk * power * Elements.mult(a.el, b.el) * 100 / (100 + b.def) * pressure * (guard and 0.45 or 1)
-	)
+
+	local typeMult = Elements.mult(attacker.el, defender.el)
+
+	-- Stat stage modifiers
+	local atkStage = attacker.statStages and attacker.statStages.atk or 0
+	local defStage = defender.statStages and defender.statStages.def or 0
+	local stageMult = (2 + atkStage) / (2 - defStage)
+
+	-- Critical hit
+	local isCrit = math.random() < R.CriticalRate
+	local critMult = isCrit and R.CriticalMultiplier or 1
+
+	-- Damage variance
+	local variance = 1 - R.DamageVariance + math.random() * R.DamageVariance * 2
+
+	local baseDamage = attacker.atk * power * typeMult * 100 / (100 + defender.def) * pressure * stageMult * variance * critMult * (guard and 0.45 or 1)
+
+	-- Status effect modifiers
+	if attacker.status and attacker.status.burn and move and move.category == "physical" then
+		baseDamage *= 0.5
+	end
+
+	-- Ascension bonus
+	if attacker.ascended then
+		baseDamage *= 1.2
+	end
+
+	return math.max(1, math.floor(baseDamage))
 end
-function R.chance(s)
-	return CaptureMath.chance(s)
+
+function R.applyStatus(target: Combatant, statusType: StatusEffect, duration: number, source: string?, potency: number?): boolean
+	if target.status[statusType] then
+		return false -- Already has this status
+	end
+
+	-- Type-based immunities
+	if statusType == "burn" and target.el == "Fogo" then return false end
+	if statusType == "freeze" and target.el == "Gelo" then return false end
+	if statusType == "paralyze" and target.el == "Elétrico" then return false end
+	if statusType == "poison" and (target.el == "Metal" or target.el == "Cristal") then return false end
+	if statusType == "sleep" and target.el == "Arcano" then return false end
+	if statusType == "confuse" and target.el == "Luz" then return false end
+	if statusType == "fear" and target.el == "Sombra" then return false end
+	if statusType == "curse" and target.el == "Luz" then return false end
+
+	-- Bless prevents negative status effects
+	if target.status.bless and (statusType ~= "bless") then
+		local chance = math.random()
+		if chance < 0.3 then
+			return false -- Bless blocked the status
+		end
+	end
+
+	target.status[statusType] = {
+		type = statusType,
+		duration = math.min(duration, R.MaxStatusDuration),
+		source = source,
+		potency = potency,
+	}
+	return true
 end
-function R.new(id, lv, settings)
+
+function R.removeStatus(target: Combatant, statusType: StatusEffect): boolean
+	if target.status[statusType] then
+		target.status[statusType] = nil
+		return true
+	end
+	return false
+end
+
+function R.tickStatus(target: Combatant, rng: Random): { { text: string, kind: string } }?
+	local log = {}
+	for statusType, data in target.status do
+		data.duration -= 1
+		local name = C.ById[target.id] and C.ById[target.id].name or "A fera"
+		if statusType == "burn" then
+			local dmg = math.max(1, math.floor(target.maxHp * 0.0625))
+			target.hp = math.max(0, target.hp - dmg)
+			table.insert(log, { text = name .. Text.SOFREU_B1492B .. dmg .. Text.DE_DANO_POR_QUEIMADURA_04F138, kind = "status" })
+		elseif statusType == "poison" then
+			local dmg = math.max(1, math.floor(target.maxHp * 0.125))
+			target.hp = math.max(0, target.hp - dmg)
+			table.insert(log, { text = name .. Text.SOFREU_B1492B .. dmg .. Text.DE_DANO_POR_VENENO_04F138, kind = "status" })
+		elseif statusType == "curse" then
+			local dmg = math.max(1, math.floor(target.maxHp * 0.25))
+			target.hp = math.max(0, target.hp - dmg)
+			table.insert(log, { text = name .. Text.SOFREU_B1492B .. dmg .. Text.DE_DANO_POR_MALDICAO_04F138, kind = "status" })
+		elseif statusType == "freeze" then
+			if rng:NextNumber() < 0.2 then
+				R.removeStatus(target, "freeze")
+				table.insert(log, { text = name .. Text.SE_DESGELOU_8F4A4A, kind = "status" })
+			end
+		elseif statusType == "sleep" then
+			if rng:NextNumber() < 0.25 then
+				R.removeStatus(target, "sleep")
+				table.insert(log, { text = name .. Text.ACORDOU_8F4A4A, kind = "status" })
+			end
+		elseif statusType == "confuse" then
+			if rng:NextNumber() < 0.33 then
+				R.removeStatus(target, "confuse")
+				table.insert(log, { text = name .. Text.NO_LONGER_CONFUSED, kind = "status" })
+			end
+		elseif statusType == "fear" then
+			-- Fear reduces damage dealt
+		elseif statusType == "bless" then
+			-- Bless increases crit rate
+		end
+
+		if data.duration <= 0 then
+			R.removeStatus(target, statusType)
+			if statusType ~= "freeze" and statusType ~= "sleep" and statusType ~= "confuse" then
+				table.insert(log, { text = name .. Text.NO_LONGER_AFFECTED_BY .. statusType, kind = "status" })
+			end
+		end
+	end
+	return #log > 0 and log or nil
+end
+
+function R.canAct(target: Combatant, rng: Random): { canAct: boolean, log: { { text: string, kind: string } }? }
+	local log = {}
+
+	if target.status.paralyze and rng:NextNumber() < 0.25 then
+		table.insert(log, { text = C.ById[target.id].name .. Text.ESTA_PARALISADO_E_NAO_PODE_SE_MOVER, kind = "status" })
+		return { canAct = false, log = log }
+	end
+
+	if target.status.sleep then
+		table.insert(log, { text = C.ById[target.id].name .. Text.ESTA_DORMINDO, kind = "status" })
+		return { canAct = false, log = log }
+	end
+
+	if target.status.freeze then
+		table.insert(log, { text = C.ById[target.id].name .. Text.ESTA_CONGELADO_E_NAO_PODE_SE_MOVER, kind = "status" })
+		-- 20% chance to thaw
+		if rng:NextNumber() < 0.2 then
+			R.removeStatus(target, "freeze")
+			table.insert(log, { text = C.ById[target.id].name .. Text.SE_DESGELOU, kind = "status" })
+			return { canAct = true, log = log }
+		end
+		return { canAct = false, log = log }
+	end
+
+	if target.status.confuse and rng:NextNumber() < 0.33 then
+		local dmg = math.max(1, math.floor(target.maxHp * 0.25))
+		target.hp = math.max(0, target.hp - dmg)
+		table.insert(log, { text = C.ById[target.id].name .. Text.SE_MACHUCOU_EM_SUA_CONFUSAO_B1492B .. dmg, kind = "status" })
+		return { canAct = false, log = log }
+	end
+
+	if target.status.fear and rng:NextNumber() < 0.2 then
+		table.insert(log, { text = C.ById[target.id].name .. Text.ESTA_COM_MEDO_E_HESITOU, kind = "status" })
+		return { canAct = false, log = log }
+	end
+
+	return { canAct = true, log = #log > 0 and log or nil }
+end
+
+function R.modifyStatStage(target: Combatant, stat: string, stages: number): boolean
+	if not target.statStages then return false end
+	if not target.statStages[stat] then return false end
+	target.statStages[stat] = math.clamp(target.statStages[stat] + stages, -6, 6)
+	return true
+end
+
+function R.resetStatStages(target: Combatant)
+	if target.statStages then
+		for k in target.statStages do
+			target.statStages[k] = 0
+		end
+	end
+end
+
+function R.chance(state: BattleState): number
+	return CaptureMath.chance(state)
+end
+
+function R.new(foeId: string, foeLevel: number, settings: { statMultiplier: number?, isLegendary: boolean?, captureBase: number?, battleType: BattleState["battleType"]? }?): BattleState
 	settings = settings or {}
-	local foe = R.stats(id, lv)
+	local foe = R.stats(foeId, foeLevel)
 	foe.isLegendary = settings.isLegendary == true
+	foe.hp = foe.maxHp
 	for _, key in { "maxHp", "atk", "def", "speed" } do
 		foe[key] = foe[key] * (settings.statMultiplier or 1)
 		if key == "maxHp" then
 			foe[key] = math.floor(foe[key])
+			foe.hp = foe[key]
 		end
 	end
-	foe.hp = foe.maxHp
+
 	return {
 		foe = foe,
 		party = {},
@@ -1505,73 +3101,84 @@ function R.new(id, lv, settings)
 		status = "active",
 		log = {},
 		attempts = 0,
+		capturable = true,
+		isLegendary = settings.isLegendary,
+		captureBase = settings.captureBase,
+		battleType = settings.battleType or "wild",
+		foes = settings.battleType and settings.battleType ~= "wild" and { foe } or nil,
+		field = {
+			weather = nil,
+			terrain = nil,
+			gravity = 1,
+			trickRoom = false,
+			tailwind = {},
+		},
 	}
 end
-local function note(s, text, kind)
+
+local function note(s: BattleState, text: string, kind: string?)
 	table.insert(s.log, { text = text, kind = kind or "info" })
 end
-local function reply(s, guard, rng)
+
+local function reply(s: BattleState, guard: boolean, rng: Random)
 	local pet = s.active and s.party[s.active]
-	if not pet or pet.hp <= 0 then
-		return
-	end
-	local amount = math.floor(
-		R.damage(
-			s.foe,
-			pet,
-			(s.turn % 3 == 0 and 1.35 or 1) * (1 - R.DamageVariance + rng:NextNumber() * R.DamageVariance * 2),
-			guard
-		) + rng:NextNumber()
-	)
+	if not pet or pet.hp <= 0 then return end
+
+	local move = nil -- Foe uses basic attack
+	local amount = math.floor(R.damage(s.foe, pet, (s.turn % 3 == 0 and 1.35 or 1) * (1 - R.DamageVariance + rng:NextNumber() * R.DamageVariance * 2), guard, move) + rng:NextNumber())
+
 	if pet.evade then
 		amount = math.max(1, math.floor(amount * 0.65))
 		pet.evade = false
 	end
+
 	pet.hp = math.max(0, pet.hp - amount)
 	note(s, Text.A_FERA_CAUSOU_B1492B .. amount .. Text.DE_DANO_04F138, "foe")
 	s.log[#s.log].amount = amount
 	s.log[#s.log].health = pet.hp / pet.maxHp
 	s.log[#s.log].mult = Elements.mult(s.foe.el, pet.el)
+
 	if pet.hp == 0 then
 		note(s, Text.SEU_COMPANHEIRO_ESTA_EXAUSTO_TROQUE_DE_FERA_OU_F_43D62C, "faint")
 	end
 end
--- Retorna false sem modificar estado para decisões inválidas.
-function R.step(s, action, pet, rng, seals, room)
-	if s.status ~= "active" then
+
+function R.step(state: BattleState, action: string, pet: { uid: string, id: string, lv: number }?, rng: Random, seals: number, room: boolean): (boolean, string?)
+	if state.status ~= "active" then
 		return false, Text.ESTE_ENCONTRO_TERMINOU_EC2596
 	end
-	if s.turn >= R.MaxTurns then
-		s.status = "escaped"
+	if state.turn >= R.MaxTurns then
+		state.status = "escaped"
 		return true
 	end
-	local current = s.active and s.party[s.active]
+
+	local current = state.active and state.party[state.active]
+
+	-- Validate action
 	if action == "Select" then
 		if not pet or not C.ById[pet.id] or not pet.uid then
 			return false, Text.ESCOLHA_UMA_FERA_SUA_699F8C
 		end
-		if pet.uid == s.active then
+		if pet.uid == state.active then
 			return false, Text.ESSA_FERA_JA_ESTA_EM_CAMPO_198AD6
 		end
 		local n = 0
-		for _ in s.party do
-			n += 1
-		end
-		if not s.party[pet.uid] and n >= R.MaxParty then
+		for _ in state.party do n += 1 end
+		if not state.party[pet.uid] and n >= R.MaxParty then
 			return false, Text.EQUIPE_LIMITADA_A_TRES_FERAS_POR_ENCONTRO_31F83A
 		end
-		if s.party[pet.uid] and s.party[pet.uid].hp <= 0 then
+		if state.party[pet.uid] and state.party[pet.uid].hp <= 0 then
 			return false, Text.ESSA_FERA_ESTA_EXAUSTA_89922B
 		end
 	elseif action == "Strike" or action == "Skill" or action == "Guard" then
 		if not current or current.hp <= 0 then
 			return false, Text.SELECIONE_UMA_FERA_DISPONIVEL_94CE80
 		end
-		if action == "Skill" and s.turn < (current.nextSkill or 0) then
+		if action == "Skill" and state.turn < (current.nextSkill or 0) then
 			return false, Text.HABILIDADE_RECARREGANDO_5B6E68
 		end
 	elseif action == "Capture" then
-		if s.capturable == false then
+		if state.capturable == false then
 			return false, Text.GUARDIOES_NAO_PODEM_SER_CAPTURADOS_CA285E
 		end
 		if seals < 1 then
@@ -1580,132 +3187,195 @@ function R.step(s, action, pet, rng, seals, room)
 		if not room then
 			return false, Text.INVENTARIO_CHEIO_NENHUM_SELO_FOI_GASTO_7FC7F9
 		end
-	elseif action == "Bond" and s.capturable == false then
+	elseif action == "Bond" and state.capturable == false then
 		return false, Text.ESTE_DESAFIO_EXIGE_UMA_BATALHA_14581F
-	elseif action ~= "Bond" and action ~= "Flee" then
+	elseif action == "UseItem" then
+		-- Handled separately
+	elseif action ~= "Bond" and action ~= "Flee" and action ~= "UseItem" then
 		return false, Text.ACAO_DESCONHECIDA_9BB0DF
 	end
-	s.log = {}
-	s.turn += 1
-	s.version += 1
-	s.spentSeal = false
+
+	state.log = {}
+	state.turn += 1
+	state.version += 1
+	state.spentSeal = false
+
 	if action == "Flee" then
-		s.status = "escaped"
-		note(s, Text.VOCE_VOLTOU_A_EXPLORACAO_29EB17)
+		state.status = "escaped"
+		note(state, Text.VOCE_VOLTOU_A_EXPLORACAO_29EB17)
 		return true
 	end
+
 	if action == "Select" then
-		local switching = s.active ~= nil and s.party[s.active].hp > 0
-		if not s.party[pet.uid] then
+		local switching = state.active ~= nil and state.party[state.active].hp > 0
+		if not state.party[pet.uid] then
 			local unit = R.stats(pet.id, pet.lv)
 			unit.maxHp = math.floor(unit.maxHp * R.TameHealth)
 			unit.atk = unit.atk * R.TamePower
 			unit.hp = unit.maxHp
 			unit.nextSkill = 0
-			s.party[pet.uid] = unit
+			state.party[pet.uid] = unit
 		end
-		s.active = pet.uid
-		note(s, C.ById[pet.id].name .. Text.ENTROU_EM_CAMPO_AC551A)
+		state.active = pet.uid
+		note(state, C.ById[pet.id].name .. Text.ENTROU_EM_CAMPO_AC551A)
 		if switching then
-			reply(s, false, rng)
+			reply(state, false, rng)
 		end
 	elseif action == "Capture" then
-		s.spentSeal = true
-		s.attempts += 1
-		if rng:NextNumber() < R.chance(s) then
-			s.status = "captured"
-			note(s, Text.VINCULO_ESTABELECIDO_21A0FC, "capture")
+		state.spentSeal = true
+		state.attempts += 1
+		if rng:NextNumber() < R.chance(state) then
+			state.status = "captured"
+			note(state, Text.VINCULO_ESTABELECIDO_21A0FC, "capture")
 		else
-			note(s, Text.O_SELO_SE_DESFEZ_A_FERA_RESISTIU_ECB4B5, "miss")
+			note(state, Text.O_SELO_SE_DESFEZ_A_FERA_RESISTIU_ECB4B5, "miss")
 			if current and current.hp > 0 then
-				reply(s, false, rng)
-			elseif not s.isLegendary and (rng:NextNumber() < 0.3 or s.attempts >= 6) then
-				s.status = "escaped"
-				note(s, Text.A_FERA_FUGIU_5FDD82)
+				reply(state, false, rng)
+			elseif not state.isLegendary and (rng:NextNumber() < 0.3 or state.attempts >= 6) then
+				state.status = "escaped"
+				note(state, Text.A_FERA_FUGIU_5FDD82)
 			end
 		end
 	elseif action == "Bond" then
-		s.bond = math.min(3, s.bond + 1)
-		note(s, Text.VOCE_SE_APROXIMOU_COM_CUIDADO_VINCULO_555F67 .. s.bond .. "/3.", "bond")
+		state.bond = math.min(3, state.bond + 1)
+		note(state, Text.VOCE_SE_APROXIMOU_COM_CUIDADO_VINCULO_555F67 .. state.bond .. "/3.", "bond")
 		if current and current.hp > 0 then
-			reply(s, false, rng)
-		elseif not s.isLegendary and rng:NextNumber() < 0.15 then
-			s.status = "escaped"
-			note(s, Text.A_FERA_SE_ASSUSTOU_E_FUGIU_FF44C5)
+			reply(state, false, rng)
+		elseif not state.isLegendary and rng:NextNumber() < 0.15 then
+			state.status = "escaped"
+			note(state, Text.A_FERA_SE_ASSUSTOU_E_FUGIU_FF44C5)
 		end
 	elseif action == "Guard" then
 		current.hp = math.min(current.maxHp, current.hp + math.floor(current.maxHp * 0.08))
-		note(s, Text.SUA_FERA_RECUPEROU_O_FOLEGO_E_SE_PROTEGEU_08D205, "guard")
-		reply(s, true, rng)
-	else
+		current.evade = true
+		note(state, Text.SUA_FERA_RECUPEROU_O_FOLEGO_E_SE_PROTEGEU_08D205, "guard")
+		reply(state, true, rng)
+	elseif action == "Strike" or action == "Skill" then
 		local skill = Skills[C.ById[current.id].shape]
-		local power = action == "Skill" and skill.power or 1
-		local enemyFirst = s.foe.speed > current.speed
-		if enemyFirst then
-			reply(s, false, rng)
-		end
-		if current.hp > 0 then
-			if action == "Skill" then
-				current.nextSkill = s.turn + 3
-				if skill.effect == "heal" then
-					current.hp = math.min(current.maxHp, current.hp + math.floor(current.maxHp * 0.12))
-				elseif skill.effect == "evade" then
-					current.evade = true
-				elseif skill.effect == "weaken" then
-					s.foe.atk = math.max(1, math.floor(s.foe.atk * 0.85))
-				elseif skill.effect == "slow" then
-					s.foe.speed = math.max(1, math.floor(s.foe.speed * 0.8))
-				end
-				note(s, skill.name .. "!", "skill")
+		local moveData = Moves.getMove(current.id, action == "Skill")
+		local power = action == "Skill" and (moveData and moveData.power or skill.power) or 1
+		local enemyFirst = state.foe.speed > current.speed
+
+		-- Check if can act
+		local actResult = R.canAct(current, rng)
+		if actResult and not actResult.canAct then
+			for _, entry in actResult.log do
+				note(state, entry.text, entry.kind)
 			end
-			local amount = math.floor(
-				R.damage(
-					current,
-					s.foe,
-					power * (1 - R.DamageVariance + rng:NextNumber() * R.DamageVariance * 2),
-					false
-				) + rng:NextNumber()
-			)
-			s.foe.hp = math.max(0, s.foe.hp - amount)
-			note(
-				s,
-				Text.SUA_FERA_CAUSOU_9F1A6C
-					.. amount
-					.. Text.DE_DANO_949A5C
-					.. (Elements.mult(current.el, s.foe.el) > 1 and Text.VANTAGEM_ELEMENTAL_C12EBC or "."),
-				"hit"
-			)
-			s.log[#s.log].amount = amount
-			s.log[#s.log].health = s.foe.hp / s.foe.maxHp
-			s.log[#s.log].mult = Elements.mult(current.el, s.foe.el)
-			if s.foe.hp == 0 then
-				s.status = "won"
-				note(s, Text.VITORIA_FERAS_EXAUSTAS_NAO_PODEM_SER_CAPTURADAS_08B05D, "win")
-			elseif not enemyFirst then
-				reply(s, false, rng)
+			if enemyFirst then
+				reply(state, false, rng)
+			end
+		else
+			if enemyFirst then
+				reply(state, false, rng)
+			end
+
+			if current.hp > 0 then
+				if action == "Skill" and moveData then
+					current.nextSkill = state.turn + (moveData.cooldown or 3)
+					-- Apply move effects
+					if moveData.effect then
+						R.applyMoveEffect(current, state.foe, moveData, state, rng)
+					end
+					note(state, moveData.name .. "!", "skill")
+				end
+
+				local amount = math.floor(R.damage(current, state.foe, power * (1 - R.DamageVariance + rng:NextNumber() * R.DamageVariance * 2), false, moveData) + rng:NextNumber())
+				state.foe.hp = math.max(0, state.foe.hp - amount)
+
+				local mult = Elements.mult(current.el, state.foe.el)
+				note(state,
+					Text.SUA_FERA_CAUSOU_9F1A6C .. amount .. Text.DE_DANO_949A5C .. (mult > 1 and Text.VANTAGEM_ELEMENTAL_C12EBC or mult < 1 and Text.RESISTENCIA_ELEMENTAL_8F4A4A or "."),
+					"hit"
+				)
+				state.log[#state.log].amount = amount
+				state.log[#state.log].health = state.foe.hp / state.foe.maxHp
+				state.log[#state.log].mult = mult
+
+				if state.foe.hp == 0 then
+					state.status = "won"
+					note(state, Text.VITORIA_FERAS_EXAUSTAS_NAO_PODEM_SER_CAPTURADAS_08B05D, "win")
+				elseif not enemyFirst then
+					reply(state, false, rng)
+				end
 			end
 		end
 	end
-	if s.status == "active" and s.active and s.party[s.active].hp <= 0 then
-		local count, alive = 0, false
-		for _, unit in s.party do
-			count += 1
-			if unit.hp > 0 then
-				alive = true
+
+	-- Tick status effects on active combatant
+	if current then
+		local statusLog = R.tickStatus(current, rng)
+		if statusLog then
+			for _, entry in statusLog do
+				note(state, entry.text, entry.kind)
 			end
+		end
+	end
+
+	-- Tick status effects on foe
+	local foeStatusLog = R.tickStatus(state.foe, rng)
+	if foeStatusLog then
+		for _, entry in foeStatusLog do
+			note(state, entry.text, entry.kind)
+		end
+	end
+
+	-- Check for faint
+	if state.status == "active" and state.active and state.party[state.active].hp <= 0 then
+		local count, alive = 0, false
+		for _, unit in state.party do
+			count += 1
+			if unit.hp > 0 then alive = true end
 		end
 		if count >= R.MaxParty and not alive then
-			s.status = "lost"
-			note(s, Text.SUA_EQUIPE_ESTA_EXAUSTA_RETORNE_PARA_SE_PREPARAR_65F135, "loss")
+			state.status = "lost"
+			note(state, Text.SUA_EQUIPE_ESTA_EXAUSTA_RETORNE_PARA_SE_PREPARAR_65F135, "loss")
 		end
 	end
-	if s.status == "active" and s.turn >= R.MaxTurns then
-		s.status = "escaped"
-		note(s, Text.O_ENCONTRO_TERMINOU_PELO_LIMITE_DE_TURNOS_28EB70)
+
+	if state.status == "active" and state.turn >= R.MaxTurns then
+		state.status = "escaped"
+		note(state, Text.O_ENCONTRO_TERMINOU_PELO_LIMITE_DE_TURNOS_28EB70)
 	end
+
 	return true
 end
-function R.resolve(id, level, enemy, enemyLevel, rng)
+
+function R.applyMoveEffect(attacker: Combatant, defender: Combatant, move: Moves.MoveData, state: BattleState, rng: Random)
+	if not move.effect then return end
+
+	local effect = move.effect
+	local chance = effect.chance or 1
+
+	if rng:NextNumber() >= chance then return end
+
+	if effect.type == "status" then
+		R.applyStatus(defender, effect.status, effect.duration or 3, move.name, effect.potency)
+	elseif effect.type == "stat" then
+		R.modifyStatStage(defender, effect.stat, effect.stages)
+	elseif effect.type == "heal" then
+		local heal = math.floor(attacker.maxHp * (effect.amount or 0.125))
+		attacker.hp = math.min(attacker.maxHp, attacker.hp + heal)
+	elseif effect.type == "drain" then
+		local dmg = math.floor(R.damage(attacker, defender, move.power * (effect.drainRatio or 0.5), false, move))
+		defender.hp = math.max(0, defender.hp - dmg)
+		attacker.hp = math.min(attacker.maxHp, attacker.hp + dmg)
+	elseif effect.type == "multiHit" then
+		-- Handled in damage calculation
+	elseif effect.type == "recharge" then
+		attacker.nextSkill = (attacker.nextSkill or 0) + (effect.turns or 1)
+	elseif effect.type == "flinch" then
+		-- Target loses next turn
+		defender.status.flinch = { type = "flinch", duration = 1 }
+	elseif effect.type == "critBoost" then
+		attacker.statStages = attacker.statStages or { atk = 0, def = 0, speed = 0, spAtk = 0, spDef = 0, accuracy = 0, evasion = 0 }
+		R.modifyStatStage(attacker, "spAtk", 1)
+	elseif effect.type == "protect" then
+		attacker.status.protect = { type = "protect", duration = 1 }
+	end
+end
+
+function R.resolve(id: string, level: number, enemy: string, enemyLevel: number, rng: Random)
 	local state = R.new(enemy, enemyLevel)
 	local log = {}
 	R.step(state, "Select", { id = id, lv = level, uid = "active" }, rng, 0, true)
@@ -1714,17 +3384,128 @@ function R.resolve(id, level, enemy, enemyLevel, rng)
 		R.step(state, action, nil, rng, 0, true)
 		for _, event in state.log do
 			if event.amount then
-				table.insert(
-					log,
-					{ me = event.kind == "hit", dmg = event.amount, hp = event.health, mult = event.mult }
-				)
+				table.insert(log, { me = event.kind == "hit", dmg = event.amount, hp = event.health, mult = event.mult })
 			end
 		end
 	end
 	return log, state.status == "won"
 end
-return R
 
+-- Legendary Ascension (Mega Evolution equivalent)
+function R.checkAscension(pet: Combatant, heldItem: string?): boolean
+	if not pet.isLegendary then return false end
+	if pet.lv < 100 then return false end
+	-- Check for specific ascension items
+	local ascensionItems = {
+		fenix = "CinaSolar",
+		vulcanodrago = "NucleoVulcanico",
+		abissauro = "PerolaAbissal",
+		ancestravore = "SementePrimordial",
+		colossodune = "CoracaoDasDunas",
+		aeronimbo = "OlhoDaTempestade",
+		reinevoento = "CoroaDoNevoeiro",
+	}
+	return ascensionItems[pet.id] == heldItem
+end
+
+function R.applyAscension(pet: Combatant): Combatant
+	local ascended = table.clone(pet)
+	ascended.maxHp = math.floor(ascended.maxHp * 1.5)
+	ascended.hp = ascended.maxHp
+	ascended.atk = ascended.atk * 1.4
+	ascended.def = ascended.def * 1.3
+	ascended.speed = ascended.speed * 1.2
+	ascended.isLegendary = true
+	ascended.ascended = true
+	ascended.ascensionTurn = 0
+	return ascended
+end
+
+-- Horde battle support
+function R.newHorde(foeId: string, foeLevel: number, count: number, settings: { statMultiplier: number?, captureBase: number? }?): BattleState
+	settings = settings or {}
+	local foes = {}
+	for i = 1, math.min(count, R.HordeSize) do
+		local foe = R.stats(foeId, foeLevel)
+		foe.hp = foe.maxHp
+		for _, key in { "maxHp", "atk", "def", "speed" } do
+			foe[key] = foe[key] * (settings.statMultiplier or 1)
+			if key == "maxHp" then
+				foe[key] = math.floor(foe[key])
+				foe.hp = foe[key]
+			end
+		end
+		table.insert(foes, foe)
+	end
+
+	return {
+		foe = foes[1],
+		foes = foes,
+		party = {},
+		active = nil,
+		bond = 0,
+		turn = 0,
+		version = 0,
+		status = "active",
+		log = {},
+		attempts = 0,
+		capturable = true,
+		isLegendary = false,
+		captureBase = settings.captureBase,
+		battleType = "horde",
+		field = {
+			weather = nil,
+			terrain = nil,
+			gravity = 1,
+			trickRoom = false,
+			tailwind = {},
+		},
+	}
+end
+
+-- Double battle support
+function R.newDouble(foeId1: string, foeLevel1: number, foeId2: string, foeLevel2: number, settings: { statMultiplier: number? }?): BattleState
+	settings = settings or {}
+	local foe1 = R.stats(foeId1, foeLevel1)
+	local foe2 = R.stats(foeId2, foeLevel2)
+	foe1.hp = foe1.maxHp
+	foe2.hp = foe2.maxHp
+	for _, key in { "maxHp", "atk", "def", "speed" } do
+		foe1[key] = foe1[key] * (settings.statMultiplier or 1)
+		foe2[key] = foe2[key] * (settings.statMultiplier or 1)
+		if key == "maxHp" then
+			foe1[key] = math.floor(foe1[key])
+			foe1.hp = foe1[key]
+			foe2[key] = math.floor(foe2[key])
+			foe2.hp = foe2[key]
+		end
+	end
+
+	return {
+		foe = foe1,
+		foes = { foe1, foe2 },
+		party = {},
+		active = nil,
+		bond = 0,
+		turn = 0,
+		version = 0,
+		status = "active",
+		log = {},
+		attempts = 0,
+		capturable = false,
+		isLegendary = false,
+		battleType = "double",
+		field = {
+			weather = nil,
+			terrain = nil,
+			gravity = 1,
+			trickRoom = false,
+			tailwind = {},
+		},
+	}
+end
+
+return R
 end)()
 local M_Economy=(function()
 --!strict
@@ -1763,6 +3544,7 @@ local M = M_Missions
 local SR = M_SanctuaryRules
 local CaptureRules = M_CaptureRules
 local Story = M_Story
+local EvolutionService = require(script.Parent.EvolutionService)
 local Progression = M_Progression
 local Combat = M_CombatRules
 local Transport = Transport
@@ -1981,6 +3763,10 @@ function A.Feed(p, uid)
 	cr.lv += 1
 	bump(d, "feed")
 	World.refresh(p)
+	-- Check for auto-evolution on level up
+	task.spawn(function()
+		EvolutionService.checkAutoEvolution(p, uid)
+	end)
 	return ok(
 		p,
 		Text.SUBIU_PARA_O_NIVEL_0AB637

@@ -211,6 +211,186 @@ S.Text = {
 	FALHA_AO_SALVAR_PERFIL_DE_B99672 = "Falha ao salvar perfil de ",
 	FECHAR_7B2006 = "Fechar",
 	FENIX_A08C9E = "Fênix",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
 	FENIX_FULIGEM_64EF6D = "Fênix Fuligem",
 	FENIX_LENDARIA_NV_60_A1FE17 = "FÊNIX · LENDÁRIA · Nv. 60",
 	FERAS_EF033A = "Feras",
@@ -333,6 +513,9 @@ S.Text = {
 	RARO_851816 = "Raro",
 	RECEBER_CAPITULO_3ACD37 = "Receber capítulo",
 	RECIFE_CRISTALINO_8D7A14 = "Recife Cristalino",
+	ILHA_DE_INVERNO_8F4E2A = "Ilha de Inverno",
+	ILHA_DO_TROVAO_9E5F3B = "Ilha do Trovão",
+	ILHA_CELESTIAL_A0F1C2 = "Ilha Celestial",
 	RECOMPENSA_DIARIA_SEQUENCIA_B9C689 = "Recompensa diária (sequência ",
 	REFORCADO_A930AC = "Reforçado",
 	REGIAO_BLOQUEADA_47B5A8 = "Região bloqueada: ",
@@ -371,6 +554,9 @@ S.Text = {
 	SEU_SANTUARIO_9_POSICOES_SELECIONE_UMA_POSICAO_E_400064 = "Seu santuário • 9 posições\nSelecione uma posição e construa ou mova um habitat.",
 	SOCIAVEL_3658F4 = "Sociável",
 	SOMBRA_94B135 = "Sombra",
+	GELO_4A90D9 = "Gelo",
+	ELETRICO_FFD600 = "Elétrico",
+	LUZ_FFF9C4 = "Luz",
 	SOM_OFF_D3D9A2 = "Som OFF",
 	SOM_ON_ACD88F = "Som ON",
 	SOPRO_ANCESTRAL_8CD748 = "Sopro ancestral",
@@ -424,6 +610,9 @@ S.Text = {
 	VOLTAR_A_EXPLORACAO_8F4A4A = "Voltar à exploração",
 	VOLTE_AMANHA_E195DE = "Volte amanhã!",
 	VULCOES_E_RIOS_DE_MAGMA_300BD6 = "Vulcões e rios de magma.",
+	CITADELA_DE_GELO_E_AURORA_BOREAL_1A3B4C = "Cidadela de gelo, caverna dos cristais e aurora boreal.",
+	TORRE_DO_RELAMPAGO_E_TEMPORTE_PERPETUA_2B4D6E = "Torre do relâmpago, núcleo energético e tempestade perpétua.",
+	OBSERVATORIO_COSMICO_E_ESTRELAS_VIVAS_3C5E7F = "Observatório cósmico, jardim das estrelas e constelações vivas."
 	XP_DA_FERA_1A37A2 = " XP da fera.",
 	XP_E_5EFA95 = " XP e +",
 }
@@ -609,6 +798,97 @@ add(
 	"Dragon",
 	{ Text.FOGO_F77A3C, Text.AR_B623FF }
 )
+add("flamiris", Text.FLAMIRIS_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("carvunio", Text.CARVUNIO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("brasegato", Text.BRASEGATO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("orvalume", Text.ORVALUME_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("coralina", Text.CORALINA_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("pelaguir", Text.PELAGUIR_NAME, Text.AGUA_F11A05, 2, "Recife", "Aquatic")
+add("musgalte", Text.MUSGALTE_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("bambuja", Text.BAMBUJA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("florabelha", Text.FLORABELHA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Arthropod")
+add("marmure", Text.MARMURE_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("litorisco", Text.LITORISCO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Mineral")
+add("sementauro", Text.SEMENTAURO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("sibilobo", Text.SIBILOBO_NAME, Text.AR_B623FF, 2, "Picos", "Quadruped")
+add("cirrandor", Text.CIRRANDOR_NAME, Text.AR_B623FF, 2, "Picos", "Winged")
+add("nimboreo", Text.NIMBOREO_NAME, Text.AR_B623FF, 2, "Picos", "Draconic")
+add("velune", Text.VELUNE_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("obsidauro", Text.OBSIDAURO_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("velumosa", Text.VELUMOSA_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Winged")
+add("glaurina", Text.GLAURINA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("niveor", Text.NIVEOR_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("gelifoca", Text.GELIFOCA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Aquatic")
+add("fulgarru", Text.FULGARRU_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("ampelince", Text.AMPELINCE_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("trovissideo", Text.TROVISSIDEO_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Arthropod")
+add("aurifita", Text.AURIFITA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("lunarru", Text.LUNARRU_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("candeira", Text.CANDEIRA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Arthropod")
+add("ferrunila", Text.FERRUNILA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Quadruped")
+add("fiaranha", Text.FIARANHA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Arthropod")
+add("metafalcao", Text.METAFALCAO_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Winged")
+add("cindrel", Text.CINDREL_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Mineral")
+add("emberkit", Text.EMBERKIT_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("sparkpup", Text.SPARKPUP_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("flamecub", Text.FLAMECUB_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("coalcrawler", Text.COALCRAWLER_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Arthropod")
+add("aquasprite", Text.AQUASPRITE_NAME, Text.AGUA_F11A05, 1, "Recife", "Aquatic")
+add("droplet", Text.DROPLET_NAME, Text.AGUA_F11A05, 1, "Recife", "Mineral")
+add("finling", Text.FINLING_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("tidepup", Text.TIDEPUP_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("coralkit", Text.CORALKIT_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("leaflet", Text.LEAFLET_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Vegetal")
+add("seedling", Text.SEEDLING_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Mineral")
+add("sprou", Text.SPROU_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("vinecub", Text.VINECUB_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("petalpaw", Text.PETALPAW_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("pebblin", Text.PEBBLIN_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("rockling", Text.ROCKLING_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("sandpup", Text.SANDPUP_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("dunecub", Text.DUNECUB_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("geodette", Text.GEODETTE_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Arthropod")
+add("zephyr", Text.ZEPHYR_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("cloudpuff", Text.CLOUDPUFF_NAME, Text.AR_B623FF, 1, "Picos", "Mineral")
+add("breezekit", Text.BREEZEKIT_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("galehatch", Text.GALEHATCH_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("windling", Text.WINDLING_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("shade", Text.SHADE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Spectral")
+add("shadowmite", Text.SHADOWMITE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Mineral")
+add("gloomkit", Text.GLOOMKIT_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("duskpup", Text.DUSKPUP_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("nightmoth", Text.NIGHTMOTH_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Arthropod")
+add("frostbit", Text.FROSTBIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("icecrystal", Text.ICECRYSTAL_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("snowkit", Text.SNOWKIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("glaciercub", Text.GLACIERCUB_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("frostling", Text.FROSTLING_NAME, Text.GELO_4A90D9, 1, "Dunas", "Winged")
+add("voltkit", Text.VOLTKIT_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("sparkling", Text.SPARKLING_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Mineral")
+add("jolteon", Text.JOLTEON_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("zapcub", Text.ZAPCUB_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("buzzbug", Text.BUZZBUG_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Arthropod")
+add("lumikit", Text.LUMIKIT_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("gloworb", Text.GLOWORB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Mineral")
+add("solarpup", Text.SOLARPUP_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("raycub", Text.RAYCUB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("prismfly", Text.PRISMFLY_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Arthropod")
+add("ironkit", Text.IRONKIT_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("scraplet", Text.SCRAPLET_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Mineral")
+add("boltpup", Text.BOLTPUP_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("gearcub", Text.GEARCUB_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("rivetbug", Text.RIVETBUG_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Arthropod")
+add("gemling", Text.GEMLING_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("shardlet", Text.SHARDLET_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("crystalkit", Text.CRYSTALKIT_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("prismpup", Text.PRISMPUP_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("facetbug", Text.FACETBUG_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Arthropod")
+add("runeling", Text.RUNELING_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Spectral")
+add("mysticorb", Text.MYSTICORB_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Mineral")
+add("arcankit", Text.ARCANKIT_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("voidpup", Text.VOIDPUP_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("sigilbug", Text.SIGILBUG_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Arthropod")
+
 -- Fênix é uma espécie adicional; Fênix Fuligem e seus IDs permanecem intactos.
 add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
 C.ById.fenix.acquisition = "special"
@@ -715,22 +995,134 @@ return G
 end)()
 local M_LevelBands=(function()
 --!strict
-local L = { Order = { "Alvorecer", "Brasa", "Recife", "Floresta", "Dunas", "Picos", "Pantano" }, ById = {} }
+-- Bandas de nível por ilha (10 ilhas, 12 capítulos)
+-- Cada banda define: nível mínimo/máximo, guardião, custo de desbloqueio
+
+local L = {
+	Order = { "Alvorecer", "Brasa", "Recife", "Floresta", "Dunas", "Picos", "Pantano", "Inverno", "Trovao", "Celestial" },
+	ById = {}
+}
+
+-- Configuração por ilha: minLevel, maxLevel, guardianLevel, unlockCost, chapter
+local BAND_DATA = {
+	Alvorecer  = { min = 1,   max = 9,   guardian = 11, cost = 0,      chapter = 1,  name = "Capítulo 1: O Despertar" },
+	Brasa      = { min = 10,  max = 17,  guardian = 19, cost = 1440,   chapter = 2,  name = "Capítulo 2: Brasas Eternas" },
+	Recife     = { min = 18,  max = 25,  guardian = 27, cost = 3384,   chapter = 3,  name = "Capítulo 3: Marés de Cristal" },
+	Floresta   = { min = 26,  max = 33,  guardian = 35, cost = 5112,   chapter = 4,  name = "Capítulo 4: Sussurros da Floresta" },
+	Dunas      = { min = 34,  max = 41,  guardian = 43, cost = 6840,   chapter = 5,  name = "Capítulo 5: Ruínas da Areia" },
+	Picos      = { min = 42,  max = 49,  guardian = 51, cost = 8568,   chapter = 6,  name = "Capítulo 6: Ventos Celestes" },
+	Pantano    = { min = 50,  max = 57,  guardian = 59, cost = 10296,  chapter = 7,  name = "Capítulo 7: Sombras do Pântano" },
+	Inverno    = { min = 58,  max = 67,  guardian = 69, cost = 15000,  chapter = 8,  name = "Capítulo 8: Gelo Eterno" },
+	Trovao     = { min = 68,  max = 77,  guardian = 79, cost = 22000,  chapter = 9,  name = "Capítulo 9: Tempestade Perpétua" },
+	Celestial  = { min = 78,  max = 89,  guardian = 91, cost = 35000,  chapter = 10, name = "Capítulo 10: Observatório Cósmico" },
+}
+
+-- Ilhas pós-jogo (prestígio/lendárias) - capítulos 11-12
+local POSTGAME_BANDS = {
+	Prestigio  = { min = 90,  max = 100, guardian = 105, cost = 50000, chapter = 11, name = "Capítulo 11: Caminho do Prestígio" },
+	Lendarias  = { min = 100, max = 200, guardian = 210, cost = 100000, chapter = 12, name = "Capítulo 12: Ascensão Lendária" },
+}
+
 for index, id in L.Order do
-	local minimum = ({ 1, 10, 18, 26, 34, 42, 50 })[index]
-	local maximum = ({ 9, 17, 25, 33, 41, 49, 57 })[index]
+	local data = BAND_DATA[id]
+	local previous = L.Order[index - 1]
+
 	L.ById[id] = {
 		id = id,
 		index = index,
-		min = minimum,
-		max = maximum,
-		guardian = maximum + 2,
-		previous = L.Order[index - 1],
-		cost = ({ 0, 1440, 3384, 5112, 6840, 8568, 10296 })[index],
+		min = data.min,
+		max = data.max,
+		guardian = data.guardian,
+		previous = previous,
+		cost = data.cost,
+		chapter = data.chapter,
+		chapterName = data.name,
 	}
 end
-return L
 
+-- Adiciona bandas de pós-jogo
+L.ById.Prestigio = {
+	id = "Prestigio",
+	index = 11,
+	min = POSTGAME_BANDS.Prestigio.min,
+	max = POSTGAME_BANDS.Prestigio.max,
+	guardian = POSTGAME_BANDS.Prestigio.guardian,
+	previous = "Celestial",
+	cost = POSTGAME_BANDS.Prestigio.cost,
+	chapter = POSTGAME_BANDS.Prestigio.chapter,
+	chapterName = POSTGAME_BANDS.Prestigio.name,
+	isPostgame = true,
+}
+
+L.ById.Lendarias = {
+	id = "Lendarias",
+	index = 12,
+	min = POSTGAME_BANDS.Lendarias.min,
+	max = POSTGAME_BANDS.Lendarias.max,
+	guardian = POSTGAME_BANDS.Lendarias.guardian,
+	previous = "Prestigio",
+	cost = POSTGAME_BANDS.Lendarias.cost,
+	chapter = POSTGAME_BANDS.Lendarias.chapter,
+	chapterName = POSTGAME_BANDS.Lendarias.name,
+	isPostgame = true,
+}
+
+-- Retorna a banda para um nível de jogador
+function L.bandForLevel(level: number)
+	for _, id in L.Order do
+		local b = L.ById[id]
+		if level >= b.min and level <= b.max then
+			return b
+		end
+	end
+	-- Pós-jogo
+	if level >= L.ById.Prestigio.min and level <= L.ById.Prestigio.max then
+		return L.ById.Prestigio
+	end
+	if level >= L.ById.Lendarias.min then
+		return L.ById.Lendarias
+	end
+	return L.ById.Alvorecer
+end
+
+-- Próxima banda desbloqueável
+function L.nextUnlocked(profile)
+	for _, id in L.Order do
+		if not (profile.unlocked and profile.unlocked[id]) then
+			return L.ById[id]
+		end
+	end
+	if profile.prestige and profile.prestige > 0 and not profile.unlocked.Prestigio then
+		return L.ById.Prestigio
+	end
+	return nil
+end
+
+-- Verifica se uma banda está disponível para desbloqueio
+function L.canUnlock(profile, bandId: string)
+	local band = L.ById[bandId]
+	if not band then return false, "UNKNOWN_BAND" end
+
+	if profile.unlocked and profile.unlocked[bandId] then
+		return false, "ALREADY_UNLOCKED"
+	end
+
+	if band.previous and not (profile.unlocked and profile.unlocked[band.previous]) then
+		return false, "PREVIOUS_LOCKED"
+	end
+
+	if (profile.playerLevel or 1) < band.min then
+		return false, "LEVEL_TOO_LOW"
+	end
+
+	if (profile.gold or 0) < band.cost then
+		return false, "NOT_ENOUGH_GOLD"
+	end
+
+	return true, "OK"
+end
+
+return L
 end)()
 local M_Islands=(function()
 --!nonstrict
@@ -1457,9 +1849,13 @@ local warn=function() end
 local function who(id) return {UserId=id,Name="Teste",Kick=function(self,reason) self.kicked=reason end} end
 local function factory()
 --!nonstrict
+-- Serviço de dados: gerenciamento de perfil, saves, migração, proteção contra corrupção
 local Text = M_Strings.Text
 local DSS = game:GetService("DataStoreService")
 local RS = game:GetService("ReplicatedStorage")
+local Http = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+
 local C = M_Creatures
 local I = M_Islands
 local M = M_Missions
@@ -1470,13 +1866,18 @@ local Quest = M_PhoenixQuest
 local Access = M_Access
 local Grant = M_CreatureGrant
 local CaptureRules = M_CaptureRules
+local Progression = M_Progression
+local Config = M_Config
+
 local store = DSS:GetDataStore("ArquipelagoV1")
 local D = {}
 local profiles = {}
-local VERSION = M_Config.ProfileVersion
 local sessions = {}
-local Http = game:GetService("HttpService")
+local VERSION = Config.ProfileVersion
 local LEASE = 180
+local AUTOSAVE_INTERVAL = 60 -- segundos
+
+-- Deep clone para imutabilidade
 local function clone(t)
 	local out = {}
 	for k, v in t do
@@ -1484,15 +1885,17 @@ local function clone(t)
 	end
 	return out
 end
+
+-- Perfil padrão para novos jogadores
 local function default()
 	local result = {
 		v = VERSION,
 		gold = 100,
 		gems = 5,
 		seals = 5,
+		sealStock = {},
 		playerLevel = 1,
 		playerXp = 0,
-		sealStock = {},
 		companion = nil,
 		storyClaimed = {},
 		guardians = {},
@@ -1517,35 +1920,48 @@ local function default()
 		unlocked = { Alvorecer = true },
 		legacyGrandfathered = {},
 		grants = {},
-		phoenix = { glyphs = {}, sanctuaryOpen = false, attempts = 0, nextAttemptAt = 0, captured = false },
+		phoenix = { glyphs = {}, sanctuaryOpen = false, attempts = 0, nextAttemptAt = 0, captured = false, captureCount = 0 },
 		legacyEggPermits = {},
 		discovered = {},
+		prestige = 0,
+		prestigeBonus = 0,
+		offlineGold = 0,
+		offlineCreatureXp = 0,
 	}
+	-- Starter creatures
 	assert(Grant.grant(result, "brotinho", "starter", "starter:1"))
 	assert(Grant.grant(result, "folhuco", "starter", "starter:2"))
 	return result
 end
--- Registro corrompido é recusado. Nunca substituir um perfil real por padrões.
+
+-- Validação rigorosa do perfil (nunca substitui perfil real por padrão)
 function D.validate(raw)
 	if raw ~= nil then
 		local migrated, reason = Migration.run(raw)
 		assert(migrated, reason)
 		raw = migrated
 	end
+
 	local d = default()
 	if raw == nil then
 		return d
 	end
-	local seeds = d
+
 	d = clone(raw)
+
+	-- Preenche campos faltando com defaults
+	local seeds = default()
 	for key, value in seeds do
 		if d[key] == nil then
 			d[key] = value
 		end
 	end
+
+	-- Validação numérica segura
 	local function num(x, f, _mx)
 		return (typeof(x) == "number" and x == x and x >= 0 and x < math.huge) and math.floor(x) or f
 	end
+
 	d.seals = num(raw.seals, 5, 10000)
 	d.sealStock = clone(raw.sealStock or {})
 	for kind in CaptureRules.Seals do
@@ -1553,6 +1969,7 @@ function D.validate(raw)
 			d.sealStock[kind] = num(raw.sealStock[kind], 0, 10000)
 		end
 	end
+
 	d.gold = num(raw.gold, d.gold, 1e12)
 	d.gems = num(raw.gems, d.gems, 1e9)
 	d.wins = num(raw.wins, 0, 1e9)
@@ -1562,6 +1979,8 @@ function D.validate(raw)
 	d.legacyEggPermits = Migration.clone(raw.legacyEggPermits or {})
 	d.phoenix = Migration.clone(raw.phoenix or d.phoenix)
 	d.last = num(raw.last, os.time(), 1e12)
+
+	-- Criaturas: valida cada uma
 	local cr, n = {}, 0
 	for uid, c in raw.creatures do
 		if typeof(uid) == "string" and typeof(c) == "table" and C.ById[c.id] then
@@ -1572,6 +1991,8 @@ function D.validate(raw)
 		end
 	end
 	assert(n > 0, "CORRUPT_PROFILE")
+
+	-- Atualiza nextId baseado nos UIDs existentes
 	for uid in cr do
 		local uidNumber = tonumber(string.match(uid, "^u(%d+)$"))
 		if uidNumber then
@@ -1579,6 +2000,8 @@ function D.validate(raw)
 		end
 	end
 	d.creatures = cr
+
+	-- Descobertas
 	d.discovered = clone(raw.discovered or {})
 	for _, c in cr do
 		d.discovered[c.id] = true
@@ -1590,6 +2013,8 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Ilhas desbloqueadas
 	d.unlocked = clone(raw.unlocked or {})
 	d.unlocked.Alvorecer = true
 	if typeof(raw.unlocked) == "table" then
@@ -1599,6 +2024,7 @@ function D.validate(raw)
 			end
 		end
 	end
+
 	d.playerLevel = math.max(num(raw.playerLevel, 1, 100), 1)
 	d.playerXp = num(raw.playerXp, 0, 1e9)
 	d.companion = typeof(raw.companion) == "string" and cr[raw.companion] and raw.companion or nil
@@ -1606,6 +2032,7 @@ function D.validate(raw)
 	d.visited = clone(raw.visited or {})
 	d.materials = clone(raw.materials or {})
 	d.gatherAt = clone(raw.gatherAt or {})
+
 	for _, def in I.List do
 		if typeof(raw.guardians) == "table" and raw.guardians[def.id] == true then
 			d.guardians[def.id] = true
@@ -1620,6 +2047,7 @@ function D.validate(raw)
 			d.materials[def.el] = num(raw.materials[def.el], 0, 10000)
 		end
 	end
+
 	d.storyClaimed = clone(raw.storyClaimed or {})
 	if typeof(raw.storyClaimed) == "table" then
 		for id, claimed in raw.storyClaimed do
@@ -1628,9 +2056,11 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Santuário
 	if typeof(raw.sanctuary) == "table" then
 		d.sanctuary = clone(raw.sanctuary)
-	else -- Migração: habitats legados recebem posição própria; nenhuma criatura é removida.
+	else
 		d.sanctuary = {}
 		local slot = 0
 		for _, def in I.List do
@@ -1640,6 +2070,8 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Habitat: valida UIDs contra criaturas existentes
 	d.habitat = {}
 	local seen = {}
 	if typeof(raw.habitat) == "table" then
@@ -1656,6 +2088,8 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Garante que habitats com criaturas tenham slot no santuário
 	for id, list in d.habitat do
 		if #list > 0 and not d.sanctuary[id] then
 			for slot = 1, 9 do
@@ -1666,6 +2100,7 @@ function D.validate(raw)
 			end
 		end
 	end
+
 	d.stats = {}
 	d.claimed = clone(raw.claimed or {})
 	if typeof(raw.stats) == "table" then
@@ -1682,12 +2117,14 @@ function D.validate(raw)
 			end
 		end
 	end
+
 	d.trophies = num(raw.trophies, 0, 1e9)
 	d.tut = raw.tut == true
 	d.receipts = {}
 	d.pass = {}
 	d.dailyDay = num(raw.dailyDay, 0, 1e9)
 	d.streak = num(raw.streak, 0, 1e6)
+
 	if typeof(raw.receipts) == "table" then
 		for k, value in raw.receipts do
 			if value == true and typeof(k) == "string" then
@@ -1695,6 +2132,7 @@ function D.validate(raw)
 			end
 		end
 	end
+
 	d.eggs = {}
 	if typeof(raw.eggs) == "table" then
 		for _, e in raw.eggs do
@@ -1710,28 +2148,41 @@ function D.validate(raw)
 			end
 		end
 	end
+
+	-- Prestígio
+	d.prestige = num(raw.prestige, 0, 100)
+	d.prestigeBonus = typeof(raw.prestigeBonus) == "number" and raw.prestigeBonus or 0
+
 	return d
 end
--- Lease gravado atomicamente no MESMO registro legado (sem trocar a chave).
+
+-- Carrega perfil com session locking
 function D.load(p)
 	local token = Http:GenerateGUID(false)
 	local raw, ok
+
 	for attempt = 1, 3 do
 		ok, raw = pcall(function()
 			return store:UpdateAsync("P" .. p.UserId, function(old)
+				-- Rejeita perfil corrompido ou versão futura
 				if
 					old ~= nil
 					and (typeof(old) ~= "table" or typeof(old.creatures) ~= "table" or (old.v or 1) > VERSION)
 				then
 					error(Text.PERFIL_INVALIDO_OU_VERSAO_FUTURA_RECUPERACAO_MAN_C36F9F)
 				end
+
 				local lock = old and old._session
 				if lock and typeof(lock) ~= "table" then
 					error(Text.LEASE_INVALIDO_1F2C7F)
 				end
+
+				-- Verifica lease expirado
 				if lock and lock.token ~= token and (lock.expires or 0) > os.time() then
-					return nil
+					return nil -- Sessão ativa em outro servidor
 				end
+
+				-- Migração se necessário
 				local migrated
 				if old ~= nil then
 					local reason
@@ -1740,30 +2191,46 @@ function D.load(p)
 						error(reason)
 					end
 				end
+
 				local data = old == nil and default() or D.validate(migrated)
 				data._session = { token = token, expires = os.time() + LEASE }
 				return data
 			end)
 		end)
+
 		if ok then
 			break
 		end
 		task.wait(attempt)
 	end
+
 	if not ok or not raw then
 		p:Kick(Text.DADOS_INDISPONIVEIS_OU_SESSAO_AINDA_ATIVA_AGUARD_97BBDC)
 		return false
 	end
+
 	profiles[p] = D.validate(raw)
-	-- Uma sessão recuperada nunca retoma um encontro do processo anterior.
+
+	-- Limpa encontro de fênix de sessão anterior
 	profiles[p].phoenix.encounterId = nil
+
+	-- Calcula progresso offline
+	local now = os.time()
+	local offline = Progression.calculateOfflineProgress(profiles[p], now)
+	profiles[p].offlineGold = offline.gold
+	profiles[p].offlineCreatureXp = offline.creatureXp
+	-- Ovos chocados offline serão processados no cliente via snapshot
+
 	sessions[p] =
 		{ token = token, expires = raw._session.expires, busy = false, region = "Alvorecer", lastSafe = "Alvorecer" }
+
 	return true
 end
+
 function D.session(p)
 	return sessions[p]
 end
+
 function D.get(p)
 	local session = sessions[p]
 	if not session or session.expires <= os.time() or session.closing then
@@ -1771,6 +2238,8 @@ function D.get(p)
 	end
 	return profiles[p]
 end
+
+-- Snapshot para o cliente (sem dados sensíveis)
 function D.snapshot(p)
 	local d = clone(profiles[p])
 	d.receipts = nil
@@ -1790,20 +2259,27 @@ function D.snapshot(p)
 	end
 	local el, left = M.event(os.time())
 	d.event = { el = el, left = left }
+	d.offlineGold = d.offlineGold or 0
+	d.offlineCreatureXp = d.offlineCreatureXp or 0
 	return d
 end
+
+-- Salva perfil (atomicamente com session lock)
 function D.save(p, release)
 	local session = sessions[p]
 	local d = profiles[p]
 	if not session or not d then
 		return false
 	end
+
 	while session.busy do
 		task.wait()
 	end
+
 	if sessions[p] ~= session then
 		return false
 	end
+
 	session.busy = true
 	local payload = clone(d)
 	payload.pass = nil
@@ -1811,21 +2287,26 @@ function D.save(p, release)
 	for _, egg in payload.eggs do
 		egg.left = nil
 	end
+
 	local expiry = os.time() + LEASE
 	payload._session = not release and { token = session.token, expires = expiry } or nil
+
 	local ok, result = pcall(function()
 		return store:UpdateAsync("P" .. p.UserId, function(old)
 			if not old or not old._session or old._session.token ~= session.token then
-				return nil
+				return nil -- Token inválido (outra sessão salvou)
 			end
 			return payload
 		end)
 	end)
+
 	session.busy = false
+
 	if ok and result then
 		session.expires = expiry
 		return true
 	end
+
 	warn(Text.FALHA_AO_SALVAR_PERFIL_DE_B99672 .. p.Name)
 	if ok or os.time() >= session.expires then
 		session.closing = true
@@ -1833,6 +2314,8 @@ function D.save(p, release)
 	end
 	return false
 end
+
+-- Libera sessão (salva final)
 function D.release(p)
 	local session = sessions[p]
 	if not session then
@@ -1848,11 +2331,30 @@ function D.release(p)
 	profiles[p] = nil
 	sessions[p] = nil
 end
+
+-- Auto-save periódico
+task.spawn(function()
+	while true do
+		task.wait(AUTOSAVE_INTERVAL)
+		for p in profiles do
+			if sessions[p] and not sessions[p].closing then
+				D.save(p)
+			end
+		end
+	end
+end)
+
+-- BindToClose: salva todos ao fechar servidor
+game:BindToClose(function()
+	D.closeAll()
+end)
+
 function D.saveAll()
 	for p in profiles do
 		D.save(p)
 	end
 end
+
 function D.closeAll()
 	local pending = 0
 	for p in profiles do
@@ -1867,8 +2369,41 @@ function D.closeAll()
 		task.wait(0.1)
 	end
 end
-return D
 
+-- Aplica recompensas offline ao carregar
+function D.applyOfflineRewards(p)
+	local d = profiles[p]
+	if not d then return end
+
+	if (d.offlineGold or 0) > 0 then
+		d.gold = math.min(1e12, (d.gold or 0) + d.offlineGold)
+		d.offlineGold = 0
+	end
+
+	if (d.offlineCreatureXp or 0) > 0 then
+		-- Distribui XP entre criaturas no santuário
+		local creaturesInSanctuary = {}
+		if d.habitat then
+			for _, list in d.habitat do
+				for _, uid in list do
+					if d.creatures[uid] then
+						table.insert(creaturesInSanctuary, uid)
+					end
+				end
+			end
+		end
+
+		if #creaturesInSanctuary > 0 then
+			local xpEach = math.floor(d.offlineCreatureXp / #creaturesInSanctuary)
+			for _, uid in creaturesInSanctuary do
+				Progression.awardCreature(d.creatures[uid], xpEach)
+			end
+		end
+		d.offlineCreatureXp = 0
+	end
+end
+
+return D
 end
 local D=factory();local Other=factory()
 local old={v=3,gold=432,gems=12,creatures={u1={id="cinzelo",lv=20,xp=70},u99={id="bolhinho",lv=100,xp=3}},nextId=3,unlocked={Brasa=true,Recife=true},habitat={Brasa={"u1","u99"}},seals=4}

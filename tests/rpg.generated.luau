@@ -1,125 +1,133 @@
 local M_LevelBands=(function()
 --!strict
-local L = { Order = { "Alvorecer", "Brasa", "Recife", "Floresta", "Dunas", "Picos", "Pantano" }, ById = {} }
+-- Bandas de nível por ilha (10 ilhas, 12 capítulos)
+-- Cada banda define: nível mínimo/máximo, guardião, custo de desbloqueio
+
+local L = {
+	Order = { "Alvorecer", "Brasa", "Recife", "Floresta", "Dunas", "Picos", "Pantano", "Inverno", "Trovao", "Celestial" },
+	ById = {}
+}
+
+-- Configuração por ilha: minLevel, maxLevel, guardianLevel, unlockCost, chapter
+local BAND_DATA = {
+	Alvorecer  = { min = 1,   max = 9,   guardian = 11, cost = 0,      chapter = 1,  name = "Capítulo 1: O Despertar" },
+	Brasa      = { min = 10,  max = 17,  guardian = 19, cost = 1440,   chapter = 2,  name = "Capítulo 2: Brasas Eternas" },
+	Recife     = { min = 18,  max = 25,  guardian = 27, cost = 3384,   chapter = 3,  name = "Capítulo 3: Marés de Cristal" },
+	Floresta   = { min = 26,  max = 33,  guardian = 35, cost = 5112,   chapter = 4,  name = "Capítulo 4: Sussurros da Floresta" },
+	Dunas      = { min = 34,  max = 41,  guardian = 43, cost = 6840,   chapter = 5,  name = "Capítulo 5: Ruínas da Areia" },
+	Picos      = { min = 42,  max = 49,  guardian = 51, cost = 8568,   chapter = 6,  name = "Capítulo 6: Ventos Celestes" },
+	Pantano    = { min = 50,  max = 57,  guardian = 59, cost = 10296,  chapter = 7,  name = "Capítulo 7: Sombras do Pântano" },
+	Inverno    = { min = 58,  max = 67,  guardian = 69, cost = 15000,  chapter = 8,  name = "Capítulo 8: Gelo Eterno" },
+	Trovao     = { min = 68,  max = 77,  guardian = 79, cost = 22000,  chapter = 9,  name = "Capítulo 9: Tempestade Perpétua" },
+	Celestial  = { min = 78,  max = 89,  guardian = 91, cost = 35000,  chapter = 10, name = "Capítulo 10: Observatório Cósmico" },
+}
+
+-- Ilhas pós-jogo (prestígio/lendárias) - capítulos 11-12
+local POSTGAME_BANDS = {
+	Prestigio  = { min = 90,  max = 100, guardian = 105, cost = 50000, chapter = 11, name = "Capítulo 11: Caminho do Prestígio" },
+	Lendarias  = { min = 100, max = 200, guardian = 210, cost = 100000, chapter = 12, name = "Capítulo 12: Ascensão Lendária" },
+}
+
 for index, id in L.Order do
-	local minimum = ({ 1, 10, 18, 26, 34, 42, 50 })[index]
-	local maximum = ({ 9, 17, 25, 33, 41, 49, 57 })[index]
+	local data = BAND_DATA[id]
+	local previous = L.Order[index - 1]
+
 	L.ById[id] = {
 		id = id,
 		index = index,
-		min = minimum,
-		max = maximum,
-		guardian = maximum + 2,
-		previous = L.Order[index - 1],
-		cost = ({ 0, 1440, 3384, 5112, 6840, 8568, 10296 })[index],
+		min = data.min,
+		max = data.max,
+		guardian = data.guardian,
+		previous = previous,
+		cost = data.cost,
+		chapter = data.chapter,
+		chapterName = data.name,
 	}
 end
-return L
 
-end)()
-local M_Progression=(function()
---!strict
-local Bands = M_LevelBands
-local P = { MaxLevel = 100, EncountersPerHour = 50 }
-local checkpoints = {
-	{ level = 1, hours = 0 },
-	{ level = 10, hours = 0.75 },
-	{ level = 18, hours = 2 },
-	{ level = 26, hours = 4 },
-	{ level = 34, hours = 7 },
-	{ level = 42, hours = 11 },
-	{ level = 50, hours = 16 },
+-- Adiciona bandas de pós-jogo
+L.ById.Prestigio = {
+	id = "Prestigio",
+	index = 11,
+	min = POSTGAME_BANDS.Prestigio.min,
+	max = POSTGAME_BANDS.Prestigio.max,
+	guardian = POSTGAME_BANDS.Prestigio.guardian,
+	previous = "Celestial",
+	cost = POSTGAME_BANDS.Prestigio.cost,
+	chapter = POSTGAME_BANDS.Prestigio.chapter,
+	chapterName = POSTGAME_BANDS.Prestigio.name,
+	isPostgame = true,
 }
-function P.playerCost(level: number): number
-	for index = 1, #checkpoints - 1 do
-		local a, b = checkpoints[index], checkpoints[index + 1]
-		if level >= a.level and level < b.level then
-			return math.floor((b.hours - a.hours) / (b.level - a.level) * P.EncountersPerHour * (60 + index * 10) + 0.5)
-		end
-	end
-	return 2200 + (level - 50) * 75
-end
-function P.rewards(region: string, foeLevel: number, rarity: number, teamLevel: number)
-	local band = assert(Bands.ById[region], "Região de recompensa desconhecida")
-	local gap = teamLevel - foeLevel
-	local penalty = gap >= 15 and 0.1 or gap >= 8 and 0.5 or 1
-	return {
-		gold = 30 * band.index ^ 2 + foeLevel * 2 + rarity * 3,
-		xp = math.max(1, math.floor((60 + band.index * 10 + (rarity - 1) * 5) * penalty)),
-		creatureXp = math.max(1, math.floor((45 + band.index * 8 + (rarity - 1) * 5) * penalty)),
-		penalty = penalty,
-	}
-end
-function P.creatureCost(level: number): number
-	return 35 + level * 15
-end
-function P.award(data: any, amount: number)
-	data.playerXp = math.min(1e9, (data.playerXp or 0) + math.max(0, math.floor(amount)))
-	data.playerLevel = data.playerLevel or 1
-	while data.playerLevel < P.MaxLevel and data.playerXp >= P.playerCost(data.playerLevel) do
-		data.playerXp -= P.playerCost(data.playerLevel)
-		data.playerLevel += 1
-	end
-end
-function P.awardCreature(creature: any, amount: number)
-	creature.xp = math.min(1e9, (creature.xp or 0) + math.max(0, math.floor(amount)))
-	while creature.lv < P.MaxLevel and creature.xp >= P.creatureCost(creature.lv) do
-		creature.xp -= P.creatureCost(creature.lv)
-		creature.lv += 1
-	end
-end
-return P
 
-end)()
-local M_SanctuaryRules=(function()
---!nonstrict
-local R = { MaxLevel = 3, Slots = 9, BuildBase = 120 }
-function R.slot(index)
-	if typeof(index) ~= "number" or index % 1 ~= 0 or index < 1 or index > 9 then
-		return nil
-	end
-	return ((index - 1) % 3 - 1) * 36, (math.floor((index - 1) / 3) - 1) * 36
-end
-function R.available(structures, slot, ignore)
-	if not R.slot(slot) then
-		return false
-	end
-	for id, entry in structures do
-		if id ~= ignore and entry.slot == slot then
-			return false
-		end
-	end
-	return true
-end
-function R.capacity(def, entry)
-	return def.slots + ((entry and entry.level or 1) - 1) * 2
-end
-function R.buildCost(def)
-	return R.BuildBase * def.idx
-end
-function R.upgradeCost(entry)
-	return 180 * entry.level
-end
-function R.validate(raw, unlocked, islands)
-	local out = {}
-	local occupied = {}
-	if typeof(raw) == "table" then
-		for _, def in islands do
-			local entry = raw[def.id]
-			if unlocked[def.id] and typeof(entry) == "table" and R.slot(entry.slot) and not occupied[entry.slot] then
-				local level = typeof(entry.level) == "number"
-						and entry.level == entry.level
-						and math.clamp(math.floor(entry.level), 1, 3)
-					or 1
-				out[def.id] = { slot = entry.slot, level = level }
-				occupied[entry.slot] = true
-			end
-		end
-	end
-	return out
-end
-return R
+L.ById.Lendarias = {
+	id = "Lendarias",
+	index = 12,
+	min = POSTGAME_BANDS.Lendarias.min,
+	max = POSTGAME_BANDS.Lendarias.max,
+	guardian = POSTGAME_BANDS.Lendarias.guardian,
+	previous = "Prestigio",
+	cost = POSTGAME_BANDS.Lendarias.cost,
+	chapter = POSTGAME_BANDS.Lendarias.chapter,
+	chapterName = POSTGAME_BANDS.Lendarias.name,
+	isPostgame = true,
+}
 
+-- Retorna a banda para um nível de jogador
+function L.bandForLevel(level: number)
+	for _, id in L.Order do
+		local b = L.ById[id]
+		if level >= b.min and level <= b.max then
+			return b
+		end
+	end
+	-- Pós-jogo
+	if level >= L.ById.Prestigio.min and level <= L.ById.Prestigio.max then
+		return L.ById.Prestigio
+	end
+	if level >= L.ById.Lendarias.min then
+		return L.ById.Lendarias
+	end
+	return L.ById.Alvorecer
+end
+
+-- Próxima banda desbloqueável
+function L.nextUnlocked(profile)
+	for _, id in L.Order do
+		if not (profile.unlocked and profile.unlocked[id]) then
+			return L.ById[id]
+		end
+	end
+	if profile.prestige and profile.prestige > 0 and not profile.unlocked.Prestigio then
+		return L.ById.Prestigio
+	end
+	return nil
+end
+
+-- Verifica se uma banda está disponível para desbloqueio
+function L.canUnlock(profile, bandId: string)
+	local band = L.ById[bandId]
+	if not band then return false, "UNKNOWN_BAND" end
+
+	if profile.unlocked and profile.unlocked[bandId] then
+		return false, "ALREADY_UNLOCKED"
+	end
+
+	if band.previous and not (profile.unlocked and profile.unlocked[band.previous]) then
+		return false, "PREVIOUS_LOCKED"
+	end
+
+	if (profile.playerLevel or 1) < band.min then
+		return false, "LEVEL_TOO_LOW"
+	end
+
+	if (profile.gold or 0) < band.cost then
+		return false, "NOT_ENOUGH_GOLD"
+	end
+
+	return true, "OK"
+end
+
+return L
 end)()
 local M_Strings=(function()
 --!strict
@@ -290,6 +298,186 @@ S.Text = {
 	FALHA_AO_SALVAR_PERFIL_DE_B99672 = "Falha ao salvar perfil de ",
 	FECHAR_7B2006 = "Fechar",
 	FENIX_A08C9E = "Fênix",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
 	FENIX_FULIGEM_64EF6D = "Fênix Fuligem",
 	FENIX_LENDARIA_NV_60_A1FE17 = "FÊNIX · LENDÁRIA · Nv. 60",
 	FERAS_EF033A = "Feras",
@@ -412,6 +600,9 @@ S.Text = {
 	RARO_851816 = "Raro",
 	RECEBER_CAPITULO_3ACD37 = "Receber capítulo",
 	RECIFE_CRISTALINO_8D7A14 = "Recife Cristalino",
+	ILHA_DE_INVERNO_8F4E2A = "Ilha de Inverno",
+	ILHA_DO_TROVAO_9E5F3B = "Ilha do Trovão",
+	ILHA_CELESTIAL_A0F1C2 = "Ilha Celestial",
 	RECOMPENSA_DIARIA_SEQUENCIA_B9C689 = "Recompensa diária (sequência ",
 	REFORCADO_A930AC = "Reforçado",
 	REGIAO_BLOQUEADA_47B5A8 = "Região bloqueada: ",
@@ -450,6 +641,9 @@ S.Text = {
 	SEU_SANTUARIO_9_POSICOES_SELECIONE_UMA_POSICAO_E_400064 = "Seu santuário • 9 posições\nSelecione uma posição e construa ou mova um habitat.",
 	SOCIAVEL_3658F4 = "Sociável",
 	SOMBRA_94B135 = "Sombra",
+	GELO_4A90D9 = "Gelo",
+	ELETRICO_FFD600 = "Elétrico",
+	LUZ_FFF9C4 = "Luz",
 	SOM_OFF_D3D9A2 = "Som OFF",
 	SOM_ON_ACD88F = "Som ON",
 	SOPRO_ANCESTRAL_8CD748 = "Sopro ancestral",
@@ -503,6 +697,9 @@ S.Text = {
 	VOLTAR_A_EXPLORACAO_8F4A4A = "Voltar à exploração",
 	VOLTE_AMANHA_E195DE = "Volte amanhã!",
 	VULCOES_E_RIOS_DE_MAGMA_300BD6 = "Vulcões e rios de magma.",
+	CITADELA_DE_GELO_E_AURORA_BOREAL_1A3B4C = "Cidadela de gelo, caverna dos cristais e aurora boreal.",
+	TORRE_DO_RELAMPAGO_E_TEMPORTE_PERPETUA_2B4D6E = "Torre do relâmpago, núcleo energético e tempestade perpétua.",
+	OBSERVATORIO_COSMICO_E_ESTRELAS_VIVAS_3C5E7F = "Observatório cósmico, jardim das estrelas e constelações vivas."
 	XP_DA_FERA_1A37A2 = " XP da fera.",
 	XP_E_5EFA95 = " XP e +",
 }
@@ -594,6 +791,507 @@ S.Text.VOCE_SE_APROXIMOU_COM_CUIDADO_VINCULO_555F67 = "Você se aproximou com cu
 S.Text.VOCE_VOLTOU_A_EXPLORACAO_29EB17 = "Você voltou à exploração."
 S.Text.VULCANODRAGO_CEB8E4 = "Vulcanodrago"
 return S
+
+end)()
+local M_Creatures=(function()
+--!nonstrict
+local Text = M_Strings.Text
+-- Catálogo de feras. Para criar uma nova, basta uma linha add(...). Estatísticas derivam da raridade.
+local C =
+	{ List = {}, ById = {}, Rarity = { Text.COMUM_CA938E, Text.RARO_851816, Text.EPICO_7BC392, Text.LENDARIO_52178E } }
+local function add(id, name, el, rar, island, shape, hybrid)
+	local d = {
+		id = id,
+		name = name,
+		el = el,
+		rar = rar,
+		island = island,
+		shape = shape,
+		hybrid = hybrid,
+		hp = 30 + rar * 25,
+		atk = 6 + rar * 5,
+		gpm = rar * rar * 2 + 2,
+	}
+	table.insert(C.List, d)
+	C.ById[id] = d
+end
+add("cinzelo", Text.CINZELO_540AA2, Text.FOGO_F77A3C, 1, "Brasa", "Blob")
+add("magmarau", Text.MAGMARAU_66D92B, Text.FOGO_F77A3C, 2, "Brasa", "Beast")
+add("fenixfuligem", Text.FENIX_FULIGEM_64EF6D, Text.FOGO_F77A3C, 3, "Brasa", "Bird")
+add("vulcanodrago", Text.VULCANODRAGO_CEB8E4, Text.FOGO_F77A3C, 4, "Brasa", "Dragon")
+add("bolhinho", Text.BOLHINHO_2BE987, Text.AGUA_F11A05, 1, "Recife", "Blob")
+add("marilisco", Text.MARILISCO_BFD916, Text.AGUA_F11A05, 2, "Recife", "Serpent")
+add("carangueperola", Text.CARANGUEPEROLA_08BAB3, Text.AGUA_F11A05, 3, "Recife", "Insect")
+add("abissauro", Text.ABISSAURO_04225F, Text.AGUA_F11A05, 4, "Recife", "Dragon")
+add("brotinho", Text.BROTINHO_57925C, Text.NATUREZA_FB1ED9, 1, "Floresta", "Blob")
+add("folhuco", Text.FOLHUCO_22B5C1, Text.NATUREZA_FB1ED9, 2, "Floresta", "Beast")
+add("aracnoflora", Text.ARACNOFLORA_43AC5A, Text.NATUREZA_FB1ED9, 3, "Floresta", "Insect")
+add("ancestravore", Text.ANCESTRAVORE_146E5C, Text.NATUREZA_FB1ED9, 4, "Floresta", "Beast")
+add("graozinho", Text.GRAOZINHO_D0C3F0, Text.TERRA_16D3AE, 1, "Dunas", "Blob")
+add("escorpiodra", Text.ESCORPIODRA_B79E74, Text.TERRA_16D3AE, 2, "Dunas", "Insect")
+add("esfingeolito", Text.ESFINGEOLITO_728F92, Text.TERRA_16D3AE, 3, "Dunas", "Beast")
+add("colossodune", Text.COLOSSODUNE_3B3CE0, Text.TERRA_16D3AE, 4, "Dunas", "Dragon")
+add("penugem", Text.PENUGEM_D3A3F3, Text.AR_B623FF, 1, "Picos", "Bird")
+add("ventanil", Text.VENTANIL_D7000E, Text.AR_B623FF, 2, "Picos", "Bird")
+add("trovoraptor", Text.TROVORAPTOR_3E8543, Text.AR_B623FF, 3, "Picos", "Dragon")
+add("aeronimbo", Text.AERONIMBO_2E256F, Text.AR_B623FF, 4, "Picos", "Serpent")
+add("lodinho", Text.LODINHO_03ED97, Text.SOMBRA_94B135, 1, "Pantano", "Blob")
+add("caudalume", Text.CAUDALUME_26609C, Text.SOMBRA_94B135, 2, "Pantano", "Serpent")
+add("vagalumorte", Text.VAGALUMORTE_40C1CE, Text.SOMBRA_94B135, 3, "Pantano", "Insect")
+add("reinevoento", Text.REI_NEVOENTO_691E87, Text.SOMBRA_94B135, 4, "Pantano", "Beast")
+-- Híbridos: só nascem de cruzamentos entre dois elementos específicos.
+add(
+	"vaporino",
+	Text.VAPORINO_6940A2,
+	Text.FOGO_F77A3C,
+	3,
+	Text.HIBRIDO_9CB40A,
+	"Serpent",
+	{ Text.FOGO_F77A3C, Text.AGUA_F11A05 }
+)
+add(
+	"magmaterra",
+	Text.MAGMATERRA_ACDB93,
+	Text.FOGO_F77A3C,
+	3,
+	Text.HIBRIDO_9CB40A,
+	"Beast",
+	{ Text.FOGO_F77A3C, Text.TERRA_16D3AE }
+)
+add(
+	"tempestalia",
+	Text.TEMPESTALIA_27599D,
+	Text.AR_B623FF,
+	3,
+	Text.HIBRIDO_9CB40A,
+	"Bird",
+	{ Text.AR_B623FF, Text.AGUA_F11A05 }
+)
+add(
+	"nevoamusgo",
+	Text.NEVOAMUSGO_8FDC87,
+	Text.SOMBRA_94B135,
+	3,
+	Text.HIBRIDO_9CB40A,
+	"Beast",
+	{ Text.SOMBRA_94B135, Text.NATUREZA_FB1ED9 }
+)
+add(
+	"cinzavento",
+	Text.CINZAVENTO_982DC1,
+	Text.FOGO_F77A3C,
+	4,
+	Text.HIBRIDO_9CB40A,
+	"Dragon",
+	{ Text.FOGO_F77A3C, Text.AR_B623FF }
+)
+add("flamiris", Text.FLAMIRIS_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("carvunio", Text.CARVUNIO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("brasegato", Text.BRASEGATO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("orvalume", Text.ORVALUME_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("coralina", Text.CORALINA_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("pelaguir", Text.PELAGUIR_NAME, Text.AGUA_F11A05, 2, "Recife", "Aquatic")
+add("musgalte", Text.MUSGALTE_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("bambuja", Text.BAMBUJA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("florabelha", Text.FLORABELHA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Arthropod")
+add("marmure", Text.MARMURE_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("litorisco", Text.LITORISCO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Mineral")
+add("sementauro", Text.SEMENTAURO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("sibilobo", Text.SIBILOBO_NAME, Text.AR_B623FF, 2, "Picos", "Quadruped")
+add("cirrandor", Text.CIRRANDOR_NAME, Text.AR_B623FF, 2, "Picos", "Winged")
+add("nimboreo", Text.NIMBOREO_NAME, Text.AR_B623FF, 2, "Picos", "Draconic")
+add("velune", Text.VELUNE_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("obsidauro", Text.OBSIDAURO_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("velumosa", Text.VELUMOSA_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Winged")
+add("glaurina", Text.GLAURINA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("niveor", Text.NIVEOR_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("gelifoca", Text.GELIFOCA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Aquatic")
+add("fulgarru", Text.FULGARRU_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("ampelince", Text.AMPELINCE_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("trovissideo", Text.TROVISSIDEO_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Arthropod")
+add("aurifita", Text.AURIFITA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("lunarru", Text.LUNARRU_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("candeira", Text.CANDEIRA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Arthropod")
+add("ferrunila", Text.FERRUNILA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Quadruped")
+add("fiaranha", Text.FIARANHA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Arthropod")
+add("metafalcao", Text.METAFALCAO_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Winged")
+add("cindrel", Text.CINDREL_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Mineral")
+add("emberkit", Text.EMBERKIT_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("sparkpup", Text.SPARKPUP_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("flamecub", Text.FLAMECUB_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("coalcrawler", Text.COALCRAWLER_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Arthropod")
+add("aquasprite", Text.AQUASPRITE_NAME, Text.AGUA_F11A05, 1, "Recife", "Aquatic")
+add("droplet", Text.DROPLET_NAME, Text.AGUA_F11A05, 1, "Recife", "Mineral")
+add("finling", Text.FINLING_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("tidepup", Text.TIDEPUP_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("coralkit", Text.CORALKIT_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("leaflet", Text.LEAFLET_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Vegetal")
+add("seedling", Text.SEEDLING_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Mineral")
+add("sprou", Text.SPROU_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("vinecub", Text.VINECUB_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("petalpaw", Text.PETALPAW_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("pebblin", Text.PEBBLIN_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("rockling", Text.ROCKLING_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("sandpup", Text.SANDPUP_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("dunecub", Text.DUNECUB_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("geodette", Text.GEODETTE_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Arthropod")
+add("zephyr", Text.ZEPHYR_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("cloudpuff", Text.CLOUDPUFF_NAME, Text.AR_B623FF, 1, "Picos", "Mineral")
+add("breezekit", Text.BREEZEKIT_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("galehatch", Text.GALEHATCH_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("windling", Text.WINDLING_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("shade", Text.SHADE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Spectral")
+add("shadowmite", Text.SHADOWMITE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Mineral")
+add("gloomkit", Text.GLOOMKIT_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("duskpup", Text.DUSKPUP_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("nightmoth", Text.NIGHTMOTH_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Arthropod")
+add("frostbit", Text.FROSTBIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("icecrystal", Text.ICECRYSTAL_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("snowkit", Text.SNOWKIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("glaciercub", Text.GLACIERCUB_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("frostling", Text.FROSTLING_NAME, Text.GELO_4A90D9, 1, "Dunas", "Winged")
+add("voltkit", Text.VOLTKIT_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("sparkling", Text.SPARKLING_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Mineral")
+add("jolteon", Text.JOLTEON_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("zapcub", Text.ZAPCUB_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("buzzbug", Text.BUZZBUG_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Arthropod")
+add("lumikit", Text.LUMIKIT_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("gloworb", Text.GLOWORB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Mineral")
+add("solarpup", Text.SOLARPUP_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("raycub", Text.RAYCUB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("prismfly", Text.PRISMFLY_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Arthropod")
+add("ironkit", Text.IRONKIT_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("scraplet", Text.SCRAPLET_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Mineral")
+add("boltpup", Text.BOLTPUP_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("gearcub", Text.GEARCUB_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("rivetbug", Text.RIVETBUG_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Arthropod")
+add("gemling", Text.GEMLING_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("shardlet", Text.SHARDLET_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("crystalkit", Text.CRYSTALKIT_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("prismpup", Text.PRISMPUP_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("facetbug", Text.FACETBUG_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Arthropod")
+add("runeling", Text.RUNELING_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Spectral")
+add("mysticorb", Text.MYSTICORB_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Mineral")
+add("arcankit", Text.ARCANKIT_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("voidpup", Text.VOIDPUP_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("sigilbug", Text.SIGILBUG_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Arthropod")
+
+-- Fênix é uma espécie adicional; Fênix Fuligem e seus IDs permanecem intactos.
+add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
+C.ById.fenix.acquisition = "special"
+C.ById.fenix.minStage = 3
+C.ById.fenix.futureStage = { target = 4, enabled = false, mechanic = Text.RENASCIMENTO_FUTURO_EE24AE }
+function C.stage(lv, id)
+	local normal = lv >= 15 and 3 or lv >= 7 and 2 or 1
+	return math.max(normal, (id and C.ById[id] and C.ById[id].minStage) or 1)
+end
+return C
+
+end)()
+local M_Progression=(function()
+--!strict
+-- Progressão de nível (1-100), curvas de XP, growth de stats e prestígio para lendários
+local Bands = M_LevelBands
+local Creatures = M_Creatures
+
+local P = {
+	MaxLevel = 100,
+	PrestigeMaxLevel = 100, -- Prestígio vai até 100 (nível efetivo 200)
+	EncountersPerHour = 50,
+	CreatureXpPerLevel = 15, -- XP base por nível de criatura
+}
+
+-- Curva suave de XP para jogador: logarítmica com escalonamento por faixa
+-- Fórmula: baseXP * (level ^ 1.35) com ajustes por checkpoints
+local CHECKPOINTS = {
+	{ level = 1,   baseXp = 60,   mult = 1.00 },
+	{ level = 10,  baseXp = 60,   mult = 1.00 },
+	{ level = 18,  baseXp = 70,   mult = 1.10 },
+	{ level = 26,  baseXp = 80,   mult = 1.20 },
+	{ level = 34,  baseXp = 90,   mult = 1.30 },
+	{ level = 42,  baseXp = 100,  mult = 1.40 },
+	{ level = 50,  baseXp = 110,  mult = 1.50 },
+	{ level = 60,  baseXp = 125,  mult = 1.65 },
+	{ level = 70,  baseXp = 140,  mult = 1.80 },
+	{ level = 80,  baseXp = 160,  mult = 2.00 },
+	{ level = 90,  baseXp = 185,  mult = 2.25 },
+	{ level = 100, baseXp = 220,  mult = 2.50 },
+}
+
+-- XP necessário para próximo nível do jogador
+function P.playerCost(level: number): number
+	if level >= P.MaxLevel then
+		return 1e9 -- Máximo atingido
+	end
+
+	-- Encontrar faixa
+	local idx = 1
+	for i = 1, #CHECKPOINTS - 1 do
+		if level >= CHECKPOINTS[i].level and level < CHECKPOINTS[i + 1].level then
+			idx = i
+			break
+		end
+	end
+
+	local a = CHECKPOINTS[idx]
+	local b = CHECKPOINTS[idx + 1]
+	local progress = (level - a.level) / (b.level - a.level)
+	local baseXp = a.baseXp + (b.baseXp - a.baseXp) * progress
+	local mult = a.mult + (b.mult - a.mult) * progress
+
+	-- Fórmula: baseXP * level^1.35 * mult
+	return math.floor(baseXp * (level ^ 1.35) * mult + 0.5)
+end
+
+-- XP total acumulado até um nível (para cálculos de progresso)
+function P.totalPlayerXpTo(level: number): number
+	local total = 0
+	for l = 1, level - 1 do
+		total += P.playerCost(l)
+	end
+	return total
+end
+
+-- Recompensas de encontro baseadas na região, nível do inimigo, raridade e nível da equipe
+function P.rewards(region: string, foeLevel: number, rarity: number, teamLevel: number)
+	local band = assert(Bands.ById[region], "Região de recompensa desconhecida: " .. region)
+	local gap = teamLevel - foeLevel
+
+	-- Penalidade de nível: se muito forte, ganha menos
+	local penalty = gap >= 15 and 0.1 or gap >= 8 and 0.5 or 1
+
+	local rarityMult = 1 + (rarity - 1) * 0.15
+	local bandMult = 1 + band.index * 0.08
+
+	return {
+		gold = math.floor(25 * bandMult * rarityMult + foeLevel * 1.5 + rarity * 2),
+		xp = math.max(1, math.floor((55 + band.index * 8 + (rarity - 1) * 4) * penalty * bandMult * rarityMult)),
+		creatureXp = math.max(1, math.floor((40 + band.index * 6 + (rarity - 1) * 3) * penalty * bandMult * rarityMult)),
+		penalty = penalty,
+	}
+end
+
+-- XP necessário para próximo nível da criatura (curva similar mas mais suave)
+function P.creatureCost(level: number): number
+	if level >= P.MaxLevel then
+		return 1e9
+	end
+	-- 35 + level * 15 + level^1.2 * 2
+	return math.floor(35 + level * 15 + (level ^ 1.2) * 2 + 0.5)
+end
+
+-- XP total acumulado da criatura até um nível
+function P.totalCreatureXpTo(level: number): number
+	local total = 0
+	for l = 1, level - 1 do
+		total += P.creatureCost(l)
+	end
+	return total
+end
+
+-- Growth de stats por nível (base stats * growth factor ^ level)
+-- HP: base 30 + rar * 25, growth 1.08 per level
+-- ATK: base 6 + rar * 5, growth 1.06 per level
+function P.statGrowth(base: number, growth: number, level: number): number
+	return math.floor(base * (growth ^ (level - 1)) + 0.5)
+end
+
+-- Calcula stats finais da criatura no nível atual
+function P.computeStats(creatureData: { id: string, lv: number, rarity: number? })
+	local species = Creatures.ById[creatureData.id]
+	if not species then
+		return { hp = 30, atk = 6 }
+	end
+
+	local rar = creatureData.rarity or species.rar or 1
+	local baseHp = 30 + rar * 25
+	local baseAtk = 6 + rar * 5
+
+	return {
+		hp = P.statGrowth(baseHp, 1.08, creatureData.lv),
+		atk = P.statGrowth(baseAtk, 1.06, creatureData.lv),
+		gpm = rar * rar * 2 + 2, -- gold por minuto no santuário
+	}
+end
+
+-- Adiciona XP ao jogador e processa level up
+function P.award(data: any, amount: number)
+	data.playerXp = math.min(1e9, (data.playerXp or 0) + math.max(0, math.floor(amount)))
+	data.playerLevel = data.playerLevel or 1
+
+	while data.playerLevel < P.MaxLevel and data.playerXp >= P.playerCost(data.playerLevel) do
+		data.playerXp -= P.playerCost(data.playerLevel)
+		data.playerLevel += 1
+	end
+
+	-- Prestígio (pós-100): reseta nível para 1 mas ganha prestígio
+	if data.playerLevel >= P.MaxLevel and data.playerXp >= P.playerCost(P.MaxLevel) then
+		data.playerLevel = P.MaxLevel
+		data.playerXp = P.playerCost(P.MaxLevel) -- Cap no máximo
+	end
+end
+
+-- Adiciona XP à criatura e processa level up
+function P.awardCreature(creature: any, amount: number)
+	creature.xp = math.min(1e9, (creature.xp or 0) + math.max(0, math.floor(amount)))
+	creature.lv = creature.lv or 1
+
+	while creature.lv < P.MaxLevel and creature.xp >= P.creatureCost(creature.lv) do
+		creature.xp -= P.creatureCost(creature.lv)
+		creature.lv += 1
+	end
+end
+
+-- Prestígio para lendárias: após capturar uma lendária e chegar ao nível 100,
+-- pode resetar para ganhar "Prestígio" (nível efetivo 101-200)
+function P.canPrestige(data: any): boolean
+	if data.playerLevel < P.MaxLevel then
+		return false
+	end
+	-- Verifica se tem pelo menos uma lendária capturada
+	if not data.creatures then return false end
+	for _, c in data.creatures do
+		local sp = Creatures.ById[c.id]
+		if sp and sp.rar == 4 then
+			return true
+		end
+	end
+	return false
+end
+
+function P.applyPrestige(data: any)
+	if not P.canPrestige(data) then return false end
+
+	data.prestige = (data.prestige or 0) + 1
+	data.playerLevel = 1
+	data.playerXp = 0
+
+	-- Bonus de prestígio: +5% stats em todas as criaturas
+	data.prestigeBonus = (data.prestigeBonus or 0) + 0.05
+
+	return true
+end
+
+-- Calcula nível efetivo (incluindo prestígio)
+function P.effectiveLevel(data: any): number
+	return (data.playerLevel or 1) + (data.prestige or 0) * P.MaxLevel
+end
+
+-- Offline progress: calcula produção de santuário e chocagem de ovos
+function P.calculateOfflineProgress(data: any, now: number): { gold: number, creatureXp: number, hatchedEggs: { any } }
+	local last = data.last or now
+	local hoursOffline = math.max(0, (now - last) / 3600)
+
+	if hoursOffline < 0.01 then -- Menos de 36 segundos
+		return { gold = 0, creatureXp = 0, hatchedEggs = {} }
+	end
+
+	-- Cap em 24 horas de progresso offline
+	hoursOffline = math.min(hoursOffline, 24)
+
+	-- Ouro do santuário
+	local totalGpm = 0
+	if data.sanctuary then
+		for islandId, entry in data.sanctuary do
+			if data.habitat and data.habitat[islandId] then
+				for _, uid in data.habitat[islandId] do
+					local creature = data.creatures[uid]
+					if creature then
+						local stats = P.computeStats(creature)
+						totalGpm += stats.gpm
+					end
+				end
+			end
+		end
+	end
+
+	local offlineGold = math.floor(totalGpm * hoursOffline * 60)
+
+	-- XP de criatura distribuído entre as do santuário
+	local totalCreatureXp = math.floor(offlineGold * 0.3) -- 30% do ouro em XP
+
+	-- Chocagem de ovos
+	local hatchedEggs = {}
+	if data.eggs then
+		local remainingEggs = {}
+		for _, egg in data.eggs do
+			if egg.ready <= now then
+				table.insert(hatchedEggs, egg)
+			else
+				table.insert(remainingEggs, egg)
+			end
+		end
+		-- Nota: a remoção real dos ovos chocados é feita no DataService
+	end
+
+	return {
+		gold = offlineGold,
+		creatureXp = totalCreatureXp,
+		hatchedEggs = hatchedEggs,
+	}
+end
+
+-- Calcula tempo até próximo nível (em encontros)
+function P.encountersToNextLevel(data: any): number
+	local currentCost = P.playerCost(data.playerLevel or 1)
+	local remaining = currentCost - (data.playerXp or 0)
+	if remaining <= 0 then return 0 end
+
+	-- XP médio por encontro na região atual
+	local avgXp = 60 -- Estimativa conservadora
+	return math.ceil(remaining / avgXp)
+end
+
+return P
+end)()
+local M_SanctuaryRules=(function()
+--!nonstrict
+local R = { MaxLevel = 3, Slots = 9, BuildBase = 120 }
+function R.slot(index)
+	if typeof(index) ~= "number" or index % 1 ~= 0 or index < 1 or index > 9 then
+		return nil
+	end
+	return ((index - 1) % 3 - 1) * 36, (math.floor((index - 1) / 3) - 1) * 36
+end
+function R.available(structures, slot, ignore)
+	if not R.slot(slot) then
+		return false
+	end
+	for id, entry in structures do
+		if id ~= ignore and entry.slot == slot then
+			return false
+		end
+	end
+	return true
+end
+function R.capacity(def, entry)
+	return def.slots + ((entry and entry.level or 1) - 1) * 2
+end
+function R.buildCost(def)
+	return R.BuildBase * def.idx
+end
+function R.upgradeCost(entry)
+	return 180 * entry.level
+end
+function R.validate(raw, unlocked, islands)
+	local out = {}
+	local occupied = {}
+	if typeof(raw) == "table" then
+		for _, def in islands do
+			local entry = raw[def.id]
+			if unlocked[def.id] and typeof(entry) == "table" and R.slot(entry.slot) and not occupied[entry.slot] then
+				local level = typeof(entry.level) == "number"
+						and entry.level == entry.level
+						and math.clamp(math.floor(entry.level), 1, 3)
+					or 1
+				out[def.id] = { slot = entry.slot, level = level }
+				occupied[entry.slot] = true
+			end
+		end
+	end
+	return out
+end
+return R
 
 end)()
 local M_Story=(function()

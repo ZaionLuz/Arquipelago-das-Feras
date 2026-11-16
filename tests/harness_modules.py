@@ -5,7 +5,7 @@ def shared(names):
  out=[];seen=set()
  def add(name):
   if name in seen:return
-  s=(ROOT/f'src/shared/{name}.luau').read_text()
+  s=(ROOT/f'src/shared/{name}.luau').read_text(encoding='utf-8')
   for dep in re.findall(r'require\(script.Parent.(\w+)\)',s):add(dep)
   seen.add(name)
   s=re.sub(r'require\(script.Parent.(\w+)\)',r'M_\1',s)
