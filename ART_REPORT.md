@@ -55,6 +55,9 @@ Foram inspecionadas as pranchas; corrigidos os corpos excessivamente quadrados, 
 - [x] UI completa: Dex, Team, Sanctuary, Nursery, Trade, Shop, Settings, Journal
 - [x] Save/load funciona, migração testada (DataStore schema v5)
 - [x] GitHub: branch `art-overhaul` atualizada, tag `v8.0.0` criada
+- [x] Fix: 90 entradas duplicadas removidas de Creatures.luau (120 espécies únicas)
+- [x] Fix: Encoding UTF-8 em scripts Python de teste
+- [x] Fix: check_source.py atualizado para V8 (120 espécies)
 
 ## O que permanece pendente (requer Roblox Studio)
 
