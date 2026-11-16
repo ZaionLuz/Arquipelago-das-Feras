@@ -4,7 +4,7 @@ A build de tester usa receitas locais completas quando não existem meshes impor
 ## Caminho recomendado — prefabs no Studio
 1. Abra releases/Feras-Tester.rbxlx.
 2. Use o 3D Importer / Asset Manager para importar OBJ/FBX de assets/blender/exports. Autorize os assets para o proprietário da experiência.
-3. Monte um Model por espécie e estágio, com Root (BasePart invisível), PrimaryPart=Root e as partes conectadas por Motor6D ou WeldConstraint. Não inclua scripts.
+3. Selecione um Model ou MeshPart importado. No Command Bar execute, por exemplo: `require(game.ReplicatedStorage.Shared.ModelImporter).prepare(game:GetService("Selection"):Get()[1], "flamiris", 1)`. Troque o ID e o estágio pelo catálogo. A ferramenta clona a geometria, cria Root/joints necessários e valida antes de substituir o prefab anterior. Não inclua scripts.
 4. Em ReplicatedStorage.ImportedRigs, nomeie o Model exatamente como o ID do catálogo seguido de _Stage1, _Stage2 ou _Stage3. O ID vem de src/shared/Creatures.luau.
 5. Os Motor6D usam atributo Role: Body, Head, Leg1..., WingL/R, Tail1...; Phase é opcional. Mantenha o orçamento de peças de CreatureDesigns.
 6. No Command Bar: `print(game:GetService("HttpService"):JSONEncode(require(game.ReplicatedStorage.Shared.ModelImporter).inspect()))`.

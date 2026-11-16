@@ -75,6 +75,11 @@ local function registryModel(def,stage,assetService)
  if not ok then m:Destroy();error(result) end
  return result
 end
+function I.normalizePrefab(model,def,stage,validate)
+ normalize(model,def,stage)
+ if validate then validate(model) end
+ return model
+end
 function I.tryBuild(def,stage,validate)
  if not game or not game.GetService then return nil end
  local ok,rs=pcall(function() return game:GetService("ReplicatedStorage") end)

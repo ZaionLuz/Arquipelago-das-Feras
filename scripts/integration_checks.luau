@@ -47,5 +47,12 @@ for _,obj in prefab:GetDescendants() do if obj:IsA("Motor6D") then joint=obj;bre
 local original=joint.Part0
 local external=rb.Instance.new("Part");joint.Part0=external
 rejected=factory.build(def,1,{preview=true});assert(rejected:GetAttribute("GeometrySource")=="ProceduralFallback");rejected:Destroy()
-joint.Part0=original;external:Destroy();rs:Destroy()
+joint.Part0=original;external:Destroy()
+local importer=loader("src/shared/ModelImporter.luau")
+local loose=rb.Instance.new("Part");loose.Size=rb.Vector3.new(1,1,1)
+local prepared=importer.prepare(loose,def.id,1)
+assert(prepared.Parent==folder and prepared.PrimaryPart.Name=="Root")
+local displayed=factory.build(def,1,{preview=true})
+assert(displayed:GetAttribute("GeometrySource")=="BlenderImported")
+factory.validate(displayed);displayed:Destroy();loose:Destroy();rs:Destroy()
 print("PASS: catálogo",#C.List,"IDs únicos, fichas, marcos por nível, prefab preferido, clone local e fallback seguro")
