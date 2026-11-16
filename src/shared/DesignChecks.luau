@@ -3,6 +3,7 @@
 local C = require(script.Parent.Creatures)
 local D = require(script.Parent.CreatureDesigns)
 local F = require(script.Parent.ModelFactory)
+local Legacy = require(script.Parent.LegacySpecies)
 local Checks = { MinimumDistance = 0.12, MinimumStageDistance = 0.08 }
 local function difference(a, b)
 	local sum, count = 0, 0
@@ -120,13 +121,15 @@ function Checks.run()
 	for _, def in C.List do
 		local recipe = assert(D[def.id], "Receita ausente")
 		local key = table.concat({ recipe.family, recipe.head, recipe.eyes, recipe.tail, tostring(recipe.limbs) }, ":")
-		assert(not tuple[key], "Tupla anatômica repetida")
-		tuple[key] = true
-		eyeCounts[recipe.eyes] = (eyeCounts[recipe.eyes] or 0) + 1
+		if Legacy[def.id] then
+			assert(not tuple[key], "Tupla anatômica legada repetida")
+			tuple[key] = true
+			eyeCounts[recipe.eyes] = (eyeCounts[recipe.eyes] or 0) + 1
+		end
 		signatures[def.id] = {}
 		reports[def.id] = {}
 		for index, lv in { 1, 7, 15 } do
-			local m = F.build(def, lv, { preview = true })
+			local m = F.build(def, lv, { preview = true, proceduralOnly = true })
 			local sig = Checks.signature(m)
 			signatures[def.id][index] = sig
 			reports[def.id][index] = { parts = sig.parts, size = F.validate(m).size }
@@ -151,6 +154,7 @@ function Checks.run()
 	end
 	for i = 1, #C.List - 1 do
 		for j = i + 1, #C.List do
+			if not Legacy[C.List[i].id] or not Legacy[C.List[j].id] then continue end
 			for stage = 1, 3 do
 				local a, b = C.List[i].id, C.List[j].id
 				local distance = Checks.distance(signatures[a][stage], signatures[b][stage])

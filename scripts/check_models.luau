@@ -22,7 +22,7 @@ fs.writeFile(
 	"docs/MODEL_METRICS.json",
 	serde.encode("json", {
 		constructionRequests = result.total,
-		uniqueLayouts = 88,
+		diversityScope = "legacy species; expanded catalog checked for construction, stages and budgets",
 		minDistance = result.minimum,
 		closest = result.closest,
 		scene40Parts = scene,

@@ -15,8 +15,8 @@ function A.register(model, visible, orbit)
 			visible = visible,
 			orbit = orbit,
 			last = 0,
-			body = model:FindFirstChild("Body"),
-			baseColor = model:FindFirstChild("Body") and model.Body.Color or nil,
+			body = model:FindFirstChild("Body", true),
+			baseColor = model:FindFirstChild("Body", true) and model:FindFirstChild("Body", true).Color or nil,
 		}
 		for _, obj in model:GetDescendants() do
 			if obj:IsA("Motor6D") then

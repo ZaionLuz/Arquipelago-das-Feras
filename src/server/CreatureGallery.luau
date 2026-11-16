@@ -68,7 +68,7 @@ function Gallery.build()
 			display(def, lv, index)
 		end
 	end
-	display(C.ById.fenix, 60, 91)
+	display(C.ById.fenix, 60, index + 1)
 	return folder
 end
 return Gallery

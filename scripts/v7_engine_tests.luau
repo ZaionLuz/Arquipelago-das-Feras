@@ -128,12 +128,14 @@ game.GetService = function(_, name)
 end
 game.BindToClose = function() end
 local Instance = {
-	new = function()
-		return setmetatable({}, {
+	new = function(class)
+		return setmetatable(class == "RemoteEvent" and {OnServerEvent=signal} or {}, {
 			__newindex = function(t, k, v)
 				rawset(t, k, v)
 				if k == "Name" then
 					registry[v] = t
+				elseif k == "Parent" and v then
+					v[t.Name] = t
 				end
 			end,
 		})
@@ -167,6 +169,7 @@ local replacements = {
 for _, name in { "RegionGuard", "StartingCamp", "Researcher", "Wildlife", "Guardians", "SanctuaryBuilder" } do
 	replacements["src/server/" .. name .. ".luau"] = noop
 end
+RS.FindFirstChild = function(_,name) return registry[name] end
 local netLoad = Loader.new({
 	game = game,
 	Instance = Instance,
@@ -194,6 +197,18 @@ local netLoad = Loader.new({
 -- Main retorna nil; o loader não exige resultado. O callback remoto é capturado no registro.
 netLoad("src/server/Main.server.luau")
 local remote = registry.Net
+clock += 1
+local evo = registry.GetEvolutionInfo.OnServerInvoke(player,"u1")
+assert(evo.ok and evo.stage==1 and evo.nextLevel==7 and not evo.ascensionEnabled)
+clock += 1
+assert(not registry.GetEvolutionInfo.OnServerInvoke(player,"foreign").ok)
+clock += 1
+local beforeGold,beforeLevel=profile.gold,profile.creatures.u1.lv
+local request=registry.RequestEvolution.OnServerInvoke(player,"u1")
+assert(request.ok and request.code=="AUTOMATIC_LEVEL")
+assert(profile.gold==beforeGold and profile.creatures.u1.lv==beforeLevel)
+print("PASS: Main inicia EvolutionService real; ownership, nível e saldo não podem ser forjados")
+
 for _, action in { "Travel", "Unlock", "BuildHabitat", "MoveHabitat", "UpgradeHabitat", "RemoveHabitat", "BuyEgg" } do
 	for _, bad in { {}, 0 / 0, "inexistente", "Pantano", "Brasa" } do
 		clock += 1

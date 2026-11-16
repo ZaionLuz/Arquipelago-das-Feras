@@ -3,6 +3,7 @@ local C = require(script.Parent.Creatures)
 local D = require(script.Parent.CreatureDesigns)
 local Features = require(script.Parent.CreatureFeatures)
 local Art = require(script.Parent.ArtTokens)
+local Imported = require(script.Parent.ImportedModelFactory)
 local Factory = {}
 local cache = {}
 local V = Vector3.new
@@ -81,6 +82,7 @@ local function template(def, stage)
 	m:SetAttribute("TailType", d.tail)
 	m:SetAttribute("LimbCount", d.limbs)
 	m:SetAttribute("ArtStyle", "PixelSculpt")
+	m:SetAttribute("GeometrySource", "ProceduralFallback")
 	m:SetAttribute("Expression", d.expression.mouth)
 	m:SetAttribute("BlinkOffset", #def.id * 0.2)
 	local root = Instance.new("Part")
@@ -578,7 +580,8 @@ function Factory.build(def, level, options)
 	if not cache[key] then
 		cache[key] = template(def, stage)
 	end
-	local model = cache[key]:Clone()
+	local model = not options.proceduralOnly and Imported.tryBuild(def, stage) or nil
+	if not model then model = cache[key]:Clone() end
 	model.Name = def.name
 	model:SetAttribute("Level", level)
 	if not options.preview then

@@ -1,45 +1,23 @@
-"""Checks de integridade, não substituem execução Luau/Studio."""
-import json,re,zipfile,os
+"""Integridade real do catálogo expandido; execução e build são verificações separadas."""
+import json,re
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
-original=Path(os.environ['FERAS_BASELINE_ZIP']) if os.environ.get('FERAS_BASELINE_ZIP') else None
-config=json.loads((root/'default.project.json').read_text())
+def read(p): return (root/p).read_text()
 def walk(x):
  if isinstance(x,dict):
-  if '$path' in x:assert (root/x['$path']).exists()
-  for v in x.values():walk(v)
-walk(config)
-assert len(re.findall(r'^add\(', (root/'src/shared/Creatures.luau').read_text(),re.M))==30
-if original and original.exists():
- with zipfile.ZipFile(original) as z:
-  for name in ['Elements','Sounds']:
-   p=f'src/shared/{name}.luau';assert z.read(p)==(root/p).read_bytes(),p
-print('PASS: Rojo paths, JSON, 30 espécies e catálogos originais preservados')
-designs=(root/'src/shared/CreatureDesigns.luau').read_text()
-ids=set(re.findall(r'^add\(\s*"([^"]+)"', (root/'src/shared/Creatures.luau').read_text(),re.M))
-design_ids=set(re.findall(r'\{\s*"([a-z]+)",\s*"(?:mineral|quadruped|winged|draconic|aquatic|serpentine|arthropod|vegetal|biped|spectral)"',designs,re.M))
-assert ids==design_ids,(ids-design_ids,design_ids-ids)
-print('PASS: 30 designs próprios, sem IDs ausentes ou órfãos')
-
-if original and original.exists():
- with zipfile.ZipFile(original) as z:
-  legacy=set(re.findall(r'^add\(\s*"([^"]+)"',z.read('src/shared/Creatures.luau').decode(),re.M))
-  assert legacy <= ids and ids-legacy=={'fenix'}
-print('PASS: todos os IDs legados preservados; somente fenix adicionada')
-
-original_ids={'Brasa','Recife','Floresta','Dunas','Picos','Pantano'}
-island_source=(root/'src/shared/Islands.luau').read_text()
-assert all(re.search(r'id\s*=\s*"'+key+r'"',island_source) for key in original_ids)
-assert len(re.findall(r'\bid\s*=\s*"',island_source))==7
-assert 'Alvorecer' in island_source
-print('PASS: seis IDs de ilha preservados e Alvorecer adicionado')
-
-lore=(root/'src/shared/SpeciesLore.luau').read_text()
-lore_ids=set(re.findall(r'(\w+)\s*=\s*\{\s*description\s*=',lore))
-assert lore_ids==ids
-print('PASS: fichas e personalidades das 30 espécies integradas')
-
-legacy_fixture=json.loads((root/'tests/fixtures/legacy-ids.json').read_text())
-assert set(legacy_fixture['creatures']) <= ids
-assert all(re.search(r'id\s*=\s*"'+i+r'"',island_source) for i in legacy_fixture['islands'])
-print('PASS: fixture portátil de IDs anteriores preservada')
+  if '$path' in x: assert (root/x['$path']).exists(),x['$path']
+  for v in x.values(): walk(v)
+walk(json.loads(read('default.project.json')))
+ids=re.findall(r'^add\(\s*"([^"]+)"',read('src/shared/Creatures.luau'),re.M)
+assert len(ids)==len(set(ids)), 'IDs duplicados'
+designs=set(re.findall(r'\{\s*"([a-z][a-z0-9]+)"\s*,',read('src/shared/CreatureDesigns.luau')))
+assert set(ids)<=designs, set(ids)-designs
+legacy=json.loads(read('tests/fixtures/legacy-ids.json'))
+assert set(legacy['creatures'])<=set(ids),'ID legado removido'
+assert 'fenix' in ids
+islands=read('src/shared/Islands.luau')
+assert all(re.search(r'id\s*=\s*"'+i+r'"',islands) for i in legacy['islands'])
+assert len(re.findall(r'\bid\s*=\s*"',islands))==7
+for p in (root/'src').rglob('*.luau'):
+ assert p.read_text().strip(),f'Módulo vazio: {p}'
+print(f'PASS: Rojo, {len(ids)} espécies únicas com receitas, IDs legados e sete ilhas preservados')

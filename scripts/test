@@ -8,6 +8,7 @@ rojo_bin="${ROJO_BIN:-rojo}"
 python3 tests/run_checks.py --luau "$luau_bin" --compiler "$compiler_bin"
 "$lune_bin" run scripts/v7_core.luau
 "$lune_bin" run scripts/v7_engine_tests.luau
+"$lune_bin" run scripts/integration_checks.luau
 "$lune_bin" run scripts/check_models.luau
 "$lune_bin" run scripts/sim_balance.luau
 python3 scripts/static_v7.py
