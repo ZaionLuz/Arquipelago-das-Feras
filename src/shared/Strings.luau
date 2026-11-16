@@ -567,7 +567,7 @@ S.Text = {
 	VULCOES_E_RIOS_DE_MAGMA_300BD6 = "Vulcões e rios de magma.",
 	CITADELA_DE_GELO_E_AURORA_BOREAL_1A3B4C = "Cidadela de gelo, caverna dos cristais e aurora boreal.",
 	TORRE_DO_RELAMPAGO_E_TEMPORTE_PERPETUA_2B4D6E = "Torre do relâmpago, núcleo energético e tempestade perpétua.",
-	OBSERVATORIO_COSMICO_E_ESTRELAS_VIVAS_3C5E7F = "Observatório cósmico, jardim das estrelas e constelações vivas."
+	OBSERVATORIO_COSMICO_E_ESTRELAS_VIVAS_3C5E7F = "Observatório cósmico, jardim das estrelas e constelações vivas.",
 	XP_DA_FERA_1A37A2 = " XP da fera.",
 	XP_E_5EFA95 = " XP e +",
 }

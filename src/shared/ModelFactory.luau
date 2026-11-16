@@ -577,11 +577,11 @@ function Factory.build(def, level, options)
 	options = options or {}
 	local stage = C.stage(level, def.id)
 	local key = def.id .. ":" .. stage
-	if not cache[key] then
-		cache[key] = template(def, stage)
-	end
 	local model = not options.proceduralOnly and Imported.tryBuild(def, stage) or nil
-	if not model then model = cache[key]:Clone() end
+	if not model then
+		if not cache[key] then cache[key] = template(def, stage) end
+		model = cache[key]:Clone()
+	end
 	model.Name = def.name
 	model:SetAttribute("Level", level)
 	if not options.preview then
