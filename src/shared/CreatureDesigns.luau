@@ -499,7 +499,7 @@ for _, r in rows do
 	end
 	D[r[1]] = {
 		family = r[2],
-		expression = expressions[r[1]],
+		expression = expressions[r[1]] or { tilt = 0, mouth = r[2] == "winged" and "beak" or "smile", look = 0 },
 		silhouette = r[3] .. ":" .. r[5],
 		bodyPlan = r[2] .. ":" .. r[3],
 		appendages = { r[7], r[5] },

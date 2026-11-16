@@ -1,7 +1,7 @@
 --!nonstrict
 local Text = require(script.Parent.Strings).Text
 -- Fichas das espécies com geometria integrada. Não inclui conceitos ainda sem modelo.
-return {
+local Lore = {
 	cinzelo = {
 		description = Text.UM_NUCLEO_DE_CARVAO_VIVO_PROTEGIDO_POR_PEQUENAS__769F23,
 		personality = "Curioso",
@@ -153,3 +153,13 @@ return {
 		family = Text.AVE_SOLAR_LENDARIA_06397E,
 	},
 }
+
+local C = require(script.Parent.Creatures)
+local Designs = require(script.Parent.CreatureDesigns)
+for _, def in C.List do
+ if not Lore[def.id] then
+  Lore[def.id] = {description = def.name .. " — elemento " .. def.el .. ". Registro do catálogo em expansão.",
+   personality = "Em observação", family = Designs[def.id].family}
+ end
+end
+return Lore

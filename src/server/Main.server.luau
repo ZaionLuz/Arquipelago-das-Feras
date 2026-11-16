@@ -48,7 +48,7 @@ local EvolutionHistory = Instance.new("RemoteFunction")
 EvolutionHistory.Name = "EvolutionHistory"
 EvolutionHistory.Parent = EvoRemotes
 
-require(script.Parent.EvolutionService)
+require(script.Parent.EvolutionService).start()
 local last = {}
 local busy = {}
 local function argument(v)

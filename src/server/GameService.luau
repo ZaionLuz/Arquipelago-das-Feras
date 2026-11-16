@@ -13,7 +13,6 @@ local M = require(RS.Shared.Missions)
 local SR = require(RS.Shared.SanctuaryRules)
 local CaptureRules = require(RS.Shared.CaptureRules)
 local Story = require(RS.Shared.Story)
-local EvolutionService = require(script.Parent.EvolutionService)
 local Progression = require(RS.Shared.Progression)
 local Combat = require(RS.Shared.CombatRules)
 local Transport = require(script.Parent.Transport)
@@ -232,10 +231,6 @@ function A.Feed(p, uid)
 	cr.lv += 1
 	bump(d, "feed")
 	World.refresh(p)
-	-- Check for auto-evolution on level up
-	task.spawn(function()
-		EvolutionService.checkAutoEvolution(p, uid)
-	end)
 	return ok(
 		p,
 		Text.SUBIU_PARA_O_NIVEL_0AB637
