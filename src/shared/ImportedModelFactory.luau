@@ -59,7 +59,7 @@ local function registryModel(def,stage,assetService)
    assert(name~="Root","Root é reservado")
    local id=assert(Registry.assetId(p.MeshId),"MeshId precisa ser um asset real do Roblox")
    -- MeshId não é atribuído diretamente: é uma propriedade protegida no Studio/runtime.
-   local part=assetService:CreateMeshPartAsync(id,{CollisionFidelity=Enum.CollisionFidelity.Box,RenderFidelity=Enum.RenderFidelity.Automatic})
+   local part=assetService:CreateMeshPartAsync(Content and Content.fromUri and Content.fromUri(id) or id,{CollisionFidelity=Enum.CollisionFidelity.Box,RenderFidelity=Enum.RenderFidelity.Automatic})
    part.Name=name;part.Size=Vector3.new(table.unpack(p.Size));part.CFrame=root.CFrame*CFrame.new(table.unpack(p.CFrame))
    part.Color=Color3.new(table.unpack(p.Color));part.Material=Enum.Material[p.Material or "SmoothPlastic"] or Enum.Material.SmoothPlastic
    part.Transparency=p.Transparency or 0;part.Parent=m;parts[name]=part

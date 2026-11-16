@@ -56,3 +56,27 @@ local displayed=factory.build(def,1,{preview=true})
 assert(displayed:GetAttribute("GeometrySource")=="BlenderImported")
 factory.validate(displayed);displayed:Destroy();loose:Destroy();rs:Destroy()
 print("PASS: catálogo",#C.List,"IDs únicos, fichas, marcos por nível, prefab preferido, clone local e fallback seguro")
+
+-- O contrato atual de CreateMeshPartAsync recebe Content, sem tocar na rede neste teste.
+local emptyRS=rb.Instance.new("Folder")
+local meshCalls=0
+local config={Creatures={[def.id]={Stages={[1]={Parts={Body={
+ MeshId="42",Size={1,1,1},CFrame={0,0,0,1,0,0,0,1,0,0,0,1},Color={.5,.6,.7},Material="SmoothPlastic"
+}}}}}},MeshIdMap={}}
+local asset={CreateMeshPartAsync=function(_,content)
+ assert(type(content)=="table" and content.uri=="rbxassetid://42")
+ meshCalls+=1;return rb.Instance.new("Part")
+end}
+local registryLoader=Loader.new({
+ Content={fromUri=function(uri) return {uri=uri} end},
+ game={GetService=function(_,name) return name=="ReplicatedStorage" and emptyRS or asset end}
+},{["src/shared/BlenderModelsConfig.luau"]=config})
+local rf=registryLoader("src/shared/ModelFactory.luau")
+for _=1,2 do
+ local meshModel=rf.build(def,1,{preview=true})
+ assert(meshModel:GetAttribute("GeometrySource")=="BlenderImported")
+ rf.validate(meshModel);meshModel:Destroy()
+end
+assert(meshCalls==1,"Mesh não deve ser recriado a cada spawn")
+emptyRS:Destroy()
+print("PASS: Content.fromUri, criação de mesh por serviço simulado e cache sem rede")
