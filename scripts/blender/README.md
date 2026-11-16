@@ -19,3 +19,5 @@ Não use IDs simbólicos ou exemplos do briefing como se fossem assets publicado
 
 ## Limites desta correção
 As 248 exportações OBJ são arquivos de autoria, não 248 espécies já publicadas. O catálogo jogável é contado automaticamente. Há receitas repetidas na expansão; a regressão visual antiga continua obrigatória e a aprovação estética das novas depende do Studio. Não se afirma arte única, animação de FBX ou FPS homologado sem inspeção real.
+
+A preparação automática conecta partes rígidas. Ela não cria pesos de skinning nem uma animação orgânica completa para um OBJ de peça única; esses trabalhos de arte exigem rig/animação no Studio ou Blender.

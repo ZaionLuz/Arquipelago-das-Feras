@@ -14,3 +14,15 @@ Base: 31c94bec76ce9680004a96aa4263c4d938def82c.
 Roblox Studio, renderização, física multiplayer e FPS não foram executados neste ambiente. Importar/publicar os OBJ/FBX é uma etapa necessária para os visuais Blender exatos; a build headless contém as receitas locais e a integração pronta.
 
 Compatibilidade adicional: categorias anatômicas da expansão usam perfis de combate legados; seis elementos novos têm nomes/cores válidos e relações neutras, sem alterar o multiplicador entre os elementos antigos. Um erro de vírgula em Strings foi corrigido. Importações com scripts, partes soltas ou joints externos são recusadas com fallback.
+
+## Resultado executado
+
+[Regressão e build aprovadas](https://github.com/ZaionLuz/Arquipelago-das-Feras/actions/runs/43799007047) para o código 5df497aaa5a1f521397728990c8007066b4ba435.
+
+- Catálogo: 120 IDs únicos.
+- Modelos: 361 construções nativas headless; cena de 40 criaturas com 1553 peças (limite 3200).
+- Bundle: 74 scripts/módulos, comparados com src após o build.
+- Sintaxe Luau, combate/captura, concessão e débito únicos, leases/migração, dados corrompidos, remotes, perfis herdados, prefab/fallback, controle de origem da Fênix, progressão e simulações aprovados.
+- Três arquivos de releases com SHA256 52ee1de8f4f596084327eb8d3195038c451dc8598e6af5fec0ce16c71749d18e; o manifesto de proveniência está em releases/BUILD-MANIFEST.json.
+
+Liberado para teste funcional controlado no Studio, **não** como homologação visual/performance. Para avaliar os meshes Blender exatos, conclua a importação descrita em IMPORTAR-MODELOS.md.

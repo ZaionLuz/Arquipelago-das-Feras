@@ -32,6 +32,9 @@ jobs:
           rojo build -o /tmp/Feras-Tester.rbxlx
           python3 scripts/check_bundle_sources.py /tmp/Feras-Tester.rbxlx
           python3 scripts/emit_build.py /tmp/Feras-Tester.rbxlx
+      - name: Verify committed tester releases
+        if: hashFiles('releases/Feras-Tester.rbxlx') != ''
+        run: python3 scripts/check_releases.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

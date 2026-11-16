@@ -5,9 +5,14 @@
     </Properties>
     <Item class="Folder" referent="1">
       <Properties>
+        <string name="Name">ImportedRigs</string>
+      </Properties>
+    </Item>
+    <Item class="Folder" referent="2">
+      <Properties>
         <string name="Name">Shared</string>
       </Properties>
-      <Item class="ModuleScript" referent="2">
+      <Item class="ModuleScript" referent="3">
         <Properties>
           <string name="Name">Access</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -63,7 +68,7 @@ return A
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="3">
+      <Item class="ModuleScript" referent="4">
         <Properties>
           <string name="Name">ArtTokens</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -144,7 +149,79 @@ return T
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="4">
+      <Item class="ModuleScript" referent="5">
+        <Properties>
+          <string name="Name">BlenderModels</string>
+          <string name="Source"><![CDATA[--!nonstrict
+local Config = require(script.Parent.BlenderModelsConfig)
+local B = { VERSION=2, Creatures=Config.Creatures, MeshIdMap=Config.MeshIdMap }
+function B.assetId(id)
+ if typeof(id)~="string" then return nil end
+ local digits=id:match("^rbxassetid://([1-9]%d*)$") or id:match("^([1-9]%d*)$")
+ return digits and ("rbxassetid://"..digits) or nil
+end
+function B.GetCreature(id) return B.Creatures[id] end
+function B.GetStage(id,stage)
+ local c=B.GetCreature(id)
+ return c and c.Stages and c.Stages[stage] or nil
+end
+function B.GetPart(id,stage,name)
+ local s=B.GetStage(id,stage)
+ return s and s.Parts and s.Parts[name] or nil
+end
+function B.ListSpecies()
+ local ids={};for id in B.Creatures do table.insert(ids,id) end;table.sort(ids);return ids
+end
+function B.ListStages(id)
+ local out={};local c=B.GetCreature(id)
+ if c and c.Stages then for stage in c.Stages do table.insert(out,stage) end end
+ table.sort(out);return out
+end
+function B.GetPartsForStage(id,stage)
+ local out={};local s=B.GetStage(id,stage)
+ if s and s.Parts then for name in s.Parts do table.insert(out,name) end end
+ table.sort(out);return out
+end
+function B.GetMeshId(id,stage,name,lod)
+ local p=B.GetPart(id,stage,name)
+ return p and B.assetId((lod==1 and p.LOD1MeshId) or (lod==2 and p.LOD2MeshId) or p.MeshId) or nil
+end
+function B.Validate()
+ local errors,count={},0
+ for id,c in B.Creatures do
+  count+=1
+  if typeof(c)~="table" or typeof(c.Stages)~="table" then table.insert(errors,id..": Stages ausente");continue end
+  for stage,s in c.Stages do
+   if typeof(stage)~="number" or stage<1 or stage>3 or stage%1~=0 or typeof(s.Parts)~="table" or not next(s.Parts) then
+    table.insert(errors,id..": estágio inválido");continue
+   end
+   for name,p in s.Parts do
+    if typeof(p)~="table" or not B.assetId(p.MeshId) then table.insert(errors,id..":"..name..": MeshId inválido") end
+    for key,n in {Size=3,CFrame=12,Color=3} do
+     local value=p[key]
+     if typeof(value)~="table" or #value~=n then table.insert(errors,id..":"..name..":"..key.." inválido")
+     else for _,v in value do if typeof(v)~="number" or v~=v or math.abs(v)==math.huge then table.insert(errors,id..":"..name..": valor não finito") end end end
+    end
+   end
+  end
+ end
+ return {valid=#errors==0 and count>0,configured=count>0,errors=errors,count=count}
+end
+return B
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="6">
+        <Properties>
+          <string name="Name">BlenderModelsConfig</string>
+          <string name="Source"><![CDATA[-- IDs reais obtidos após importar/publicar os meshes no Roblox Studio.
+-- Também é possível manter Models já importados em ReplicatedStorage.ImportedRigs.
+-- Veja IMPORTAR-MODELOS.md. Nenhum ID de exemplo será usado no jogo.
+return { Creatures = {}, MeshIdMap = {} }
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="7">
         <Properties>
           <string name="Name">Breeding</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -240,7 +317,7 @@ return B
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="5">
+      <Item class="ModuleScript" referent="8">
         <Properties>
           <string name="Name">CaptureMath</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -277,7 +354,7 @@ return M
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="6">
+      <Item class="ModuleScript" referent="9">
         <Properties>
           <string name="Name">CaptureRules</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -341,7 +418,7 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="7">
+      <Item class="ModuleScript" referent="10">
         <Properties>
           <string name="Name">CombatRules</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -350,6 +427,7 @@ local Text = require(script.Parent.Strings).Text
 local C = require(script.Parent.Creatures)
 local Elements = require(script.Parent.Elements)
 local Skills = require(script.Parent.Skills)
+local Shape = require(script.Parent.CombatShape)
 local CaptureMath = require(script.Parent.CaptureMath)
 local R = {
 	MaxTurns = 40,
@@ -370,7 +448,7 @@ function R.stats(id, lv)
 		maxHp = math.floor(def.hp * scale),
 		atk = def.atk * scale,
 		def = 4 + def.rar * 3 + lv * 0.35,
-		speed = ({ Blob = 9, Beast = 15, Bird = 20, Dragon = 13, Serpent = 16, Insect = 18 })[def.shape] + lv,
+		speed = ({ Blob = 9, Beast = 15, Bird = 20, Dragon = 13, Serpent = 16, Insect = 18 })[Shape.resolve(def.shape)] + lv,
 		el = def.el,
 	}
 end
@@ -632,7 +710,18 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="8">
+      <Item class="ModuleScript" referent="11">
+        <Properties>
+          <string name="Name">CombatShape</string>
+          <string name="Source"><![CDATA[-- Perfis antigos preservados; os nomes anatômicos novos usam equivalentes de combate.
+local aliases={Blob="Blob",Beast="Beast",Bird="Bird",Dragon="Dragon",Serpent="Serpent",Insect="Insect",
+ Quadruped="Beast",Winged="Bird",Aquatic="Serpent",Arthropod="Insect",Mineral="Blob",Vegetal="Blob",Spectral="Blob",
+ Draconic="Dragon",Serpentine="Serpent",Biped="Beast"}
+return { Aliases=aliases, resolve=function(shape) return assert(aliases[shape],"Perfil de combate desconhecido: "..tostring(shape)) end }
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="12">
         <Properties>
           <string name="Name">Config</string>
           <string name="Source"><![CDATA[--!strict
@@ -646,7 +735,7 @@ return {
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="9">
+      <Item class="ModuleScript" referent="13">
         <Properties>
           <string name="Name">CreatureDesigns</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1014,6 +1103,97 @@ local rows = {
 		{ 2.3, 4.5, 3.6 },
 		{ 0x8F263C, 0xE86435, 0xF4B846, 0xFFF1CA },
 	},
+
+{"flamiris", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"carvunio", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"brasegato", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"orvalume", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"coralina", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"pelaguir", "aquatic", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.8, 2.6}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"musgalte", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"bambuja", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"florabelha", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"marmure", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"litorisco", "mineral", "obelisk", "crystal", "anchor", 4, "shoulderarches", "runes", {2.4, 1.4, 2.1}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"sementauro", "quadruped", "bud", "round", "root", 4, "seedleaves", "veins", {1.8, 2.3, 3.7}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"sibilobo", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"cirrandor", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"nimboreo", "draconic", "raptor", "electric", "bolt", 6, "lightninghorns", "zigzag", {2.1, 3.1, 3.9}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"velune", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"obsidauro", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"velumosa", "winged", "mothmask", "compound", "glowbulb", 6, "mothwings", "eyespots", {1.6, 2.0, 1.9}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"glaurina", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"niveor", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"gelifoca", "aquatic", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.8, 2.6}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"fulgarru", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"ampelince", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"trovissideo", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"aurifita", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"lunarru", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"candeira", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"ferrunila", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"fiaranha", "arthropod", "mandible", "compound", "stinger", 8, "pincers", "bands", {2.7, 1.3, 3.0}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"metafalcao", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"cindrel", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"emberkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"sparkpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"flamecub", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"coalcrawler", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"aquasprite", "aquatic", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.8, 2.6}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"droplet", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"finling", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"tidepup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"coralkit", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"leaflet", "vegetal", "puffer", "fish", "paddle", 2, "gillfans", "spots", {1.6, 1.7, 1.5}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"seedling", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"sprou", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"vinecub", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"petalpaw", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"pebblin", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"rockling", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"sandpup", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"dunecub", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"geodette", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"zephyr", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"cloudpuff", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"breezekit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"galehatch", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"windling", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"shade", "spectral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.1, 2.9}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"shadowmite", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"gloomkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"duskpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"nightmoth", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"frostbit", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"icecrystal", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"snowkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"glaciercub", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"frostling", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"voltkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"sparkling", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"jolteon", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"zapcub", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"buzzbug", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"lumikit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"gloworb", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"solarpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"raycub", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"prismfly", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"ironkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"scraplet", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"boltpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"gearcub", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"rivetbug", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"gemling", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"shardlet", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"crystalkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"prismpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"facetbug", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"runeling", "spectral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.1, 2.9}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"mysticorb", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"arcankit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"voidpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"sigilbug", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
 }
 -- Tilt/mouth recipes are visual only; species IDs and progression stay untouched.
 local expressions = {
@@ -1059,7 +1239,7 @@ for _, r in rows do
 	end
 	D[r[1]] = {
 		family = r[2],
-		expression = expressions[r[1]],
+		expression = expressions[r[1]] or { tilt = 0, mouth = r[2] == "winged" and "beak" or "smile", look = 0 },
 		silhouette = r[3] .. ":" .. r[5],
 		bodyPlan = r[2] .. ":" .. r[3],
 		appendages = { r[7], r[5] },
@@ -1113,7 +1293,7 @@ return D
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="10">
+      <Item class="ModuleScript" referent="14">
         <Properties>
           <string name="Name">CreatureFeatures</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1644,7 +1824,7 @@ return F
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="11">
+      <Item class="ModuleScript" referent="15">
         <Properties>
           <string name="Name">CreatureGrant</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1715,7 +1895,7 @@ return G
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="12">
+      <Item class="ModuleScript" referent="16">
         <Properties>
           <string name="Name">Creatures</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1724,6 +1904,7 @@ local Text = require(script.Parent.Strings).Text
 local C =
 	{ List = {}, ById = {}, Rarity = { Text.COMUM_CA938E, Text.RARO_851816, Text.EPICO_7BC392, Text.LENDARIO_52178E } }
 local function add(id, name, el, rar, island, shape, hybrid)
+	assert(not C.ById[id], "ID de criatura duplicado: " .. id)
 	local d = {
 		id = id,
 		name = name,
@@ -1809,6 +1990,188 @@ add(
 	"Dragon",
 	{ Text.FOGO_F77A3C, Text.AR_B623FF }
 )
+add("flamiris", Text.FLAMIRIS_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("carvunio", Text.CARVUNIO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("brasegato", Text.BRASEGATO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("orvalume", Text.ORVALUME_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("coralina", Text.CORALINA_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("pelaguir", Text.PELAGUIR_NAME, Text.AGUA_F11A05, 2, "Recife", "Aquatic")
+add("musgalte", Text.MUSGALTE_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("bambuja", Text.BAMBUJA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("florabelha", Text.FLORABELHA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Arthropod")
+add("marmure", Text.MARMURE_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("litorisco", Text.LITORISCO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Mineral")
+add("sementauro", Text.SEMENTAURO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("sibilobo", Text.SIBILOBO_NAME, Text.AR_B623FF, 2, "Picos", "Quadruped")
+add("cirrandor", Text.CIRRANDOR_NAME, Text.AR_B623FF, 2, "Picos", "Winged")
+add("nimboreo", Text.NIMBOREO_NAME, Text.AR_B623FF, 2, "Picos", "Draconic")
+add("velune", Text.VELUNE_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("obsidauro", Text.OBSIDAURO_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("velumosa", Text.VELUMOSA_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Winged")
+add("glaurina", Text.GLAURINA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("niveor", Text.NIVEOR_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("gelifoca", Text.GELIFOCA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Aquatic")
+add("fulgarru", Text.FULGARRU_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("ampelince", Text.AMPELINCE_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("trovissideo", Text.TROVISSIDEO_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Arthropod")
+add("aurifita", Text.AURIFITA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("lunarru", Text.LUNARRU_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("candeira", Text.CANDEIRA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Arthropod")
+add("ferrunila", Text.FERRUNILA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Quadruped")
+add("fiaranha", Text.FIARANHA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Arthropod")
+add("metafalcao", Text.METAFALCAO_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Winged")
+add("cindrel", Text.CINDREL_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Mineral")
+add("emberkit", Text.EMBERKIT_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("sparkpup", Text.SPARKPUP_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("flamecub", Text.FLAMECUB_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("coalcrawler", Text.COALCRAWLER_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Arthropod")
+add("aquasprite", Text.AQUASPRITE_NAME, Text.AGUA_F11A05, 1, "Recife", "Aquatic")
+add("droplet", Text.DROPLET_NAME, Text.AGUA_F11A05, 1, "Recife", "Mineral")
+add("finling", Text.FINLING_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("tidepup", Text.TIDEPUP_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("coralkit", Text.CORALKIT_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("leaflet", Text.LEAFLET_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Vegetal")
+add("seedling", Text.SEEDLING_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Mineral")
+add("sprou", Text.SPROU_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("vinecub", Text.VINECUB_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("petalpaw", Text.PETALPAW_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("pebblin", Text.PEBBLIN_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("rockling", Text.ROCKLING_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("sandpup", Text.SANDPUP_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("dunecub", Text.DUNECUB_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("geodette", Text.GEODETTE_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Arthropod")
+add("zephyr", Text.ZEPHYR_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("cloudpuff", Text.CLOUDPUFF_NAME, Text.AR_B623FF, 1, "Picos", "Mineral")
+add("breezekit", Text.BREEZEKIT_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("galehatch", Text.GALEHATCH_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("windling", Text.WINDLING_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("shade", Text.SHADE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Spectral")
+add("shadowmite", Text.SHADOWMITE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Mineral")
+add("gloomkit", Text.GLOOMKIT_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("duskpup", Text.DUSKPUP_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("nightmoth", Text.NIGHTMOTH_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Arthropod")
+add("frostbit", Text.FROSTBIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("icecrystal", Text.ICECRYSTAL_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("snowkit", Text.SNOWKIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("glaciercub", Text.GLACIERCUB_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("frostling", Text.FROSTLING_NAME, Text.GELO_4A90D9, 1, "Dunas", "Winged")
+add("voltkit", Text.VOLTKIT_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("sparkling", Text.SPARKLING_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Mineral")
+add("jolteon", Text.JOLTEON_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("zapcub", Text.ZAPCUB_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("buzzbug", Text.BUZZBUG_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Arthropod")
+add("lumikit", Text.LUMIKIT_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("gloworb", Text.GLOWORB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Mineral")
+add("solarpup", Text.SOLARPUP_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("raycub", Text.RAYCUB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("prismfly", Text.PRISMFLY_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Arthropod")
+add("ironkit", Text.IRONKIT_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("scraplet", Text.SCRAPLET_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Mineral")
+add("boltpup", Text.BOLTPUP_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("gearcub", Text.GEARCUB_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("rivetbug", Text.RIVETBUG_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Arthropod")
+add("gemling", Text.GEMLING_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("shardlet", Text.SHARDLET_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("crystalkit", Text.CRYSTALKIT_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("prismpup", Text.PRISMPUP_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("facetbug", Text.FACETBUG_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Arthropod")
+add("runeling", Text.RUNELING_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Spectral")
+add("mysticorb", Text.MYSTICORB_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Mineral")
+add("arcankit", Text.ARCANKIT_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("voidpup", Text.VOIDPUP_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("sigilbug", Text.SIGILBUG_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Arthropod")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- Fênix é uma espécie adicional; Fênix Fuligem e seus IDs permanecem intactos.
 add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
 C.ById.fenix.acquisition = "special"
@@ -1822,7 +2185,7 @@ return C
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="13">
+      <Item class="ModuleScript" referent="17">
         <Properties>
           <string name="Name">DesignChecks</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1830,6 +2193,7 @@ return C
 local C = require(script.Parent.Creatures)
 local D = require(script.Parent.CreatureDesigns)
 local F = require(script.Parent.ModelFactory)
+local Legacy = require(script.Parent.LegacySpecies)
 local Checks = { MinimumDistance = 0.12, MinimumStageDistance = 0.08 }
 local function difference(a, b)
 	local sum, count = 0, 0
@@ -1947,13 +2311,15 @@ function Checks.run()
 	for _, def in C.List do
 		local recipe = assert(D[def.id], "Receita ausente")
 		local key = table.concat({ recipe.family, recipe.head, recipe.eyes, recipe.tail, tostring(recipe.limbs) }, ":")
-		assert(not tuple[key], "Tupla anatômica repetida")
-		tuple[key] = true
-		eyeCounts[recipe.eyes] = (eyeCounts[recipe.eyes] or 0) + 1
+		if Legacy[def.id] then
+			assert(not tuple[key], "Tupla anatômica legada repetida")
+			tuple[key] = true
+			eyeCounts[recipe.eyes] = (eyeCounts[recipe.eyes] or 0) + 1
+		end
 		signatures[def.id] = {}
 		reports[def.id] = {}
 		for index, lv in { 1, 7, 15 } do
-			local m = F.build(def, lv, { preview = true })
+			local m = F.build(def, lv, { preview = true, proceduralOnly = true })
 			local sig = Checks.signature(m)
 			signatures[def.id][index] = sig
 			reports[def.id][index] = { parts = sig.parts, size = F.validate(m).size }
@@ -1978,6 +2344,7 @@ function Checks.run()
 	end
 	for i = 1, #C.List - 1 do
 		for j = i + 1, #C.List do
+			if not Legacy[C.List[i].id] or not Legacy[C.List[j].id] then continue end
 			for stage = 1, 3 do
 				local a, b = C.List[i].id, C.List[j].id
 				local distance = Checks.distance(signatures[a][stage], signatures[b][stage])
@@ -2013,7 +2380,7 @@ return Checks
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="14">
+      <Item class="ModuleScript" referent="18">
         <Properties>
           <string name="Name">Economy</string>
           <string name="Source"><![CDATA[--!strict
@@ -2028,11 +2395,11 @@ return {
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="15">
+      <Item class="ModuleScript" referent="19">
         <Properties>
           <string name="Name">Elements</string>
           <string name="Source"><![CDATA[--!nonstrict
--- Seis elementos. Strong[atacante] = alvos que sofrem dano dobrado.
+-- Vantagens legadas preservadas; novos elementos usam relações neutras até balanceamento explícito.
 local E = { List = { "Fogo", "Água", "Natureza", "Terra", "Ar", "Sombra" } }
 E.Strong = {
 	Fogo = { "Natureza" },
@@ -2050,6 +2417,12 @@ E.Color = {
 	Ar = Color3.fromRGB(200, 230, 255),
 	Sombra = Color3.fromRGB(140, 80, 200),
 }
+for name,color in {
+ Gelo=Color3.fromRGB(156,219,255), ["Elétrico"]=Color3.fromRGB(255,211,105), Luz=Color3.fromRGB(248,237,191),
+ Metal=Color3.fromRGB(168,184,197),Cristal=Color3.fromRGB(202,180,227),Arcano=Color3.fromRGB(178,142,210),
+} do
+ table.insert(E.List,name);E.Color[name]=color;E.Strong[name]={}
+end
 function E.mult(att, def)
 	if table.find(E.Strong[att] or {}, def) then
 		return 2
@@ -2063,7 +2436,7 @@ return E
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="16">
+      <Item class="ModuleScript" referent="20">
         <Properties>
           <string name="Name">EncounterPools</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -2123,7 +2496,168 @@ return P
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="17">
+      <Item class="ModuleScript" referent="21">
+        <Properties>
+          <string name="Name">EvolutionData</string>
+          <string name="Source"><![CDATA[--!strict
+-- Marcos reais do jogo. Métodos adicionais do DESIGN.md ainda não são habilitados.
+local C = require(script.Parent.Creatures)
+local E = { Levels = {1, 7, 15}, MaxStage = 3, Methods = { Level = true } }
+function E.forSpecies(id: string)
+ local def = C.ById[id]
+ if not def then return nil end
+ return {minStage = def.minStage or 1, maxStage = E.MaxStage, levels = E.Levels, method = "Level"}
+end
+return E
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="22">
+        <Properties>
+          <string name="Name">EvolutionItems</string>
+          <string name="Source"><![CDATA[--!strict
+-- A evolução ativa é por nível; itens futuros não são vendidos nem consumidos.
+return { Enabled = false, Items = {}, Method = "Level" }
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="23">
+        <Properties>
+          <string name="Name">EvolutionSystem</string>
+          <string name="Source"><![CDATA[--!nonstrict
+local C = require(script.Parent.Creatures)
+local E = require(script.Parent.EvolutionData)
+local S = {}
+function S.info(creature)
+ if typeof(creature) ~= "table" or not C.ById[creature.id] or typeof(creature.lv) ~= "number"
+  or creature.lv ~= creature.lv or creature.lv < 1 or creature.lv > 100 or creature.lv % 1 ~= 0 then return nil end
+ local rules = E.forSpecies(creature.id)
+ local stage = C.stage(creature.lv, creature.id)
+ return {species = creature.id, level = creature.lv, stage = stage, maxStage = rules.maxStage,
+  nextLevel = stage < rules.maxStage and rules.levels[stage + 1] or nil, method = "Level",
+  automatic = true, ascensionEnabled = false}
+end
+return S
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="24">
+        <Properties>
+          <string name="Name">ImportedModelFactory</string>
+          <string name="Source"><![CDATA[--!nonstrict
+-- Prefabs importados têm prioridade. Sem assets, o chamador usa a receita local.
+local Registry=require(script.Parent.BlenderModels)
+local Designs=require(script.Parent.CreatureDesigns)
+local I={}
+local cache,failed={},{}
+local function metadata(model,def,stage)
+ local d=Designs[def.id]
+ model.Name=def.name
+ model:SetAttribute("Species",def.id);model:SetAttribute("Stage",stage)
+ model:SetAttribute("Family",d.family);model:SetAttribute("EyeType",d.eyes)
+ model:SetAttribute("HeadType",d.head);model:SetAttribute("TailType",d.tail)
+ model:SetAttribute("LimbCount",d.limbs);model:SetAttribute("ArtStyle","BlenderImported")
+ model:SetAttribute("GeometrySource","BlenderImported");model:SetAttribute("Expression",d.expression.mouth)
+ model:SetAttribute("BlinkOffset",#def.id*.2)
+ return model
+end
+local function normalize(model,def,stage)
+ assert(model:IsA("Model"),"Prefab precisa ser Model")
+ local root=model:FindFirstChild("Root",true)
+ assert(root and root:IsA("BasePart"),"Root ausente")
+ model.PrimaryPart=root;model.ModelStreamingMode=Enum.ModelStreamingMode.Atomic
+ local count=0
+ local edges={}
+ for _,obj in model:GetDescendants() do
+  assert(not obj:IsA("LuaSourceContainer"),"Script não permitido dentro de uma criatura")
+  if obj:IsA("BasePart") then
+   count+=1
+   obj.CanCollide=false;obj.CanTouch=false;obj.CanQuery=false;obj.Massless=true;obj.Anchored=obj==root
+   obj.CollisionGroup="Creatures"
+   assert(obj.Size.X>0 and obj.Size.Y>0 and obj.Size.Z>0,"Tamanho inválido")
+  elseif obj:IsA("Motor6D") then
+   assert(obj.Part0 and obj.Part1 and obj.Part0:IsDescendantOf(model) and obj.Part1:IsDescendantOf(model),"Joint desconectado ou externo")
+   table.insert(edges,{obj.Part0,obj.Part1})
+   if not obj:GetAttribute("Role") then obj:SetAttribute("Role",obj.Name:gsub("^J_","")) end
+   if not obj:GetAttribute("Phase") then obj:SetAttribute("Phase",0) end
+  elseif obj:IsA("WeldConstraint") then
+   assert(obj.Part0 and obj.Part1 and obj.Part0:IsDescendantOf(model) and obj.Part1:IsDescendantOf(model),"Weld desconectado ou externo")
+   table.insert(edges,{obj.Part0,obj.Part1})
+  end
+ end
+ local linked={[root]=true}
+ for _=1,count do
+  for _,edge in edges do if linked[edge[1]] or linked[edge[2]] then linked[edge[1]]=true;linked[edge[2]]=true end end
+ end
+ for _,obj in model:GetDescendants() do if obj:IsA("BasePart") then assert(linked[obj],"Parte visual sem ligação ao Root") end end
+ assert(count>1 and count<=Designs[def.id].budget[stage],"Orçamento de peças excedido")
+ root.Transparency=1
+ return metadata(model,def,stage)
+end
+local function registryModel(def,stage,assetService)
+ local s=Registry.GetStage(def.id,stage)
+ if not s then return nil end
+ local m=Instance.new("Model")
+ local ok,result=pcall(function()
+  local root=Instance.new("Part");root.Name="Root";root.Size=Vector3.new(.1,.1,.1);root.Transparency=1;root.CFrame=CFrame.new(0,2,0);root.Parent=m
+  local parts={Root=root}
+  for name,p in s.Parts do
+   assert(name~="Root","Root é reservado")
+   local id=assert(Registry.assetId(p.MeshId),"MeshId precisa ser um asset real do Roblox")
+   -- MeshId não é atribuído diretamente: é uma propriedade protegida no Studio/runtime.
+   local part=assetService:CreateMeshPartAsync(id,{CollisionFidelity=Enum.CollisionFidelity.Box,RenderFidelity=Enum.RenderFidelity.Automatic})
+   part.Name=name;part.Size=Vector3.new(table.unpack(p.Size));part.CFrame=root.CFrame*CFrame.new(table.unpack(p.CFrame))
+   part.Color=Color3.new(table.unpack(p.Color));part.Material=Enum.Material[p.Material or "SmoothPlastic"] or Enum.Material.SmoothPlastic
+   part.Transparency=p.Transparency or 0;part.Parent=m;parts[name]=part
+  end
+  for name,p in s.Parts do
+   local parent=parts[p.Parent or (name=="Body" and "Root" or "Body")] or root
+   local joint=Instance.new("Motor6D");joint.Name="J_"..name; joint.Part0=parent;joint.Part1=parts[name]
+   joint.C0=parent.CFrame:ToObjectSpace(parts[name].CFrame);joint.C1=CFrame.identity
+   joint:SetAttribute("Role",p.Role or name);joint:SetAttribute("Phase",0);joint.Parent=parts[name]
+  end
+  return normalize(m,def,stage)
+ end)
+ if not ok then m:Destroy();error(result) end
+ return result
+end
+function I.normalizePrefab(model,def,stage,validate)
+ normalize(model,def,stage)
+ if validate then validate(model) end
+ return model
+end
+function I.tryBuild(def,stage,validate)
+ if not game or not game.GetService then return nil end
+ local ok,rs=pcall(function() return game:GetService("ReplicatedStorage") end)
+ if not ok or not rs or typeof(rs.FindFirstChild)~="function" then return nil end
+ local folder=rs:FindFirstChild("ImportedRigs")
+ local prefab=folder and folder:FindFirstChild(def.id.."_Stage"..stage)
+ if prefab then
+  local clone=prefab:Clone()
+  local good,model=pcall(function()
+   normalize(clone,def,stage)
+   if validate then validate(clone) end
+   return clone
+  end)
+  if good then return model end
+  clone:Destroy()
+  local key=def.id..":"..stage..":prefab"
+  if not failed[key] then failed[key]=true;warn("Prefab inválido; usando receita local:",key,model) end
+ end
+ local key=def.id..":"..stage
+ if cache[key] then return cache[key]:Clone() end
+ if failed[key] or not Registry.GetStage(def.id,stage) then return nil end
+ local good,model=pcall(function() local result=registryModel(def,stage,game:GetService("AssetService")); if result and validate then validate(result) end;return result end)
+ if good and model then cache[key]=model;return model:Clone() end
+ failed[key]=true
+ warn("Mesh indisponível; usando receita local:",key,model)
+ return nil
+end
+return I
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="25">
         <Properties>
           <string name="Name">Islands</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -2234,7 +2768,46 @@ return M
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="18">
+      <Item class="ModuleScript" referent="26">
+        <Properties>
+          <string name="Name">LegacySpecies</string>
+          <string name="Source"><![CDATA[-- IDs da versão anterior, preservados nas migrações e nas verificações visuais.
+return {
+	["cinzelo"] = true,
+	["magmarau"] = true,
+	["fenixfuligem"] = true,
+	["vulcanodrago"] = true,
+	["bolhinho"] = true,
+	["marilisco"] = true,
+	["carangueperola"] = true,
+	["abissauro"] = true,
+	["brotinho"] = true,
+	["folhuco"] = true,
+	["aracnoflora"] = true,
+	["ancestravore"] = true,
+	["graozinho"] = true,
+	["escorpiodra"] = true,
+	["esfingeolito"] = true,
+	["colossodune"] = true,
+	["penugem"] = true,
+	["ventanil"] = true,
+	["trovoraptor"] = true,
+	["aeronimbo"] = true,
+	["lodinho"] = true,
+	["caudalume"] = true,
+	["vagalumorte"] = true,
+	["reinevoento"] = true,
+	["vaporino"] = true,
+	["magmaterra"] = true,
+	["tempestalia"] = true,
+	["nevoamusgo"] = true,
+	["cinzavento"] = true,
+	fenix = true,
+}
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="27">
         <Properties>
           <string name="Name">LevelBands</string>
           <string name="Source"><![CDATA[--!strict
@@ -2256,7 +2829,7 @@ return L
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="19">
+      <Item class="ModuleScript" referent="28">
         <Properties>
           <string name="Name">Migration</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -2478,7 +3051,7 @@ return M
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="20">
+      <Item class="ModuleScript" referent="29">
         <Properties>
           <string name="Name">Missions</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -2533,7 +3106,7 @@ return M
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="21">
+      <Item class="ModuleScript" referent="30">
         <Properties>
           <string name="Name">ModelFactory</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -2541,6 +3114,7 @@ local C = require(script.Parent.Creatures)
 local D = require(script.Parent.CreatureDesigns)
 local Features = require(script.Parent.CreatureFeatures)
 local Art = require(script.Parent.ArtTokens)
+local Imported = require(script.Parent.ImportedModelFactory)
 local Factory = {}
 local cache = {}
 local V = Vector3.new
@@ -2619,6 +3193,7 @@ local function template(def, stage)
 	m:SetAttribute("TailType", d.tail)
 	m:SetAttribute("LimbCount", d.limbs)
 	m:SetAttribute("ArtStyle", "PixelSculpt")
+	m:SetAttribute("GeometrySource", "ProceduralFallback")
 	m:SetAttribute("Expression", d.expression.mouth)
 	m:SetAttribute("BlinkOffset", #def.id * 0.2)
 	local root = Instance.new("Part")
@@ -3113,10 +3688,11 @@ function Factory.build(def, level, options)
 	options = options or {}
 	local stage = C.stage(level, def.id)
 	local key = def.id .. ":" .. stage
-	if not cache[key] then
-		cache[key] = template(def, stage)
+	local model = not options.proceduralOnly and Imported.tryBuild(def, stage, Factory.validate) or nil
+	if not model then
+		if not cache[key] then cache[key] = template(def, stage) end
+		model = cache[key]:Clone()
 	end
-	local model = cache[key]:Clone()
 	model.Name = def.name
 	model:SetAttribute("Level", level)
 	if not options.preview then
@@ -3149,7 +3725,93 @@ return Factory
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="22">
+      <Item class="ModuleScript" referent="31">
+        <Properties>
+          <string name="Name">ModelImporter</string>
+          <string name="Source"><![CDATA[--!nonstrict
+-- Ferramenta para o Command Bar do Studio. Nunca roda automaticamente.
+local I={}
+function I.inspect()
+ local rs=game:GetService("ReplicatedStorage")
+ local folder=rs:FindFirstChild("ImportedRigs")
+ local report={}
+ if not folder then return report end
+ local C=require(script.Parent.Creatures)
+ local F=require(script.Parent.ModelFactory)
+ for _,prefab in folder:GetChildren() do
+  local id,stage=prefab.Name:match("^(.+)_Stage([123])$")
+  stage=tonumber(stage)
+  if id and C.ById[id] then
+   local model=F.build(C.ById[id],({1,7,15})[stage],{preview=true})
+   table.insert(report,{species=id,stage=stage,source=model:GetAttribute("GeometrySource")})
+   model:Destroy()
+  else
+   table.insert(report,{name=prefab.Name,error="Nome esperado: species_Stage1/2/3 e species precisa existir no catálogo"})
+  end
+ end
+ return report
+end
+function I.prepare(source,species,stage)
+ local C=require(script.Parent.Creatures)
+ local F=require(script.Parent.ModelFactory)
+ local Imported=require(script.Parent.ImportedModelFactory)
+ local def=assert(C.ById[species],"Espécie não existe no catálogo")
+ assert(stage==1 or stage==2 or stage==3,"Estágio deve ser 1, 2 ou 3")
+ assert(C.stage(({1,7,15})[stage],species)==stage,"Estágio não disponível para esta espécie")
+ assert(source and (source:IsA("Model") or source:IsA("BasePart")),"Selecione um Model ou MeshPart importado")
+ local model=source:IsA("Model") and source:Clone() or Instance.new("Model")
+ if source:IsA("BasePart") then source:Clone().Parent=model end
+ local ok,result=pcall(function()
+  local parts={}
+  for _,obj in model:GetDescendants() do
+   assert(not obj:IsA("LuaSourceContainer"),"Remova scripts do asset importado antes de prepará-lo")
+   if obj:IsA("BasePart") then table.insert(parts,obj) end
+  end
+  assert(#parts>0,"Nenhuma geometria no asset")
+  local root=model:FindFirstChild("Root",true)
+  local body=model:FindFirstChild("Body",true)
+  if not body then for _,p in parts do if p~=root then body=p;body.Name="Body";break end end end
+  assert(body and body:IsA("BasePart"),"Body ausente")
+  if not root then root=Instance.new("Part");root.Name="Root";root.Size=Vector3.new(.1,.1,.1);root.CFrame=body.CFrame;root.Parent=model end
+  local connected={[root]=true}
+  local edges={}
+  for _,obj in model:GetDescendants() do
+   if obj:IsA("Motor6D") or obj:IsA("WeldConstraint") then
+    assert(obj.Part0 and obj.Part1 and obj.Part0:IsDescendantOf(model) and obj.Part1:IsDescendantOf(model),"Joint externo ou incompleto")
+    table.insert(edges,{obj.Part0,obj.Part1})
+   end
+  end
+  for index=0,#parts do
+   for _,edge in edges do if connected[edge[1]] or connected[edge[2]] then connected[edge[1]]=true;connected[edge[2]]=true end end
+   local part=index==0 and body or parts[index]
+   if part and part~=root and not connected[part] then
+    local parent=part==body and root or body
+    local joint=Instance.new("Motor6D");joint.Name="J_Imported"..index
+    joint.Part0=parent;joint.Part1=part;joint.C0=parent.CFrame:ToObjectSpace(part.CFrame);joint.C1=CFrame.identity
+    joint:SetAttribute("Role",part==body and "Body" or part.Name:gsub("^"..species.."_stage%d+_",""))
+    joint:SetAttribute("Phase",index*.27);joint.Parent=part
+    table.insert(edges,{parent,part});connected[part]=true
+   end
+  end
+  pcall(function() game:GetService("PhysicsService"):RegisterCollisionGroup("Creatures") end)
+  Imported.normalizePrefab(model,def,stage,F.validate)
+  local rs=game:GetService("ReplicatedStorage")
+  local folder=rs:FindFirstChild("ImportedRigs")
+  if not folder then folder=Instance.new("Folder");folder.Name="ImportedRigs";folder.Parent=rs end
+  model.Name=species.."_Stage"..stage
+  local previous=folder:FindFirstChild(model.Name)
+  if previous then previous:Destroy() end
+  model.Parent=folder
+  return model
+ end)
+ if not ok then model:Destroy();error(result) end
+ return result
+end
+return I
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="32">
         <Properties>
           <string name="Name">PhoenixQuest</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3218,7 +3880,7 @@ return Q
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="23">
+      <Item class="ModuleScript" referent="33">
         <Properties>
           <string name="Name">Progression</string>
           <string name="Source"><![CDATA[--!strict
@@ -3275,7 +3937,7 @@ return P
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="24">
+      <Item class="ModuleScript" referent="34">
         <Properties>
           <string name="Name">SanctuaryRules</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3328,12 +3990,12 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="25">
+      <Item class="ModuleScript" referent="35">
         <Properties>
           <string name="Name">Skills</string>
           <string name="Source"><![CDATA[--!strict
 local Text = require(script.Parent.Strings).Text
-return {
+local S = {
 	Blob = { name = Text.PULSO_VITAL_629F87, power = 1.1, effect = "heal" },
 	Beast = { name = Text.INVESTIDA_FEROZ_70FE97, power = 1.65, effect = "none" },
 	Bird = { name = Text.RAJADA_EVASIVA_6F3310, power = 1.25, effect = "evade" },
@@ -3341,10 +4003,15 @@ return {
 	Serpent = { name = Text.MARE_DEBILITANTE_389076, power = 1.15, effect = "weaken" },
 	Insect = { name = Text.TRAMA_ADERENTE_FB264B, power = 1.15, effect = "slow" },
 }
+
+for shape,base in require(script.Parent.CombatShape).Aliases do
+ S[shape]=S[base]
+end
+return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="26">
+      <Item class="ModuleScript" referent="36">
         <Properties>
           <string name="Name">Sounds</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3354,13 +4021,13 @@ return { Music = "", Click = "", Hit = "", Win = "", Lose = "", Hatch = "" }
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="27">
+      <Item class="ModuleScript" referent="37">
         <Properties>
           <string name="Name">SpeciesLore</string>
           <string name="Source"><![CDATA[--!nonstrict
 local Text = require(script.Parent.Strings).Text
 -- Fichas das espécies com geometria integrada. Não inclui conceitos ainda sem modelo.
-return {
+local Lore = {
 	cinzelo = {
 		description = Text.UM_NUCLEO_DE_CARVAO_VIVO_PROTEGIDO_POR_PEQUENAS__769F23,
 		personality = "Curioso",
@@ -3512,10 +4179,20 @@ return {
 		family = Text.AVE_SOLAR_LENDARIA_06397E,
 	},
 }
+
+local C = require(script.Parent.Creatures)
+local Designs = require(script.Parent.CreatureDesigns)
+for _, def in C.List do
+ if not Lore[def.id] then
+  Lore[def.id] = {description = def.name .. " — elemento " .. def.el .. ". Registro do catálogo em expansão.",
+   personality = "Em observação", family = Designs[def.id].family}
+ end
+end
+return Lore
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="28">
+      <Item class="ModuleScript" referent="38">
         <Properties>
           <string name="Name">SpeciesRules</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3531,7 +4208,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="29">
+      <Item class="ModuleScript" referent="39">
         <Properties>
           <string name="Name">Story</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3633,7 +4310,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="30">
+      <Item class="ModuleScript" referent="40">
         <Properties>
           <string name="Name">Strings</string>
           <string name="Source"><![CDATA[--!strict
@@ -3804,6 +4481,186 @@ S.Text = {
 	FALHA_AO_SALVAR_PERFIL_DE_B99672 = "Falha ao salvar perfil de ",
 	FECHAR_7B2006 = "Fechar",
 	FENIX_A08C9E = "Fênix",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
 	FENIX_FULIGEM_64EF6D = "Fênix Fuligem",
 	FENIX_LENDARIA_NV_60_A1FE17 = "FÊNIX · LENDÁRIA · Nv. 60",
 	FERAS_EF033A = "Feras",
@@ -3926,6 +4783,9 @@ S.Text = {
 	RARO_851816 = "Raro",
 	RECEBER_CAPITULO_3ACD37 = "Receber capítulo",
 	RECIFE_CRISTALINO_8D7A14 = "Recife Cristalino",
+	ILHA_DE_INVERNO_8F4E2A = "Ilha de Inverno",
+	ILHA_DO_TROVAO_9E5F3B = "Ilha do Trovão",
+	ILHA_CELESTIAL_A0F1C2 = "Ilha Celestial",
 	RECOMPENSA_DIARIA_SEQUENCIA_B9C689 = "Recompensa diária (sequência ",
 	REFORCADO_A930AC = "Reforçado",
 	REGIAO_BLOQUEADA_47B5A8 = "Região bloqueada: ",
@@ -3964,6 +4824,9 @@ S.Text = {
 	SEU_SANTUARIO_9_POSICOES_SELECIONE_UMA_POSICAO_E_400064 = "Seu santuário • 9 posições\nSelecione uma posição e construa ou mova um habitat.",
 	SOCIAVEL_3658F4 = "Sociável",
 	SOMBRA_94B135 = "Sombra",
+	GELO_4A90D9 = "Gelo",
+	ELETRICO_FFD600 = "Elétrico",
+	LUZ_FFF9C4 = "Luz",
 	SOM_OFF_D3D9A2 = "Som OFF",
 	SOM_ON_ACD88F = "Som ON",
 	SOPRO_ANCESTRAL_8CD748 = "Sopro ancestral",
@@ -4017,6 +4880,9 @@ S.Text = {
 	VOLTAR_A_EXPLORACAO_8F4A4A = "Voltar à exploração",
 	VOLTE_AMANHA_E195DE = "Volte amanhã!",
 	VULCOES_E_RIOS_DE_MAGMA_300BD6 = "Vulcões e rios de magma.",
+	CITADELA_DE_GELO_E_AURORA_BOREAL_1A3B4C = "Cidadela de gelo, caverna dos cristais e aurora boreal.",
+	TORRE_DO_RELAMPAGO_E_TEMPORTE_PERPETUA_2B4D6E = "Torre do relâmpago, núcleo energético e tempestade perpétua.",
+	OBSERVATORIO_COSMICO_E_ESTRELAS_VIVAS_3C5E7F = "Observatório cósmico, jardim das estrelas e constelações vivas.",
 	XP_DA_FERA_1A37A2 = " XP da fera.",
 	XP_E_5EFA95 = " XP e +",
 }
@@ -4107,21 +4973,24 @@ S.Text.VITORIA_FERAS_EXAUSTAS_NAO_PODEM_SER_CAPTURADAS_08B05D = "Vitória! Feras
 S.Text.VOCE_SE_APROXIMOU_COM_CUIDADO_VINCULO_555F67 = "Você se aproximou com cuidado. Vínculo "
 S.Text.VOCE_VOLTOU_A_EXPLORACAO_29EB17 = "Você voltou à exploração."
 S.Text.VULCANODRAGO_CEB8E4 = "Vulcanodrago"
+S.Text.METAL_B0BEC5 = "Metal"
+S.Text.CRISTAL_E1BEE7 = "Cristal"
+S.Text.ARCANO_CE93D8 = "Arcano"
 return S
 ]]></string>
         </Properties>
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="31">
+  <Item class="ServerScriptService" referent="41">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Folder" referent="32">
+    <Item class="Folder" referent="42">
       <Properties>
         <string name="Name">Server</string>
       </Properties>
-      <Item class="ModuleScript" referent="33">
+      <Item class="ModuleScript" referent="43">
         <Properties>
           <string name="Name">Biomes</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -4283,7 +5152,7 @@ return B
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="34">
+      <Item class="ModuleScript" referent="44">
         <Properties>
           <string name="Name">CompanionService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -4300,7 +5169,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="35">
+      <Item class="ModuleScript" referent="45">
         <Properties>
           <string name="Name">CreatureGallery</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -4373,14 +5242,14 @@ function Gallery.build()
 			display(def, lv, index)
 		end
 	end
-	display(C.ById.fenix, 60, 91)
+	display(C.ById.fenix, 60, index + 1)
 	return folder
 end
 return Gallery
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="36">
+      <Item class="ModuleScript" referent="46">
         <Properties>
           <string name="Name">DataService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -4798,7 +5667,7 @@ return D
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="37">
+      <Item class="ModuleScript" referent="47">
         <Properties>
           <string name="Name">EncounterService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5155,7 +6024,51 @@ return E
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="38">
+      <Item class="ModuleScript" referent="48">
+        <Properties>
+          <string name="Name">EvolutionService</string>
+          <string name="Source"><![CDATA[--!nonstrict
+local RS = game:GetService("ReplicatedStorage")
+local Data = require(script.Parent.DataService)
+local System = require(RS.Shared.EvolutionSystem)
+local Service = {}
+local last = setmetatable({}, { __mode = "k" })
+function Service.info(player, uid)
+ if typeof(uid) ~= "string" or #uid > 80 then return {ok=false, code="INVALID_UID"} end
+ local profile=Data.get(player)
+ if not profile or not profile.creatures[uid] then return {ok=false, code="NOT_OWNED"} end
+ local info=System.info(profile.creatures[uid])
+ if not info then return {ok=false, code="INVALID_CREATURE"} end
+ info.ok=true
+ return info
+end
+function Service.start()
+ local remotes=assert(RS:FindFirstChild("EvolutionRemotes"),"EvolutionRemotes ausente")
+ local function info(player,uid)
+  local now=os.clock()
+  if last[player] and now-last[player]<0.15 then return {ok=false,code="RATE_LIMIT"} end
+  last[player]=now
+  return Service.info(player,uid)
+ end
+ remotes.GetEvolutionInfo.OnServerInvoke=info
+ remotes.RequestEvolution.OnServerInvoke=function(player,uid)
+  local result=info(player,uid)
+  if result.ok then result.code="AUTOMATIC_LEVEL";result.msg="A evolução é automática nos níveis 7 e 15." end
+  return result
+ end
+ remotes.EvolutionHistory.OnServerInvoke=function(player,uid)
+  local result=info(player,uid)
+  if not result.ok then return result end
+  return {ok=true, entries={}, tracked=false, msg="Histórico de datas não é registrado nesta versão."}
+ end
+ remotes.CancelEvolution.OnServerEvent:Connect(function() end)
+ -- A apresentação no cliente não modifica nível, espécie, inventário ou progresso.
+end
+return Service
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="49">
         <Properties>
           <string name="Name">GameService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5681,7 +6594,7 @@ return G
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="39">
+      <Item class="ModuleScript" referent="50">
         <Properties>
           <string name="Name">Guardians</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5763,7 +6676,7 @@ return G
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="40">
+      <Item class="ModuleScript" referent="51">
         <Properties>
           <string name="Name">IslandArchitecture</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5821,7 +6734,7 @@ return A
 ]]></string>
         </Properties>
       </Item>
-      <Item class="Script" referent="41">
+      <Item class="Script" referent="52">
         <Properties>
           <string name="Name">Main</string>
           <token name="RunContext">0</token>
@@ -5850,6 +6763,32 @@ require(script.Parent.SanctuaryBuilder).build()
 local Net = Instance.new("RemoteFunction")
 Net.Name = "Net"
 Net.Parent = RS
+
+local EvoRemotes = Instance.new("Folder")
+EvoRemotes.Name = "EvolutionRemotes"
+EvoRemotes.Parent = RS
+
+local RequestEvolution = Instance.new("RemoteFunction")
+RequestEvolution.Name = "RequestEvolution"
+RequestEvolution.Parent = EvoRemotes
+
+local TriggerEvolutionCutscene = Instance.new("RemoteEvent")
+TriggerEvolutionCutscene.Name = "TriggerEvolutionCutscene"
+TriggerEvolutionCutscene.Parent = EvoRemotes
+
+local GetEvolutionInfo = Instance.new("RemoteFunction")
+GetEvolutionInfo.Name = "GetEvolutionInfo"
+GetEvolutionInfo.Parent = EvoRemotes
+
+local CancelEvolution = Instance.new("RemoteEvent")
+CancelEvolution.Name = "CancelEvolution"
+CancelEvolution.Parent = EvoRemotes
+
+local EvolutionHistory = Instance.new("RemoteFunction")
+EvolutionHistory.Name = "EvolutionHistory"
+EvolutionHistory.Parent = EvoRemotes
+
+require(script.Parent.EvolutionService).start()
 local last = {}
 local busy = {}
 local function argument(v)
@@ -5922,7 +6861,7 @@ end)
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="42">
+      <Item class="ModuleScript" referent="53">
         <Properties>
           <string name="Name">MonetizationService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6011,7 +6950,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="43">
+      <Item class="ModuleScript" referent="54">
         <Properties>
           <string name="Name">RegionGuard</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6124,7 +7063,7 @@ return G
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="44">
+      <Item class="ModuleScript" referent="55">
         <Properties>
           <string name="Name">RegionService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6187,7 +7126,7 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="45">
+      <Item class="ModuleScript" referent="56">
         <Properties>
           <string name="Name">Researcher</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6261,7 +7200,7 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="46">
+      <Item class="ModuleScript" referent="57">
         <Properties>
           <string name="Name">SanctuaryBuilder</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6468,7 +7407,7 @@ return B
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="47">
+      <Item class="ModuleScript" referent="58">
         <Properties>
           <string name="Name">SanctuaryService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6668,7 +7607,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="48">
+      <Item class="ModuleScript" referent="59">
         <Properties>
           <string name="Name">StartingCamp</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6739,7 +7678,7 @@ return C
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="49">
+      <Item class="ModuleScript" referent="60">
         <Properties>
           <string name="Name">Transport</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6802,7 +7741,7 @@ return T
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="50">
+      <Item class="ModuleScript" referent="61">
         <Properties>
           <string name="Name">Wildlife</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6944,7 +7883,7 @@ return W
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="51">
+      <Item class="ModuleScript" referent="62">
         <Properties>
           <string name="Name">World</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -7164,7 +8103,7 @@ return W
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="52">
+      <Item class="ModuleScript" referent="63">
         <Properties>
           <string name="Name">WorldArt</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -7541,21 +8480,34 @@ return A
 ]]></string>
         </Properties>
       </Item>
+      <Item class="Folder" referent="64">
+        <Properties>
+          <string name="Name">islands</string>
+        </Properties>
+        <Item class="ModuleScript" referent="65">
+          <Properties>
+            <string name="Name">Alvorecer</string>
+            <string name="Source"><![CDATA[-- Região construída por World/StartingCamp; metadado reservado para expansão.
+return { Id = "Alvorecer" }
+]]></string>
+          </Properties>
+        </Item>
+      </Item>
     </Item>
   </Item>
-  <Item class="StarterPlayer" referent="53">
+  <Item class="StarterPlayer" referent="66">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="54">
+    <Item class="StarterPlayerScripts" referent="67">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="Folder" referent="55">
+      <Item class="Folder" referent="68">
         <Properties>
           <string name="Name">Client</string>
         </Properties>
-        <Item class="ModuleScript" referent="56">
+        <Item class="ModuleScript" referent="69">
           <Properties>
             <string name="Name">ArtOverlay</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -7666,7 +8618,7 @@ return A
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="57">
+        <Item class="ModuleScript" referent="70">
           <Properties>
             <string name="Name">BattleStage</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -7820,7 +8772,7 @@ return S
 ]]></string>
           </Properties>
         </Item>
-        <Item class="LocalScript" referent="58">
+        <Item class="LocalScript" referent="71">
           <Properties>
             <string name="Name">Client</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -8901,7 +9853,7 @@ end)
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="59">
+        <Item class="ModuleScript" referent="72">
           <Properties>
             <string name="Name">CollectionUI</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -9114,7 +10066,7 @@ return UI
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="60">
+        <Item class="ModuleScript" referent="73">
           <Properties>
             <string name="Name">CompanionClient</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -9223,7 +10175,7 @@ return U
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="61">
+        <Item class="ModuleScript" referent="74">
           <Properties>
             <string name="Name">CreatureAnimator</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -9243,8 +10195,8 @@ function A.register(model, visible, orbit)
 			visible = visible,
 			orbit = orbit,
 			last = 0,
-			body = model:FindFirstChild("Body"),
-			baseColor = model:FindFirstChild("Body") and model.Body.Color or nil,
+			body = model:FindFirstChild("Body", true),
+			baseColor = model:FindFirstChild("Body", true) and model:FindFirstChild("Body", true).Color or nil,
 		}
 		for _, obj in model:GetDescendants() do
 			if obj:IsA("Motor6D") then
@@ -9449,7 +10401,7 @@ return A
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="62">
+        <Item class="ModuleScript" referent="75">
           <Properties>
             <string name="Name">EncounterUI</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -9997,7 +10949,7 @@ return UI
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="63">
+        <Item class="ModuleScript" referent="76">
           <Properties>
             <string name="Name">EnvironmentArt</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -10178,7 +11130,7 @@ return E
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="64">
+        <Item class="ModuleScript" referent="77">
           <Properties>
             <string name="Name">JournalUI</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -10377,7 +11329,7 @@ return J
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="65">
+        <Item class="ModuleScript" referent="78">
           <Properties>
             <string name="Name">NurseryUI</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -10547,7 +11499,7 @@ return N
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="66">
+        <Item class="ModuleScript" referent="79">
           <Properties>
             <string name="Name">PixelIcons</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -11067,7 +12019,7 @@ return P
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="67">
+        <Item class="ModuleScript" referent="80">
           <Properties>
             <string name="Name">SanctuaryUI</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -11185,7 +12137,7 @@ return U
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="68">
+        <Item class="ModuleScript" referent="81">
           <Properties>
             <string name="Name">SolarPresentation</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -11363,7 +12315,7 @@ return Solar
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="69">
+        <Item class="ModuleScript" referent="82">
           <Properties>
             <string name="Name">UITheme</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -11516,7 +12468,7 @@ return T
       </Item>
     </Item>
   </Item>
-  <Item class="Workspace" referent="70">
+  <Item class="Workspace" referent="83">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="NeedsPivotMigration">false</bool>

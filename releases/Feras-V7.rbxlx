@@ -5,9 +5,14 @@
     </Properties>
     <Item class="Folder" referent="1">
       <Properties>
+        <string name="Name">ImportedRigs</string>
+      </Properties>
+    </Item>
+    <Item class="Folder" referent="2">
+      <Properties>
         <string name="Name">Shared</string>
       </Properties>
-      <Item class="ModuleScript" referent="2">
+      <Item class="ModuleScript" referent="3">
         <Properties>
           <string name="Name">Access</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -63,7 +68,160 @@ return A
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="3">
+      <Item class="ModuleScript" referent="4">
+        <Properties>
+          <string name="Name">ArtTokens</string>
+          <string name="Source"><![CDATA[--!nonstrict
+-- Contrato visual único: 48 cores, sem assets externos nem estado de gameplay.
+local T = {
+	BaseGrid = 4,
+	IconGrid = 16,
+	Font = Enum.Font.Arcade,
+	Spacing = { xs = 4, sm = 8, md = 12, lg = 16, xl = 24 },
+	Border = 2,
+	Touch = 44,
+}
+local ramps = {
+	Ember = { 0x3D2948, 0x79384B, 0xBD5750, 0xED9765, 0xFFD6A0 },
+	Tidal = { 0x253B57, 0x356580, 0x489BBA, 0x80CFCC, 0xC6EBCF },
+	Leaf = { 0x293E4B, 0x416358, 0x61966B, 0x9FC477, 0xDDE7AA },
+	Sand = { 0x453A54, 0x7C5860, 0xAD8270, 0xD8B482, 0xF4D9A0 },
+	Sky = { 0x333B63, 0x576392, 0x849AC3, 0xB1CEE0, 0xEBE9D6 },
+	Veil = { 0x302D4F, 0x55446E, 0x866594, 0xB293BC, 0xE3BCD0 },
+	Metal = { 0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4, 0xE8DEC3 },
+	Rose = { 0x482E4E, 0x824862, 0xB97588, 0xE3A3A1, 0xFAD7BD },
+}
+T.Ramps = {}
+T.Palette = {}
+local function color(hex)
+	return Color3.fromRGB(math.floor(hex / 65536) % 256, math.floor(hex / 256) % 256, hex % 256)
+end
+for name, values in ramps do
+	T.Ramps[name] = {}
+	for _, hex in values do
+		local c = color(hex)
+		table.insert(T.Ramps[name], c)
+		table.insert(T.Palette, c)
+	end
+end
+for _, hex in { 0x192B36, 0x283C46, 0x3B5159, 0x587078, 0x8C9D9C, 0xB7C5B8, 0xDEDAC0, 0xFFF0CF } do
+	table.insert(T.Palette, color(hex))
+end
+T.Ink = color(0xFFF0CF)
+T.Muted = color(0xB7C5B8)
+T.Panel = color(0x192B36)
+T.Card = color(0x283C46)
+T.Edge = color(0x587078)
+T.Shadow = color(0x192B36)
+T.Accent = T.Ramps.Sand[4]
+T.Mint = T.Ramps.Leaf[4]
+T.Elements = {
+	Fogo = T.Ramps.Ember,
+	["Água"] = T.Ramps.Tidal,
+	Natureza = T.Ramps.Leaf,
+	Terra = T.Ramps.Sand,
+	Ar = T.Ramps.Sky,
+	Sombra = T.Ramps.Veil,
+}
+T.Biomes = {
+	Alvorecer = "Leaf",
+	Brasa = "Ember",
+	Recife = "Tidal",
+	Floresta = "Leaf",
+	Dunas = "Sand",
+	Picos = "Sky",
+	Pantano = "Veil",
+}
+function T.ramp(id)
+	return T.Ramps[T.Biomes[id] or "Metal"]
+end
+function T.nearest(c)
+	local best, distance = T.Palette[1], math.huge
+	for _, candidate in T.Palette do
+		local d = (c.R - candidate.R) ^ 2 + (c.G - candidate.G) ^ 2 + (c.B - candidate.B) ^ 2
+		if d < distance then
+			best, distance = candidate, d
+		end
+	end
+	return best
+end
+return T
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="5">
+        <Properties>
+          <string name="Name">BlenderModels</string>
+          <string name="Source"><![CDATA[--!nonstrict
+local Config = require(script.Parent.BlenderModelsConfig)
+local B = { VERSION=2, Creatures=Config.Creatures, MeshIdMap=Config.MeshIdMap }
+function B.assetId(id)
+ if typeof(id)~="string" then return nil end
+ local digits=id:match("^rbxassetid://([1-9]%d*)$") or id:match("^([1-9]%d*)$")
+ return digits and ("rbxassetid://"..digits) or nil
+end
+function B.GetCreature(id) return B.Creatures[id] end
+function B.GetStage(id,stage)
+ local c=B.GetCreature(id)
+ return c and c.Stages and c.Stages[stage] or nil
+end
+function B.GetPart(id,stage,name)
+ local s=B.GetStage(id,stage)
+ return s and s.Parts and s.Parts[name] or nil
+end
+function B.ListSpecies()
+ local ids={};for id in B.Creatures do table.insert(ids,id) end;table.sort(ids);return ids
+end
+function B.ListStages(id)
+ local out={};local c=B.GetCreature(id)
+ if c and c.Stages then for stage in c.Stages do table.insert(out,stage) end end
+ table.sort(out);return out
+end
+function B.GetPartsForStage(id,stage)
+ local out={};local s=B.GetStage(id,stage)
+ if s and s.Parts then for name in s.Parts do table.insert(out,name) end end
+ table.sort(out);return out
+end
+function B.GetMeshId(id,stage,name,lod)
+ local p=B.GetPart(id,stage,name)
+ return p and B.assetId((lod==1 and p.LOD1MeshId) or (lod==2 and p.LOD2MeshId) or p.MeshId) or nil
+end
+function B.Validate()
+ local errors,count={},0
+ for id,c in B.Creatures do
+  count+=1
+  if typeof(c)~="table" or typeof(c.Stages)~="table" then table.insert(errors,id..": Stages ausente");continue end
+  for stage,s in c.Stages do
+   if typeof(stage)~="number" or stage<1 or stage>3 or stage%1~=0 or typeof(s.Parts)~="table" or not next(s.Parts) then
+    table.insert(errors,id..": estágio inválido");continue
+   end
+   for name,p in s.Parts do
+    if typeof(p)~="table" or not B.assetId(p.MeshId) then table.insert(errors,id..":"..name..": MeshId inválido") end
+    for key,n in {Size=3,CFrame=12,Color=3} do
+     local value=p[key]
+     if typeof(value)~="table" or #value~=n then table.insert(errors,id..":"..name..":"..key.." inválido")
+     else for _,v in value do if typeof(v)~="number" or v~=v or math.abs(v)==math.huge then table.insert(errors,id..":"..name..": valor não finito") end end end
+    end
+   end
+  end
+ end
+ return {valid=#errors==0 and count>0,configured=count>0,errors=errors,count=count}
+end
+return B
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="6">
+        <Properties>
+          <string name="Name">BlenderModelsConfig</string>
+          <string name="Source"><![CDATA[-- IDs reais obtidos após importar/publicar os meshes no Roblox Studio.
+-- Também é possível manter Models já importados em ReplicatedStorage.ImportedRigs.
+-- Veja IMPORTAR-MODELOS.md. Nenhum ID de exemplo será usado no jogo.
+return { Creatures = {}, MeshIdMap = {} }
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="7">
         <Properties>
           <string name="Name">Breeding</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -159,7 +317,7 @@ return B
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="4">
+      <Item class="ModuleScript" referent="8">
         <Properties>
           <string name="Name">CaptureMath</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -196,7 +354,7 @@ return M
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="5">
+      <Item class="ModuleScript" referent="9">
         <Properties>
           <string name="Name">CaptureRules</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -260,7 +418,7 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="6">
+      <Item class="ModuleScript" referent="10">
         <Properties>
           <string name="Name">CombatRules</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -269,6 +427,7 @@ local Text = require(script.Parent.Strings).Text
 local C = require(script.Parent.Creatures)
 local Elements = require(script.Parent.Elements)
 local Skills = require(script.Parent.Skills)
+local Shape = require(script.Parent.CombatShape)
 local CaptureMath = require(script.Parent.CaptureMath)
 local R = {
 	MaxTurns = 40,
@@ -289,7 +448,7 @@ function R.stats(id, lv)
 		maxHp = math.floor(def.hp * scale),
 		atk = def.atk * scale,
 		def = 4 + def.rar * 3 + lv * 0.35,
-		speed = ({ Blob = 9, Beast = 15, Bird = 20, Dragon = 13, Serpent = 16, Insect = 18 })[def.shape] + lv,
+		speed = ({ Blob = 9, Beast = 15, Bird = 20, Dragon = 13, Serpent = 16, Insect = 18 })[Shape.resolve(def.shape)] + lv,
 		el = def.el,
 	}
 end
@@ -551,7 +710,18 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="7">
+      <Item class="ModuleScript" referent="11">
+        <Properties>
+          <string name="Name">CombatShape</string>
+          <string name="Source"><![CDATA[-- Perfis antigos preservados; os nomes anatômicos novos usam equivalentes de combate.
+local aliases={Blob="Blob",Beast="Beast",Bird="Bird",Dragon="Dragon",Serpent="Serpent",Insect="Insect",
+ Quadruped="Beast",Winged="Bird",Aquatic="Serpent",Arthropod="Insect",Mineral="Blob",Vegetal="Blob",Spectral="Blob",
+ Draconic="Dragon",Serpentine="Serpent",Biped="Beast"}
+return { Aliases=aliases, resolve=function(shape) return assert(aliases[shape],"Perfil de combate desconhecido: "..tostring(shape)) end }
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="12">
         <Properties>
           <string name="Name">Config</string>
           <string name="Source"><![CDATA[--!strict
@@ -565,11 +735,12 @@ return {
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="8">
+      <Item class="ModuleScript" referent="13">
         <Properties>
           <string name="Name">CreatureDesigns</string>
           <string name="Source"><![CDATA[--!nonstrict
 -- Receitas anatômicas reais; o ID não é usado para inventar métricas de diferença.
+local Art = require(script.Parent.ArtTokens)
 local rows = {
 	-- id,família,cabeça,olhos,cauda,membros,traço exclusivo,superfície,dimensões,cores
 	{
@@ -932,15 +1103,144 @@ local rows = {
 		{ 2.3, 4.5, 3.6 },
 		{ 0x8F263C, 0xE86435, 0xF4B846, 0xFFF1CA },
 	},
+
+{"flamiris", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"carvunio", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"brasegato", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"orvalume", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"coralina", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"pelaguir", "aquatic", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.8, 2.6}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"musgalte", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"bambuja", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"florabelha", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"marmure", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"litorisco", "mineral", "obelisk", "crystal", "anchor", 4, "shoulderarches", "runes", {2.4, 1.4, 2.1}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"sementauro", "quadruped", "bud", "round", "root", 4, "seedleaves", "veins", {1.8, 2.3, 3.7}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"sibilobo", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"cirrandor", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"nimboreo", "draconic", "raptor", "electric", "bolt", 6, "lightninghorns", "zigzag", {2.1, 3.1, 3.9}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"velune", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"obsidauro", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"velumosa", "winged", "mothmask", "compound", "glowbulb", 6, "mothwings", "eyespots", {1.6, 2.0, 1.9}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"glaurina", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"niveor", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"gelifoca", "aquatic", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.8, 2.6}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"fulgarru", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"ampelince", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"trovissideo", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"aurifita", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"lunarru", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"candeira", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"ferrunila", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"fiaranha", "arthropod", "mandible", "compound", "stinger", 8, "pincers", "bands", {2.7, 1.3, 3.0}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"metafalcao", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"cindrel", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"emberkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"sparkpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"flamecub", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"coalcrawler", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x3D2948, 0x79384B, 0xBD5750, 0xED9765}},
+{"aquasprite", "aquatic", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.8, 2.6}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"droplet", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"finling", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"tidepup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"coralkit", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"leaflet", "vegetal", "puffer", "fish", "paddle", 2, "gillfans", "spots", {1.6, 1.7, 1.5}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"seedling", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"sprou", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"vinecub", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"petalpaw", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x293E4B, 0x416358, 0x61966B, 0x9FC477}},
+{"pebblin", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"rockling", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"sandpup", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"dunecub", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"geodette", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x453A54, 0x7C5860, 0xAD8270, 0xD8B482}},
+{"zephyr", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"cloudpuff", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"breezekit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"galehatch", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"windling", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"shade", "spectral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.1, 2.9}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"shadowmite", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"gloomkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"duskpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"nightmoth", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"frostbit", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"icecrystal", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"snowkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"glaciercub", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"frostling", "winged", "chick", "round", "tuftfan", 4, "earplumes", "feathers", {1.6, 2.0, 1.9}, {0x253B57, 0x356580, 0x489BBA, 0x80CFCC}},
+{"voltkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"sparkling", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"jolteon", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"zapcub", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"buzzbug", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x333B63, 0x576392, 0x849AC3, 0xB1CEE0}},
+{"lumikit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"gloworb", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"solarpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"raycub", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"prismfly", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"ironkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"scraplet", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"boltpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"gearcub", "quadruped", "fox", "round", "leafbrush", 4, "earplumes", "veins", {1.8, 2.3, 3.7}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"rivetbug", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x273746, 0x4C6573, 0x7B969E, 0xB2BFB4}},
+{"gemling", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"shardlet", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"crystalkit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"prismpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"facetbug", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x482E4E, 0x824862, 0xB97588, 0xE3A3A1}},
+{"runeling", "spectral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.6, 1.1, 2.9}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"mysticorb", "mineral", "puffer", "fish", "paddle", 2, "gillfans", "spots", {2.4, 1.4, 2.1}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"arcankit", "quadruped", "fox", "round", "leafbrush", 4, "leafears", "veins", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"voidpup", "quadruped", "fox", "barkmarks", "leafbrush", 4, "antlers", "bands", {1.8, 2.3, 3.7}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+{"sigilbug", "arthropod", "trilobe", "compound", "petal", 8, "flower", "leaves", {2.7, 1.3, 3.0}, {0x302D4F, 0x55446E, 0x866594, 0xB293BC}},
+}
+-- Tilt/mouth recipes are visual only; species IDs and progression stay untouched.
+local expressions = {
+	cinzelo = { tilt = -0.22, mouth = "smirk", look = 0.08 },
+	magmarau = { tilt = 0.24, mouth = "tusk", look = -0.05 },
+	fenixfuligem = { tilt = 0.18, mouth = "beak", look = 0.12 },
+	vulcanodrago = { tilt = 0.3, mouth = "fang", look = -0.08 },
+	bolhinho = { tilt = -0.2, mouth = "o", look = 0.16 },
+	marilisco = { tilt = 0.1, mouth = "smirk", look = -0.04 },
+	carangueperola = { tilt = -0.3, mouth = "smile", look = 0.08 },
+	abissauro = { tilt = 0.3, mouth = "fang", look = -0.1 },
+	brotinho = { tilt = -0.28, mouth = "smile", look = 0.12 },
+	folhuco = { tilt = 0.18, mouth = "smirk", look = 0.04 },
+	aracnoflora = { tilt = -0.24, mouth = "smile", look = 0.14 },
+	ancestravore = { tilt = 0.12, mouth = "solemn", look = -0.08 },
+	graozinho = { tilt = -0.35, mouth = "o", look = 0.15 },
+	escorpiodra = { tilt = 0.35, mouth = "smirk", look = -0.1 },
+	esfingeolito = { tilt = 0.12, mouth = "solemn", look = 0.06 },
+	colossodune = { tilt = 0.24, mouth = "solemn", look = -0.08 },
+	penugem = { tilt = -0.26, mouth = "beak", look = 0.18 },
+	ventanil = { tilt = 0.08, mouth = "beak", look = 0.1 },
+	trovoraptor = { tilt = 0.32, mouth = "fang", look = -0.12 },
+	aeronimbo = { tilt = -0.15, mouth = "smile", look = 0.12 },
+	lodinho = { tilt = -0.3, mouth = "o", look = 0.05 },
+	caudalume = { tilt = -0.1, mouth = "smirk", look = 0.1 },
+	vagalumorte = { tilt = 0.15, mouth = "solemn", look = 0.02 },
+	reinevoento = { tilt = 0.35, mouth = "solemn", look = -0.12 },
+	vaporino = { tilt = -0.14, mouth = "o", look = 0.14 },
+	magmaterra = { tilt = 0.28, mouth = "tusk", look = -0.1 },
+	tempestalia = { tilt = 0.2, mouth = "beak", look = 0.08 },
+	nevoamusgo = { tilt = -0.1, mouth = "solemn", look = 0.02 },
+	cinzavento = { tilt = 0.26, mouth = "fang", look = -0.08 },
+	fenix = { tilt = 0.18, mouth = "beak", look = 0.08 },
 }
 local D = {}
 for _, r in rows do
 	local palette = {}
 	for _, hex in r[10] do
-		table.insert(palette, Color3.fromRGB(math.floor(hex / 65536) % 256, math.floor(hex / 256) % 256, hex % 256))
+		table.insert(
+			palette,
+			Art.nearest(Color3.fromRGB(math.floor(hex / 65536) % 256, math.floor(hex / 256) % 256, hex % 256))
+		)
 	end
 	D[r[1]] = {
 		family = r[2],
+		expression = expressions[r[1]] or { tilt = 0, mouth = r[2] == "winged" and "beak" or "smile", look = 0 },
+		silhouette = r[3] .. ":" .. r[5],
 		bodyPlan = r[2] .. ":" .. r[3],
 		appendages = { r[7], r[5] },
 		elementalMotif = r[8],
@@ -993,35 +1293,38 @@ return D
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="9">
+      <Item class="ModuleScript" referent="14">
         <Properties>
           <string name="Name">CreatureFeatures</string>
           <string name="Source"><![CDATA[--!nonstrict
 -- Biblioteca de componentes sem IDs de assets. O factory fornece make(name,kind,size,pos,color,rotation,joint,parent).
+local Art = require(script.Parent.ArtTokens)
 local F = {}
 local V = Vector3.new
 local A = CFrame.Angles
 function F.face(make, d, head, position, scale, stage, headSize)
 	local p = d.palette
 	local kind = d.eyes
-	local front = headSize.Z / scale * 0.5 + 0.04
+	local front = headSize.Z / scale * 0.5 + 0.045
 	local sideWidth = headSize.X / scale * 0.5 + 0.03
+	local face = d.expression
+	local young = stage == 1 and 1.1 or 1
 	local sizes = {
-		vertical = V(0.5, 0.65, 0.1),
-		emberslit = V(0.55, 0.14, 0.1),
-		fish = V(0.48, 0.55, 0.12),
-		compound = V(0.48, 0.5, 0.18),
-		crystal = V(0.5, 0.6, 0.12),
-		blindmarks = V(0.6, 0.12, 0.1),
-		barkmarks = V(0.35, 0.6, 0.1),
-		electric = V(0.55, 0.36, 0.1),
-		solar = V(0.6, 0.65, 0.13),
+		vertical = V(0.45, 0.64, 0.1),
+		emberslit = V(0.56, 0.16, 0.1),
+		fish = V(0.48, 0.54, 0.12),
+		compound = V(0.5, 0.51, 0.18),
+		crystal = V(0.48, 0.6, 0.12),
+		blindmarks = V(0.58, 0.12, 0.1),
+		barkmarks = V(0.3, 0.59, 0.1),
+		electric = V(0.54, 0.36, 0.1),
+		solar = V(0.58, 0.66, 0.13),
 	}
 	if kind == "cyclops" or kind == "lantern" then
 		local eye = make(
 			"EyeCenter",
-			"sphere",
-			V(0.9, 0.65, 0.16) * scale,
+			"block",
+			V(0.92, 0.68, 0.14) * scale,
 			position + V(0, 0.12, front) * scale,
 			p[3],
 			nil,
@@ -1030,28 +1333,50 @@ function F.face(make, d, head, position, scale, stage, headSize)
 		)
 		make(
 			"IrisCenter",
-			"wedge",
-			V(0.15, 0.4, 0.08) * scale,
-			position + V(0, 0.12, front + 0.1) * scale,
-			p[1],
+			"block",
+			V(0.3, 0.4, 0.08) * scale,
+			position + V(0.05, 0.1, front + 0.11) * scale,
+			Art.Shadow,
 			nil,
 			false,
 			eye
 		)
+		make(
+			"EyeGlintCenter",
+			"block",
+			V(0.15, 0.15, 0.07) * scale,
+			position + V(-0.15, 0.29, front + 0.16) * scale,
+			Art.Ink,
+			nil,
+			false,
+			eye
+		)
+		make(
+			"BrowCenter",
+			"wedge",
+			V(0.95, 0.13, 0.12) * scale,
+			position + V(0, 0.55, front + 0.03) * scale,
+			p[1],
+			A(0, 0, face.tilt * 0.5),
+			false,
+			head
+		)
 	else
 		for _, side in { -1, 1 } do
 			local pos = position + V(side * 0.5, 0.15, front) * scale
-			if kind == "fish" then
+			local sideEye = kind == "fish"
+			local rotation = sideEye and A(0, side * math.pi / 2, 0) or nil
+			if sideEye then
 				pos = position + V(side * sideWidth, 0.12, 0.2) * scale
 			end
-			local shape = (kind == "crystal" or kind == "electric" or kind == "emberslit") and "wedge" or "sphere"
+			local shape = (kind == "crystal" or kind == "electric" or kind == "emberslit") and "wedge" or "block"
 			local eye = make(
 				"Eye" .. (side < 0 and "L" or "R"),
 				shape,
-				(sizes[kind] or V(0.6, 0.65, 0.13)) * scale,
+				(sizes[kind] or V(0.6, 0.65, 0.13)) * scale * young,
 				pos,
 				p[3],
-				kind == "fish" and A(0, side * math.pi / 2, 0) or nil,
+				rotation,
 				true,
 				head
 			)
@@ -1059,8 +1384,8 @@ function F.face(make, d, head, position, scale, stage, headSize)
 				for i = 1, 2 do
 					make(
 						"Facet" .. side .. i,
-						"wedge",
-						V(0.13, 0.18, 0.05) * scale,
+						"block",
+						V(0.13, 0.18, 0.07) * scale,
 						pos + V((i - 1.5) * 0.15, 0.05, 0.1) * scale,
 						p[4],
 						nil,
@@ -1069,32 +1394,58 @@ function F.face(make, d, head, position, scale, stage, headSize)
 					)
 				end
 			elseif kind ~= "blindmarks" and kind ~= "barkmarks" and kind ~= "emberslit" then
+				local forward = sideEye and V(side * 0.1, 0, 0) or V(0, 0, 0.1)
 				make(
 					"Iris" .. side,
-					"sphere",
-					V(kind == "vertical" and 0.1 or 0.23, 0.34, 0.06) * scale,
-					pos + V(0, 0, 0.09) * scale,
-					p[1],
-					nil,
+					"block",
+					V(kind == "vertical" and 0.1 or 0.23, 0.34, 0.065) * scale,
+					pos + forward * scale,
+					Art.Shadow,
+					rotation,
+					false,
+					eye
+				)
+				make(
+					"EyeGlint" .. side,
+					"block",
+					V(0.11, 0.12, 0.07) * scale,
+					pos + (forward + V(-0.06, 0.15, 0.035)) * scale,
+					Art.Ink,
+					rotation,
 					false,
 					eye
 				)
 			end
+			local browPos = pos + V(0, kind == "emberslit" and 0.19 or 0.4, 0.025) * scale
+			make(
+				"Brow" .. side,
+				"wedge",
+				V(0.58, 0.12, 0.1) * scale,
+				browPos,
+				p[1],
+				A(0, sideEye and side * math.pi / 2 or 0, side * face.tilt),
+				false,
+				head
+			)
 		end
 	end
-	if stage >= 2 then
+	if d.family ~= "winged" then
+		local mouthShape = face.mouth == "o" and "block" or "wedge"
+		local mouthSize = face.mouth == "o" and V(0.22, 0.26, 0.08)
+			or V(face.mouth == "solemn" and 0.35 or 0.58, 0.11, 0.1)
 		make(
 			"Mouth",
-			"wedge",
-			V(0.5, 0.1, 0.12) * scale,
+			mouthShape,
+			mouthSize * scale,
 			position + V(0, -0.38, front + 0.04) * scale,
-			p[1],
-			nil,
+			Art.Shadow,
+			A(0, 0, face.mouth == "smirk" and -0.12 or 0),
 			false,
 			head
 		)
 	end
 end
+
 function F.trait(make, d, position, stage, parent, body)
 	local feature = d.feature
 	local p = d.palette
@@ -1213,6 +1564,72 @@ function F.trait(make, d, position, stage, parent, body)
 				A(-0.4, side * 0.4, side * 0.6),
 				true,
 				body
+			)
+		end
+	elseif feature == "earplumes" then
+		for _, side in { -1, 1 } do
+			make(
+				"EarPlume" .. side,
+				"wedge",
+				V(0.45, 0.65 + stage * 0.18, 0.3),
+				position + V(side * 0.67, 0.8, -0.1),
+				p[4],
+				A(-0.15, 0, side * 0.5),
+				true,
+				parent
+			)
+		end
+	elseif feature == "ashcrest" then
+		for i = 1, rank do
+			make(
+				"CinderQuill" .. i,
+				"wedge",
+				V(0.24, 0.45 + stage * 0.25, 0.7),
+				position + V((i - (rank + 1) / 2) * 0.28, 0.8, -0.2 - i * 0.12),
+				p[i % 2 + 2],
+				A(-0.5, 0, 0),
+				true,
+				parent
+			)
+		end
+	elseif feature == "solarcrest" then
+		for i = 1, rank do
+			make(
+				"SolarQuill" .. i,
+				"wedge",
+				V(0.2, 1 + i * 0.12, 0.45),
+				position + V((i - (rank + 1) / 2) * 0.28, 0.9, -0.3),
+				p[i % 2 + 3 > 4 and 4 or i % 2 + 3],
+				A(-0.3, 0, (i - (rank + 1) / 2) * 0.2),
+				true,
+				parent
+			)
+		end
+	elseif feature == "basalthorns" or feature == "lightninghorns" then
+		for i = 1, rank do
+			local side = i % 2 == 1 and -1 or 1
+			make(
+				"CrownProng" .. i,
+				stage == 1 and "block" or "wedge",
+				V(0.35, stage == 1 and 0.25 or 0.6 + stage * 0.2, 0.45),
+				position + V(side * (0.5 + math.floor((i - 1) / 2) * 0.2), 0.75, -0.25),
+				p[3],
+				A(-0.1, 0, side * (feature == "lightninghorns" and 0.65 or 0.25)),
+				true,
+				parent
+			)
+		end
+	elseif feature == "geodecrown" then
+		for i = 1, rank do
+			make(
+				"GeodeShard" .. i,
+				stage == 1 and "block" or "corner",
+				V(0.4, 0.35 + stage * 0.3, 0.5),
+				position + V((i - (rank + 1) / 2) * 0.45, 0.6, -0.2),
+				p[i % 2 + 2],
+				A(0.1, i * 0.6, 0.2),
+				true,
+				parent
 			)
 		end
 	elseif feature == "tusks" then
@@ -1339,19 +1756,22 @@ function F.trait(make, d, position, stage, parent, body)
 		end
 	end
 end
-function F.surface(make, d, position, stage, parent)
+function F.surface(make, d, position, stage, parent, bodySize)
 	if stage == 1 then
 		return
 	end
 	local p = d.palette
 	local count = stage == 2 and 2 or 4
 	local surface = d.surface
+	local bodyWidth = bodySize and bodySize.X or d.dimensions.X
+	local bodyHeight = bodySize and bodySize.Y or d.dimensions.Y
+	local bodyDepth = bodySize and bodySize.Z or d.dimensions.Z
 	for i = 1, count do
 		local angle = i * 2.4
 		local kind = "sphere"
 		local size = V(0.3, 0.4, 0.12)
 		local rotation = A(0, 0, angle * 0.3)
-		local offset = V(math.cos(angle) * 0.8, math.sin(angle) * 0.5, 0.8)
+		local offset = V(math.cos(angle) * bodyWidth * 0.3, math.sin(angle) * bodyHeight * 0.22, bodyDepth * 0.5 + 0.09)
 		local material = Enum.Material.SmoothPlastic
 		if surface == "cracks" or surface == "zigzag" then
 			kind = "wedge"
@@ -1360,7 +1780,7 @@ function F.surface(make, d, position, stage, parent)
 		elseif surface == "plates" or surface == "scales" or surface == "ridges" then
 			kind = "wedge"
 			size = V(0.65, 0.25, 0.8)
-			offset = V(0, 0.6, -i * 0.35)
+			offset = V(0, bodyHeight * 0.5 + 0.08, (i - (count + 1) / 2) * bodyDepth * 0.2)
 			material = Enum.Material.Slate
 		elseif surface == "runes" or surface == "facets" then
 			kind = "corner"
@@ -1380,7 +1800,7 @@ function F.surface(make, d, position, stage, parent)
 			material = Enum.Material.Wood
 		elseif surface == "clouds" then
 			size = V(0.7, 0.4, 0.65)
-			offset = V((i - (count + 1) / 2) * 0.4, 0.5, -0.5)
+			offset = V((i - (count + 1) / 2) * bodyWidth * 0.18, bodyHeight * 0.5 + 0.12, -bodyDepth * 0.1)
 		elseif surface == "pearls" then
 			size = V(0.35, 0.35, 0.35)
 			material = Enum.Material.Glass
@@ -1391,7 +1811,7 @@ function F.surface(make, d, position, stage, parent)
 		elseif surface == "feathers" or surface == "layeredplumage" then
 			kind = "wedge"
 			size = V(0.3, 0.18, 0.7)
-			offset = V((i - (count + 1) / 2) * 0.3, 0, 0.8)
+			offset = V((i - (count + 1) / 2) * bodyWidth * 0.16, 0, bodyDepth * 0.5 + 0.09)
 		elseif surface == "ash" then
 			size = V(0.5, 0.16, 0.3)
 			material = Enum.Material.Basalt
@@ -1404,7 +1824,7 @@ return F
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="10">
+      <Item class="ModuleScript" referent="15">
         <Properties>
           <string name="Name">CreatureGrant</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1475,7 +1895,7 @@ return G
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="11">
+      <Item class="ModuleScript" referent="16">
         <Properties>
           <string name="Name">Creatures</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1484,6 +1904,7 @@ local Text = require(script.Parent.Strings).Text
 local C =
 	{ List = {}, ById = {}, Rarity = { Text.COMUM_CA938E, Text.RARO_851816, Text.EPICO_7BC392, Text.LENDARIO_52178E } }
 local function add(id, name, el, rar, island, shape, hybrid)
+	assert(not C.ById[id], "ID de criatura duplicado: " .. id)
 	local d = {
 		id = id,
 		name = name,
@@ -1569,6 +1990,188 @@ add(
 	"Dragon",
 	{ Text.FOGO_F77A3C, Text.AR_B623FF }
 )
+add("flamiris", Text.FLAMIRIS_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("carvunio", Text.CARVUNIO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("brasegato", Text.BRASEGATO_NAME, Text.FOGO_F77A3C, 2, "Brasa", "Quadruped")
+add("orvalume", Text.ORVALUME_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("coralina", Text.CORALINA_NAME, Text.AGUA_F11A05, 2, "Recife", "Quadruped")
+add("pelaguir", Text.PELAGUIR_NAME, Text.AGUA_F11A05, 2, "Recife", "Aquatic")
+add("musgalte", Text.MUSGALTE_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("bambuja", Text.BAMBUJA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Quadruped")
+add("florabelha", Text.FLORABELHA_NAME, Text.NATUREZA_FB1ED9, 2, "Floresta", "Arthropod")
+add("marmure", Text.MARMURE_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("litorisco", Text.LITORISCO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Mineral")
+add("sementauro", Text.SEMENTAURO_NAME, Text.TERRA_16D3AE, 2, "Dunas", "Quadruped")
+add("sibilobo", Text.SIBILOBO_NAME, Text.AR_B623FF, 2, "Picos", "Quadruped")
+add("cirrandor", Text.CIRRANDOR_NAME, Text.AR_B623FF, 2, "Picos", "Winged")
+add("nimboreo", Text.NIMBOREO_NAME, Text.AR_B623FF, 2, "Picos", "Draconic")
+add("velune", Text.VELUNE_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("obsidauro", Text.OBSIDAURO_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Quadruped")
+add("velumosa", Text.VELUMOSA_NAME, Text.SOMBRA_94B135, 2, "Pantano", "Winged")
+add("glaurina", Text.GLAURINA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("niveor", Text.NIVEOR_NAME, Text.GELO_4A90D9, 2, "Dunas", "Quadruped")
+add("gelifoca", Text.GELIFOCA_NAME, Text.GELO_4A90D9, 2, "Dunas", "Aquatic")
+add("fulgarru", Text.FULGARRU_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("ampelince", Text.AMPELINCE_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Quadruped")
+add("trovissideo", Text.TROVISSIDEO_NAME, Text.ELETRICO_FFD600, 2, "Picos", "Arthropod")
+add("aurifita", Text.AURIFITA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("lunarru", Text.LUNARRU_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Quadruped")
+add("candeira", Text.CANDEIRA_NAME, Text.LUZ_FFF9C4, 2, "Brasa", "Arthropod")
+add("ferrunila", Text.FERRUNILA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Quadruped")
+add("fiaranha", Text.FIARANHA_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Arthropod")
+add("metafalcao", Text.METAFALCAO_NAME, Text.METAL_B0BEC5, 2, "Dunas", "Winged")
+add("cindrel", Text.CINDREL_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Mineral")
+add("emberkit", Text.EMBERKIT_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("sparkpup", Text.SPARKPUP_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("flamecub", Text.FLAMECUB_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Quadruped")
+add("coalcrawler", Text.COALCRAWLER_NAME, Text.FOGO_F77A3C, 1, "Brasa", "Arthropod")
+add("aquasprite", Text.AQUASPRITE_NAME, Text.AGUA_F11A05, 1, "Recife", "Aquatic")
+add("droplet", Text.DROPLET_NAME, Text.AGUA_F11A05, 1, "Recife", "Mineral")
+add("finling", Text.FINLING_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("tidepup", Text.TIDEPUP_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("coralkit", Text.CORALKIT_NAME, Text.AGUA_F11A05, 1, "Recife", "Quadruped")
+add("leaflet", Text.LEAFLET_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Vegetal")
+add("seedling", Text.SEEDLING_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Mineral")
+add("sprou", Text.SPROU_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("vinecub", Text.VINECUB_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("petalpaw", Text.PETALPAW_NAME, Text.NATUREZA_FB1ED9, 1, "Floresta", "Quadruped")
+add("pebblin", Text.PEBBLIN_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("rockling", Text.ROCKLING_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Mineral")
+add("sandpup", Text.SANDPUP_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("dunecub", Text.DUNECUB_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Quadruped")
+add("geodette", Text.GEODETTE_NAME, Text.TERRA_16D3AE, 1, "Dunas", "Arthropod")
+add("zephyr", Text.ZEPHYR_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("cloudpuff", Text.CLOUDPUFF_NAME, Text.AR_B623FF, 1, "Picos", "Mineral")
+add("breezekit", Text.BREEZEKIT_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("galehatch", Text.GALEHATCH_NAME, Text.AR_B623FF, 1, "Picos", "Quadruped")
+add("windling", Text.WINDLING_NAME, Text.AR_B623FF, 1, "Picos", "Winged")
+add("shade", Text.SHADE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Spectral")
+add("shadowmite", Text.SHADOWMITE_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Mineral")
+add("gloomkit", Text.GLOOMKIT_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("duskpup", Text.DUSKPUP_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Quadruped")
+add("nightmoth", Text.NIGHTMOTH_NAME, Text.SOMBRA_94B135, 1, "Pantano", "Arthropod")
+add("frostbit", Text.FROSTBIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("icecrystal", Text.ICECRYSTAL_NAME, Text.GELO_4A90D9, 1, "Dunas", "Mineral")
+add("snowkit", Text.SNOWKIT_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("glaciercub", Text.GLACIERCUB_NAME, Text.GELO_4A90D9, 1, "Dunas", "Quadruped")
+add("frostling", Text.FROSTLING_NAME, Text.GELO_4A90D9, 1, "Dunas", "Winged")
+add("voltkit", Text.VOLTKIT_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("sparkling", Text.SPARKLING_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Mineral")
+add("jolteon", Text.JOLTEON_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("zapcub", Text.ZAPCUB_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Quadruped")
+add("buzzbug", Text.BUZZBUG_NAME, Text.ELETRICO_FFD600, 1, "Picos", "Arthropod")
+add("lumikit", Text.LUMIKIT_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("gloworb", Text.GLOWORB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Mineral")
+add("solarpup", Text.SOLARPUP_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("raycub", Text.RAYCUB_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Quadruped")
+add("prismfly", Text.PRISMFLY_NAME, Text.LUZ_FFF9C4, 1, "Brasa", "Arthropod")
+add("ironkit", Text.IRONKIT_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("scraplet", Text.SCRAPLET_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Mineral")
+add("boltpup", Text.BOLTPUP_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("gearcub", Text.GEARCUB_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Quadruped")
+add("rivetbug", Text.RIVETBUG_NAME, Text.METAL_B0BEC5, 1, "Dunas", "Arthropod")
+add("gemling", Text.GEMLING_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("shardlet", Text.SHARDLET_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Mineral")
+add("crystalkit", Text.CRYSTALKIT_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("prismpup", Text.PRISMPUP_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Quadruped")
+add("facetbug", Text.FACETBUG_NAME, Text.CRISTAL_E1BEE7, 1, "Recife", "Arthropod")
+add("runeling", Text.RUNELING_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Spectral")
+add("mysticorb", Text.MYSTICORB_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Mineral")
+add("arcankit", Text.ARCANKIT_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("voidpup", Text.VOIDPUP_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Quadruped")
+add("sigilbug", Text.SIGILBUG_NAME, Text.ARCANO_CE93D8, 1, "Pantano", "Arthropod")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- Fênix é uma espécie adicional; Fênix Fuligem e seus IDs permanecem intactos.
 add("fenix", Text.FENIX_A08C9E, Text.FOGO_F77A3C, 4, "Brasa", "Bird")
 C.ById.fenix.acquisition = "special"
@@ -1582,7 +2185,7 @@ return C
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="12">
+      <Item class="ModuleScript" referent="17">
         <Properties>
           <string name="Name">DesignChecks</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1590,6 +2193,7 @@ return C
 local C = require(script.Parent.Creatures)
 local D = require(script.Parent.CreatureDesigns)
 local F = require(script.Parent.ModelFactory)
+local Legacy = require(script.Parent.LegacySpecies)
 local Checks = { MinimumDistance = 0.12, MinimumStageDistance = 0.08 }
 local function difference(a, b)
 	local sum, count = 0, 0
@@ -1707,13 +2311,15 @@ function Checks.run()
 	for _, def in C.List do
 		local recipe = assert(D[def.id], "Receita ausente")
 		local key = table.concat({ recipe.family, recipe.head, recipe.eyes, recipe.tail, tostring(recipe.limbs) }, ":")
-		assert(not tuple[key], "Tupla anatômica repetida")
-		tuple[key] = true
-		eyeCounts[recipe.eyes] = (eyeCounts[recipe.eyes] or 0) + 1
+		if Legacy[def.id] then
+			assert(not tuple[key], "Tupla anatômica legada repetida")
+			tuple[key] = true
+			eyeCounts[recipe.eyes] = (eyeCounts[recipe.eyes] or 0) + 1
+		end
 		signatures[def.id] = {}
 		reports[def.id] = {}
 		for index, lv in { 1, 7, 15 } do
-			local m = F.build(def, lv, { preview = true })
+			local m = F.build(def, lv, { preview = true, proceduralOnly = true })
 			local sig = Checks.signature(m)
 			signatures[def.id][index] = sig
 			reports[def.id][index] = { parts = sig.parts, size = F.validate(m).size }
@@ -1738,6 +2344,7 @@ function Checks.run()
 	end
 	for i = 1, #C.List - 1 do
 		for j = i + 1, #C.List do
+			if not Legacy[C.List[i].id] or not Legacy[C.List[j].id] then continue end
 			for stage = 1, 3 do
 				local a, b = C.List[i].id, C.List[j].id
 				local distance = Checks.distance(signatures[a][stage], signatures[b][stage])
@@ -1773,7 +2380,7 @@ return Checks
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="13">
+      <Item class="ModuleScript" referent="18">
         <Properties>
           <string name="Name">Economy</string>
           <string name="Source"><![CDATA[--!strict
@@ -1788,11 +2395,11 @@ return {
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="14">
+      <Item class="ModuleScript" referent="19">
         <Properties>
           <string name="Name">Elements</string>
           <string name="Source"><![CDATA[--!nonstrict
--- Seis elementos. Strong[atacante] = alvos que sofrem dano dobrado.
+-- Vantagens legadas preservadas; novos elementos usam relações neutras até balanceamento explícito.
 local E = { List = { "Fogo", "Água", "Natureza", "Terra", "Ar", "Sombra" } }
 E.Strong = {
 	Fogo = { "Natureza" },
@@ -1810,6 +2417,12 @@ E.Color = {
 	Ar = Color3.fromRGB(200, 230, 255),
 	Sombra = Color3.fromRGB(140, 80, 200),
 }
+for name,color in {
+ Gelo=Color3.fromRGB(156,219,255), ["Elétrico"]=Color3.fromRGB(255,211,105), Luz=Color3.fromRGB(248,237,191),
+ Metal=Color3.fromRGB(168,184,197),Cristal=Color3.fromRGB(202,180,227),Arcano=Color3.fromRGB(178,142,210),
+} do
+ table.insert(E.List,name);E.Color[name]=color;E.Strong[name]={}
+end
 function E.mult(att, def)
 	if table.find(E.Strong[att] or {}, def) then
 		return 2
@@ -1823,7 +2436,7 @@ return E
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="15">
+      <Item class="ModuleScript" referent="20">
         <Properties>
           <string name="Name">EncounterPools</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1883,7 +2496,168 @@ return P
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="16">
+      <Item class="ModuleScript" referent="21">
+        <Properties>
+          <string name="Name">EvolutionData</string>
+          <string name="Source"><![CDATA[--!strict
+-- Marcos reais do jogo. Métodos adicionais do DESIGN.md ainda não são habilitados.
+local C = require(script.Parent.Creatures)
+local E = { Levels = {1, 7, 15}, MaxStage = 3, Methods = { Level = true } }
+function E.forSpecies(id: string)
+ local def = C.ById[id]
+ if not def then return nil end
+ return {minStage = def.minStage or 1, maxStage = E.MaxStage, levels = E.Levels, method = "Level"}
+end
+return E
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="22">
+        <Properties>
+          <string name="Name">EvolutionItems</string>
+          <string name="Source"><![CDATA[--!strict
+-- A evolução ativa é por nível; itens futuros não são vendidos nem consumidos.
+return { Enabled = false, Items = {}, Method = "Level" }
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="23">
+        <Properties>
+          <string name="Name">EvolutionSystem</string>
+          <string name="Source"><![CDATA[--!nonstrict
+local C = require(script.Parent.Creatures)
+local E = require(script.Parent.EvolutionData)
+local S = {}
+function S.info(creature)
+ if typeof(creature) ~= "table" or not C.ById[creature.id] or typeof(creature.lv) ~= "number"
+  or creature.lv ~= creature.lv or creature.lv < 1 or creature.lv > 100 or creature.lv % 1 ~= 0 then return nil end
+ local rules = E.forSpecies(creature.id)
+ local stage = C.stage(creature.lv, creature.id)
+ return {species = creature.id, level = creature.lv, stage = stage, maxStage = rules.maxStage,
+  nextLevel = stage < rules.maxStage and rules.levels[stage + 1] or nil, method = "Level",
+  automatic = true, ascensionEnabled = false}
+end
+return S
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="24">
+        <Properties>
+          <string name="Name">ImportedModelFactory</string>
+          <string name="Source"><![CDATA[--!nonstrict
+-- Prefabs importados têm prioridade. Sem assets, o chamador usa a receita local.
+local Registry=require(script.Parent.BlenderModels)
+local Designs=require(script.Parent.CreatureDesigns)
+local I={}
+local cache,failed={},{}
+local function metadata(model,def,stage)
+ local d=Designs[def.id]
+ model.Name=def.name
+ model:SetAttribute("Species",def.id);model:SetAttribute("Stage",stage)
+ model:SetAttribute("Family",d.family);model:SetAttribute("EyeType",d.eyes)
+ model:SetAttribute("HeadType",d.head);model:SetAttribute("TailType",d.tail)
+ model:SetAttribute("LimbCount",d.limbs);model:SetAttribute("ArtStyle","BlenderImported")
+ model:SetAttribute("GeometrySource","BlenderImported");model:SetAttribute("Expression",d.expression.mouth)
+ model:SetAttribute("BlinkOffset",#def.id*.2)
+ return model
+end
+local function normalize(model,def,stage)
+ assert(model:IsA("Model"),"Prefab precisa ser Model")
+ local root=model:FindFirstChild("Root",true)
+ assert(root and root:IsA("BasePart"),"Root ausente")
+ model.PrimaryPart=root;model.ModelStreamingMode=Enum.ModelStreamingMode.Atomic
+ local count=0
+ local edges={}
+ for _,obj in model:GetDescendants() do
+  assert(not obj:IsA("LuaSourceContainer"),"Script não permitido dentro de uma criatura")
+  if obj:IsA("BasePart") then
+   count+=1
+   obj.CanCollide=false;obj.CanTouch=false;obj.CanQuery=false;obj.Massless=true;obj.Anchored=obj==root
+   obj.CollisionGroup="Creatures"
+   assert(obj.Size.X>0 and obj.Size.Y>0 and obj.Size.Z>0,"Tamanho inválido")
+  elseif obj:IsA("Motor6D") then
+   assert(obj.Part0 and obj.Part1 and obj.Part0:IsDescendantOf(model) and obj.Part1:IsDescendantOf(model),"Joint desconectado ou externo")
+   table.insert(edges,{obj.Part0,obj.Part1})
+   if not obj:GetAttribute("Role") then obj:SetAttribute("Role",obj.Name:gsub("^J_","")) end
+   if not obj:GetAttribute("Phase") then obj:SetAttribute("Phase",0) end
+  elseif obj:IsA("WeldConstraint") then
+   assert(obj.Part0 and obj.Part1 and obj.Part0:IsDescendantOf(model) and obj.Part1:IsDescendantOf(model),"Weld desconectado ou externo")
+   table.insert(edges,{obj.Part0,obj.Part1})
+  end
+ end
+ local linked={[root]=true}
+ for _=1,count do
+  for _,edge in edges do if linked[edge[1]] or linked[edge[2]] then linked[edge[1]]=true;linked[edge[2]]=true end end
+ end
+ for _,obj in model:GetDescendants() do if obj:IsA("BasePart") then assert(linked[obj],"Parte visual sem ligação ao Root") end end
+ assert(count>1 and count<=Designs[def.id].budget[stage],"Orçamento de peças excedido")
+ root.Transparency=1
+ return metadata(model,def,stage)
+end
+local function registryModel(def,stage,assetService)
+ local s=Registry.GetStage(def.id,stage)
+ if not s then return nil end
+ local m=Instance.new("Model")
+ local ok,result=pcall(function()
+  local root=Instance.new("Part");root.Name="Root";root.Size=Vector3.new(.1,.1,.1);root.Transparency=1;root.CFrame=CFrame.new(0,2,0);root.Parent=m
+  local parts={Root=root}
+  for name,p in s.Parts do
+   assert(name~="Root","Root é reservado")
+   local id=assert(Registry.assetId(p.MeshId),"MeshId precisa ser um asset real do Roblox")
+   -- MeshId não é atribuído diretamente: é uma propriedade protegida no Studio/runtime.
+   local part=assetService:CreateMeshPartAsync(id,{CollisionFidelity=Enum.CollisionFidelity.Box,RenderFidelity=Enum.RenderFidelity.Automatic})
+   part.Name=name;part.Size=Vector3.new(table.unpack(p.Size));part.CFrame=root.CFrame*CFrame.new(table.unpack(p.CFrame))
+   part.Color=Color3.new(table.unpack(p.Color));part.Material=Enum.Material[p.Material or "SmoothPlastic"] or Enum.Material.SmoothPlastic
+   part.Transparency=p.Transparency or 0;part.Parent=m;parts[name]=part
+  end
+  for name,p in s.Parts do
+   local parent=parts[p.Parent or (name=="Body" and "Root" or "Body")] or root
+   local joint=Instance.new("Motor6D");joint.Name="J_"..name; joint.Part0=parent;joint.Part1=parts[name]
+   joint.C0=parent.CFrame:ToObjectSpace(parts[name].CFrame);joint.C1=CFrame.identity
+   joint:SetAttribute("Role",p.Role or name);joint:SetAttribute("Phase",0);joint.Parent=parts[name]
+  end
+  return normalize(m,def,stage)
+ end)
+ if not ok then m:Destroy();error(result) end
+ return result
+end
+function I.normalizePrefab(model,def,stage,validate)
+ normalize(model,def,stage)
+ if validate then validate(model) end
+ return model
+end
+function I.tryBuild(def,stage,validate)
+ if not game or not game.GetService then return nil end
+ local ok,rs=pcall(function() return game:GetService("ReplicatedStorage") end)
+ if not ok or not rs or typeof(rs.FindFirstChild)~="function" then return nil end
+ local folder=rs:FindFirstChild("ImportedRigs")
+ local prefab=folder and folder:FindFirstChild(def.id.."_Stage"..stage)
+ if prefab then
+  local clone=prefab:Clone()
+  local good,model=pcall(function()
+   normalize(clone,def,stage)
+   if validate then validate(clone) end
+   return clone
+  end)
+  if good then return model end
+  clone:Destroy()
+  local key=def.id..":"..stage..":prefab"
+  if not failed[key] then failed[key]=true;warn("Prefab inválido; usando receita local:",key,model) end
+ end
+ local key=def.id..":"..stage
+ if cache[key] then return cache[key]:Clone() end
+ if failed[key] or not Registry.GetStage(def.id,stage) then return nil end
+ local good,model=pcall(function() local result=registryModel(def,stage,game:GetService("AssetService")); if result and validate then validate(result) end;return result end)
+ if good and model then cache[key]=model;return model:Clone() end
+ failed[key]=true
+ warn("Mesh indisponível; usando receita local:",key,model)
+ return nil
+end
+return I
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="25">
         <Properties>
           <string name="Name">Islands</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -1994,7 +2768,46 @@ return M
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="17">
+      <Item class="ModuleScript" referent="26">
+        <Properties>
+          <string name="Name">LegacySpecies</string>
+          <string name="Source"><![CDATA[-- IDs da versão anterior, preservados nas migrações e nas verificações visuais.
+return {
+	["cinzelo"] = true,
+	["magmarau"] = true,
+	["fenixfuligem"] = true,
+	["vulcanodrago"] = true,
+	["bolhinho"] = true,
+	["marilisco"] = true,
+	["carangueperola"] = true,
+	["abissauro"] = true,
+	["brotinho"] = true,
+	["folhuco"] = true,
+	["aracnoflora"] = true,
+	["ancestravore"] = true,
+	["graozinho"] = true,
+	["escorpiodra"] = true,
+	["esfingeolito"] = true,
+	["colossodune"] = true,
+	["penugem"] = true,
+	["ventanil"] = true,
+	["trovoraptor"] = true,
+	["aeronimbo"] = true,
+	["lodinho"] = true,
+	["caudalume"] = true,
+	["vagalumorte"] = true,
+	["reinevoento"] = true,
+	["vaporino"] = true,
+	["magmaterra"] = true,
+	["tempestalia"] = true,
+	["nevoamusgo"] = true,
+	["cinzavento"] = true,
+	fenix = true,
+}
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="27">
         <Properties>
           <string name="Name">LevelBands</string>
           <string name="Source"><![CDATA[--!strict
@@ -2016,7 +2829,7 @@ return L
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="18">
+      <Item class="ModuleScript" referent="28">
         <Properties>
           <string name="Name">Migration</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -2238,7 +3051,7 @@ return M
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="19">
+      <Item class="ModuleScript" referent="29">
         <Properties>
           <string name="Name">Missions</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -2293,13 +3106,15 @@ return M
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="20">
+      <Item class="ModuleScript" referent="30">
         <Properties>
           <string name="Name">ModelFactory</string>
           <string name="Source"><![CDATA[--!nonstrict
 local C = require(script.Parent.Creatures)
 local D = require(script.Parent.CreatureDesigns)
 local Features = require(script.Parent.CreatureFeatures)
+local Art = require(script.Parent.ArtTokens)
+local Imported = require(script.Parent.ImportedModelFactory)
 local Factory = {}
 local cache = {}
 local V = Vector3.new
@@ -2377,6 +3192,10 @@ local function template(def, stage)
 	m:SetAttribute("HeadType", d.head)
 	m:SetAttribute("TailType", d.tail)
 	m:SetAttribute("LimbCount", d.limbs)
+	m:SetAttribute("ArtStyle", "PixelSculpt")
+	m:SetAttribute("GeometrySource", "ProceduralFallback")
+	m:SetAttribute("Expression", d.expression.mouth)
+	m:SetAttribute("BlinkOffset", #def.id * 0.2)
 	local root = Instance.new("Part")
 	root.Name = "Root"
 	root.Size = V(0.1, 0.1, 0.1) * scale
@@ -2399,8 +3218,9 @@ local function template(def, stage)
 		p.Name = name .. suffix
 		p.Size = size * scale
 		p.CFrame = CFrame.new(pos * scale) * (rotation or CFrame.identity)
-		p.Color = color
+		p.Color = Art.nearest(color)
 		p.Material = Enum.Material.SmoothPlastic
+		p.Reflectance = 0
 		p.CanCollide = false
 		p.CanTouch = false
 		p.CanQuery = false
@@ -2408,6 +3228,14 @@ local function template(def, stage)
 		p.Anchored = false
 		p.CastShadow = p.Size.Magnitude > 2
 		p.CollisionGroup = "Creatures"
+		-- Organic families keep volume; only stone-bodied species use block silhouettes.
+		if
+			kind == "sphere"
+			and d.family == "mineral"
+			and (name == "Body" or name == "Haunch" or name:find("Tail%d"))
+		then
+			kind = "block"
+		end
 		if kind == "sphere" or kind == "head" then
 			local mesh = Instance.new("SpecialMesh")
 			mesh.MeshType = kind == "head" and Enum.MeshType.Head or Enum.MeshType.Sphere
@@ -2415,6 +3243,9 @@ local function template(def, stage)
 			mesh.Parent = p
 		elseif kind == "cylinder" then
 			p.Shape = Enum.PartType.Cylinder
+		end
+		if name == "Body" or name == "Haunch" then
+			p.Color = Art.nearest(color:Lerp(Art.Ramps.Veil[1], 0.08))
 		end
 		p:SetAttribute("Feature", name:gsub("%d+", ""))
 		p.Parent = m
@@ -2465,7 +3296,7 @@ local function template(def, stage)
 		)
 		headPos = V(0, limbHeight + h * 1.15, l * 0.25)
 	elseif family == "quadruped" or family == "draconic" then
-		torso = make("Body", "sphere", V(w, h * 0.7, l), V(0, limbHeight + h * 0.35, 0), palette[1], nil, true)
+		torso = make("Body", "sphere", V(w * 0.94, h * 0.7, l), V(0, limbHeight + h * 0.35, 0), palette[1], nil, true)
 		make(
 			"Haunch",
 			"sphere",
@@ -2608,17 +3439,15 @@ local function template(def, stage)
 	}
 	local hp = heads[d.head]
 	local headSize = hp[2] * headRatio
-	local head = make("Head", hp[1], headSize, headPos, palette[2], nil, true, torso)
+	local head = make("Head", hp[1], headSize, headPos, palette[2], A(d.expression.look, 0, 0), true, torso)
 	if family == "mineral" then
-		torso.Material = Enum.Material.Granite
+		torso.Material = Enum.Material.Slate
 		head.Material = Enum.Material.Slate
 	elseif family == "vegetal" then
-		torso.Material = Enum.Material.Wood
-		head.Material = Enum.Material.Fabric
-	elseif family == "aquatic" then
 		torso.Material = Enum.Material.SmoothPlastic
-	elseif family == "arthropod" then
-		torso.Material = Enum.Material.Sandstone
+		head.Material = Enum.Material.SmoothPlastic
+	elseif family == "aquatic" or family == "arthropod" then
+		torso.Material = Enum.Material.SmoothPlastic
 	end
 	if family == "quadruped" or family == "draconic" then
 		make(
@@ -2644,6 +3473,28 @@ local function template(def, stage)
 			head
 		)
 	end
+	local bodySize = torso.Size / scale
+	local bodyCenter = torso.CFrame.Position / scale
+	make(
+		"BellyBib",
+		(family == "spectral" or family == "mineral") and "wedge" or "block",
+		V(bodySize.X * 0.58, bodySize.Y * 0.5, 0.09),
+		bodyCenter + V(0, -bodySize.Y * 0.1, bodySize.Z * 0.5 + 0.025),
+		palette[3],
+		nil,
+		false,
+		torso
+	)
+	make(
+		"DorsalRim",
+		"wedge",
+		V(bodySize.X * 0.72, 0.09, bodySize.Z * 0.65),
+		bodyCenter + V(-bodySize.X * 0.08, bodySize.Y * 0.5 + 0.02, 0),
+		palette[2],
+		nil,
+		false,
+		torso
+	)
 	Features.face(make, d, head, headPos, headRatio, stage, headSize)
 	-- Esqueleto locomotor varia: raízes, patas articuladas, braços ou pernas de artrópode.
 	local legs = family == "winged" and 2 or family == "draconic" and 4 or family == "arthropod" and d.limbs or d.limbs
@@ -2684,16 +3535,22 @@ local function template(def, stage)
 					local name = "Wing" .. (side < 0 and "L" or "R") .. "_" .. row .. "_" .. i
 					local wingColor = palette[math.min(4, row + 1)]
 					if def.acquisition == "special" then
-						wingColor = palette[row]:Lerp(palette[row + 1], 0.3 + i / feathers * 0.7)
+						wingColor = Art.nearest(palette[row]:Lerp(palette[row + 1], 0.3 + i / feathers * 0.7))
 					end
 					make(
 						name,
 						"wedge",
 						V(0.45, 0.25, child and 1 or 1.8 + i * 0.25),
-						V(side * (w * 0.4 + i * 0.55), headPos.Y - 0.8 - row * 0.12, -row * 0.45 - i * 0.13),
+						V(
+							side * (w * 0.4 + i * (def.acquisition == "special" and 0.68 or 0.55)),
+							headPos.Y - 0.8 - row * 0.12 + (def.acquisition == "special" and i * 0.17 or 0),
+							-row * 0.45 - i * 0.13
+						),
 						wingColor,
 						A(
-							d.feature == "stormcrown" and -0.5 or 0.1 * row,
+							def.acquisition == "special" and 0.65 + row * 0.08
+								or d.feature == "stormcrown" and -0.5
+								or 0.1 * row,
 							side * (d.feature == "stormcrown" and 0.8 or 0.25),
 							side * (0.15 + i * 0.035)
 						),
@@ -2710,7 +3567,8 @@ local function template(def, stage)
 	end
 	for i = 1, tails do
 		local feathered = family == "winged"
-		local width = feathered and 0.4 or 0.55
+		local width = feathered and (def.acquisition == "special" and 0.54 or 0.46)
+			or (d.tail == "leafbrush" and 0.75 or 0.55)
 		local pos = feathered and V((i - (tails + 1) / 2) * 0.3, h * 0.6, -l * 0.6 - i * 0.15)
 			or V(math.sin(i * 0.8) * 0.35, h * 0.4 - i * 0.12, -l * 0.5 - i * 0.55)
 		make(
@@ -2768,7 +3626,7 @@ local function template(def, stage)
 		end
 	end
 	Features.trait(make, d, headPos, stage, head, torso)
-	Features.surface(make, d, V(0, h * 0.65, 0), stage, torso)
+	Features.surface(make, d, bodyCenter, stage, torso, bodySize)
 	if def.acquisition == "special" then
 		for i = 1, 16 do
 			local a = i * math.pi / 8
@@ -2830,10 +3688,11 @@ function Factory.build(def, level, options)
 	options = options or {}
 	local stage = C.stage(level, def.id)
 	local key = def.id .. ":" .. stage
-	if not cache[key] then
-		cache[key] = template(def, stage)
+	local model = not options.proceduralOnly and Imported.tryBuild(def, stage, Factory.validate) or nil
+	if not model then
+		if not cache[key] then cache[key] = template(def, stage) end
+		model = cache[key]:Clone()
 	end
-	local model = cache[key]:Clone()
 	model.Name = def.name
 	model:SetAttribute("Level", level)
 	if not options.preview then
@@ -2845,10 +3704,11 @@ function Factory.build(def, level, options)
 		local label = Instance.new("TextLabel")
 		label.Size = UDim2.fromScale(1, 1)
 		label.BackgroundTransparency = 1
-		label.TextColor3 = Color3.new(1, 1, 1)
-		label.TextStrokeTransparency = 0.4
-		label.TextSize = 14
-		label.Font = Enum.Font.GothamBold
+		label.TextColor3 = Art.Ink
+		label.TextStrokeTransparency = 0
+		label.TextStrokeColor3 = Art.Shadow
+		label.TextSize = 16
+		label.Font = Art.Font
 		label.Text = def.name .. " • Nv." .. level
 		label.Parent = gui
 	end
@@ -2865,7 +3725,93 @@ return Factory
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="21">
+      <Item class="ModuleScript" referent="31">
+        <Properties>
+          <string name="Name">ModelImporter</string>
+          <string name="Source"><![CDATA[--!nonstrict
+-- Ferramenta para o Command Bar do Studio. Nunca roda automaticamente.
+local I={}
+function I.inspect()
+ local rs=game:GetService("ReplicatedStorage")
+ local folder=rs:FindFirstChild("ImportedRigs")
+ local report={}
+ if not folder then return report end
+ local C=require(script.Parent.Creatures)
+ local F=require(script.Parent.ModelFactory)
+ for _,prefab in folder:GetChildren() do
+  local id,stage=prefab.Name:match("^(.+)_Stage([123])$")
+  stage=tonumber(stage)
+  if id and C.ById[id] then
+   local model=F.build(C.ById[id],({1,7,15})[stage],{preview=true})
+   table.insert(report,{species=id,stage=stage,source=model:GetAttribute("GeometrySource")})
+   model:Destroy()
+  else
+   table.insert(report,{name=prefab.Name,error="Nome esperado: species_Stage1/2/3 e species precisa existir no catálogo"})
+  end
+ end
+ return report
+end
+function I.prepare(source,species,stage)
+ local C=require(script.Parent.Creatures)
+ local F=require(script.Parent.ModelFactory)
+ local Imported=require(script.Parent.ImportedModelFactory)
+ local def=assert(C.ById[species],"Espécie não existe no catálogo")
+ assert(stage==1 or stage==2 or stage==3,"Estágio deve ser 1, 2 ou 3")
+ assert(C.stage(({1,7,15})[stage],species)==stage,"Estágio não disponível para esta espécie")
+ assert(source and (source:IsA("Model") or source:IsA("BasePart")),"Selecione um Model ou MeshPart importado")
+ local model=source:IsA("Model") and source:Clone() or Instance.new("Model")
+ if source:IsA("BasePart") then source:Clone().Parent=model end
+ local ok,result=pcall(function()
+  local parts={}
+  for _,obj in model:GetDescendants() do
+   assert(not obj:IsA("LuaSourceContainer"),"Remova scripts do asset importado antes de prepará-lo")
+   if obj:IsA("BasePart") then table.insert(parts,obj) end
+  end
+  assert(#parts>0,"Nenhuma geometria no asset")
+  local root=model:FindFirstChild("Root",true)
+  local body=model:FindFirstChild("Body",true)
+  if not body then for _,p in parts do if p~=root then body=p;body.Name="Body";break end end end
+  assert(body and body:IsA("BasePart"),"Body ausente")
+  if not root then root=Instance.new("Part");root.Name="Root";root.Size=Vector3.new(.1,.1,.1);root.CFrame=body.CFrame;root.Parent=model end
+  local connected={[root]=true}
+  local edges={}
+  for _,obj in model:GetDescendants() do
+   if obj:IsA("Motor6D") or obj:IsA("WeldConstraint") then
+    assert(obj.Part0 and obj.Part1 and obj.Part0:IsDescendantOf(model) and obj.Part1:IsDescendantOf(model),"Joint externo ou incompleto")
+    table.insert(edges,{obj.Part0,obj.Part1})
+   end
+  end
+  for index=0,#parts do
+   for _,edge in edges do if connected[edge[1]] or connected[edge[2]] then connected[edge[1]]=true;connected[edge[2]]=true end end
+   local part=index==0 and body or parts[index]
+   if part and part~=root and not connected[part] then
+    local parent=part==body and root or body
+    local joint=Instance.new("Motor6D");joint.Name="J_Imported"..index
+    joint.Part0=parent;joint.Part1=part;joint.C0=parent.CFrame:ToObjectSpace(part.CFrame);joint.C1=CFrame.identity
+    joint:SetAttribute("Role",part==body and "Body" or part.Name:gsub("^"..species.."_stage%d+_",""))
+    joint:SetAttribute("Phase",index*.27);joint.Parent=part
+    table.insert(edges,{parent,part});connected[part]=true
+   end
+  end
+  pcall(function() game:GetService("PhysicsService"):RegisterCollisionGroup("Creatures") end)
+  Imported.normalizePrefab(model,def,stage,F.validate)
+  local rs=game:GetService("ReplicatedStorage")
+  local folder=rs:FindFirstChild("ImportedRigs")
+  if not folder then folder=Instance.new("Folder");folder.Name="ImportedRigs";folder.Parent=rs end
+  model.Name=species.."_Stage"..stage
+  local previous=folder:FindFirstChild(model.Name)
+  if previous then previous:Destroy() end
+  model.Parent=folder
+  return model
+ end)
+ if not ok then model:Destroy();error(result) end
+ return result
+end
+return I
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="32">
         <Properties>
           <string name="Name">PhoenixQuest</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -2934,7 +3880,7 @@ return Q
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="22">
+      <Item class="ModuleScript" referent="33">
         <Properties>
           <string name="Name">Progression</string>
           <string name="Source"><![CDATA[--!strict
@@ -2991,7 +3937,7 @@ return P
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="23">
+      <Item class="ModuleScript" referent="34">
         <Properties>
           <string name="Name">SanctuaryRules</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3044,12 +3990,12 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="24">
+      <Item class="ModuleScript" referent="35">
         <Properties>
           <string name="Name">Skills</string>
           <string name="Source"><![CDATA[--!strict
 local Text = require(script.Parent.Strings).Text
-return {
+local S = {
 	Blob = { name = Text.PULSO_VITAL_629F87, power = 1.1, effect = "heal" },
 	Beast = { name = Text.INVESTIDA_FEROZ_70FE97, power = 1.65, effect = "none" },
 	Bird = { name = Text.RAJADA_EVASIVA_6F3310, power = 1.25, effect = "evade" },
@@ -3057,10 +4003,15 @@ return {
 	Serpent = { name = Text.MARE_DEBILITANTE_389076, power = 1.15, effect = "weaken" },
 	Insect = { name = Text.TRAMA_ADERENTE_FB264B, power = 1.15, effect = "slow" },
 }
+
+for shape,base in require(script.Parent.CombatShape).Aliases do
+ S[shape]=S[base]
+end
+return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="25">
+      <Item class="ModuleScript" referent="36">
         <Properties>
           <string name="Name">Sounds</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3070,13 +4021,13 @@ return { Music = "", Click = "", Hit = "", Win = "", Lose = "", Hatch = "" }
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="26">
+      <Item class="ModuleScript" referent="37">
         <Properties>
           <string name="Name">SpeciesLore</string>
           <string name="Source"><![CDATA[--!nonstrict
 local Text = require(script.Parent.Strings).Text
 -- Fichas das espécies com geometria integrada. Não inclui conceitos ainda sem modelo.
-return {
+local Lore = {
 	cinzelo = {
 		description = Text.UM_NUCLEO_DE_CARVAO_VIVO_PROTEGIDO_POR_PEQUENAS__769F23,
 		personality = "Curioso",
@@ -3228,10 +4179,20 @@ return {
 		family = Text.AVE_SOLAR_LENDARIA_06397E,
 	},
 }
+
+local C = require(script.Parent.Creatures)
+local Designs = require(script.Parent.CreatureDesigns)
+for _, def in C.List do
+ if not Lore[def.id] then
+  Lore[def.id] = {description = def.name .. " — elemento " .. def.el .. ". Registro do catálogo em expansão.",
+   personality = "Em observação", family = Designs[def.id].family}
+ end
+end
+return Lore
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="27">
+      <Item class="ModuleScript" referent="38">
         <Properties>
           <string name="Name">SpeciesRules</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3247,7 +4208,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="28">
+      <Item class="ModuleScript" referent="39">
         <Properties>
           <string name="Name">Story</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3349,7 +4310,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="29">
+      <Item class="ModuleScript" referent="40">
         <Properties>
           <string name="Name">Strings</string>
           <string name="Source"><![CDATA[--!strict
@@ -3520,6 +4481,186 @@ S.Text = {
 	FALHA_AO_SALVAR_PERFIL_DE_B99672 = "Falha ao salvar perfil de ",
 	FECHAR_7B2006 = "Fechar",
 	FENIX_A08C9E = "Fênix",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
+	FLAMIRIS_NAME = "Flamiris",
+	CARVUNIO_NAME = "Carvúnio",
+	BRASEGATO_NAME = "Brasegato",
+	ORVALUME_NAME = "Orvalume",
+	CORALINA_NAME = "Coralina",
+	PELAGUIR_NAME = "Pelaguir",
+	MUSGALTE_NAME = "Musgalte",
+	BAMBUJA_NAME = "Bambujá",
+	FLORABELHA_NAME = "Florabelha",
+	MARMURE_NAME = "Marmuré",
+	LITORISCO_NAME = "Litorisco",
+	SEMENTAURO_NAME = "Sementauro",
+	SIBILOBO_NAME = "Sibilobo",
+	CIRRANDOR_NAME = "Cirrandor",
+	NIMBOREO_NAME = "Nimbóreo",
+	VELUNE_NAME = "Veluné",
+	OBSIDAURO_NAME = "Obsidauro",
+	VELUMOSA_NAME = "Velumosa",
+	GLAURINA_NAME = "Glaurina",
+	NIVEOR_NAME = "Níveor",
+	GELIFOCA_NAME = "Gelifoca",
+	FULGARRU_NAME = "Fulgarru",
+	AMPELINCE_NAME = "Ampelince",
+	TROVISSIDEO_NAME = "Trovissídeo",
+	AURIFITA_NAME = "Aurifita",
+	LUNARRU_NAME = "Lunarru",
+	CANDEIRA_NAME = "Candeíra",
+	FERRUNILA_NAME = "Ferrunila",
+	FIARANHA_NAME = "Fiaranha",
+	METAFALCAO_NAME = "Metafalcão",
+	CINDREL_NAME = "Cindrel",
+	EMBERKIT_NAME = "Emberkit",
+	SPARKPUP_NAME = "Sparkpup",
+	FLAMECUB_NAME = "Flamecub",
+	COALCRAWLER_NAME = "Coalcrawler",
+	AQUASPRITE_NAME = "Aqua Sprite",
+	DROPLET_NAME = "Droplet",
+	FINLING_NAME = "Finling",
+	TIDEPUP_NAME = "Tidepup",
+	CORALKIT_NAME = "Coralkit",
+	LEAFLET_NAME = "Leaflet",
+	SEEDLING_NAME = "Seedling",
+	SPROU_NAME = "Sprou",
+	VINECUB_NAME = "Vinecub",
+	PETALPAW_NAME = "Petalpaw",
+	PEBBLIN_NAME = "Pebblin",
+	ROCKLING_NAME = "Rockling",
+	SANDPUP_NAME = "Sandpup",
+	DUNECUB_NAME = "Dunecub",
+	GEODETTE_NAME = "Geodette",
+	ZEPHYR_NAME = "Zephyr",
+	CLOUDPUFF_NAME = "Cloudpuff",
+	BREEZEKIT_NAME = "Breezekit",
+	GALEHATCH_NAME = "Galehatch",
+	WINDLING_NAME = "Windling",
+	SHADE_NAME = "Shade",
+	SHADOWMITE_NAME = "Shadowmite",
+	GLOOMKIT_NAME = "Gloomkit",
+	DUSKPUP_NAME = "Duskpup",
+	NIGHTMOTH_NAME = "Nightmoth",
+	FROSTBIT_NAME = "Frostbit",
+	ICECRYSTAL_NAME = "Icecrystal",
+	SNOWKIT_NAME = "Snowkit",
+	GLACIERCUB_NAME = "Glaciercub",
+	FROSTLING_NAME = "Frostling",
+	VOLTKIT_NAME = "Voltkit",
+	SPARKLING_NAME = "Sparkling",
+	JOLTEON_NAME = "Jolteon",
+	ZAPCUB_NAME = "Zapcub",
+	BUZZBUG_NAME = "Buzzbug",
+	LUMIKIT_NAME = "Lumikit",
+	GLOWORB_NAME = "Gloworb",
+	SOLARPUP_NAME = "Solarpup",
+	RAYCUB_NAME = "Raycub",
+	PRISMFLY_NAME = "Prismfly",
+	IRONKIT_NAME = "Ironkit",
+	SCRAPLET_NAME = "Scraplet",
+	BOLTPUP_NAME = "Boltpup",
+	GEARCUB_NAME = "Gearcub",
+	RIVETBUG_NAME = "Rivetbug",
+	GEMLING_NAME = "Gemling",
+	SHARDLET_NAME = "Shardlet",
+	CRYSTALKIT_NAME = "Crystalkit",
+	PRISMPUP_NAME = "Prismpup",
+	FACETBUG_NAME = "Facetbug",
+	RUNELING_NAME = "Runeling",
+	MYSTICORB_NAME = "Mysticorb",
+	ARCANKIT_NAME = "Arcankit",
+	VOIDPUP_NAME = "Voidpup",
+	SIGILBUG_NAME = "Sigilbug",
 	FENIX_FULIGEM_64EF6D = "Fênix Fuligem",
 	FENIX_LENDARIA_NV_60_A1FE17 = "FÊNIX · LENDÁRIA · Nv. 60",
 	FERAS_EF033A = "Feras",
@@ -3642,6 +4783,9 @@ S.Text = {
 	RARO_851816 = "Raro",
 	RECEBER_CAPITULO_3ACD37 = "Receber capítulo",
 	RECIFE_CRISTALINO_8D7A14 = "Recife Cristalino",
+	ILHA_DE_INVERNO_8F4E2A = "Ilha de Inverno",
+	ILHA_DO_TROVAO_9E5F3B = "Ilha do Trovão",
+	ILHA_CELESTIAL_A0F1C2 = "Ilha Celestial",
 	RECOMPENSA_DIARIA_SEQUENCIA_B9C689 = "Recompensa diária (sequência ",
 	REFORCADO_A930AC = "Reforçado",
 	REGIAO_BLOQUEADA_47B5A8 = "Região bloqueada: ",
@@ -3680,6 +4824,9 @@ S.Text = {
 	SEU_SANTUARIO_9_POSICOES_SELECIONE_UMA_POSICAO_E_400064 = "Seu santuário • 9 posições\nSelecione uma posição e construa ou mova um habitat.",
 	SOCIAVEL_3658F4 = "Sociável",
 	SOMBRA_94B135 = "Sombra",
+	GELO_4A90D9 = "Gelo",
+	ELETRICO_FFD600 = "Elétrico",
+	LUZ_FFF9C4 = "Luz",
 	SOM_OFF_D3D9A2 = "Som OFF",
 	SOM_ON_ACD88F = "Som ON",
 	SOPRO_ANCESTRAL_8CD748 = "Sopro ancestral",
@@ -3733,6 +4880,9 @@ S.Text = {
 	VOLTAR_A_EXPLORACAO_8F4A4A = "Voltar à exploração",
 	VOLTE_AMANHA_E195DE = "Volte amanhã!",
 	VULCOES_E_RIOS_DE_MAGMA_300BD6 = "Vulcões e rios de magma.",
+	CITADELA_DE_GELO_E_AURORA_BOREAL_1A3B4C = "Cidadela de gelo, caverna dos cristais e aurora boreal.",
+	TORRE_DO_RELAMPAGO_E_TEMPORTE_PERPETUA_2B4D6E = "Torre do relâmpago, núcleo energético e tempestade perpétua.",
+	OBSERVATORIO_COSMICO_E_ESTRELAS_VIVAS_3C5E7F = "Observatório cósmico, jardim das estrelas e constelações vivas.",
 	XP_DA_FERA_1A37A2 = " XP da fera.",
 	XP_E_5EFA95 = " XP e +",
 }
@@ -3823,21 +4973,24 @@ S.Text.VITORIA_FERAS_EXAUSTAS_NAO_PODEM_SER_CAPTURADAS_08B05D = "Vitória! Feras
 S.Text.VOCE_SE_APROXIMOU_COM_CUIDADO_VINCULO_555F67 = "Você se aproximou com cuidado. Vínculo "
 S.Text.VOCE_VOLTOU_A_EXPLORACAO_29EB17 = "Você voltou à exploração."
 S.Text.VULCANODRAGO_CEB8E4 = "Vulcanodrago"
+S.Text.METAL_B0BEC5 = "Metal"
+S.Text.CRISTAL_E1BEE7 = "Cristal"
+S.Text.ARCANO_CE93D8 = "Arcano"
 return S
 ]]></string>
         </Properties>
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="30">
+  <Item class="ServerScriptService" referent="41">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Folder" referent="31">
+    <Item class="Folder" referent="42">
       <Properties>
         <string name="Name">Server</string>
       </Properties>
-      <Item class="ModuleScript" referent="32">
+      <Item class="ModuleScript" referent="43">
         <Properties>
           <string name="Name">Biomes</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -3999,7 +5152,7 @@ return B
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="33">
+      <Item class="ModuleScript" referent="44">
         <Properties>
           <string name="Name">CompanionService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -4016,7 +5169,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="34">
+      <Item class="ModuleScript" referent="45">
         <Properties>
           <string name="Name">CreatureGallery</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -4089,14 +5242,14 @@ function Gallery.build()
 			display(def, lv, index)
 		end
 	end
-	display(C.ById.fenix, 60, 91)
+	display(C.ById.fenix, 60, index + 1)
 	return folder
 end
 return Gallery
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="35">
+      <Item class="ModuleScript" referent="46">
         <Properties>
           <string name="Name">DataService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -4514,7 +5667,7 @@ return D
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="36">
+      <Item class="ModuleScript" referent="47">
         <Properties>
           <string name="Name">EncounterService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -4871,7 +6024,51 @@ return E
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="37">
+      <Item class="ModuleScript" referent="48">
+        <Properties>
+          <string name="Name">EvolutionService</string>
+          <string name="Source"><![CDATA[--!nonstrict
+local RS = game:GetService("ReplicatedStorage")
+local Data = require(script.Parent.DataService)
+local System = require(RS.Shared.EvolutionSystem)
+local Service = {}
+local last = setmetatable({}, { __mode = "k" })
+function Service.info(player, uid)
+ if typeof(uid) ~= "string" or #uid > 80 then return {ok=false, code="INVALID_UID"} end
+ local profile=Data.get(player)
+ if not profile or not profile.creatures[uid] then return {ok=false, code="NOT_OWNED"} end
+ local info=System.info(profile.creatures[uid])
+ if not info then return {ok=false, code="INVALID_CREATURE"} end
+ info.ok=true
+ return info
+end
+function Service.start()
+ local remotes=assert(RS:FindFirstChild("EvolutionRemotes"),"EvolutionRemotes ausente")
+ local function info(player,uid)
+  local now=os.clock()
+  if last[player] and now-last[player]<0.15 then return {ok=false,code="RATE_LIMIT"} end
+  last[player]=now
+  return Service.info(player,uid)
+ end
+ remotes.GetEvolutionInfo.OnServerInvoke=info
+ remotes.RequestEvolution.OnServerInvoke=function(player,uid)
+  local result=info(player,uid)
+  if result.ok then result.code="AUTOMATIC_LEVEL";result.msg="A evolução é automática nos níveis 7 e 15." end
+  return result
+ end
+ remotes.EvolutionHistory.OnServerInvoke=function(player,uid)
+  local result=info(player,uid)
+  if not result.ok then return result end
+  return {ok=true, entries={}, tracked=false, msg="Histórico de datas não é registrado nesta versão."}
+ end
+ remotes.CancelEvolution.OnServerEvent:Connect(function() end)
+ -- A apresentação no cliente não modifica nível, espécie, inventário ou progresso.
+end
+return Service
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="49">
         <Properties>
           <string name="Name">GameService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5397,7 +6594,7 @@ return G
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="38">
+      <Item class="ModuleScript" referent="50">
         <Properties>
           <string name="Name">Guardians</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5479,25 +6676,26 @@ return G
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="39">
+      <Item class="ModuleScript" referent="51">
         <Properties>
           <string name="Name">IslandArchitecture</string>
           <string name="Source"><![CDATA[--!nonstrict
--- Volume e silhueta com poucas peças grandes; não altera a superfície segura y=14.
+-- Silhueta estratificada cenográfica; piso e colisão originais ficam em World.
+local T = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
 local A = {}
 local V = Vector3.new
 function A.build(parent, center, def)
 	local group = Instance.new("Folder")
 	group.Name = "Geologia_" .. def.id
 	group.Parent = parent
-	local rng = Random.new(718 + def.idx)
-	local function rock(size, pos, color)
-		local p = Instance.new("Part")
-		p.Shape = Enum.PartType.Ball
+	local ramp = T.ramp(def.id)
+	local function slab(size, offset, color, rotation, kind)
+		local p = Instance.new(kind == "wedge" and "WedgePart" or "Part")
+		p.Name = "Estrato"
 		p.Size = size
-		p.Position = center + pos
+		p.CFrame = CFrame.new(center + offset) * (rotation or CFrame.identity)
 		p.Color = color
-		p.Material = Enum.Material.Rock
+		p.Material = Enum.Material.SmoothPlastic
 		p.Anchored = true
 		p.CanCollide = false
 		p.CanTouch = false
@@ -5505,27 +6703,38 @@ function A.build(parent, center, def)
 		p.Parent = group
 		return p
 	end
-	rock(V(76, 21, 76), V(0, -9, 0), def.ground:Lerp(Color3.fromRGB(30, 35, 45), 0.55))
-	for i = 1, 7 do
-		local a = i * math.pi * 2 / 7
-		local radius = 33
-		local p = rock(
-			V(rng:NextNumber(12, 20), rng:NextNumber(12, 20), rng:NextNumber(12, 20)),
-			V(math.cos(a) * radius, -5, math.sin(a) * radius),
-			def.ground:Lerp(Color3.fromRGB(42, 44, 51), 0.4)
+	-- Grandes planos recortados, com bordas quentes em cima e sombras frias abaixo.
+	for tier = 1, 3 do
+		local radius = 37 - tier * 3.5
+		for side = 1, 8 do
+			local angle = side * math.pi / 4
+			slab(
+				V(24, 4.5, 9),
+				V(math.cos(angle) * radius, -tier * 4 + 1, math.sin(angle) * radius),
+				ramp[math.max(1, 4 - tier)],
+				CFrame.Angles(0, -angle + math.pi / 2, 0.06 * (side % 2)),
+				tier == 3 and "wedge" or nil
+			)
+		end
+	end
+	slab(V(38, 8, 38), V(0, -9, 0), ramp[1], CFrame.Angles(0, math.pi / 4, 0), "wedge")
+	-- Veios de cor mantêm o mesmo material fosco e não criam pontos luminosos sem motivo.
+	for index = 1, 4 do
+		local angle = index * math.pi / 2 + 0.3
+		slab(
+			V(8, 0.7, 1.4),
+			V(math.cos(angle) * 35, -3.2, math.sin(angle) * 35),
+			ramp[3],
+			CFrame.Angles(0, -angle + math.pi / 2, 0)
 		)
-		p.CFrame *= CFrame.Angles(rng:NextNumber(), rng:NextNumber(), rng:NextNumber())
 	end
-	-- Pequenas pedras costeiras: um grupo coeso, em vez de ruído em todo o mapa.
-	for i = 1, 4 do
-		rock(V(5 + i, 3, 5), V(34 + i, -0.5, (i - 2) * 5), def.ground:Lerp(Color3.fromRGB(222, 201, 156), 0.3))
-	end
+	return group
 end
 return A
 ]]></string>
         </Properties>
       </Item>
-      <Item class="Script" referent="40">
+      <Item class="Script" referent="52">
         <Properties>
           <string name="Name">Main</string>
           <token name="RunContext">0</token>
@@ -5554,6 +6763,32 @@ require(script.Parent.SanctuaryBuilder).build()
 local Net = Instance.new("RemoteFunction")
 Net.Name = "Net"
 Net.Parent = RS
+
+local EvoRemotes = Instance.new("Folder")
+EvoRemotes.Name = "EvolutionRemotes"
+EvoRemotes.Parent = RS
+
+local RequestEvolution = Instance.new("RemoteFunction")
+RequestEvolution.Name = "RequestEvolution"
+RequestEvolution.Parent = EvoRemotes
+
+local TriggerEvolutionCutscene = Instance.new("RemoteEvent")
+TriggerEvolutionCutscene.Name = "TriggerEvolutionCutscene"
+TriggerEvolutionCutscene.Parent = EvoRemotes
+
+local GetEvolutionInfo = Instance.new("RemoteFunction")
+GetEvolutionInfo.Name = "GetEvolutionInfo"
+GetEvolutionInfo.Parent = EvoRemotes
+
+local CancelEvolution = Instance.new("RemoteEvent")
+CancelEvolution.Name = "CancelEvolution"
+CancelEvolution.Parent = EvoRemotes
+
+local EvolutionHistory = Instance.new("RemoteFunction")
+EvolutionHistory.Name = "EvolutionHistory"
+EvolutionHistory.Parent = EvoRemotes
+
+require(script.Parent.EvolutionService).start()
 local last = {}
 local busy = {}
 local function argument(v)
@@ -5626,7 +6861,7 @@ end)
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="41">
+      <Item class="ModuleScript" referent="53">
         <Properties>
           <string name="Name">MonetizationService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5715,7 +6950,7 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="42">
+      <Item class="ModuleScript" referent="54">
         <Properties>
           <string name="Name">RegionGuard</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5828,7 +7063,7 @@ return G
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="43">
+      <Item class="ModuleScript" referent="55">
         <Properties>
           <string name="Name">RegionService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5891,7 +7126,7 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="44">
+      <Item class="ModuleScript" referent="56">
         <Properties>
           <string name="Name">Researcher</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -5900,6 +7135,7 @@ local RS = game:GetService("ReplicatedStorage")
 local Data = require(script.Parent.DataService)
 local Story = require(RS.Shared.Story)
 local I = require(RS.Shared.Islands)
+local Art = require(script.Parent.WorldArt)
 local R = {}
 function R.start()
 	local event = Instance.new("RemoteEvent")
@@ -5938,6 +7174,7 @@ function R.start()
 			Color3.fromRGB(62, 121, 115)
 		)
 	end
+	Art.researcher(model, base)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = Text.CONVERSAR_AC3B38
 	prompt.ObjectText = Text.MAIA_PESQUISADORA_DO_ARQUIPELAGO_38D949
@@ -5963,13 +7200,14 @@ return R
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="45">
+      <Item class="ModuleScript" referent="57">
         <Properties>
           <string name="Name">SanctuaryBuilder</string>
           <string name="Source"><![CDATA[--!nonstrict
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local RS = game:GetService("ReplicatedStorage")
 local I = require(RS.Shared.Islands)
+local Tokens = require(RS.Shared.ArtTokens)
 local Data = require(script.Parent.DataService)
 local Quest = require(RS.Shared.PhoenixQuest)
 local Region = require(script.Parent.RegionService)
@@ -5988,8 +7226,8 @@ function B.build()
 		p.Name = name
 		p.Size = size
 		p.Position = pos
-		p.Color = color
-		p.Material = material or Enum.Material.Sandstone
+		p.Color = Tokens.nearest(color)
+		p.Material = material == Enum.Material.Neon and Enum.Material.Neon or Enum.Material.SmoothPlastic
 		p.Shape = shape or Enum.PartType.Block
 		p.Anchored = true
 		p.CanTouch = false
@@ -6026,8 +7264,8 @@ function B.build()
 		)
 		front.CanCollide = true
 	end
-	local stone = Color3.fromRGB(113, 93, 79)
-	local gold = Color3.fromRGB(240, 179, 66)
+	local stone = Tokens.Ramps.Sand[2]
+	local gold = Tokens.Ramps.Sand[4]
 	for i = 1, 12 do
 		local a = i * math.pi / 6
 		local p = part(
@@ -6169,7 +7407,7 @@ return B
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="46">
+      <Item class="ModuleScript" referent="58">
         <Properties>
           <string name="Name">SanctuaryService</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6178,6 +7416,8 @@ local RS = game:GetService("ReplicatedStorage")
 local Data = require(script.Parent.DataService)
 local I = require(RS.Shared.Islands)
 local Rules = require(RS.Shared.SanctuaryRules)
+local Art = require(script.Parent.WorldArt)
+local Tokens = require(RS.Shared.ArtTokens)
 local S = {}
 local plots = {}
 local used = {}
@@ -6266,6 +7506,7 @@ function S.ensure(player)
 		end
 		require(script.Parent.Transport).go(p, I.pos(1) + V(0, 9, 24), "Alvorecer")
 	end)
+	Art.plot(folder, center)
 	local plot = { index = index, center = center, folder = folder, signature = "" }
 	plots[player] = plot
 	return plot
@@ -6331,10 +7572,10 @@ function S.refresh(player)
 		local text = Instance.new("TextLabel")
 		text.Size = UDim2.fromScale(1, 1)
 		text.BackgroundTransparency = 1
-		text.TextColor3 = Color3.new(1, 1, 1)
+		text.TextColor3 = Tokens.Ink
 		text.TextStrokeTransparency = 0.4
 		text.TextSize = 14
-		text.Font = Enum.Font.GothamBold
+		text.Font = Tokens.Font
 		text.Text = def.el
 			.. " • Habitat "
 			.. entry.level
@@ -6343,6 +7584,7 @@ function S.refresh(player)
 			.. " / "
 			.. Rules.capacity(def, entry)
 		text.Parent = label
+		Art.habitat(zone, pos, id)
 	end
 end
 function S.home(player)
@@ -6365,12 +7607,13 @@ return S
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="47">
+      <Item class="ModuleScript" referent="59">
         <Properties>
           <string name="Name">StartingCamp</string>
           <string name="Source"><![CDATA[--!nonstrict
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local I = require(game:GetService("ReplicatedStorage").Shared.Islands)
+local Art = require(script.Parent.WorldArt)
 local C = {}
 function C.build()
 	local parent = Instance.new("Model")
@@ -6429,12 +7672,13 @@ function C.build()
 			Enum.PartType.Ball
 		)
 	end
+	Art.camp(parent, center)
 end
 return C
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="48">
+      <Item class="ModuleScript" referent="60">
         <Properties>
           <string name="Name">Transport</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6497,7 +7741,7 @@ return T
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="49">
+      <Item class="ModuleScript" referent="61">
         <Properties>
           <string name="Name">Wildlife</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6639,7 +7883,7 @@ return W
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="50">
+      <Item class="ModuleScript" referent="62">
         <Properties>
           <string name="Name">World</string>
           <string name="Source"><![CDATA[--!nonstrict
@@ -6650,6 +7894,8 @@ local C = require(RS.Shared.Creatures)
 local MF = require(RS.Shared.ModelFactory)
 local Data = require(script.Parent.DataService)
 local Sanctuary = require(script.Parent.SanctuaryService)
+local Art = require(script.Parent.WorldArt)
+local Tokens = require(RS.Shared.ArtTokens)
 local W = {}
 function W.pos(i)
 	local a = (i - 1) / #I.List * math.pi * 2
@@ -6670,8 +7916,8 @@ function W.build()
 		base.Size = Vector3.new(8, 80, 80)
 		base.CFrame = CFrame.new(p) * CFrame.Angles(0, 0, math.rad(90))
 		base.Anchored = true
-		base.Color = def.ground
-		base.Material = Enum.Material.Slate
+		base.Color = Tokens.ramp(def.id)[3]
+		base.Material = Enum.Material.SmoothPlastic
 		base.Name = def.name
 		base.Parent = f
 		require(script.Parent.IslandArchitecture).build(f, p, def)
@@ -6684,8 +7930,8 @@ function W.build()
 		b.Anchored = true
 		b.Size = Vector3.new(9, 1, (p2 - p1).Magnitude)
 		b.CFrame = CFrame.lookAt(mid, mid + (p2 - p1))
-		b.Material = Enum.Material.WoodPlanks
-		b.Color = Color3.fromRGB(150, 105, 60)
+		b.Material = Enum.Material.SmoothPlastic
+		b.Color = Tokens.Ramps.Sand[3]
 		b.Parent = f
 		-- Arcos nas duas extremidades: entrar usa Travel, nunca altera a sessão só pela posição.
 		for _, target in { i, i % #I.List + 1 } do
@@ -6699,7 +7945,7 @@ function W.build()
 				column.Position = point + Vector3.new(side * 5, 0, 0)
 				column.Anchored = true
 				column.Material = Enum.Material.Slate
-				column.Color = destination.ground
+				column.Color = Tokens.ramp(destination.id)[2]
 				column.Parent = f
 			end
 			local arch = Instance.new("Part")
@@ -6718,9 +7964,9 @@ function W.build()
 			text.Size = UDim2.fromScale(1, 1)
 			text.BackgroundTransparency = 1
 			text.Text = destination.name .. Text.NIVEL_44C4F0 .. destination.minLevel
-			text.Font = Enum.Font.GothamBold
+			text.Font = Tokens.Font
 			text.TextSize = 14
-			text.TextColor3 = Color3.fromRGB(255, 222, 150)
+			text.TextColor3 = Tokens.Ink
 			text.TextStrokeTransparency = 0.4
 			text.Parent = sign
 			local prompt = Instance.new("ProximityPrompt")
@@ -6752,34 +7998,40 @@ function W.build()
 	w.Size = Vector3.new(1200, 2, 1200)
 	w.Position = Vector3.new(0, -4, 0)
 	w.Material = Enum.Material.Glass
-	w.Color = Color3.fromRGB(60, 140, 210)
-	w.Transparency = 0.35
+	w.Color = Tokens.Ramps.Tidal[2]
+	w.Transparency = 0.12
 	w.Parent = f
 	local L = game:GetService("Lighting")
-	L.Brightness = 2
-	L.EnvironmentDiffuseScale = 0.6
-	L.EnvironmentSpecularScale = 0.4
+	L.Brightness = 2.1
+	L.GeographicLatitude = 28
+	L.ShadowSoftness = 0.12
+	L.Ambient = Tokens.Ramps.Sky[2]
+	L.OutdoorAmbient = Tokens.Ramps.Metal[3]
+	L.EnvironmentDiffuseScale = 0.5
+	L.EnvironmentSpecularScale = 0.15
 	L.ClockTime = 14
 	L.GlobalShadows = true
 	local at = Instance.new("Atmosphere")
-	at.Density = 0.25
-	at.Haze = 1.2
-	at.Color = Color3.fromRGB(200, 190, 255)
+	at.Density = 0.18
+	at.Haze = 0.9
+	at.Color = Tokens.Ramps.Sky[4]
 	at.Parent = L
 	local bl = Instance.new("BloomEffect")
-	bl.Intensity = 0.5
-	bl.Size = 24
+	bl.Intensity = 0.12
+	bl.Size = 12
 	bl.Threshold = 1.8
 	bl.Parent = L
 	local cc = Instance.new("ColorCorrectionEffect")
-	cc.Saturation = 0.2
-	cc.Contrast = 0.08
+	cc.Saturation = 0.05
+	cc.Contrast = 0.1
 	cc.Parent = L
 	local s = Instance.new("SpawnLocation")
 	s.Anchored = true
 	s.Size = Vector3.new(10, 1, 10)
 	s.Position = W.pos(1) + Vector3.new(0, 5, 30)
 	s.Parent = f
+	Art.recolor(f)
+	Art.build(f)
 end
 function W.refresh(p)
 	local root = workspace:FindFirstChild("Criaturas") or Instance.new("Folder", workspace)
@@ -6835,7 +8087,7 @@ function W.refresh(p)
 				if d.pass and d.pass.Aura then
 					local h = Instance.new("Highlight")
 					h.FillTransparency = 1
-					h.OutlineColor = Color3.fromRGB(255, 215, 0)
+					h.OutlineColor = Tokens.Accent
 					h.Parent = m
 				end
 				m:SetAttribute("OwnerUserId", p.UserId)
@@ -6851,21 +8103,676 @@ return W
 ]]></string>
         </Properties>
       </Item>
+      <Item class="ModuleScript" referent="63">
+        <Properties>
+          <string name="Name">WorldArt</string>
+          <string name="Source"><![CDATA[--!nonstrict
+-- Camada cenográfica: nenhuma peça é sólida, consultável ou interativa.
+local RS = game:GetService("ReplicatedStorage")
+local T = require(RS.Shared.ArtTokens)
+local I = require(RS.Shared.Islands)
+local A = { BudgetPerIsland = 190 }
+local V = Vector3.new
+local function block(parent, name, size, position, color, rotation, kind)
+	local p = Instance.new(kind == "wedge" and "WedgePart" or "Part")
+	p.Name = name
+	p.Size = size
+	p.CFrame = CFrame.new(position) * (rotation or CFrame.identity)
+	p.Color = color
+	p.Material = Enum.Material.SmoothPlastic
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanTouch = false
+	p.CanQuery = false
+	p.CastShadow = size.Magnitude > 4
+	p.Parent = parent
+	return p
+end
+local function motion(part, kind, phase)
+	part:SetAttribute("ArtMotion", kind)
+	part:SetAttribute("ArtPhase", phase or 0)
+end
+local function shrub(parent, origin, ramp, style, index)
+	local trunk = T.Ramps.Sand
+	local ground = block(parent, "SombraRecortada", V(7, 0.04, 5), origin + V(1, 0.02, 0.6), ramp[1])
+	ground.Transparency = 0.3
+	ground.CastShadow = false
+	if style == "Leaf" then
+		block(
+			parent,
+			"TroncoFacetado",
+			V(1.3, 7, 1.5),
+			origin + V(0, 3.5, 0),
+			trunk[2],
+			CFrame.Angles(0, index * 0.7, 0.08)
+		)
+		block(parent, "Ramo", V(3, 0.7, 0.7), origin + V(1, 5, 0), trunk[3], CFrame.Angles(0, 0, 0.4))
+		for tier = 1, 3 do
+			local size = 8 - tier * 1.5
+			local leaf = block(
+				parent,
+				"CopaEmCamadas",
+				V(size, 1.4, size * 0.85),
+				origin + V(tier % 2 * 0.5, 6 + tier, 0),
+				ramp[tier + 1],
+				CFrame.Angles(0, math.pi / 4, 0)
+			)
+			if tier == 3 then
+				motion(leaf, "leaf", index * 0.5)
+			end
+		end
+	elseif style == "Ember" then
+		for tier = 1, 3 do
+			block(
+				parent,
+				"BasaltoEstratificado",
+				V(5 - tier, 1.6, 4.5 - tier),
+				origin + V(0, tier * 0.9, 0),
+				ramp[tier % 2 + 1],
+				CFrame.Angles(0, index * 0.7, 0),
+				"wedge"
+			)
+		end
+		local shard = block(
+			parent,
+			"VidroDeBrasa",
+			V(0.5, 3, 0.6),
+			origin + V(0.2, 3, 0),
+			ramp[4],
+			CFrame.Angles(0.2, 0, 0.3),
+			"wedge"
+		)
+		motion(shard, "spark", index)
+	elseif style == "Tidal" then
+		for side = -1, 1 do
+			block(
+				parent,
+				"CoralRamo",
+				V(0.8, 3 + side * 0.4, 0.8),
+				origin + V(side * 1.2, 1.5, 0),
+				T.Ramps.Rose[side + 3],
+				CFrame.Angles(0, 0, side * 0.3)
+			)
+			block(
+				parent,
+				"CoralLeque",
+				V(2, 0.6, 1),
+				origin + V(side * 1.3, 3 + side * 0.4, 0),
+				T.Ramps.Rose[4],
+				CFrame.Angles(0, side * 0.2, 0)
+			)
+		end
+		block(
+			parent,
+			"ConchaListrada",
+			V(2.2, 0.7, 1.6),
+			origin + V(2, 0.4, 1),
+			T.Ramps.Sand[5],
+			CFrame.Angles(0, 0.4, 0),
+			"wedge"
+		)
+	elseif style == "Sand" then
+		block(parent, "PedestalDeAreia", V(5, 1.2, 4), origin + V(0, 0.6, 0), ramp[3])
+		block(
+			parent,
+			"EstelaInclinada",
+			V(1.8, 5, 1.8),
+			origin + V(0, 3.1, 0),
+			ramp[4],
+			CFrame.Angles(0, index * 0.4, 0.1)
+		)
+		block(parent, "FaixaDeEstela", V(2, 0.4, 2), origin + V(0, 4, 0), ramp[1], CFrame.Angles(0, index * 0.4, 0.1))
+	elseif style == "Sky" then
+		for tier = 1, 3 do
+			local c = block(
+				parent,
+				"NuvemEscalonada",
+				V(6 - tier, 1.4, 4.5 - tier * 0.4),
+				origin + V(tier * 0.5, 1.5 + tier * 0.6, 0),
+				ramp[tier + 2]
+			)
+			motion(c, "cloud", index * 0.7 + tier)
+		end
+		block(
+			parent,
+			"CristalCeleste",
+			V(1.4, 4, 1.4),
+			origin + V(1, 4, 0),
+			ramp[4],
+			CFrame.Angles(0.2, 0.5, 0.3),
+			"wedge"
+		)
+	else
+		block(parent, "RaizTorcida", V(1.2, 5, 1.2), origin + V(0, 2.5, 0), ramp[1], CFrame.Angles(0.1, 0, 0.3))
+		block(parent, "CogumeloBase", V(0.8, 2, 0.8), origin + V(1, 1, 0), ramp[3])
+		block(
+			parent,
+			"CogumeloChapeu",
+			V(3, 0.6, 2.5),
+			origin + V(1, 2.3, 0),
+			ramp[4],
+			CFrame.Angles(0, math.pi / 4, 0)
+		)
+		local glow = block(parent, "LuzDeEsporo", V(0.3, 0.3, 0.3), origin + V(1.3, 3.2, 0), ramp[5])
+		motion(glow, "spark", index * 0.9)
+	end
+end
+function A.biome(parent, center, def)
+	local root = Instance.new("Folder")
+	root.Name = "Arte_" .. def.id
+	root:SetAttribute("ArtDecor", true)
+	root.Parent = parent
+	local ramp = T.ramp(def.id)
+	local style = T.Biomes[def.id]
+	-- Rebordo de ladrilhos e pequenos pisos interrompidos deixam legíveis o centro e as entradas.
+	for index = 1, 12 do
+		local angle = index * math.pi / 6
+		local edge = center + V(math.cos(angle) * 37, 4.03, math.sin(angle) * 37)
+		block(root, "BordaDeIlha", V(9, 0.18, 2), edge, ramp[4], CFrame.Angles(0, -angle + math.pi / 2, 0))
+	end
+	for index = 1, 8 do
+		local angle = index * math.pi / 4 + 0.15
+		local radius = 27 + (index % 2) * 4
+		shrub(root, center + V(math.cos(angle) * radius, 4.08, math.sin(angle) * radius), ramp, style, index)
+	end
+	for index = 1, 16 do
+		local angle = index * 2.399
+		local radius = 14 + (index % 4) * 4
+		local point = center + V(math.cos(angle) * radius, 4.08, math.sin(angle) * radius)
+		if math.abs(point.X - center.X) > 7 then
+			local grass = block(
+				root,
+				"DetalheDeSolo",
+				V(0.3, style == "Sand" and 0.18 or 0.8, 1.2),
+				point,
+				ramp[index % 2 + 3],
+				CFrame.Angles(0, angle, 0.12),
+				"wedge"
+			)
+			if style == "Leaf" or style == "Veil" then
+				motion(grass, "grass", index * 0.5)
+			end
+			if index % 4 == 0 then
+				block(
+					root,
+					"Petala",
+					V(0.4, 0.2, 0.4),
+					point + V(0.4, 0.7, 0),
+					style == "Leaf" and T.Ramps.Rose[4] or ramp[5]
+				)
+			end
+		end
+	end
+	-- Vinheta do ponto de descoberta original: livros/placas decorativos, sem tocar no prompt.
+	block(root, "PlacaDescoberta", V(5, 0.25, 2), center + V(24, 4.16, 3), ramp[1])
+	for index = 1, 3 do
+		block(root, "Inscricao", V(0.3, 0.05, 0.8), center + V(22.8 + index * 0.6, 4.33, 3), ramp[4])
+	end
+	local parts = 0
+	for _, obj in root:GetDescendants() do
+		if obj:IsA("BasePart") then
+			parts += 1
+		end
+	end
+	root:SetAttribute("PartCount", parts)
+	assert(parts <= A.BudgetPerIsland, "Cenário acima do orçamento")
+	return root
+end
+function A.build(parent)
+	for _, def in I.List do
+		A.biome(parent, I.pos(def.idx), def)
+	end
+	local ocean = Instance.new("Folder")
+	ocean.Name = "ArteOceano"
+	ocean.Parent = parent
+	-- Linhas de espuma escalonadas são geométricas, sem textura filtrada ou emissor global.
+	for index = 1, 42 do
+		local angle = index * math.pi / 21
+		local distance = 210 + (index % 3) * 28
+		local strip = block(
+			ocean,
+			"Espuma",
+			V(7 + index % 4, 0.06, 0.6),
+			V(math.cos(angle) * distance, -2.96, math.sin(angle) * distance),
+			T.Ramps.Tidal[4],
+			CFrame.Angles(0, -angle, 0)
+		)
+		strip.Transparency = 0.4
+		motion(strip, "water", index * 0.3)
+	end
+end
+function A.recolor(parent)
+	for _, obj in parent:GetDescendants() do
+		if obj:IsA("BasePart") then
+			obj.Color = T.nearest(obj.Color)
+		elseif obj:IsA("TextLabel") then
+			obj.Font = T.Font
+			obj.TextColor3 = T.Ink
+			obj.TextStrokeColor3 = T.Panel
+			obj.TextStrokeTransparency = 0.1
+		end
+	end
+end
+function A.camp(parent, center)
+	local wood = T.Ramps.Sand
+	local roof = T.Ramps.Tidal
+	-- Dossel de telhas facetadas e beiral quente sobre o gazebo existente.
+	for _, side in { -1, 1 } do
+		block(
+			parent,
+			"TelhadoDePesquisa",
+			V(8, 0.7, 16),
+			center + V(-20 + side * 3.5, 14.4, -17),
+			roof[3],
+			CFrame.Angles(0, 0, -side * 0.25)
+		)
+		block(parent, "Beiral", V(1, 0.6, 16.4), center + V(-20 + side * 7, 13.5, -17), wood[4])
+	end
+	block(parent, "Cumeeira", V(0.7, 0.8, 16.7), center + V(-20, 15.5, -17), wood[5])
+	for index = 1, 4 do
+		block(
+			parent,
+			"AmostraDePesquisa",
+			V(0.7, 0.15, 1),
+			center + V(-23 + index * 1.2, 6.6, -17),
+			T.Palette[10 + index * 3],
+			CFrame.Angles(0, index * 0.2, 0)
+		)
+	end
+	block(parent, "LivroAberto", V(2, 0.2, 1.5), center + V(-21, 6.7, -18), T.Ink, CFrame.Angles(0, -0.2, 0))
+	block(parent, "Lombada", V(0.1, 0.24, 1.5), center + V(-21, 6.72, -18), wood[2], CFrame.Angles(0, -0.2, 0))
+	for index = 1, 5 do
+		local a = index * math.pi * 2 / 5
+		local ripple = block(
+			parent,
+			"ReflexoDaFonte",
+			V(1, 0.05, 0.2),
+			center + V(22 + math.cos(a) * 1.5, 6.22, -16 + math.sin(a) * 1.5),
+			T.Ramps.Tidal[5],
+			CFrame.Angles(0, -a, 0)
+		)
+		motion(ripple, "water", index)
+	end
+	A.recolor(parent)
+end
+function A.researcher(parent, base)
+	local skin = T.Ramps.Rose
+	local cloth = T.Ramps.Tidal
+	local wood = T.Ramps.Sand
+	-- Rosto original: olhos com sobrancelha, mecha lateral, óculos e sorriso curto.
+	block(parent, "PlanoDoRosto", V(1.45, 1.25, 0.18), base + V(0, 4.65, 0.73), skin[4])
+	for _, side in { -1, 1 } do
+		block(parent, "Lente", V(0.62, 0.44, 0.09), base + V(side * 0.4, 4.78, 0.86), cloth[1])
+		block(parent, "Olho", V(0.14, 0.19, 0.08), base + V(side * 0.4, 4.77, 0.93), T.Ink)
+		block(
+			parent,
+			"Sobrancelha",
+			V(0.42, 0.09, 0.08),
+			base + V(side * 0.4, 5.1, 0.87),
+			wood[1],
+			CFrame.Angles(0, 0, side * 0.08)
+		)
+		block(parent, "Mao", V(0.55, 0.55, 0.55), base + V(side * 1.5, 1.65, 0), skin[4])
+	end
+	block(parent, "PonteDosOculos", V(0.23, 0.1, 0.09), base + V(0, 4.8, 0.87), cloth[1])
+	block(parent, "Sorriso", V(0.3, 0.08, 0.08), base + V(0.09, 4.3, 0.86), skin[2], CFrame.Angles(0, 0, 0.08))
+	block(parent, "Cabelo", V(1.9, 0.5, 1.8), base + V(0, 5.55, -0.03), wood[1])
+	block(parent, "Mecha", V(0.45, 1.4, 0.3), base + V(-0.7, 5.0, 0.71), wood[2], CFrame.Angles(0, 0, -0.12))
+	block(parent, "Gola", V(1.35, 0.3, 1.1), base + V(0, 3.9, 0), T.Ink)
+	block(parent, "Bolso", V(0.65, 0.6, 0.14), base + V(-0.5, 2.8, 0.56), cloth[2])
+	block(parent, "CadernoDeCampo", V(0.7, 0.9, 0.15), base + V(-0.5, 3, 0.65), wood[4], CFrame.Angles(0, 0, 0.1))
+	block(parent, "Cinto", V(2.3, 0.22, 1.1), base + V(0, 1.8, 0), wood[1])
+	block(parent, "Fivela", V(0.36, 0.3, 0.1), base + V(0, 1.8, 0.62), wood[4])
+	block(parent, "Mochila", V(1.65, 1.8, 0.7), base + V(0, 2.9, -0.8), wood[2])
+	local shadow = block(parent, "SombraDaMaia", V(3.2, 0.025, 2), base + V(0.4, 0.03, 0.3), T.Shadow)
+	shadow.Transparency = 0.35
+	shadow.CastShadow = false
+	A.recolor(parent)
+end
+function A.plot(parent, center)
+	local ramp = T.Ramps.Leaf
+	for _, side in { -1, 1 } do
+		for index = 1, 5 do
+			block(
+				parent,
+				"LadrilhoDeJardim",
+				V(3, 0.12, 3),
+				center + V(side * 6, 2.12, -45 + index * 18),
+				T.Ramps.Sand[4],
+				CFrame.Angles(0, math.pi / 4, 0)
+			)
+		end
+		block(parent, "MolduraDoPortal", V(1.1, 10, 2.7), center + V(side * 4.5, 6.5, 61), T.Ramps.Sand[4])
+		block(parent, "Canteiro", V(7, 0.6, 5), center + V(side * 58, 2.4, 52), ramp[1])
+		for index = 1, 3 do
+			block(
+				parent,
+				"FolhaDeCanteiro",
+				V(1.4, 1.2, 1.4),
+				center + V(side * 58 + (index - 2) * 1.6, 3.1, 52),
+				ramp[index + 1],
+				CFrame.Angles(0, index * 0.5, 0),
+				"wedge"
+			)
+		end
+	end
+	block(parent, "LintelDoPortal", V(11, 1, 2.7), center + V(0, 12, 61), T.Ramps.Sand[5])
+	A.recolor(parent)
+end
+function A.habitat(parent, position, id)
+	local ramp = T.ramp(id)
+	for _, side in { -1, 1 } do
+		block(parent, "RebordoHabitat", V(28, 0.18, 0.6), position + V(0, 0.45, side * 13.5), ramp[2])
+		block(parent, "RebordoHabitat", V(0.6, 0.18, 26), position + V(side * 13.5, 0.45, 0), ramp[2])
+		block(
+			parent,
+			"TalheDeCanto",
+			V(2, 0.22, 2),
+			position + V(side * 12, 0.46, side * 12),
+			ramp[4],
+			CFrame.Angles(0, math.pi / 4, 0)
+		)
+	end
+	block(parent, "SeloDeHabitat", V(4, 0.08, 4), position + V(0, 0.46, -10), ramp[4], CFrame.Angles(0, math.pi / 4, 0))
+	A.recolor(parent)
+end
+return A
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="Folder" referent="64">
+        <Properties>
+          <string name="Name">islands</string>
+        </Properties>
+        <Item class="ModuleScript" referent="65">
+          <Properties>
+            <string name="Name">Alvorecer</string>
+            <string name="Source"><![CDATA[-- Região construída por World/StartingCamp; metadado reservado para expansão.
+return { Id = "Alvorecer" }
+]]></string>
+          </Properties>
+        </Item>
+      </Item>
     </Item>
   </Item>
-  <Item class="StarterPlayer" referent="51">
+  <Item class="StarterPlayer" referent="66">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="52">
+    <Item class="StarterPlayerScripts" referent="67">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="Folder" referent="53">
+      <Item class="Folder" referent="68">
         <Properties>
           <string name="Name">Client</string>
         </Properties>
-        <Item class="LocalScript" referent="54">
+        <Item class="ModuleScript" referent="69">
+          <Properties>
+            <string name="Name">ArtOverlay</string>
+            <string name="Source"><![CDATA[--!nonstrict
+-- Presentation only: never gates movement, net requests or profile loading.
+local Tween = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local Theme = require(script.Parent.UITheme)
+local Icons = require(script.Parent.PixelIcons)
+local A = {}
+function A.loading(gui)
+	local overlay = Instance.new("Frame")
+	overlay.Name = "ArtLoading"
+	overlay.Size = UDim2.fromScale(1, 1)
+	overlay.BackgroundColor3 = Theme.Panel
+	overlay.ZIndex = 100
+	overlay.Active = false
+	overlay.Parent = gui
+	local center = Instance.new("Frame")
+	center.AnchorPoint = Vector2.new(0.5, 0.5)
+	center.Position = UDim2.fromScale(0.5, 0.5)
+	center.Size = UDim2.new(0.92, 0, 0, 320)
+	center.BackgroundTransparency = 1
+	center.ZIndex = 101
+	center.Parent = overlay
+	local max = Instance.new("UISizeConstraint")
+	max.MaxSize = Vector2.new(640, 320)
+	max.Parent = center
+	local skyline = Instance.new("Frame")
+	skyline.Size = UDim2.fromOffset(176, 70)
+	skyline.Position = UDim2.new(0.5, -88, 0, 0)
+	skyline.BackgroundTransparency = 1
+	skyline.ZIndex = 101
+	skyline.Parent = center
+	for index, kind in { "Natureza", "Fogo", "Agua", "Sombra", "Ar" } do
+		local ramp = ({
+			Theme.Tokens.Ramps.Leaf,
+			Theme.Tokens.Ramps.Ember,
+			Theme.Tokens.Ramps.Tidal,
+			Theme.Tokens.Ramps.Veil,
+			Theme.Tokens.Ramps.Sky,
+		})[index]
+		local icon = Icons.draw(skyline, kind, 2, ramp)
+		icon.Position = UDim2.fromOffset((index - 1) * 36, index % 2 == 0 and 0 or 16)
+		icon.ZIndex = 102
+	end
+	local title = Theme.label(center, "ARQUIPÉLAGO\nDAS FERAS", 32)
+	title.Size = UDim2.new(1, 0, 0, 94)
+	title.Position = UDim2.fromOffset(0, 84)
+	title.TextColor3 = Theme.Accent
+	title.ZIndex = 102
+	local subtitle = Theme.label(center, "EXPLORAR  /  DESCOBRIR  /  CUIDAR", 14)
+	subtitle.Size = UDim2.new(1, 0, 0, 28)
+	subtitle.Position = UDim2.fromOffset(0, 188)
+	subtitle.TextColor3 = Theme.Muted
+	subtitle.ZIndex = 102
+	local status = Theme.label(center, "Preparando sua expedição...", 16)
+	status.Size = UDim2.new(1, -24, 0, 64)
+	status.Position = UDim2.fromOffset(12, 236)
+	status.ZIndex = 102
+	local track = Instance.new("Frame")
+	track.Size = UDim2.new(0.6, 0, 0, 4)
+	track.Position = UDim2.new(0.2, 0, 0, 222)
+	track.BackgroundColor3 = Theme.Edge
+	track.BorderSizePixel = 0
+	track.ZIndex = 102
+	track.Parent = center
+	for index = 1, 12 do
+		local segment = Instance.new("Frame")
+		segment.Size = UDim2.new(1 / 12, -3, 1, 0)
+		segment.Position = UDim2.fromScale((index - 1) / 12, 0)
+		segment.BorderSizePixel = 0
+		segment.BackgroundColor3 = index % 3 == 0 and Theme.Mint or Theme.Accent
+		segment.ZIndex = 103
+		segment.Parent = track
+	end
+	local closed = false
+	local handle = {}
+	function handle.message(text)
+		if not closed and status.Parent and text ~= "" then
+			status.Text = text
+		end
+	end
+	function handle.ready()
+		if closed then
+			return
+		end
+		closed = true
+		local reduced = Players.LocalPlayer:GetAttribute("MotionReduced")
+		if reduced then
+			overlay:Destroy()
+			return
+		end
+		Tween:Create(overlay, TweenInfo.new(0.25), { BackgroundTransparency = 1 }):Play()
+		for _, obj in overlay:GetDescendants() do
+			if obj:IsA("TextLabel") then
+				Tween:Create(obj, TweenInfo.new(0.25), { TextTransparency = 1 }):Play()
+			elseif obj:IsA("Frame") then
+				Tween:Create(obj, TweenInfo.new(0.25), { BackgroundTransparency = 1 }):Play()
+			end
+		end
+		task.delay(0.28, function()
+			overlay:Destroy()
+		end)
+	end
+	return handle
+end
+return A
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="70">
+          <Properties>
+            <string name="Name">BattleStage</string>
+            <string name="Source"><![CDATA[--!nonstrict
+-- Cenografia apenas local para WorldModel; não conhece serviços, jogadores nem estado de batalha.
+local RS = game:GetService("ReplicatedStorage")
+local Art = require(RS.Shared.ArtTokens)
+local S = { Budget = 190 }
+local V = Vector3.new
+function S.resolve(def)
+	if Art.Biomes[def.island] then
+		return def.island
+	end
+	return ({
+		Fogo = "Brasa",
+		["Água"] = "Recife",
+		Natureza = "Floresta",
+		Terra = "Dunas",
+		Ar = "Picos",
+		Sombra = "Pantano",
+	})[def.el] or "Alvorecer"
+end
+function S.build(world, id, origin)
+	origin = origin or V(0, 0, 0)
+	local folder = Instance.new("Model")
+	folder.Name = "BattleScenery"
+	folder.Parent = world
+	local ramp = Art.ramp(id)
+	local leaf = Art.Ramps.Leaf
+	local stone = Art.Ramps.Metal
+	local function part(name, size, pos, color, kind, rotation)
+		local p = Instance.new(kind == "wedge" and "WedgePart" or "Part")
+		p.Name = name
+		p.Size = size
+		p.CFrame = CFrame.new(pos + origin) * (rotation or CFrame.identity)
+		p.Color = color
+		p.Material = Enum.Material.SmoothPlastic
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanTouch = false
+		p.CanQuery = false
+		p.CastShadow = false
+		p.Parent = folder
+		if kind == "cylinder" then
+			p.Shape = Enum.PartType.Cylinder
+		end
+		return p
+	end
+	part("Sky", V(100, 50, 1), V(0, 18, -24), Art.Ramps.Sky[2])
+	for layer = 1, 3 do
+		for i = 1, 6 do
+			local h = 4 + (i * 7 + layer * 3) % 9
+			local x = (i - 3.5) * 13
+			local z = -21 + layer * 3
+			for _, side in { -1, 1 } do
+				part(
+					"DistantContour",
+					V(2, h, 6.5),
+					V(x + side * 3.25, h * 0.5 + 4 - layer, z),
+					ramp[layer],
+					"wedge",
+					CFrame.Angles(0, -side * math.pi / 2, 0)
+				)
+			end
+		end
+	end
+	part("SunDisk", V(0.2, 5, 5), V(22, 19, -22), Art.Ramps.Sand[5], "cylinder", CFrame.Angles(0, math.pi / 2, 0))
+	for cloud = 1, 3 do
+		local x = cloud * 18 - 34
+		local y = 17 + cloud % 2 * 4
+		part("CloudMiddle", V(7, 1.5, 1), V(x, y, -19), Art.Ramps.Sky[5])
+		part("CloudCrown", V(4, 1.1, 1), V(x - 0.6, y + 1, -19), Art.Ramps.Sky[5])
+		part("CloudShadow", V(6, 0.4, 1.1), V(x + 0.3, y - 0.8, -19), Art.Ramps.Sky[4])
+	end
+	part("Ground", V(70, 1, 40), V(0, -0.55, 0), ramp[2])
+	for i = 1, 14 do
+		part("GroundTile", V(2 + (i % 3), 0.06, 1), V((i % 7 - 3) * 8, 0.01, math.floor(i / 7) * 8 - 6), ramp[3])
+	end
+	for _, x in { -8, 8 } do
+		part("ContactShadow", V(0.12, 10, 7), V(x, 0.04, 0), ramp[1], "cylinder", CFrame.Angles(0, 0, math.pi / 2))
+		part("PlatformEdge", V(0.3, 9, 6.5), V(x, 0.08, 0), stone[2], "cylinder", CFrame.Angles(0, 0, math.pi / 2))
+		part("PlatformLight", V(0.12, 8.4, 6), V(x, 0.26, 0), ramp[4], "cylinder", CFrame.Angles(0, 0, math.pi / 2))
+		part("PlatformSurface", V(0.12, 7.8, 5.4), V(x, 0.34, 0), ramp[3], "cylinder", CFrame.Angles(0, 0, math.pi / 2))
+	end
+	for i = 1, 8 do
+		local x = (i - 4.5) * 7
+		local z = -10 - (i % 2) * 3
+		if id == "Alvorecer" or id == "Floresta" or id == "Pantano" then
+			part(
+				"Trunk",
+				V(1.4, 5 + i % 3, 1.4),
+				V(x, 3, z),
+				id == "Pantano" and Art.Ramps.Veil[1] or Art.Ramps.Sand[2]
+			)
+			for tier = 1, 3 do
+				part(
+					"Canopy",
+					V(6 - tier, 2, 4),
+					V(x + (tier % 2) * 0.7, 5 + tier * 1.2, z),
+					id == "Pantano" and Art.Ramps.Veil[tier + 1] or leaf[tier + 1],
+					"wedge",
+					CFrame.Angles(0, tier % 2 * math.pi, 0)
+				)
+			end
+		elseif id == "Brasa" then
+			part("Basalt", V(4, 5 + i % 4, 4), V(x, 2, z), ramp[1], "wedge", CFrame.Angles(0, i * 0.7, 0))
+			part("Ember", V(0.35, 3, 0.3), V(x + 0.8, 3, z + 2), ramp[4])
+		elseif id == "Recife" then
+			for branch = 1, 3 do
+				part(
+					"Coral",
+					V(0.5, 2 + branch, 0.6),
+					V(x + branch * 0.5, 1.5, z),
+					Art.Ramps.Rose[branch + 1],
+					nil,
+					CFrame.Angles(0, 0, (branch - 2) * 0.3)
+				)
+			end
+			part("Tide", V(5, 0.08, 2), V(x, 0.05, z + 4), ramp[4])
+		elseif id == "Dunas" then
+			part("RuinColumn", V(2, 4 + i % 4, 2), V(x, 2, z), ramp[3])
+			part("RuinCap", V(3, 1, 3), V(x, 4 + i % 4 * 0.5, z), ramp[4])
+			part("Inscription", V(0.2, 1, 0.1), V(x, 0.5 + i % 4, z + 1.05), ramp[1])
+		else
+			part("SkySpire", V(3, 7 + i % 3, 3), V(x, 3, z), ramp[2], "wedge", CFrame.Angles(0, i * 0.8, 0))
+			part("SnowCap", V(3.2, 1.2, 3.2), V(x, 6 + i % 3 * 0.5, z), ramp[5], "wedge")
+		end
+	end
+	for i = 1, 9 do
+		part(
+			"ForegroundGrass",
+			V(0.25, 0.4 + (i % 3) * 0.3, 0.4),
+			V((i - 5) * 7, 0.2, 8 + i % 2),
+			ramp[i % 2 + 2],
+			"wedge",
+			CFrame.Angles(0, 0, i % 2 * 0.4)
+		)
+	end
+	local count = 0
+	for _, obj in folder:GetDescendants() do
+		if obj:IsA("BasePart") then
+			count += 1
+		end
+	end
+	assert(count <= S.Budget, "Cenário excede orçamento gráfico")
+	folder:SetAttribute("PartBudget", S.Budget)
+	folder:SetAttribute("PartCount", count)
+	folder:SetAttribute("Biome", id)
+	return folder
+end
+return S
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="LocalScript" referent="71">
           <Properties>
             <string name="Name">Client</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -6875,7 +8782,6 @@ local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
 local TS = game:GetService("TweenService")
 local Missions = require(RS.Shared.Missions)
-local E = require(RS.Shared.Elements)
 local Sounds = require(RS.Shared.Sounds)
 local SS = game:GetService("SoundService")
 local C = require(RS.Shared.Creatures)
@@ -6897,6 +8803,10 @@ local Balance = require(RS.Shared.Economy)
 local Nursery = require(script.Parent.NurseryUI)
 local Journal = require(script.Parent.JournalUI)
 local Theme = require(script.Parent.UITheme)
+local PixelIcons = require(script.Parent.PixelIcons)
+local BattleStage = require(script.Parent.BattleStage)
+local ArtOverlay = require(script.Parent.ArtOverlay)
+local loading = ArtOverlay.loading(gui)
 local SanctuaryUI = require(script.Parent.SanctuaryUI)
 local Story = require(RS.Shared.Story)
 local Progression = require(RS.Shared.Progression)
@@ -6911,36 +8821,71 @@ local function mk(cls, props, parent)
 		o[k] = v
 	end
 	if cls == "TextButton" or cls == "Frame" or cls == "ScrollingFrame" then
-		Instance.new("UICorner", o).CornerRadius = UDim.new(0, 12)
+		Theme.round(o)
+		if cls ~= "ScrollingFrame" and props.BackgroundTransparency ~= 1 then
+			Theme.stroke(o)
+		end
 	end
 	if (cls == "TextButton" or cls == "TextLabel") and o.TextScaled then
 		Instance.new("UITextSizeConstraint", o).MaxTextSize = 28
 	end
 	if cls == "TextButton" then
-		o.AutoButtonColor = true
+		o.Active = true
 		o.Selectable = true
-		Theme.stroke(o)
+		Theme.bind(o)
+	end
+	if cls == "TextLabel" or cls == "TextButton" then
+		o.Font = Theme.Font
 	end
 	o.Parent = parent
 	return o
 end
-local WHITE = Color3.new(1, 1, 1)
+local WHITE = Theme.Ink
 local drawerOpen = false
-local top = mk("TextLabel", {
-	Size = UDim2.new(0.72, 0, 0, 34),
-	BackgroundColor3 = Theme.Panel,
-	TextColor3 = WHITE,
-	TextScaled = true,
-	Font = Enum.Font.GothamBold,
-}, gui)
+local top = mk(
+	"Frame",
+	{ Position = UDim2.fromOffset(8, 8), Size = UDim2.new(0.72, -8, 0, 40), BackgroundColor3 = Theme.Panel },
+	gui
+)
+local resourceValues = {}
+local function resourceAmount(n)
+	if n >= 1e9 then
+		return ("%.1fb"):format(n / 1e9)
+	elseif n >= 1e6 then
+		return ("%.1fm"):format(n / 1e6)
+	elseif n >= 1e3 then
+		return math.floor(n / 1e3) .. "k"
+	end
+	return tostring(n)
+end
+local resourceKinds = { "Fera", "Coin", "Gem", "Seal" }
+for index, kind in resourceKinds do
+	local holder = mk(
+		"Frame",
+		{ Position = UDim2.fromScale((index - 1) / 4, 0), Size = UDim2.fromScale(0.25, 1), BackgroundTransparency = 1 },
+		top
+	)
+	local icon = PixelIcons.draw(holder, kind, 1)
+	icon.Position = UDim2.fromOffset(4, 12)
+	local value = mk("TextLabel", {
+		Position = UDim2.fromOffset(24, 0),
+		Size = UDim2.new(1, -26, 1, 0),
+		BackgroundTransparency = 1,
+		Text = "0",
+		TextSize = 12,
+		TextColor3 = Theme.Ink,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	}, holder)
+	resourceValues[index] = value
+end
 local msg = mk("TextLabel", {
-	Position = UDim2.new(0, 0, 0, 48),
-	Size = UDim2.new(1, 0, 0, 28),
+	Position = UDim2.new(0, 8, 0, 62),
+	Size = UDim2.new(1, -16, 0, 28),
 	BackgroundTransparency = 1,
-	TextColor3 = Color3.fromRGB(255, 240, 150),
+	TextColor3 = Theme.Accent,
 	TextStrokeTransparency = 0.4,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
+	Font = Theme.Font,
 }, gui)
 local list = mk("ScrollingFrame", {
 	Visible = false,
@@ -6956,18 +8901,18 @@ mk("UISizeConstraint", { MaxSize = Vector2.new(440, 1000) }, list)
 mk("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, list)
 local xpTrack = mk(
 	"Frame",
-	{ Position = UDim2.fromOffset(0, 38), Size = UDim2.new(0.72, 0, 0, 4), BackgroundColor3 = Theme.Card },
+	{ Position = UDim2.fromOffset(8, 52), Size = UDim2.new(0.72, -8, 0, 4), BackgroundColor3 = Theme.Card },
 	gui
 )
 local xpFill = mk("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = Theme.Mint }, xpTrack)
 local objective = mk("TextLabel", {
-	Position = UDim2.fromOffset(6, 48),
+	Position = UDim2.fromOffset(12, 62),
 	Size = UDim2.new(0.7, 0, 0, 36),
 	BackgroundTransparency = 1,
 	TextColor3 = Theme.Ink,
 	TextSize = 12,
 	TextWrapped = true,
-	Font = Enum.Font.GothamMedium,
+	Font = Theme.Font,
 }, gui)
 local muted = false
 local function sfx(n)
@@ -6999,7 +8944,7 @@ local function fx(el, a, b)
 		return
 	end
 	local d = FX[el]
-	local c = E.Color[el]
+	local c = Theme.Tokens.Elements[el][4]
 	local arena = workspace:FindFirstChild(Text.ARENA_1A4BA8)
 	if not arena then
 		return
@@ -7062,21 +9007,21 @@ local function playBattle(b)
 	local cam = workspace.CurrentCamera
 	local o = Vector3.new(0, 300, 0)
 	local ct = cam.CameraType
+	local originalCF, originalFov, originalFocus = cam.CFrame, cam.FieldOfView, cam.Focus
 	local stage = Instance.new("Folder")
 	stage.Name = Text.ARENA_1A4BA8
 	stage.Parent = workspace
-	local fl = Instance.new("Part")
-	fl.Anchored = true
-	fl.Size = Vector3.new(70, 2, 30)
-	fl.Position = o
-	fl.Color = Color3.fromRGB(70, 60, 110)
-	fl.Parent = stage
+	BattleStage.build(stage, BattleStage.resolve(C.ById[b.foe.id]), o)
 	local function face(pos, to)
 		return CFrame.lookAt(pos, pos + (pos - to))
 	end
-	local pa, pf = o + Vector3.new(-14, 5, 0), o + Vector3.new(14, 5, 0)
+	local pa, pf = o + Vector3.new(-8, 5, 0), o + Vector3.new(8, 5, 0)
 	local a = MF.build(C.ById[b.me.id], b.me.lv)
 	local f = MF.build(C.ById[b.foe.id], b.foe.lv)
+	local ac, asz = a:GetBoundingBox()
+	local fc, fsz = f:GetBoundingBox()
+	pa = Vector3.new(pa.X, o.Y + 0.42 + a:GetPivot().Position.Y - (ac.Position.Y - asz.Y * 0.5), pa.Z)
+	pf = Vector3.new(pf.X, o.Y + 0.42 + f:GetPivot().Position.Y - (fc.Position.Y - fsz.Y * 0.5), pf.Z)
 	a:PivotTo(face(pa, pf))
 	f:PivotTo(face(pf, pa))
 	a.Parent = stage
@@ -7086,12 +9031,12 @@ local function playBattle(b)
 	local barA = mk("Frame", {
 		Position = UDim2.fromScale(0.05, 0.12),
 		Size = UDim2.fromScale(0.4, 0.03),
-		BackgroundColor3 = Color3.fromRGB(80, 220, 120),
+		BackgroundColor3 = Theme.Mint,
 	}, gui)
 	local barF = mk("Frame", {
 		Position = UDim2.fromScale(0.55, 0.12),
 		Size = UDim2.fromScale(0.4, 0.03),
-		BackgroundColor3 = Color3.fromRGB(230, 90, 90),
+		BackgroundColor3 = Theme.Tokens.Ramps.Ember[4],
 	}, gui)
 	pcall(function()
 		task.wait(0.6)
@@ -7117,8 +9062,8 @@ local function playBattle(b)
 				Size = UDim2.fromScale(1, 1),
 				BackgroundTransparency = 1,
 				TextScaled = true,
-				Font = Enum.Font.GothamBlack,
-				TextColor3 = s.mult > 1 and Color3.fromRGB(255, 220, 60) or WHITE,
+				Font = Theme.Font,
+				TextColor3 = s.mult > 1 and Theme.Accent or WHITE,
 				Text = "-" .. s.dmg .. (s.mult > 1 and "!" or s.mult < 1 and Text.FRACO_988207 or ""),
 			}, g)
 			task.delay(1, function()
@@ -7139,6 +9084,9 @@ local function playBattle(b)
 	barF:Destroy()
 	stage:Destroy()
 	cam.CameraType = ct
+	cam.CFrame = originalCF
+	cam.FieldOfView = originalFov
+	cam.Focus = originalFocus
 end
 local function call(...)
 	if inFlight then
@@ -7181,29 +9129,63 @@ local function call(...)
 	render()
 	tutorial()
 end
-local function row(text, acts)
-	local f = mk(
-		"Frame",
-		{ LayoutOrder = 0, Size = UDim2.new(1, -8, 0, #acts > 0 and 116 or 52), BackgroundColor3 = Theme.Card },
-		list
-	)
+local function row(text, acts, creature)
+	local f = mk("Frame", {
+		LayoutOrder = 0,
+		Size = UDim2.new(1, -8, 0, #acts > 2 and 178 or #acts > 0 and 124 or 64),
+		BackgroundColor3 = Theme.Card,
+	}, list)
 	mk("TextLabel", {
-		Position = UDim2.fromOffset(10, 4),
-		Size = UDim2.new(1, -20, 0, #acts > 0 and 54 or 44),
+		Position = UDim2.fromOffset(creature and 96 or 10, 4),
+		Size = UDim2.new(1, creature and -106 or -20, 0, #acts > 0 and 62 or 56),
 		BackgroundTransparency = 1,
 		Text = text,
 		TextScaled = true,
 		TextColor3 = WHITE,
-		Font = Enum.Font.Gotham,
+		Font = Theme.Font,
 	}, f)
-	local w = 1 / math.max(1, #acts)
+	if creature then
+		local holder = mk(
+			"Frame",
+			{ Position = UDim2.fromOffset(4, 4), Size = UDim2.fromOffset(88, 68), BackgroundTransparency = 1 },
+			f
+		)
+		local preview
+		local function showSpecimen()
+			if not f.Parent then
+				return
+			end
+			local scrollTop = list.AbsolutePosition.Y
+			local y = f.AbsolutePosition.Y
+			local visible = list.Visible and y + f.AbsoluteSize.Y >= scrollTop and y <= scrollTop + list.AbsoluteSize.Y
+			if visible and not preview then
+				preview = CollectionUI.preview(holder, C.ById[creature.id], creature.lv, false)
+				preview.Size = UDim2.fromScale(1, 1)
+			elseif not visible and preview then
+				preview:Destroy()
+				preview = nil
+			end
+		end
+		local scroll = list:GetPropertyChangedSignal("CanvasPosition"):Connect(showSpecimen)
+		local visibility = list:GetPropertyChangedSignal("Visible"):Connect(showSpecimen)
+		local layout = f:GetPropertyChangedSignal("AbsolutePosition"):Connect(showSpecimen)
+		f.Destroying:Connect(function()
+			scroll:Disconnect()
+			visibility:Disconnect()
+			layout:Disconnect()
+		end)
+		task.defer(showSpecimen)
+	end
+	local columns = math.min(2, math.max(1, #acts))
+	local w = 1 / columns
+	local rows = math.ceil(#acts / columns)
 	for i, a in acts do
 		local b = mk("TextButton", {
-			Position = UDim2.new((i - 1) * w, 3, 1, -52),
-			Size = UDim2.new(w, -6, 0, 46),
+			Position = UDim2.new((i - 1) % columns * w, 4, 1, -rows * 52 + (math.floor((i - 1) / columns)) * 52),
+			Size = UDim2.new(w, -8, 0, 44),
 			Text = a[1],
 			TextScaled = true,
-			Font = Enum.Font.GothamBold,
+			Font = Theme.Font,
 			BackgroundColor3 = Theme.Card,
 			TextColor3 = WHITE,
 		}, f)
@@ -7217,7 +9199,7 @@ local function crText(cr)
 end
 render = function()
 	for n, b in tabBtn do
-		b.BackgroundColor3 = n == tab and Color3.fromRGB(255, 170, 60) or Theme.Card
+		b.BackgroundColor3 = n == tab and Theme.Tokens.Ramps.Leaf[2] or Theme.Card
 	end
 	for _, c in list:GetChildren() do
 		if c:IsA("Frame") and not (tab == Text.BESTIARIO_65A46C and c.Name == "BestiaryPanel") then
@@ -7231,7 +9213,11 @@ render = function()
 	for _ in S.discovered do
 		n += 1
 	end
-	top.Text = (Text.NV_D_D_D_D_60CA2C):format(S.playerLevel or 1, S.gold, S.gems, S.seals or 0)
+	resourceValues[1].Text = tostring(S.playerLevel or 1)
+	resourceValues[2].Text = resourceAmount(S.gold)
+	resourceValues[3].Text = resourceAmount(S.gems)
+	resourceValues[4].Text = resourceAmount(S.seals or 0)
+	loading.ready()
 	xpFill.Size = UDim2.fromScale(math.clamp((S.playerXp or 0) / Progression.playerCost(S.playerLevel or 1), 0, 1), 1)
 	local objectiveChapter = Story.current(S)
 	objective.Text = objectiveChapter
@@ -7280,7 +9266,7 @@ render = function()
 						call("Battle", uid, isl)
 					end,
 				},
-			})
+			}, cr)
 		end
 	elseif tab == Text.BESTIARIO_65A46C then
 		Journal.render(list, S, function()
@@ -7376,7 +9362,8 @@ render = function()
 			local done = S.claimed[m.id]
 			row((Text.S_D_D_A1F15E):format(m.text, math.min(pr, m.goal), m.goal), {
 				{
-					done and "✓" or (pr >= m.goal and Text.RESGATAR_76A111 or "+" .. m.gold .. Text.OURO_6C9D60),
+					done and "Concluída"
+						or (pr >= m.goal and Text.RESGATAR_76A111 or "+" .. m.gold .. Text.OURO_6C9D60),
 					function()
 						if not done and pr >= m.goal then
 							call("Claim", m.id)
@@ -7505,7 +9492,7 @@ render = function()
 		end
 		for uid, cr in S.creatures do
 			local on = table.find(pick, uid)
-			row((on and "★ " or "") .. crText(cr), {
+			row((on and "Selecionada · " or "") .. crText(cr), {
 				{
 					on and Text.TIRAR_F409BD or Text.ESCOLHER_D7B72C,
 					function()
@@ -7541,13 +9528,13 @@ local bar = mk("Frame", {
 }, gui)
 mk("UISizeConstraint", { MaxSize = Vector2.new(440, 160) }, bar)
 local toggle = mk("TextButton", {
-	Position = UDim2.new(1, -58, 0, 40),
-	Size = UDim2.fromOffset(50, 44),
+	Position = UDim2.new(1, -94, 0, 60),
+	Size = UDim2.fromOffset(86, 44),
 	Text = Text.MENU_57F5F5,
 	TextSize = 12,
-	Font = Enum.Font.GothamBold,
+	Font = Theme.Font,
 	TextColor3 = WHITE,
-	BackgroundColor3 = Color3.fromRGB(63, 66, 91),
+	BackgroundColor3 = Theme.Card,
 }, gui)
 local function setDrawer(open)
 	drawerOpen = open
@@ -7596,7 +9583,7 @@ for i, name in tabs do
 		Size = UDim2.fromScale(1 / 4, 1 / math.ceil(#tabs / 4)),
 		Text = name,
 		TextScaled = true,
-		Font = Enum.Font.GothamBold,
+		Font = Theme.Font,
 		BackgroundColor3 = Theme.Card,
 		TextColor3 = WHITE,
 	}, bar)
@@ -7607,12 +9594,12 @@ for i, name in tabs do
 	end)
 end
 local collect = mk("TextButton", {
-	Position = UDim2.new(1, -86, 0, 0),
-	Size = UDim2.fromOffset(78, 44),
+	Position = UDim2.new(1, -94, 0, 8),
+	Size = UDim2.fromOffset(86, 44),
 	Text = Text.COLETAR_199B16,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
-	BackgroundColor3 = Color3.fromRGB(255, 190, 50),
+	Font = Theme.Font,
+	BackgroundColor3 = Theme.Accent,
 	TextColor3 = Theme.Panel,
 }, gui)
 collect.Activated:Connect(function()
@@ -7647,7 +9634,7 @@ notifications.OnClientEvent:Connect(function(message, position, success)
 		ring.CanTouch = false
 		ring.CanQuery = false
 		ring.Material = Enum.Material.Neon
-		ring.Color = success and Color3.fromRGB(255, 215, 90) or Color3.fromRGB(166, 130, 220)
+		ring.Color = success and Theme.Accent or Theme.Tokens.Ramps.Veil[4]
 		ring.Transparency = 0.4
 		ring.Parent = workspace
 		TS:Create(ring, TweenInfo.new(0.6), { Size = Vector3.one * 8, Transparency = 1 }):Play()
@@ -7674,11 +9661,11 @@ task.spawn(function()
 	end
 end)
 local mb = mk("TextButton", {
-	Position = UDim2.new(1, -74, 1, -46),
-	Size = UDim2.fromOffset(66, 44),
+	Position = UDim2.new(1, -96, 1, -52),
+	Size = UDim2.fromOffset(88, 44),
 	Text = Text.SOM_ON_ACD88F,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
+	Font = Theme.Font,
 	BackgroundColor3 = Theme.Card,
 	TextColor3 = WHITE,
 }, gui)
@@ -7692,6 +9679,7 @@ end)
 -- Feras respiram e se viram devagar (animação local, só visual).
 require(script.Parent.CreatureAnimator).start()
 require(script.Parent.CompanionClient).start()
+require(script.Parent.EnvironmentArt).start()
 require(script.Parent.SolarPresentation).start(function()
 	return S
 end)
@@ -7701,6 +9689,7 @@ RS:WaitForChild("StoryNotice").OnClientEvent:Connect(function(message)
 	setDrawer(true)
 end)
 msg:GetPropertyChangedSignal("Text"):Connect(function()
+	loading.message(msg.Text)
 	objective.Visible = not drawerOpen and msg.Text == ""
 end)
 -- Clima e hora do dia mudam conforme a ilha mais próxima.
@@ -7780,7 +9769,7 @@ local TUT = {
 local panel = mk("Frame", {
 	Position = UDim2.new(0.02, 0, 0, 132),
 	Size = UDim2.new(0.72, 0, 0, 66),
-	BackgroundColor3 = Color3.fromRGB(255, 240, 200),
+	BackgroundColor3 = Theme.Card,
 	Visible = false,
 }, gui)
 local ptxt = mk("TextLabel", {
@@ -7788,21 +9777,21 @@ local ptxt = mk("TextLabel", {
 	Position = UDim2.fromOffset(8, 0),
 	BackgroundTransparency = 1,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
-	TextColor3 = Color3.fromRGB(50, 35, 90),
+	Font = Theme.Font,
+	TextColor3 = Theme.Ink,
 	TextXAlignment = Enum.TextXAlignment.Left,
 }, panel)
 local skip = mk("TextButton", {
 	Size = UDim2.fromOffset(76, 44),
-	Position = UDim2.new(1, -80, 0.5, -18),
+	Position = UDim2.new(1, -80, 0.5, -22),
 	Text = Text.PULAR_6EC317,
 	TextScaled = true,
-	Font = Enum.Font.GothamBold,
-	BackgroundColor3 = Color3.fromRGB(200, 120, 120),
+	Font = Theme.Font,
+	BackgroundColor3 = Theme.Tokens.Ramps.Ember[2],
 	TextColor3 = WHITE,
 }, panel)
 local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(255, 230, 80)
+stroke.Color = Theme.Accent
 stroke.Thickness = 2
 stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 stroke.Thickness = 2
@@ -7864,16 +9853,17 @@ end)
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="55">
+        <Item class="ModuleScript" referent="72">
           <Properties>
             <string name="Name">CollectionUI</string>
             <string name="Source"><![CDATA[--!nonstrict
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local RS = game:GetService("ReplicatedStorage")
 local C = require(RS.Shared.Creatures)
-local E = require(RS.Shared.Elements)
 local MF = require(RS.Shared.ModelFactory)
 local Animator = require(script.Parent.CreatureAnimator)
+local Theme = require(script.Parent.UITheme)
+local Icons = require(script.Parent.PixelIcons)
 local UI = { rebuilds = 0 }
 function UI.visible(object)
 	while object do
@@ -7894,9 +9884,9 @@ local function label(parent, text, pos, size)
 	t.Size = size
 	t.Text = text
 	t.TextWrapped = true
-	t.Font = Enum.Font.GothamBold
+	t.Font = Theme.Font
 	t.TextSize = 16
-	t.TextColor3 = Color3.new(1, 1, 1)
+	t.TextColor3 = Theme.Ink
 	t.Parent = parent
 	return t
 end
@@ -7911,8 +9901,9 @@ function UI.preview(parent, def, lv, unknown)
 		v.Name = "CreaturePreview"
 		v.Size = UDim2.fromScale(1, 0.65)
 		v.BackgroundTransparency = 1
-		v.Ambient = Color3.fromRGB(185, 185, 200)
-		v.LightColor = Color3.new(1, 1, 1)
+		v.Ambient = Theme.Tokens.Ramps.Metal[3]
+		v.LightDirection = Vector3.new(-1, -1, -1)
+		v.LightColor = Theme.Tokens.Ink
 		v.Parent = parent
 	else
 		v:ClearAllChildren()
@@ -7926,7 +9917,7 @@ function UI.preview(parent, def, lv, unknown)
 		if obj:IsA("BillboardGui") then
 			obj:Destroy()
 		elseif unknown and obj:IsA("BasePart") then
-			obj.Color = Color3.fromRGB(25, 25, 40)
+			obj.Color = Theme.Tokens.Ramps.Veil[1]
 			obj.Material = Enum.Material.SmoothPlastic
 		end
 	end
@@ -7934,6 +9925,22 @@ function UI.preview(parent, def, lv, unknown)
 	local low, high = MF.bounds(model)
 	local size = high - low
 	local center = (low + high) * 0.5
+	local ramp = Theme.Tokens.Elements[def.el] or Theme.Tokens.Ramps.Metal
+	local width = math.max(size.X, size.Z) * 0.85
+	for index = 1, 2 do
+		local floor = Instance.new("Part")
+		floor.Name = "SpecimenPlinth" .. index
+		floor.Size = Vector3.new(width + (2 - index) * 0.5, 0.18, width * 0.65 + (2 - index) * 0.5)
+		floor.CFrame = CFrame.new(center.X, low.Y - 0.4 + index * 0.18, center.Z)
+		floor.Color = ramp[index == 1 and 1 or 2]
+		floor.Material = Enum.Material.SmoothPlastic
+		floor.Anchored = true
+		floor.CanCollide = false
+		floor.CanQuery = false
+		floor.CanTouch = false
+		floor.CastShadow = false
+		floor.Parent = world
+	end
 	local camera = Instance.new("Camera")
 	camera.FieldOfView = 40
 	local distance = math.max(size.X, size.Y, size.Z) * 2
@@ -7950,12 +9957,11 @@ function UI.card(parent, def, lv, known, order)
 	card.Name = "CollectionCard"
 	card.LayoutOrder = order
 	card.Size = UDim2.new(1, -12, 0, 190)
-	card.BackgroundColor3 = known and E.Color[def.el]:Lerp(Color3.fromRGB(20, 20, 40), 0.65)
-		or Color3.fromRGB(35, 35, 50)
+	card.BackgroundColor3 = known and Theme.Tokens.Elements[def.el][1] or Theme.Panel
 	card.Parent = parent
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 12)
-	corner.Parent = card
+	Theme.panel(card, known and Theme.Tokens.Elements[def.el][3] or Theme.Edge)
+	local emblem = Icons.draw(card, def.el, 16, Theme.Tokens.Elements[def.el])
+	emblem.Position = UDim2.fromOffset(8, 8)
 	local preview
 	local function visible()
 		if not card.Parent then
@@ -7996,16 +10002,16 @@ end
 function UI.discovery(gui, def, lv, evolved)
 	local overlay = Instance.new("Frame")
 	overlay.Size = UDim2.fromScale(1, 1)
-	overlay.BackgroundColor3 = Color3.fromRGB(12, 10, 30)
+	overlay.BackgroundColor3 = Theme.Panel
 	overlay.BackgroundTransparency = 0.08
 	overlay.ZIndex = 30
 	overlay.Parent = gui
 	local panel = Instance.new("Frame")
 	panel.Size = UDim2.fromScale(0.8, 0.8)
 	panel.Position = UDim2.fromScale(0.1, 0.1)
-	panel.BackgroundColor3 = E.Color[def.el]:Lerp(Color3.fromRGB(20, 20, 40), 0.65)
+	panel.BackgroundColor3 = Theme.Tokens.Elements[def.el][1]
 	panel.Parent = overlay
-	Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 20)
+	Theme.panel(panel, Theme.Tokens.Elements[def.el][4])
 	UI.preview(panel, def, lv, false)
 	label(
 		panel,
@@ -8035,14 +10041,16 @@ function UI.discovery(gui, def, lv, evolved)
 	).TextSize =
 		12
 	local close = Instance.new("TextButton")
-	close.Size = UDim2.fromScale(0.8, 0.13)
-	close.Position = UDim2.fromScale(0.1, 0.84)
+	close.Size = UDim2.new(0.8, 0, 0, 44)
+	close.Position = UDim2.new(0.1, 0, 1, -56)
 	close.Text = Text.CONTINUAR_AVENTURA_E2F9B1
 	close.TextSize = 18
-	close.Font = Enum.Font.GothamBold
-	close.BackgroundColor3 = Color3.fromRGB(255, 200, 90)
+	close.Font = Theme.Font
+	close.BackgroundColor3 = Theme.Tokens.Elements[def.el][2]
 	close.Parent = panel
+	close.Active = true
 	close.Selectable = true
+	Theme.bind(close)
 	close.Activated:Connect(function()
 		overlay:Destroy()
 	end)
@@ -8058,7 +10066,7 @@ return UI
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="56">
+        <Item class="ModuleScript" referent="73">
           <Properties>
             <string name="Name">CompanionClient</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -8167,12 +10175,13 @@ return U
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="57">
+        <Item class="ModuleScript" referent="74">
           <Properties>
             <string name="Name">CreatureAnimator</string>
             <string name="Source"><![CDATA[--!nonstrict
 local Run = game:GetService("RunService")
 local Players = game:GetService("Players")
+local Art = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
 local A = {}
 local records = setmetatable({}, { __mode = "k" })
 local started = false
@@ -8186,6 +10195,8 @@ function A.register(model, visible, orbit)
 			visible = visible,
 			orbit = orbit,
 			last = 0,
+			body = model:FindFirstChild("Body", true),
+			baseColor = model:FindFirstChild("Body", true) and model:FindFirstChild("Body", true).Color or nil,
 		}
 		for _, obj in model:GetDescendants() do
 			if obj:IsA("Motor6D") then
@@ -8224,9 +10235,21 @@ local function apply(model, record, time, full, reduced)
 	end
 	local family = model:GetAttribute("Family")
 	local moving = full and model:GetAttribute("Moving") == true
-	local pose = record.untilTime and time < record.untilTime and record.pose or "idle"
-	local lift = math.sin(time * 2) * (family == "spectral" and 0.2 or family == "mineral" and 0.015 or 0.035)
+	local pose = record.pose == "faint" and "faint"
+		or record.untilTime and time < record.untilTime and record.pose
+		or "idle"
+	-- Six authored idle keyposes are interpolated, retaining the pixel-art cadence without stepping the camera.
+	local keyposes = { 0, 0.8, 1, 0.1, -0.8, -1 }
+	local sample = (time * 0.9) % 6
+	local index = math.floor(sample) + 1
+	local alpha = sample % 1
+	local idle = keyposes[index] + (keyposes[index % 6 + 1] - keyposes[index]) * alpha
+	local lift = idle * (family == "spectral" and 0.22 or family == "mineral" and 0.015 or 0.045)
 	local progress = record.poseStart and math.clamp((time - record.poseStart) / record.poseDuration, 0, 1) or 0
+	if record.body and record.body.Parent and record.baseColor then
+		local flash = pose == "damage" and not reduced and progress < 0.4 and (1 - progress / 0.4) * 0.65 or 0
+		record.body.Color = record.baseColor:Lerp(Art.Ink, flash)
+	end
 	for _, joint in record.joints do
 		if not joint.Parent then
 			continue
@@ -8238,11 +10261,21 @@ local function apply(model, record, time, full, reduced)
 			if role == "Body" then
 				transform = CFrame.new(0, lift, 0) * CFrame.Angles(0, math.sin(time * 0.6) * 0.04, 0)
 				if pose == "attack" then
-					transform *= CFrame.Angles(math.sin(progress * math.pi) * 0.25, 0, 0)
+					local anticipation = progress < 0.25 and -math.sin(progress / 0.25 * math.pi / 2) * 0.16
+						or math.sin((progress - 0.25) / 0.75 * math.pi) * 0.28
+					transform *= CFrame.new(0, -math.abs(anticipation) * 0.2, anticipation * 0.8) * CFrame.Angles(
+						anticipation,
+						0,
+						0
+					)
 				elseif pose == "damage" then
-					transform *= CFrame.Angles(0, 0, math.sin(time * 30) * 0.08)
+					transform *= CFrame.new(0, 0, -math.sin(progress * math.pi) * 0.16) * CFrame.Angles(
+						0,
+						0,
+						math.sin(progress * math.pi * 4) * (1 - progress) * 0.12
+					)
 				elseif pose == "faint" then
-					transform *= CFrame.Angles(0, 0, progress * 1.2)
+					transform *= CFrame.new(0, -progress * 0.45, 0) * CFrame.Angles(0.18 * progress, 0, progress * 1.2)
 				elseif pose == "victory" then
 					transform *= CFrame.new(0, math.abs(math.sin(time * 7)) * 0.3, 0)
 				end
@@ -8253,16 +10286,24 @@ local function apply(model, record, time, full, reduced)
 					transform *= CFrame.Angles(0, 0, math.sin(time) * 0.06)
 				end
 			elseif role == "Head" then
-				transform = CFrame.Angles(0, math.sin(time * 0.8 + phase) * 0.08, 0)
+				transform = CFrame.Angles(idle * 0.035, math.sin(time * 0.8 + phase) * 0.075, 0)
+				if pose == "attack" then
+					transform *= CFrame.Angles(-math.sin(progress * math.pi) * 0.18, 0, 0)
+				elseif pose == "faint" then
+					transform *= CFrame.Angles(progress * 0.5, 0, 0)
+				end
 			elseif role:find("Eye") then
-				transform = CFrame.Angles((time + phase) % 5 < 0.12 and 1.35 or 0, 0, 0)
+				transform =
+					CFrame.Angles((time + (model:GetAttribute("BlinkOffset") or 0)) % 4.8 < 0.13 and 1.35 or 0, 0, 0)
 			elseif role:find("Wing") then
 				local side = joint.C0.Position.X < 0 and -1 or 1
 				local pivot = CFrame.new(side * 0.5, 0, 0)
+				local amplitude = pose == "faint" and 0 or (full and 0.35 or 0.12)
 				local flap = CFrame.Angles(
 					0,
 					0,
-					side * math.sin(time * (pose == "attack" and 6 or 2) + phase * 0.4) * (full and 0.35 or 0.12)
+					side * math.sin(time * (pose == "attack" and 6 or 2) + phase * 0.4) * amplitude
+						+ (pose == "faint" and side * progress * 0.6 or 0)
 				)
 				transform = joint.C0:Inverse() * pivot * flap * pivot:Inverse() * joint.C0
 			elseif role:find("Tail") or role:find("Coil") or role:find("Veil") then
@@ -8360,7 +10401,7 @@ return A
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="58">
+        <Item class="ModuleScript" referent="75">
           <Properties>
             <string name="Name">EncounterUI</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -8369,13 +10410,15 @@ local RS = game:GetService("ReplicatedStorage")
 local TS = game:GetService("TweenService")
 local C = require(RS.Shared.Creatures)
 local MF = require(RS.Shared.ModelFactory)
-local Elements = require(RS.Shared.Elements)
 local Theme = require(script.Parent.UITheme)
 local CaptureRules = require(RS.Shared.CaptureRules)
 local Skills = require(RS.Shared.Skills)
 local CAS = game:GetService("ContextActionService")
 local Solar = require(script.Parent.SolarPresentation)
 local Animator = require(script.Parent.CreatureAnimator)
+local Stage = require(script.Parent.BattleStage)
+local Art = require(RS.Shared.ArtTokens)
+local Icons = require(script.Parent.PixelIcons)
 local UI = {}
 function UI.start(gui, getOwned, onClose, onOpen)
 	local net = RS:WaitForChild("EncounterNet")
@@ -8420,7 +10463,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 	local function pose(model, x)
 		local cf, size = model:GetBoundingBox()
 		local lift = model:GetPivot().Position.Y - (cf.Position.Y - size.Y / 2)
-		model:PivotTo(CFrame.new(x, lift, 0) * CFrame.Angles(0, x < 0 and math.pi / 2 or -math.pi / 2, 0))
+		model:PivotTo(CFrame.new(x, lift + 0.42, 0) * CFrame.Angles(0, x < 0 and math.pi / 2 or -math.pi / 2, 0))
 	end
 	local function impact(element, position)
 		if
@@ -8433,7 +10476,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		if not orb then
 			orb = Instance.new("Part")
 			orb.Name = "ElementImpact"
-			orb.Shape = Enum.PartType.Ball
+			orb.Shape = Enum.PartType.Block
 			orb.Anchored = true
 			orb.CanCollide = false
 			orb.CanQuery = false
@@ -8441,11 +10484,11 @@ function UI.start(gui, getOwned, onClose, onOpen)
 			orb.Material = Enum.Material.Neon
 			orb.Parent = figures
 		end
-		orb.Color = Elements.Color[element]
+		orb.Color = Art.Elements[element][4]
 		orb.Position = position
-		orb.Size = Vector3.one * 0.5
+		orb.Size = Vector3.new(0.5, 0.5, 0.25)
 		orb.Transparency = 0.2
-		TS:Create(orb, TweenInfo.new(0.35), { Size = Vector3.one * 7, Transparency = 1 }):Play()
+		TS:Create(orb, TweenInfo.new(0.35), { Size = Vector3.new(6, 6, 0.25), Transparency = 1 }):Play()
 	end
 	local render
 	local function request(action, uid)
@@ -8476,24 +10519,39 @@ function UI.start(gui, getOwned, onClose, onOpen)
 				unit and (unit.hp .. " / " .. unit.maxHp .. Text.PV_33D16B)
 				or Text.ESCOLHA_UMA_FERA_PARA_BATALHAR_462F3D
 			)
-		label.TextColor3 = unit and unit.hp <= unit.maxHp * 0.3 and Color3.fromRGB(255, 166, 140) or Theme.Ink
+		label.TextColor3 = unit and unit.hp <= unit.maxHp * 0.3 and Art.Ramps.Ember[4] or Theme.Ink
 		local track = label:FindFirstChild("Meter")
 		if not track then
 			track = Instance.new("Frame")
 			track.Name = "Meter"
-			track.Position = UDim2.new(0.04, 0, 1, -4)
-			track.Size = UDim2.new(0.92, 0, 0, 4)
+			track.Position = UDim2.new(0.04, 0, 1, -10)
+			track.Size = UDim2.new(0.92, 0, 0, 8)
 			track.BackgroundColor3 = Theme.Card
 			track.Parent = label
-			Theme.round(track, 2)
+			Theme.stroke(track)
+			for i = 1, 7 do
+				local tick = Instance.new("Frame")
+				tick.Name = "Tick"
+				tick.Size = UDim2.new(0, 2, 1, 0)
+				tick.Position = UDim2.fromScale(i / 8, 0)
+				tick.BackgroundColor3 = Art.Panel
+				tick.BorderSizePixel = 0
+				tick.ZIndex = 3
+				tick.Parent = track
+			end
 			local fill = Instance.new("Frame")
 			fill.Name = "Fill"
 			fill.Size = UDim2.fromScale(1, 1)
 			fill.BorderSizePixel = 0
 			fill.Parent = track
-			Theme.round(fill, 2)
+			local shine = Instance.new("Frame")
+			shine.Size = UDim2.new(1, 0, 0, 2)
+			shine.BackgroundColor3 = Art.Ink
+			shine.BackgroundTransparency = 0.5
+			shine.BorderSizePixel = 0
+			shine.Parent = fill
 		end
-		track.Fill.BackgroundColor3 = label.TextColor3 == Theme.Ink and Theme.Mint or Color3.fromRGB(235, 135, 114)
+		track.Fill.BackgroundColor3 = label.TextColor3 == Theme.Ink and Theme.Mint or Art.Ramps.Ember[3]
 		TS:Create(track.Fill, TweenInfo.new(0.3), { Size = UDim2.fromScale(unit and unit.hp / unit.maxHp or 0, 1) })
 			:Play()
 	end
@@ -8557,9 +10615,9 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		end
 		local delta = state.foe.lv - teamLevel
 		title.TextColor3 = delta < 0 and Theme.Mint
-			or delta < 4 and Color3.fromRGB(243, 220, 133)
-			or delta < 8 and Color3.fromRGB(244, 167, 94)
-			or Color3.fromRGB(250, 118, 110)
+			or delta < 4 and Art.Ramps.Sand[4]
+			or delta < 8 and Art.Ramps.Ember[4]
+			or Art.Ramps.Ember[3]
 		if delta >= 8 then
 			title.Text ..= Text.PERIGO_DC2EAE .. delta
 		end
@@ -8580,7 +10638,26 @@ function UI.start(gui, getOwned, onClose, onOpen)
 						local defender = target == ally and foe or ally
 						if defender then
 							Animator.play(defender, "damage", 0.4)
+							local number = Theme.label(viewport, event.text:match("(%d+) de dano") or "", 24)
+							number.Name = "ImpactNumber"
+							number.Position = UDim2.new(target == ally and 0.62 or 0.18, 0, 0.2, 0)
+							number.Size = UDim2.fromOffset(100, 44)
+							number.TextColor3 = Art.Ramps.Ember[5]
+							number.TextStrokeColor3 = Art.Ramps.Veil[1]
+							number.TextStrokeTransparency = 0
+							number.ZIndex = 12
+							TS:Create(number, TweenInfo.new(0.65), {
+								Position = number.Position - UDim2.fromOffset(0, 24),
+								TextTransparency = 1,
+								TextStrokeTransparency = 1,
+							}):Play()
+							task.delay(0.7, function()
+								number:Destroy()
+							end)
 							impact(C.ById[target:GetAttribute("Species")].el, defender:GetPivot().Position)
+							local viewStart = viewport.CurrentCamera.CFrame
+							viewport.CurrentCamera.CFrame = viewStart * CFrame.new(0.18, 0, 0)
+							TS:Create(viewport.CurrentCamera, TweenInfo.new(0.12), { CFrame = viewStart }):Play()
 						end
 						local start = target:GetPivot()
 						local toward = event.kind == "hit" and 2 or -2
@@ -8626,18 +10703,15 @@ function UI.start(gui, getOwned, onClose, onOpen)
 						change:Disconnect()
 						value:Destroy()
 					elseif event.kind == "capture" or event.kind == "miss" or event.kind == "bond" then
-						local orb = Instance.new("Part")
-						orb.Shape = Enum.PartType.Ball
-						orb.Anchored = true
-						orb.CanCollide = false
-						orb.Material = Enum.Material.Neon
-						orb.Color = Theme.Accent
-						orb.Size = Vector3.one * 2
-						orb.Position = foe:GetPivot().Position
-						orb.Parent = figures
-						TS:Create(orb, TweenInfo.new(0.4), { Size = Vector3.one * 12, Transparency = 1 }):Play()
+						local seal = Icons.draw(viewport, event.kind == "bond" and "heart" or "seal", 32, Art.Accent)
+						seal.Position = UDim2.new(0.2, -16, 0.55, -16)
+						seal.ZIndex = 14
+						TS:Create(seal, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+							Position = UDim2.new(0.72, -16, 0.35, -16),
+							Rotation = event.kind == "bond" and 15 or 180,
+						}):Play()
 						task.wait(0.4)
-						orb:Destroy()
+						seal:Destroy()
 					end
 					task.wait(0.25)
 				end
@@ -8710,6 +10784,23 @@ function UI.start(gui, getOwned, onClose, onOpen)
 			b.Active = available
 			b.Selectable = available
 			b.BackgroundTransparency = available and 0 or 0.6
+			local iconName = ({
+				Strike = "strike",
+				Skill = "skill",
+				Guard = "guard",
+				Bond = "bond",
+				Capture = "capture",
+				Flee = "flee",
+				State = "refresh",
+				ChooseSeal = "seal",
+				Close = "close",
+			})[entry[2]] or "skill"
+			local icon = Icons.draw(b, iconName, 16, available and Art.Accent or Art.Muted)
+			icon.Position = UDim2.new(0, 8, 0.5, -8)
+			b.TextXAlignment = Enum.TextXAlignment.Center
+			if not available then
+				b.TextColor3 = Art.Muted
+			end
 		end
 		for _, o in roster:GetChildren() do
 			if o:IsA("GuiButton") then
@@ -8728,7 +10819,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 				local unit = state.party[uid]
 				local b = Theme.button(
 					roster,
-					(uid == state.active and "● " or "")
+					(uid == state.active and "> " or "")
 						.. C.ById[creature.id].name
 						.. " • "
 						.. (unit and unit.hp .. Text.PV_33D16B or "Nv." .. creature.lv),
@@ -8754,8 +10845,9 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		allyKey = nil
 		root = Instance.new("Frame")
 		root.Size = UDim2.fromScale(1, 1)
-		root.BackgroundColor3 = Color3.new(0, 0, 0)
-		root.BackgroundTransparency = 0.35
+		root.BackgroundColor3 = Art.Panel
+		root.BackgroundTransparency = 1
+		TS:Create(root, TweenInfo.new(0.18), { BackgroundTransparency = 0.16 }):Play()
 		root.ZIndex = 50
 		root.Active = true
 		root.Parent = gui
@@ -8780,8 +10872,8 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		viewport = Instance.new("ViewportFrame")
 		viewport.Position = UDim2.fromScale(0.02, 0.16)
 		viewport.Size = UDim2.fromScale(0.96, 0.36)
-		viewport.BackgroundColor3 = Color3.fromRGB(29, 54, 58)
-		viewport.Ambient = Color3.fromRGB(185, 202, 210)
+		viewport.BackgroundColor3 = Art.Ramps.Sky[2]
+		viewport.Ambient = Art.Ramps.Sky[4]
 		viewport.LightDirection = Vector3.new(-1, -1, -1)
 		viewport.Parent = panel
 		Theme.round(viewport)
@@ -8789,13 +10881,7 @@ function UI.start(gui, getOwned, onClose, onOpen)
 		world.Parent = viewport
 		figures = Instance.new("Folder")
 		figures.Parent = world
-		local floor = Instance.new("Part")
-		floor.Size = Vector3.new(60, 1, 30)
-		floor.Position = Vector3.new(0, -0.5, 0)
-		floor.Anchored = true
-		floor.Color = Color3.fromRGB(57, 87, 78)
-		floor.Material = Enum.Material.Grass
-		floor.Parent = world
+		Stage.build(world, Stage.resolve(C.ById[state.foe.id]))
 		local cam = Instance.new("Camera")
 		cam.FieldOfView = 48
 		cam.CFrame = CFrame.lookAt(Vector3.new(0, 14, 37), Vector3.new(0, 5, 0))
@@ -8863,7 +10949,188 @@ return UI
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="59">
+        <Item class="ModuleScript" referent="76">
+          <Properties>
+            <string name="Name">EnvironmentArt</string>
+            <string name="Source"><![CDATA[--!nonstrict
+-- Micro-animação cenográfica e vestuário local: não altera Humanoid, saves ou colisão.
+local Run = game:GetService("RunService")
+local Players = game:GetService("Players")
+local T = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
+local E = {}
+local started = false
+local records = setmetatable({}, { __mode = "k" })
+local function dress(character)
+	local torso = character:FindFirstChild("UpperTorso")
+		or character:FindFirstChild("Torso")
+		or character:WaitForChild("UpperTorso", 2)
+	if not torso then
+		return
+	end
+	local old = character:FindFirstChild("ArteExplorador")
+	if old then
+		old:Destroy()
+	end
+	local model = Instance.new("Model")
+	model.Name = "ArteExplorador"
+	model.Parent = character
+	local function cloth(name, size, offset, color)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Size = size
+		p.CFrame = torso.CFrame * CFrame.new(offset)
+		p.Color = color
+		p.Material = Enum.Material.SmoothPlastic
+		p.Anchored = false
+		p.Massless = true
+		p.CanCollide = false
+		p.CanTouch = false
+		p.CanQuery = false
+		p.CastShadow = false
+		p.Parent = model
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = torso
+		weld.Part1 = p
+		weld.Parent = p
+	end
+	local front = -torso.Size.Z * 0.5 - 0.06
+	cloth(
+		"Lenco",
+		Vector3.new(torso.Size.X * 0.9, 0.18, 0.1),
+		Vector3.new(0, torso.Size.Y * 0.35, front),
+		T.Ramps.Tidal[3]
+	)
+	cloth(
+		"PontaDoLenco",
+		Vector3.new(0.3, 0.5, 0.1),
+		Vector3.new(torso.Size.X * 0.26, torso.Size.Y * 0.1, front - 0.02),
+		T.Ramps.Tidal[4]
+	)
+	cloth(
+		"BaseDaBussola",
+		Vector3.new(0.32, 0.32, 0.08),
+		Vector3.new(-torso.Size.X * 0.24, 0, front - 0.01),
+		T.Ramps.Sand[2]
+	)
+	cloth(
+		"AgulhaDaBussola",
+		Vector3.new(0.08, 0.22, 0.05),
+		Vector3.new(-torso.Size.X * 0.24, 0, front - 0.07),
+		T.Ramps.Sand[5]
+	)
+end
+local function watch(player)
+	player.CharacterAdded:Connect(function(character)
+		task.defer(function()
+			character:WaitForChild("HumanoidRootPart", 10)
+			if character.Parent then
+				dress(character)
+			end
+		end)
+	end)
+	if player.Character then
+		task.defer(dress, player.Character)
+	end
+end
+-- Público apenas para o construtor e a inspeção headless do figurino cosmético.
+E.dress = dress
+function E.start()
+	if started then
+		return
+	end
+	started = true
+	for _, player in Players:GetPlayers() do
+		watch(player)
+	end
+	Players.PlayerAdded:Connect(watch)
+	local elapsed, scan = 0, 0
+	Run.Heartbeat:Connect(function(dt)
+		elapsed += dt
+		scan += dt
+		if elapsed < 1 / 15 then
+			return
+		end
+		elapsed = 0
+		local camera = workspace.CurrentCamera
+		if not camera then
+			return
+		end
+		local player = Players.LocalPlayer
+		local quality = player:GetAttribute("GraphicsQuality") or "Médio"
+		local reduced = player:GetAttribute("MotionReduced") == true
+		if scan >= 1 then
+			scan = 0
+			for _, name in { "Arquipelago", "Santuarios" } do
+				local root = workspace:FindFirstChild(name)
+				if root then
+					for _, obj in root:GetDescendants() do
+						if obj:IsA("BasePart") and obj:GetAttribute("ArtMotion") and not records[obj] then
+							records[obj] = {
+								cf = obj.CFrame,
+								transparency = obj.Transparency,
+								kind = obj:GetAttribute("ArtMotion"),
+								phase = obj:GetAttribute("ArtPhase") or 0,
+							}
+						end
+					end
+				end
+			end
+		end
+		local time = math.floor(os.clock() * 6) / 6
+		local candidates = {}
+		for part, record in records do
+			if not part.Parent then
+				records[part] = nil
+				continue
+			end
+			local distance = (record.cf.Position - camera.CFrame.Position).Magnitude
+			if reduced or quality == "Baixo" or distance > 170 then
+				if record.active then
+					part.CFrame = record.cf
+					part.Transparency = record.transparency
+					record.active = false
+				end
+			else
+				table.insert(candidates, { part = part, record = record, distance = distance })
+			end
+		end
+		table.sort(candidates, function(a, b)
+			return a.distance < b.distance
+		end)
+		local limit = quality == "Alto" and 96 or 48
+		for index, item in candidates do
+			local p, r = item.part, item.record
+			if index > limit then
+				if r.active then
+					p.CFrame = r.cf
+					p.Transparency = r.transparency
+					r.active = false
+				end
+				continue
+			end
+			r.active = true
+			local phase = time + r.phase
+			if r.kind == "grass" then
+				p.CFrame = r.cf * CFrame.Angles(0, 0, math.sin(phase * 2) * 0.1)
+			elseif r.kind == "leaf" then
+				p.CFrame = r.cf * CFrame.Angles(0.02 * math.sin(phase), 0, 0.025 * math.sin(phase * 1.3))
+			elseif r.kind == "cloud" then
+				p.CFrame = r.cf * CFrame.new(0, math.sin(phase * 0.7) * 0.15, 0)
+			elseif r.kind == "water" then
+				p.CFrame = r.cf * CFrame.new(math.sin(phase * 0.6) * 0.3, 0, 0)
+				p.Transparency = math.clamp(r.transparency + math.sin(phase) * 0.1, 0, 0.8)
+			elseif r.kind == "spark" then
+				p.CFrame = r.cf * CFrame.new(0, math.sin(phase * 1.3) * 0.25, 0)
+				p.Transparency = 0.12 + math.abs(math.sin(phase)) * 0.25
+			end
+		end
+	end)
+end
+return E
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="77">
           <Properties>
             <string name="Name">JournalUI</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -8886,7 +11153,7 @@ local function frame(parent, height)
 	f.Size = UDim2.new(1, -8, 0, height)
 	f.BackgroundColor3 = Theme.Card
 	f.Parent = parent
-	Theme.round(f)
+	Theme.panel(f)
 	return f
 end
 function J.render(parent, s, render)
@@ -8939,7 +11206,8 @@ function J.render(parent, s, render)
 	local box = Instance.new("TextBox")
 	box.PlaceholderText = Text.BUSCAR_ESPECIE_09F339
 	box.Text = search
-	box.TextSize = 14
+	box.TextSize = 16
+	box.Font = Theme.Font
 	box.ClearTextOnFocus = false
 	box.Size = UDim2.new(0.5, -4, 0, 46)
 	box.Position = UDim2.new(0.5, 2, 0, 50)
@@ -8973,6 +11241,8 @@ function J.render(parent, s, render)
 	local info = Theme.label(card, "", 14)
 	info.Position = UDim2.fromScale(0.03, 0.66)
 	info.Size = UDim2.fromScale(0.94, 0.33)
+	info.TextXAlignment = Enum.TextXAlignment.Left
+	info.TextYAlignment = Enum.TextYAlignment.Top
 	info.Text = known
 			and (def.name .. " • " .. def.el .. " • " .. C.Rarity[def.rar] .. "\n" .. (I.ById[def.island] and I.ById[def.island].name or Text.HIBRIDO_9CB40A) .. Text.COLECAO_57798D .. count .. Text.NV_AE0838 .. lv .. Text.ESTAGIO_D2FEE2 .. C.stage(
 				lv,
@@ -9018,9 +11288,9 @@ function J.render(parent, s, render)
 		local found = s.discovered[entry.id]
 		local tile = Instance.new("Frame")
 		tile.LayoutOrder = index
-		tile.BackgroundColor3 = entry.id == selected and Color3.fromRGB(63, 88, 81) or Theme.Card
+		tile.BackgroundColor3 = entry.id == selected and Theme.Tokens.Elements[entry.el][1] or Theme.Card
 		tile.Parent = grid
-		Theme.round(tile)
+		Theme.panel(tile, entry.id == selected and Theme.Tokens.Elements[entry.el][4] or Theme.Edge)
 		local mini
 		local function visibility()
 			if not tile.Parent then
@@ -9059,23 +11329,24 @@ return J
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="60">
+        <Item class="ModuleScript" referent="78">
           <Properties>
             <string name="Name">NurseryUI</string>
             <string name="Source"><![CDATA[--!nonstrict
 local Text = require(game:GetService("ReplicatedStorage").Shared.Strings).Text
 local RS = game:GetService("ReplicatedStorage")
 local C = require(RS.Shared.Creatures)
-local E = require(RS.Shared.Elements)
 local Balance = require(RS.Shared.Economy)
 local Preview = require(script.Parent.CollectionUI)
+local Theme = require(script.Parent.UITheme)
+local Icons = require(script.Parent.PixelIcons)
 local N = {}
 local function frame(parent, height)
 	local f = Instance.new("Frame")
 	f.Size = UDim2.new(1, -12, 0, height)
-	f.BackgroundColor3 = Color3.fromRGB(40, 40, 73)
+	f.BackgroundColor3 = Theme.Card
 	f.Parent = parent
-	Instance.new("UICorner", f).CornerRadius = UDim.new(0, 14)
+	Theme.panel(f)
 	return f
 end
 local function text(parent, name, value, pos, size)
@@ -9085,10 +11356,10 @@ local function text(parent, name, value, pos, size)
 	t.Position = pos
 	t.Size = size
 	t.BackgroundTransparency = 1
-	t.TextColor3 = Color3.new(1, 1, 1)
+	t.TextColor3 = Theme.Ink
 	t.TextSize = 14
 	t.TextWrapped = true
-	t.Font = Enum.Font.GothamBold
+	t.Font = Theme.Font
 	t.Parent = parent
 	return t
 end
@@ -9097,14 +11368,16 @@ local function button(parent, name, value, x, callback)
 	b.Name = name
 	b.Text = value
 	b.Position = UDim2.fromScale(x, 0.72)
-	b.Size = UDim2.fromScale(0.31, 0.24)
-	b.BackgroundColor3 = Color3.fromRGB(245, 186, 73)
-	b.TextColor3 = Color3.fromRGB(25, 25, 50)
-	b.Font = Enum.Font.GothamBold
+	b.Size = UDim2.new(0.31, 0, 0, 44)
+	b.BackgroundColor3 = Theme.Tokens.Ramps.Sand[2]
+	b.TextColor3 = Theme.Ink
+	b.Font = Theme.Font
 	b.TextSize = 14
 	b.Parent = parent
 	b.Activated:Connect(callback)
-	Instance.new("UICorner", b)
+	b.Active = true
+	b.Selectable = true
+	Theme.bind(b)
 	return b
 end
 local function enabled(b, yes)
@@ -9114,28 +11387,43 @@ local function enabled(b, yes)
 	b.BackgroundTransparency = yes and 0 or 0.65
 end
 function N.egg(parent, def, left, hatch, speed)
-	local f = frame(parent, 154)
+	local f = frame(parent, 176)
 	f.Name = "IncubatingEgg"
 	f:SetAttribute("ReadyClock", os.clock() + left)
 	local v = Instance.new("ViewportFrame")
 	v.Size = UDim2.fromScale(0.3, 1)
 	v.BackgroundTransparency = 1
-	v.Ambient = Color3.fromRGB(200, 200, 200)
+	v.Ambient = Theme.Tokens.Ramps.Metal[3]
+	v.LightColor = Theme.Ink
+	v.LightDirection = Vector3.new(-1, -1, -1)
 	v.Parent = f
 	local egg = Instance.new("Part")
 	egg.Shape = Enum.PartType.Ball
 	egg.Size = Vector3.new(3, 4, 3)
 	egg.Anchored = true
 	egg.CanCollide = false
-	egg.Color = E.Color[def.el]
+	egg.Color = Theme.Tokens.Elements[def.el][4]
 	egg.Material = Enum.Material.SmoothPlastic
 	egg.Parent = v
+	for index = 1, 4 do
+		local mark = Instance.new("Part")
+		mark.Size = Vector3.new(0.32, 0.32, 0.08)
+		mark.CFrame = CFrame.new((index % 2 == 0 and 1 or -1) * 0.55, (math.floor((index - 1) / 2) - 0.5) * 1.0, 1.4)
+		mark.Anchored = true
+		mark.CanCollide = false
+		mark.CanQuery = false
+		mark.CanTouch = false
+		mark.Color = Theme.Tokens.Elements[def.el][2]
+		mark.Parent = v
+	end
+	local icon = Icons.draw(f, "Egg", 16, Theme.Tokens.Elements[def.el])
+	icon.Position = UDim2.fromOffset(8, 8)
 	local gem = Instance.new("Part")
 	gem.Shape = Enum.PartType.Ball
 	gem.Size = Vector3.new(0.8, 1, 0.5)
 	gem.Position = Vector3.new(0, 0.3, 1.4)
 	gem.Anchored = true
-	gem.Color = def.hybrid and E.Color[def.hybrid[2]] or Color3.fromRGB(255, 237, 174)
+	gem.Color = def.hybrid and Theme.Tokens.Elements[def.hybrid[2]][3] or Theme.Ink
 	gem.Parent = v
 	local camera = Instance.new("Camera")
 	camera.CFrame = CFrame.lookAt(Vector3.new(4, 2, 9), Vector3.zero)
@@ -9202,8 +11490,8 @@ function N.parents(parent, a, b, outcomes, available, breed)
 		UDim2.fromScale(0.94, 0.14)
 	)
 	local start = button(f, "Breed", "Cruzar", 0.33, breed)
-	start.Position = UDim2.fromScale(0.15, 0.86)
-	start.Size = UDim2.fromScale(0.7, 0.12)
+	start.Position = UDim2.new(0.15, 0, 1, -52)
+	start.Size = UDim2.new(0.7, 0, 0, 44)
 	enabled(start, available)
 	return f
 end
@@ -9211,7 +11499,527 @@ return N
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="61">
+        <Item class="ModuleScript" referent="79">
+          <Properties>
+            <string name="Name">PixelIcons</string>
+            <string name="Source"><![CDATA[--!nonstrict
+-- Original 16px glyphs rendered as integer-sized runs; no external images or emoji.
+local Tokens = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
+local P = { Size = 16 }
+P.Grids = {
+	Coin = {
+		"................",
+		".....aaaaaa.....",
+		"...aabbbbbbaa...",
+		"..abcccccccbba..",
+		"..abccbbcccbaa..",
+		".abccbaabcccbba.",
+		".abccb..bcccbba.",
+		".abccbaabcccbba.",
+		".abcccbbccccbba.",
+		".abccccccbcccba.",
+		".abccccccbcccba.",
+		"..abcccccccbba..",
+		"..abbcccccbbba..",
+		"...aabbbbbbaa...",
+		".....aaaaaa.....",
+		"................",
+	},
+	Gem = {
+		"................",
+		".....aaaaaa.....",
+		"....abccccba....",
+		"...abcddddcba...",
+		"..abcddddddcba..",
+		".abbccccccccbba.",
+		".abccccccccc bba",
+		"..abccddddccba..",
+		"...abcd dd cba...",
+		"....abcddcba....",
+		".....abcdba.....",
+		"......abba......",
+		".......aa.......",
+		"................",
+		"................",
+		"................",
+	},
+	Seal = {
+		"................",
+		".....aaaaaa.....",
+		"...aabbbbbbaa...",
+		"..abbccccccbba..",
+		"..abccaaaa ccba.",
+		".abccaabbaaccba.",
+		".abcaabddbaacba.",
+		".abcabdddbaccba.",
+		".abcabdddbaccba.",
+		".abcaabbbaacbba.",
+		"..abccaaccbbba..",
+		"..abbcccccbbba..",
+		"...aabbbbbbaa...",
+		".....aaaaaa.....",
+		"......abba......",
+		".....aa..aa.....",
+	},
+	Heart = {
+		"................",
+		"................",
+		"..aaaa....aaaa..",
+		".abbbba..abbbba.",
+		".abcccbaabccccba",
+		".abccccbbcccccba",
+		".abcccccccccccba",
+		"..abcccccccccba.",
+		"...abcccccccba..",
+		"....abcccccba...",
+		".....abcccba....",
+		"......abcba.....",
+		".......aba......",
+		"........a.......",
+		"................",
+		"................",
+	},
+	Egg = {
+		"................",
+		".......aa.......",
+		"......abba......",
+		".....abccba.....",
+		"....abccccba....",
+		"...abccccccba...",
+		"...abccbbccba...",
+		"..abcccbbcccba..",
+		"..abccccccccba..",
+		"..abcbbccbbcba..",
+		"..abcbbccbbcba..",
+		"..abbccccccbba..",
+		"...abbbccbbba...",
+		"....aabbbbaa....",
+		"......aaaa......",
+		"................",
+	},
+	Map = {
+		"................",
+		"..aaa...aaa.....",
+		".abcca.aabbba...",
+		".abccbabccccba..",
+		".abcccbccccccba.",
+		".abcccbccccccba.",
+		".abcccbccaaacba.",
+		".abcccbccbadcba.",
+		".abcccbccaaacba.",
+		".abcccbccccccba.",
+		".abcccbccccccba.",
+		".abccbabccccba..",
+		"..abbaa.aabba...",
+		"...aa...aaaa....",
+		"................",
+		"................",
+	},
+	Book = {
+		"................",
+		"..aaaaaaaaaaaa..",
+		".abbbbbbbbbbbba.",
+		".abcccccccccbba.",
+		".abccaaaaaccbba.",
+		".abccabbbaccbba.",
+		".abccabcbaccbba.",
+		".abccabbbaccbba.",
+		".abccaaaaaccbba.",
+		".abcccccccccbba.",
+		".abcccccccccbba.",
+		".abcccccccccbba.",
+		".abbbbbbbbbbbaa.",
+		"..aaaaaaaaaaaba.",
+		"....abccccccba..",
+		".....aaaaaaaa...",
+	},
+	Trophy = {
+		"................",
+		"....aaaaaaaa....",
+		".aaaabbbcccaaaa.",
+		".abbbabbcccabbba",
+		".ab..abbccca..ba",
+		".ab..abbccca..ba",
+		"..ab.abbcca.ab..",
+		"...aaabbcbaa....",
+		".....abccba.....",
+		"......abba......",
+		"......abba......",
+		"......abba......",
+		".....abbbba.....",
+		"....abbccbba....",
+		"...abbbbbbbba...",
+		"...aaaaaaaaaa...",
+	},
+	Home = {
+		"................",
+		".......aa.......",
+		"......abba......",
+		".....abccba.....",
+		"....abccccba....",
+		"...abccccccba...",
+		"..abccccccccba..",
+		".abbbbbbbbbbbba.",
+		"..abccccccccba..",
+		"..abccaaacccba..",
+		"..abccabbaccba..",
+		"..abccabbaccba..",
+		"..abccabbaccba..",
+		"..abbbbbbbbbba..",
+		"..aaaaaaaaaaaa..",
+		"................",
+	},
+	Fera = {
+		"................",
+		"..aa........aa..",
+		".abba......abba.",
+		".abcbaaaaabc cba",
+		"..abccccccccba..",
+		"..abccccccccba..",
+		".abccaaaccaa cba",
+		".abccbaacbaacba.",
+		".abccccccccccba.",
+		"..abcccaaccccba.",
+		"...abccbbccba...",
+		"....abccccba....",
+		".....abbbba.....",
+		"......aaaa......",
+		"................",
+		"................",
+	},
+	Menu = {
+		"................",
+		"................",
+		"..aaaaaaaaaaaa..",
+		"..abbbbbbbbbba..",
+		"..aaaaaaaaaaaa..",
+		"................",
+		"..aaaaaaaaaaaa..",
+		"..abbbbbbbbbba..",
+		"..aaaaaaaaaaaa..",
+		"................",
+		"..aaaaaaaaaaaa..",
+		"..abbbbbbbbbba..",
+		"..aaaaaaaaaaaa..",
+		"................",
+		"................",
+		"................",
+	},
+	Quest = {
+		"................",
+		"....aaaaaaaa....",
+		"...abccccccba...",
+		"...abccbbccba...",
+		"...abccbbccba...",
+		"...abccbbccba...",
+		"...abccbbccba...",
+		"...abccbbccba...",
+		"...abccbbccba...",
+		"...abccccccba...",
+		"...abccbbccba...",
+		"...abccbbccba...",
+		"...abccccccba...",
+		"....abbbbaa.....",
+		".....aaaa.......",
+		"................",
+	},
+	Sound = {
+		"................",
+		"........aa......",
+		".......abba.....",
+		"......abccba....",
+		"...aaaabccba.aa.",
+		"..abbccbcccba..a",
+		"..abcccccccba..a",
+		"..abcccccccba..a",
+		"..abcccccccba..a",
+		"..abbccbcccba..a",
+		"...aaaabccba.aa.",
+		"......abccba....",
+		".......abba.....",
+		"........aa......",
+		"................",
+		"................",
+	},
+	Fogo = {
+		"................",
+		"........a.......",
+		".......aba......",
+		"......abcba.....",
+		".....abccba.....",
+		"..a..abcba......",
+		".aba.abccba.....",
+		".abcbbccccba....",
+		".abccccccccba...",
+		"..abcccddccba...",
+		"..abccddddcba...",
+		"...abcddddcba...",
+		"....abccc cba...",
+		".....abbbba.....",
+		"......aaaa......",
+		"................",
+	},
+	Agua = {
+		"................",
+		".......aa.......",
+		"......abba......",
+		"......abba......",
+		".....abccba.....",
+		"....abccccba....",
+		"...abccccccba...",
+		"..abccccccdcba..",
+		"..abccccccdcba..",
+		".abcccccccddcba.",
+		".abccccccccc bba",
+		"..abccccccccba..",
+		"...abbccccbba...",
+		"....aabbbbaa....",
+		"......aaaa......",
+		"................",
+	},
+	Natureza = {
+		"................",
+		"...........aaa..",
+		"........aabbba..",
+		"......aabcccba..",
+		"....aabccccba...",
+		"...abccccccba...",
+		"..abccccbbcba...",
+		"..abcccbccba....",
+		"..abccbcccba....",
+		"..abbcccccba....",
+		"...abccccba.....",
+		"....abbcba......",
+		"....abbba.......",
+		"...abba.........",
+		"..aaa...........",
+		"................",
+	},
+	Terra = {
+		"................",
+		"................",
+		".....aaaaaa.....",
+		"....abcccbba....",
+		"...abccccccba...",
+		"...abccccccba...",
+		"..abccccccc bba.",
+		"..abcccbcccccba.",
+		".abcccbbcccccba.",
+		".abcccbbcccc cba",
+		".abccccccccccba.",
+		"..abbbbbbbbbbba.",
+		"...aaaaaaaaaaa..",
+		"................",
+		"................",
+		"................",
+	},
+	Ar = {
+		"................",
+		"................",
+		".........aaaa...",
+		"........abccba..",
+		"....aaa..aabcba.",
+		"...abccba..abca.",
+		"..abccba...abca.",
+		"..abcba...abcba.",
+		"...abccaaabccba.",
+		".aa.abbcccbbba..",
+		"abca..aaaaaaa...",
+		"abcba...........",
+		".abccbbaaaa.....",
+		"..aabbbbbba.....",
+		"....aaaaaa......",
+		"................",
+	},
+	Sombra = {
+		"................",
+		"......aaaa......",
+		"....aabbbbaa....",
+		"...abcccccba....",
+		"..abcccaaacba...",
+		"..abccba..aba...",
+		".abcccba...aa...",
+		".abcccba........",
+		".abcccba...aa...",
+		"..abccba..aba...",
+		"..abcccaaacba...",
+		"...abcccccba....",
+		"....aabbbbaa....",
+		"......aaaa......",
+		"................",
+		"................",
+	},
+}
+P.Grids.strike = {
+	"................",
+	"...........aaa..",
+	"..........abca..",
+	".........abcca..",
+	"........abcca...",
+	".......abcca....",
+	"......abcca.....",
+	".....abcca......",
+	"....abcca.......",
+	".aaabcca........",
+	".abbbba.........",
+	"..abcbba........",
+	"..abcabca.......",
+	".abca.aba.......",
+	"..aa...a........",
+	"................",
+}
+P.Grids.guard = {
+	"................",
+	"...aaaaaaaaaa...",
+	"..abbccccccbba..",
+	"..abccccccccba..",
+	"..abccccccccba..",
+	"..abcccddcccba..",
+	"..abcccddcccba..",
+	"..abccddddccba..",
+	"..abcccddcccba..",
+	"...abccddccba...",
+	"...abccccccba...",
+	"....abccccba....",
+	".....abccba.....",
+	"......abba......",
+	".......aa.......",
+	"................",
+}
+P.Grids.skill = {
+	"................",
+	".......aa.......",
+	"......abba......",
+	"......abba......",
+	"..aaaabccbaaaa..",
+	".abbbccccccc bba",
+	"..abccddddccba..",
+	"...abcddddcba...",
+	"...abcddddcba...",
+	"..abccddddccba..",
+	".abbbccccccc bba",
+	"..aaaabccbaaaa..",
+	"......abba......",
+	"......abba......",
+	".......aa.......",
+	"................",
+}
+P.Grids.close = {
+	"................",
+	"................",
+	"..aaa......aaa..",
+	"..abba....abba..",
+	"...abba..abba...",
+	"....abbaabba....",
+	".....abccba.....",
+	"......abba......",
+	".....abccba.....",
+	"....abbaabba....",
+	"...abba..abba...",
+	"..abba....abba..",
+	"..aaa......aaa..",
+	"................",
+	"................",
+	"................",
+}
+P.Grids.refresh = {
+	"................",
+	"......aaaaa.....",
+	"....aabbcbbaa...",
+	"...abcccccccba..",
+	"..abccbaaaaccba.",
+	"..abcba...abccba",
+	"..aaaa....abccba",
+	"..........aaaaa.",
+	".aaaaa..........",
+	".abccba....aaaa.",
+	".abccba...abcba.",
+	"..abccaaaaccba..",
+	"...abccccccba...",
+	"....aabcbbaa....",
+	"......aaaa......",
+	"................",
+}
+P.Grids.flee = {
+	"................",
+	"..........aa....",
+	".........abba...",
+	".........abba...",
+	"....aaa..abba...",
+	"...abbbaabba....",
+	"....abbccba.....",
+	".....abccba.....",
+	"....abccbcba....",
+	"...abcb.abba....",
+	"..abba..abba....",
+	"..abba...abba...",
+	".abbba...abbba..",
+	".aaaaa...aaaaa..",
+	"................",
+	"................",
+}
+P.Grids.bond = P.Grids.Heart
+P.Grids.capture = P.Grids.Seal
+P.Grids.gold = P.Grids.Coin
+P.Grids.gem = P.Grids.Gem
+P.Grids.seal = P.Grids.Seal
+P.Grids.heart = P.Grids.Heart
+P.Grids["Água"] = P.Grids.Agua
+P.Patterns = P.Grids
+-- Authoring grids stay 16×16; spaces are empty ink and rows are deterministically padded.
+for name, grid in P.Grids do
+	for index, row in grid do
+		grid[index] = string.sub((row:gsub(" ", ".")) .. string.rep(".", 16), 1, 16)
+	end
+	assert(#grid == 16, name)
+end
+function P.draw(parent, name, size, ramp)
+	local scale = math.max(1, math.floor(size and (size > 8 and size / 16 or size) or 2))
+	local grid = P.Grids[name] or P.Grids.Fera
+	if typeof(ramp) == "Color3" then
+		ramp = {
+			Tokens.Shadow,
+			Tokens.nearest(ramp:Lerp(Tokens.Shadow, 0.4)),
+			ramp,
+			ramp,
+			Tokens.nearest(ramp:Lerp(Tokens.Ink, 0.5)),
+		}
+	end
+	ramp = ramp or Tokens.Ramps.Sand
+	local ink = { a = Tokens.Shadow, b = ramp[2], c = ramp[4], d = ramp[5] }
+	local canvas = Instance.new("Frame")
+	canvas.Name = "PixelIcon_" .. name
+	canvas.BackgroundTransparency = 1
+	canvas.Size = UDim2.fromOffset(16 * scale, 16 * scale)
+	canvas.Parent = parent
+	for y, row in grid do
+		local x = 1
+		while x <= 16 do
+			local symbol = row:sub(x, x)
+			local stop = x
+			while stop < 16 and row:sub(stop + 1, stop + 1) == symbol do
+				stop += 1
+			end
+			if ink[symbol] then
+				local run = Instance.new("Frame")
+				run.Name = "Ink"
+				run.BorderSizePixel = 0
+				run.BackgroundColor3 = ink[symbol]
+				run.Position = UDim2.fromOffset((x - 1) * scale, (y - 1) * scale)
+				run.Size = UDim2.fromOffset((stop - x + 1) * scale, scale)
+				run.ZIndex = canvas.ZIndex
+				run.Parent = canvas
+			end
+			x = stop + 1
+		end
+	end
+	return canvas
+end
+return P
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="80">
           <Properties>
             <string name="Name">SanctuaryUI</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -9220,6 +12028,7 @@ local RS = game:GetService("ReplicatedStorage")
 local I = require(RS.Shared.Islands)
 local Rules = require(RS.Shared.SanctuaryRules)
 local Theme = require(script.Parent.UITheme)
+local Icons = require(script.Parent.PixelIcons)
 local U = {}
 local slot = 5
 function U.render(parent, d, call, render)
@@ -9228,7 +12037,7 @@ function U.render(parent, d, call, render)
 		f.Size = UDim2.new(1, -8, 0, height)
 		f.BackgroundColor3 = Theme.Card
 		f.Parent = parent
-		Theme.round(f)
+		Theme.panel(f)
 		return f
 	end
 	local info = card(70)
@@ -9262,12 +12071,14 @@ function U.render(parent, d, call, render)
 			render()
 		end)
 		if slot == index then
-			b.BackgroundColor3 = Color3.fromRGB(78, 110, 94)
+			b.BackgroundColor3 = Theme.Tokens.Ramps.Leaf[2]
 		end
 	end
 	for _, def in I.List do
 		local entry = d.sanctuary[def.id]
-		local f = card(156)
+		local f = card(184)
+		local icon = Icons.draw(f, def.el, 16, Theme.Tokens.Elements[def.el])
+		icon.Position = UDim2.fromOffset(12, 12)
 		local label = Theme.label(
 			f,
 			def.name
@@ -9284,8 +12095,8 @@ function U.render(parent, d, call, render)
 				),
 			14
 		)
-		label.Size = UDim2.new(1, -12, 0, 90)
-		label.Position = UDim2.fromOffset(6, 0)
+		label.Size = UDim2.new(1, -44, 0, 112)
+		label.Position = UDim2.fromOffset(36, 4)
 		local buttons = entry
 				and {
 					{
@@ -9317,7 +12128,7 @@ function U.render(parent, d, call, render)
 			}
 		for k, button in buttons do
 			local b = Theme.button(f, button[1], button[2])
-			b.Size = UDim2.new(1 / #buttons, -6, 0, 48)
+			b.Size = UDim2.new(1 / #buttons, -8, 0, 48)
 			b.Position = UDim2.new((k - 1) / #buttons, 3, 1, -54)
 		end
 	end
@@ -9326,7 +12137,7 @@ return U
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="62">
+        <Item class="ModuleScript" referent="81">
           <Properties>
             <string name="Name">SolarPresentation</string>
             <string name="Source"><![CDATA[--!nonstrict
@@ -9339,6 +12150,7 @@ local TS = game:GetService("TweenService")
 local I = require(RS.Shared.Islands)
 local Config = require(RS.Shared.Config)
 local Theme = require(script.Parent.UITheme)
+local Art = require(RS.Shared.ArtTokens)
 local Solar = {}
 local started = false
 function Solar.start(getSnapshot)
@@ -9389,7 +12201,7 @@ function Solar.start(getSnapshot)
 		if enabled and not correction then
 			correction = Instance.new("ColorCorrectionEffect")
 			correction.Name = "TonalidadeLocal"
-			correction.TintColor = Color3.fromRGB(255, 219, 170)
+			correction.TintColor = Art.Ramps.Sand[5]
 			correction.Saturation = 0.1
 			correction.Contrast = 0.06
 			correction.Parent = Lighting
@@ -9397,7 +12209,7 @@ function Solar.start(getSnapshot)
 			Lighting.ClockTime = 17.5
 			atmosphere = Lighting:FindFirstChildOfClass("Atmosphere") or Instance.new("Atmosphere")
 			priorAtmosphere = { Color = atmosphere.Color, Density = atmosphere.Density, Haze = atmosphere.Haze }
-			atmosphere.Color = Color3.fromRGB(255, 202, 130)
+			atmosphere.Color = Art.Ramps.Sand[4]
 			atmosphere.Density = 0.26
 			atmosphere.Haze = 1.8
 			atmosphere.Parent = Lighting
@@ -9503,54 +12315,149 @@ return Solar
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="63">
+        <Item class="ModuleScript" referent="82">
           <Properties>
             <string name="Name">UITheme</string>
             <string name="Source"><![CDATA[--!nonstrict
+local Tokens = require(game:GetService("ReplicatedStorage").Shared.ArtTokens)
 local T = {
-	Ink = Color3.fromRGB(231, 240, 237),
-	Muted = Color3.fromRGB(173, 193, 191),
-	Panel = Color3.fromRGB(18, 35, 42),
-	Card = Color3.fromRGB(32, 53, 61),
-	Accent = Color3.fromRGB(239, 191, 95),
-	Mint = Color3.fromRGB(105, 210, 165),
+	Ink = Tokens.Ink,
+	Muted = Tokens.Muted,
+	Panel = Tokens.Panel,
+	Card = Tokens.Card,
+	Accent = Tokens.Accent,
+	Mint = Tokens.Mint,
+	Edge = Tokens.Edge,
+	Shadow = Tokens.Shadow,
+	Font = Tokens.Font,
+	Tokens = Tokens,
 }
-function T.round(o, radius)
-	local c = Instance.new("UICorner")
-	c.CornerRadius = UDim.new(0, radius or 10)
-	c.Parent = o
+function T.round(o, _radius)
+	local existing = o:FindFirstChild("PixelCorner")
+	if existing then
+		return existing
+	end
+	local corner = Instance.new("UICorner")
+	corner.Name = "PixelCorner"
+	corner.CornerRadius = UDim.new(0, 2)
+	corner.Parent = o
+	o.BorderSizePixel = 0
+	return corner
 end
 function T.stroke(o)
-	local s = Instance.new("UIStroke")
-	s.Color = Color3.fromRGB(111, 145, 150)
-	s.Transparency = 0.6
-	s.Thickness = 1
-	s.Parent = o
+	local existing = o:FindFirstChild("PixelEdge")
+	if existing then
+		return existing
+	end
+	local stroke = Instance.new("UIStroke")
+	stroke.Name = "PixelEdge"
+	stroke.Color = T.Edge
+	stroke.Transparency = 0
+	stroke.Thickness = Tokens.Border
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	stroke.Parent = o
+	return stroke
+end
+function T.panel(o, accent)
+	T.round(o)
+	local stroke = T.stroke(o)
+	stroke.Color = accent or T.Edge
+	return o
+end
+function T.bind(button)
+	if button:GetAttribute("ArtButton") then
+		return
+	end
+	button:SetAttribute("ArtButton", true)
+	button.AutoButtonColor = false
+	button.Selectable = true
+	button.Font = T.Font
+	local edge = T.stroke(button)
+	T.round(button)
+	local normal = button.BackgroundColor3
+	local normalText = button.TextColor3
+	local hover, pressed, updating = false, false, false
+	local function refresh()
+		updating = true
+		local disabled = not button.Active or not button.Selectable
+		button.BackgroundColor3 = disabled and T.Panel
+			or pressed and T.Edge
+			or hover and Tokens.nearest(normal:Lerp(T.Mint, 0.3))
+			or normal
+		button.TextColor3 = disabled and T.Muted or pressed and T.Ink or normalText
+		edge.Color = disabled and T.Card or pressed and T.Mint or hover and T.Accent or T.Edge
+		updating = false
+	end
+	button.MouseEnter:Connect(function()
+		hover = true
+		refresh()
+	end)
+	button.MouseLeave:Connect(function()
+		hover = false
+		pressed = false
+		refresh()
+	end)
+	button.InputBegan:Connect(function(input)
+		if
+			input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch
+		then
+			pressed = true
+			refresh()
+		end
+	end)
+	button.InputEnded:Connect(function(input)
+		if
+			input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch
+		then
+			pressed = false
+			refresh()
+		end
+	end)
+	button.SelectionGained:Connect(function()
+		hover = true
+		refresh()
+	end)
+	button.SelectionLost:Connect(function()
+		hover = false
+		pressed = false
+		refresh()
+	end)
+	button:GetPropertyChangedSignal("Active"):Connect(refresh)
+	button:GetPropertyChangedSignal("Selectable"):Connect(refresh)
+	button:GetPropertyChangedSignal("BackgroundColor3"):Connect(function()
+		if not updating then
+			normal = button.BackgroundColor3
+			refresh()
+		end
+	end)
+	refresh()
 end
 function T.label(parent, text, size)
 	local l = Instance.new("TextLabel")
 	l.BackgroundTransparency = 1
 	l.Text = text
 	l.TextColor3 = T.Ink
-	l.TextSize = size or 15
+	l.TextSize = size or 16
 	l.TextWrapped = true
-	l.Font = Enum.Font.GothamMedium
+	l.Font = T.Font
 	l.Parent = parent
 	return l
 end
 function T.button(parent, text, callback)
 	local b = Instance.new("TextButton")
 	b.Text = text
-	b.Font = Enum.Font.GothamBold
-	b.TextSize = 14
+	b.Font = T.Font
+	b.TextSize = 16
 	b.TextWrapped = true
+	b.Size = UDim2.fromOffset(160, 44)
 	b.BackgroundColor3 = T.Card
 	b.TextColor3 = T.Ink
-	b.AutoButtonColor = true
+	b.Active = true
 	b.Selectable = true
 	b.Parent = parent
-	T.round(b)
-	T.stroke(b)
+	T.bind(b)
 	b.Activated:Connect(callback)
 	return b
 end
@@ -9561,7 +12468,7 @@ return T
       </Item>
     </Item>
   </Item>
-  <Item class="Workspace" referent="64">
+  <Item class="Workspace" referent="83">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="NeedsPivotMigration">false</bool>
