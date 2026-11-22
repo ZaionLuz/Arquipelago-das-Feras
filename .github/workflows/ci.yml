@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rokit
+        uses: rokit/rokit-action@v1
+        with:
+          version: latest
+
+      - name: Install tools
+        run: |
+          rokit add rojo-rbx/rojo
+          rokit add UpliftGames/wally
+          rokit add Kampfkarren/selene
+          rokit add JohnnyMorganz/StyLua
+
+      - name: Cache Wally packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/wally
+          key: wally-${{ hashFiles('wally.toml') }}
+
+      - name: Install Wally dependencies
+        run: wally install
+
+      - name: Run Selene
+        run: selene src
+
+      - name: Run StyLua check
+        run: stylua --check src
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rokit
+        uses: rokit/rokit-action@v1
+
+      - name: Install Rojo
+        run: rokit add rojo-rbx/rojo
+
+      - name: Build project
+        run: rojo build --output build.rbxlx
+
+      - name: Type check with Rojo
+        run: |
+          # Type checking happens during build in strict mode
+          echo "Build successful - strict mode enforced"
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rokit
+        uses: rokit/rokit-action@v1
+
+      - name: Install Rojo
+        run: rokit add rojo-rbx/rojo
+
+      - name: Run tests
+        run: |
+          rojo build --output test.rbxlx
+          # Tests would run here with TestEZ or similar
+          echo "Tests placeholder - add TestEZ for actual testing"

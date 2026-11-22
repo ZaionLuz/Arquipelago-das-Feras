@@ -1,0 +1,20 @@
+[package]
+name = "zaion/arquipelago-das-feras"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+description = "Arquipélago das Feras - Palworld-like creature game"
+license = "MIT"
+authors = ["ZaionLuz"]
+
+[dependencies]
+-- Example dependencies (uncomment as needed):
+-- Roact = "roact/roact@1.0.0"
+-- Rodux = "rodux/rodux@1.0.0"
+-- Signal = "sleitnick/signal@1.0.0"
+-- Maid = "sleitnick/maid@1.0.0"
+-- Trove = "sleitnick/trove@1.0.0"
+-- Promise = "evaera/promise@1.0.0"
+
+[devDependencies]
+-- selene = "selene@1.0.0"
+-- stylua = "stylua@1.0.0"

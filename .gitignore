@@ -1,0 +1,36 @@
+# Rojo
+*.project.json
+.rbxm
+.rbxl
+.rbxlx
+
+# Wally
+Packages/
+wally.lock
+
+# Tooling
+.selene/
+stylua.toml
+selene.toml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Build
+build/
+dist/
+
+# Temp
+tmp/
+temp/
