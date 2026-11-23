@@ -24,6 +24,7 @@ local InputController = require(script.Parent.Controllers.InputController)
 local CameraController = require(script.Parent.Controllers.CameraController)
 local AudioController = require(script.Parent.Controllers.AudioController)
 local RemoteClient = require(script.Parent.Controllers.RemoteClient)
+local QuestController = require(script.Parent.Controllers.QuestController)
 
 local Player = Players.LocalPlayer
 
@@ -54,6 +55,7 @@ RemoteClient.On("DataLoaded", function(playerData: Types.PlayerData)
 	InputController.Initialize()
 	CameraController.Initialize()
 	AudioController.Initialize()
+	QuestController.Initialize()
 
 	-- Show main menu or game UI
 	UIController.ShowScreen("MainMenu")

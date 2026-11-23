@@ -21,6 +21,8 @@ local SpawnSystem = require(ServerScriptService.Server.Systems.SpawnSystem)
 local PartySystem = require(ServerScriptService.Server.Systems.PartySystem)
 local ItemSystem = require(ServerScriptService.Server.Systems.ItemSystem)
 local EvolutionSystem = require(ServerScriptService.Server.Systems.EvolutionSystem)
+local NPCSystem = require(ServerScriptService.Server.Systems.NPCSystem)
+local QuestSystem = require(ServerScriptService.Server.Systems.QuestSystem)
 local RemoteSystem = require(ServerScriptService.Server.Systems.RemoteSystem)
 
 -- Server state
@@ -33,6 +35,10 @@ local ServerState = {
 
 -- Initialize remotes
 RemoteSystem.Initialize()
+
+-- Initialize NPC and Quest systems
+NPCSystem.Initialize()
+QuestSystem.Initialize()
 
 -- Player joining
 Players.PlayerAdded:Connect(function(player: Player)
@@ -52,6 +58,9 @@ Players.PlayerAdded:Connect(function(player: Player)
 
 	-- Initialize party system for player
 	PartySystem.InitializePlayer(player, playerData)
+
+	-- Initialize quest system for player
+	QuestSystem.OnPlayerJoin(player)
 
 	-- Fire client loaded event
 	RemoteSystem.FireClient(player, "DataLoaded", playerData)
@@ -81,6 +90,7 @@ Players.PlayerRemoving:Connect(function(player: Player)
 	end
 
 	PartySystem.CleanupPlayer(player)
+	QuestSystem.OnPlayerLeave(player)
 end)
 
 -- Game closing

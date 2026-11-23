@@ -201,6 +201,59 @@ Config.Zones = {
 		Biome = "Nature",
 		LevelRange = {Min = 1, Max = 5},
 		SafeZone = true,
+		NPCs = {
+			{
+				Id = "Professor",
+				Name = "Professor Carvalho",
+				Type = "QuestGiver",
+				Position = CFrame.new(0, 5, 0),
+				Dialogue = {
+					Greeting = "Bem-vindo ao Arquipélago das Feras! Escolha seu primeiro parceiro!",
+					QuestComplete = "Excelente! Agora você está pronto para sua jornada.",
+				},
+			},
+			{
+				Id = "StarterTown_Healer",
+				Name = "Enfermeira Joy",
+				Type = "Healer",
+				Position = CFrame.new(20, 5, 0),
+				Dialogue = {
+					Greeting = "Suas criaturas precisam de cuidados? Deixe comigo!",
+				},
+			},
+			{
+				Id = "StarterTown_Shop",
+				Name = "Mercador Local",
+				Type = "Shopkeeper",
+				Position = CFrame.new(-20, 5, 0),
+				Dialogue = {
+					Greeting = "Itens essenciais para sua aventura!",
+				},
+				ShopInventory = {"BasicBall", "Potion", "Antidote"},
+			},
+			{
+				Id = "Rival1",
+				Name = "Rival Lucas",
+				Type = "Trainer",
+				Position = CFrame.new(0, 5, 30),
+				Team = {
+					{SpeciesId = "CINZELO", Level = 5, Moves = {"Scratch", "Ember"}},
+				},
+				RewardMoney = 300,
+				RewardItems = {"Potion"},
+				Dialogue = {
+					Greeting = "Vamos batalhar! Meu Cinzelo está ansioso!",
+					Win = "Incrível! Você é forte!",
+					Lose = "Hmph, da próxima vez eu vencerei!",
+				},
+				PatrolPoints = {
+					CFrame.new(0, 5, 30),
+					CFrame.new(10, 5, 30),
+					CFrame.new(10, 5, 40),
+					CFrame.new(0, 5, 40),
+				},
+			},
+		},
 	},
 	FireForest = {
 		Id = "FireForest",
@@ -208,6 +261,58 @@ Config.Zones = {
 		Biome = "Fire",
 		LevelRange = {Min = 3, Max = 12},
 		Spawns = {"CINZELO", "MAGMARAU"},
+		NPCs = {
+			{
+				Id = "FireForest_Healer",
+				Name = "Curandeiro do Fogo",
+				Type = "Healer",
+				Position = CFrame.new(100, 10, 100),
+				Dialogue = {
+					Greeting = "O calor da floresta cansou suas criaturas? Eu cuido delas.",
+				},
+			},
+			{
+				Id = "FireForest_Shop",
+				Name = "Mercador das Brasas",
+				Type = "Shopkeeper",
+				Position = CFrame.new(120, 10, 80),
+				Dialogue = {
+					Greeting = "Itens resistentes ao calor para exploradores!",
+				},
+				ShopInventory = {"BasicBall", "GreatBall", "Potion", "SuperPotion", "BurnHeal"},
+			},
+			{
+				Id = "FireTrainer1",
+				Name = "Treinador de Fogo Brasa",
+				Type = "Trainer",
+				Position = CFrame.new(150, 10, 150),
+				Team = {
+					{SpeciesId = "CINZELO", Level = 8, Moves = {"Scratch", "Ember", "Fire Fang"}},
+					{SpeciesId = "MAGMARAU", Level = 10, Moves = {"Ember", "Rock Throw", "Flame Burst"}},
+				},
+				RewardMoney = 800,
+				RewardItems = {"FireStone"},
+				Dialogue = {
+					Greeting = "Sinta o calor das chamas!",
+					Win = "Suas chamas queimam forte!",
+					Lose = "O fogo nunca se apaga...",
+				},
+				PatrolPoints = {
+					CFrame.new(150, 10, 150),
+					CFrame.new(170, 10, 170),
+					CFrame.new(150, 10, 190),
+				},
+			},
+			{
+				Id = "FireForest_Quest",
+				Name = "Guarda Florestal",
+				Type = "QuestGiver",
+				Position = CFrame.new(80, 10, 120),
+				Dialogue = {
+					Greeting = "Preciso de ajuda para estudar as criaturas desta floresta.",
+				},
+			},
+		},
 	},
 	WaterCaves = {
 		Id = "WaterCaves",
@@ -215,6 +320,44 @@ Config.Zones = {
 		Biome = "Water",
 		LevelRange = {Min = 5, Max = 15},
 		Spawns = {"HIDROSONDA", "VAPORAL"},
+		NPCs = {
+			{
+				Id = "WaterCaves_Healer",
+				Name = "Curandeiro das Águas",
+				Type = "Healer",
+				Position = CFrame.new(-100, -20, 100),
+				Dialogue = {
+					Greeting = "A água cura todas as feridas. Deixe-me ajudar.",
+				},
+			},
+			{
+				Id = "WaterCaves_Shop",
+				Name = "Mercador Submerso",
+				Type = "Shopkeeper",
+				Position = CFrame.new(-80, -20, 120),
+				Dialogue = {
+					Greeting = "Equipamentos para exploradores aquáticos!",
+				},
+				ShopInventory = {"BasicBall", "GreatBall", "Potion", "SuperPotion", "Antidote"},
+			},
+			{
+				Id = "WaterTrainer1",
+				Name = "Treinador das Marés",
+				Type = "Trainer",
+				Position = CFrame.new(-150, -20, 150),
+				Team = {
+					{SpeciesId = "HIDROSONDA", Level = 10, Moves = {"Water Gun", "Bubble", "Aqua Jet"}},
+					{SpeciesId = "VAPORAL", Level = 12, Moves = {"Water Gun", "Mist", "Brine"}},
+				},
+				RewardMoney = 1000,
+				RewardItems = {"WaterStone"},
+				Dialogue = {
+					Greeting = "As marés estão a seu favor?",
+					Win = "Você flui como a água!",
+					Lose = "A maré virou...",
+				},
+			},
+		},
 	},
 	NaturePlains = {
 		Id = "NaturePlains",
@@ -222,6 +365,44 @@ Config.Zones = {
 		Biome = "Nature",
 		LevelRange = {Min = 2, Max = 10},
 		Spawns = {"VERDANTIS", "DRYADUS"},
+		NPCs = {
+			{
+				Id = "NaturePlains_Healer",
+				Name = "Druida Curandeiro",
+				Type = "Healer",
+				Position = CFrame.new(200, 5, -100),
+				Dialogue = {
+					Greeting = "A natureza restaura o que foi perdido.",
+				},
+			},
+			{
+				Id = "NaturePlains_Shop",
+				Name = "Botânico Viajante",
+				Type = "Shopkeeper",
+				Position = CFrame.new(220, 5, -80),
+				Dialogue = {
+					Greeting = "Sementes, berries e poções naturais!",
+				},
+				ShopInventory = {"BasicBall", "GreatBall", "Potion", "SuperPotion", "Antidote", "Awakening"},
+			},
+			{
+				Id = "NatureTrainer1",
+				Name = "Guardião da Floresta",
+				Type = "Trainer",
+				Position = CFrame.new(250, 5, -150),
+				Team = {
+					{SpeciesId = "VERDANTIS", Level = 8, Moves = {"Vine Whip", "Razor Leaf", "Growth"}},
+					{SpeciesId = "DRYADUS", Level = 10, Moves = {"Absorb", "Leech Seed", "Mega Drain"}},
+				},
+				RewardMoney = 900,
+				RewardItems = {"NatureStone"},
+				Dialogue = {
+					Greeting = "Respeite a floresta e ela o respeitará.",
+					Win = "A natureza reconhece sua força.",
+					Lose = "A floresta vai crescer sobre sua derrota...",
+				},
+			},
+		},
 	},
 	EarthDesert = {
 		Id = "EarthDesert",
@@ -229,6 +410,44 @@ Config.Zones = {
 		Biome = "Earth",
 		LevelRange = {Min = 8, Max = 18},
 		Spawns = {"GRAOZINHO", "ESCORPIODRA"},
+		NPCs = {
+			{
+				Id = "EarthDesert_Healer",
+				Name = "Xamã da Areia",
+				Type = "Healer",
+				Position = CFrame.new(-200, 5, -200),
+				Dialogue = {
+					Greeting = "A areia do tempo cura todas as feridas.",
+				},
+			},
+			{
+				Id = "EarthDesert_Shop",
+				Name = "Comerciante Nômade",
+				Type = "Shopkeeper",
+				Position = CFrame.new(-180, 5, -220),
+				Dialogue = {
+					Greeting = "Proteção contra tempestades de areia!",
+				},
+				ShopInventory = {"GreatBall", "UltraBall", "SuperPotion", "HyperPotion", "ParalyzeHeal"},
+			},
+			{
+				Id = "EarthTrainer1",
+				Name = "Mestre das Dunas",
+				Type = "Trainer",
+				Position = CFrame.new(-250, 5, -250),
+				Team = {
+					{SpeciesId = "GRAOZINHO", Level = 12, Moves = {"Rock Throw", "Harden", "Rock Tomb"}},
+					{SpeciesId = "ESCORPIODRA", Level = 15, Moves = {"Poison Sting", "Rock Slide", "Earthquake"}},
+				},
+				RewardMoney = 1500,
+				RewardItems = {"EarthStone"},
+				Dialogue = {
+					Greeting = "Minhas criaturas são duras como rocha!",
+					Win = "Você tem a solidez da terra!",
+					Lose = "Até as montanhas se erodem...",
+				},
+			},
+		},
 	},
 	AirPeaks = {
 		Id = "AirPeaks",
@@ -236,6 +455,44 @@ Config.Zones = {
 		Biome = "Air",
 		LevelRange = {Min = 10, Max = 20},
 		Spawns = {"PENUGEM", "VENTANIL"},
+		NPCs = {
+			{
+				Id = "AirPeaks_Healer",
+				Name = "Sacerdote dos Ventos",
+				Type = "Healer",
+				Position = CFrame.new(0, 200, 300),
+				Dialogue = {
+					Greeting = "Os ventos levam embora a dor e o cansaço.",
+				},
+			},
+			{
+				Id = "AirPeaks_Shop",
+				Name = "Mercador Alado",
+				Type = "Shopkeeper",
+				Position = CFrame.new(20, 200, 320),
+				Dialogue = {
+					Greeting = "Leve como uma pena, forte como uma tempestade!",
+				},
+				ShopInventory = {"GreatBall", "UltraBall", "SuperPotion", "HyperPotion", "Awakening"},
+			},
+			{
+				Id = "AirTrainer1",
+				Name = "Mestre dos Céus",
+				Type = "Trainer",
+				Position = CFrame.new(50, 210, 350),
+				Team = {
+					{SpeciesId = "PENUGEM", Level = 15, Moves = {"Peck", "Gust", "Wing Attack"}},
+					{SpeciesId = "VENTANIL", Level = 18, Moves = {"Air Slash", "Tailwind", "Hurricane"}},
+				},
+				RewardMoney = 2000,
+				RewardItems = {"AirStone"},
+				Dialogue = {
+					Greeting = "Alcance os céus se puder!",
+					Win = "Você voa alto!",
+					Lose = "O vento sempre volta...",
+				},
+			},
+		},
 	},
 	ShadowRuins = {
 		Id = "ShadowRuins",
@@ -243,6 +500,44 @@ Config.Zones = {
 		Biome = "Shadow",
 		LevelRange = {Min = 12, Max = 22},
 		Spawns = {"LODINHO", "CAUDALUME"},
+		NPCs = {
+			{
+				Id = "ShadowRuins_Healer",
+				Name = "Curandeiro do Vazio",
+				Type = "Healer",
+				Position = CFrame.new(-100, 5, 300),
+				Dialogue = {
+					Greeting = "Mesmo nas sombras mais profundas, há luz.",
+				},
+			},
+			{
+				Id = "ShadowRuins_Shop",
+				Name = "Mercador das Trevas",
+				Type = "Shopkeeper",
+				Position = CFrame.new(-80, 5, 320),
+				Dialogue = {
+					Greeting = "Itens para quem não teme a escuridão.",
+				},
+				ShopInventory = {"UltraBall", "HyperPotion", "MaxPotion", "FullHeal", "Revive"},
+			},
+			{
+				Id = "ShadowTrainer1",
+				Name = "Mestre das Sombras",
+				Type = "Trainer",
+				Position = CFrame.new(-150, 5, 350),
+				Team = {
+					{SpeciesId = "LODINHO", Level = 18, Moves = {"Shadow Claw", "Night Shade", "Spite"}},
+					{SpeciesId = "CAUDALUME", Level = 20, Moves = {"Dark Pulse", "Phantom Force", "Nasty Plot"}},
+				},
+				RewardMoney = 2500,
+				RewardItems = {"ShadowStone"},
+				Dialogue = {
+					Greeting = "As sombras sussurram seu nome...",
+					Win = "Você brilha mesmo na escuridão.",
+					Lose = "A escuridão o engoliu por completo...",
+				},
+			},
+		},
 	},
 }
 

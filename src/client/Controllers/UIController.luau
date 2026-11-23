@@ -86,6 +86,9 @@ function UIController.CreateScreens()
 	-- Shop
 	Screens.Shop = UIController.CreateShopScreen()
 
+	-- Quests
+	Screens.Quests = UIController.CreateQuestsScreen()
+
 	-- Default hide all
 	for _, screen in pairs(Screens) do
 		screen.Visible = false
@@ -609,6 +612,7 @@ function UIController.CreateGameplayHUD(): Frame
 		{Name = "Party", Text = "📋 PARTY", Key = "P"},
 		{Name = "Inventory", Text = "🎒 ITENS", Key = "I"},
 		{Name = "Map", Text = "🗺️ MAPA", Key = "M"},
+		{Name = "Quests", Text = "📜 MISSÕES", Key = "L"},
 		{Name = "Menu", Text = "☰ MENU", Key = "ESC"},
 	}
 
@@ -647,6 +651,7 @@ function UIController.CreateGameplayHUD(): Frame
 			if act.Name == "Party" then UIController.ShowScreen("Party")
 			elseif act.Name == "Inventory" then UIController.ShowScreen("Inventory")
 			elseif act.Name == "Map" then UIController.ShowScreen("WorldMap")
+			elseif act.Name == "Quests" then UIController.ShowScreen("Quests")
 			elseif act.Name == "Menu" then UIController.ShowScreen("MainMenu")
 			end
 		end)
@@ -910,6 +915,108 @@ function UIController.CreateShopScreen(): Frame
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 16)
 	corner.Parent = frame
+
+	return frame
+end
+
+function UIController.CreateQuestsScreen(): Frame
+	local frame = Instance.new("Frame")
+	frame.Name = "QuestsScreen"
+	frame.Size = UDim2.new(0.9, 0, 0.85, 0)
+	frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	frame.BackgroundColor3 = Color3.fromRGB(25, 25, 40)
+	frame.BorderSizePixel = 0
+	frame.Parent = ScreenGui
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 16)
+	corner.Parent = frame
+
+	-- Header
+	local header = Instance.new("Frame")
+	header.Name = "Header"
+	header.Size = UDim2.new(1, 0, 0, 60)
+	header.BackgroundTransparency = 1
+	header.Parent = frame
+
+	local title = Instance.new("TextLabel")
+	title.Size = UDim2.new(0, 200, 1, 0)
+	title.Position = UDim2.new(0, 20, 0, 0)
+	title.BackgroundTransparency = 1
+	title.Text = "📜 MISSÕES"
+	title.TextColor3 = Color3.fromRGB(255, 210, 100)
+	title.TextScaled = true
+	title.Font = Enum.Font.GothamBold
+	title.TextXAlignment = Enum.TextXAlignment.Left
+	title.Parent = header
+
+	-- Tab buttons (Active / Available)
+	local tabContainer = Instance.new("Frame")
+	tabContainer.Size = UDim2.new(0, 200, 0, 40)
+	tabContainer.Position = UDim2.new(0.5, -100, 0, 10)
+	tabContainer.BackgroundTransparency = 1
+	tabContainer.Parent = header
+
+	local tabLayout = Instance.new("UIListLayout")
+	tabLayout.FillDirection = Enum.FillDirection.Horizontal
+	tabLayout.Padding = UDim.new(0, 10)
+	tabLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	tabLayout.Parent = tabContainer
+
+	local tabs = {"Ativas", "Disponíveis"}
+	for _, tabName in ipairs(tabs) do
+		local tabBtn = Instance.new("TextButton")
+		tabBtn.Name = "Tab_" .. tabName
+		tabBtn.Size = UDim2.new(0, 90, 1, 0)
+		tabBtn.BackgroundColor3 = tabName == "Ativas" and Color3.fromRGB(100, 150, 255) or Color3.fromRGB(50, 50, 70)
+		tabBtn.BorderSizePixel = 0
+		tabBtn.Text = tabName
+		tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		tabBtn.TextScaled = true
+		tabBtn.Font = Enum.Font.GothamBold
+		tabBtn.Parent = tabContainer
+
+		local tabCorner = Instance.new("UICorner")
+		tabCorner.CornerRadius = UDim.new(0, 8)
+		tabCorner.Parent = tabBtn
+	end
+
+	-- Close button
+	local closeBtn = Instance.new("TextButton")
+	closeBtn.Size = UDim2.new(0, 50, 0, 50)
+	closeBtn.Position = UDim2.new(1, -60, 0, 5)
+	closeBtn.BackgroundTransparency = 1
+	closeBtn.Text = "✕"
+	closeBtn.TextColor3 = Color3.fromRGB(180, 180, 200)
+	closeBtn.TextScaled = true
+	closeBtn.Font = Enum.Font.GothamBold
+	closeBtn.Parent = header
+
+	closeBtn.MouseButton1Click:Connect(function()
+		UIController.HideScreen("Quests")
+	end)
+
+	-- Quest list area
+	local listFrame = Instance.new("ScrollingFrame")
+	listFrame.Name = "QuestList"
+	listFrame.Size = UDim2.new(1, -40, 1, -90)
+	listFrame.Position = UDim2.new(0, 20, 0, 80)
+	listFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+	listFrame.BackgroundTransparency = 0.3
+	listFrame.BorderSizePixel = 0
+	listFrame.ScrollBarThickness = 6
+	listFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 150, 255)
+	listFrame.Parent = frame
+
+	local listCorner = Instance.new("UICorner")
+	listCorner.CornerRadius = UDim.new(0, 12)
+	listCorner.Parent = listFrame
+
+	local listLayout = Instance.new("UIListLayout")
+	listLayout.Padding = UDim.new(0, 10)
+	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	listLayout.Parent = listFrame
 
 	return frame
 end

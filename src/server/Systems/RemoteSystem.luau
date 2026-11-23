@@ -85,7 +85,19 @@ function RemoteSystem.CreateRemotes()
 		RequestTrade = {Type = "Event", ClientToServer = true},
 		AcceptTrade = {Type = "Event", ClientToServer = true},
 		CancelTrade = {Type = "Event", ClientToServer = true},
-	}
+
+		-- NPC Interaction
+		InteractNPC = {Type = "Function", ClientToServer = true},
+		NPCHealComplete = {Type = "Event", ClientToServer = false},
+		NPCShopBuy = {Type = "Function", ClientToServer = true},
+		NPCShopSell = {Type = "Function", ClientToServer = true},
+
+		-- Quests
+		GetQuests = {Type = "Function", ClientToServer = true},
+		AcceptQuest = {Type = "Function", ClientToServer = true},
+		TurnInQuest = {Type = "Function", ClientToServer = true},
+		AbandonQuest = {Type = "Event", ClientToServer = true},
+		QuestProgress = {Type = "Event", ClientToServer = false},
 
 	for name, def in pairs(remoteDefs) do
 		local remote: RemoteEvent | RemoteFunction
@@ -290,6 +302,89 @@ function RemoteSystem.ConnectServerListeners()
 		if success and data then
 			data.Settings = settings
 			dataStoreSystem.SavePlayerData(player.UserId, data)
+		end
+	end)
+
+	-- NPC Interaction
+	RemoteSystem.OnServerInvoke("InteractNPC", function(player: Player, npcId: string)
+		local npcSystem = require(script.Parent.NPCSystem)
+		return npcSystem.HandleInteraction(player, npcId, npcSystem.GetNPC(npcId)?.Type or "")
+	end)
+
+	RemoteSystem.OnServerInvoke("NPCShopBuy", function(player: Player, npcId: string, itemId: string, count: number)
+		local npcSystem = require(script.Parent.NPCSystem)
+		local npc = npcSystem.GetNPC(npcId)
+		if not npc or npc.Type ~= "Shopkeeper" then return {Success = false, Error = "Not a shopkeeper"} end
+
+		local itemSystem = require(script.Parent.ItemSystem)
+		local itemConfig = Config.Items[itemId]
+		if not itemConfig then return {Success = false, Error = "Item not found"} end
+
+		local totalCost = itemConfig.Price * count
+		local playerData = require(script.Parent.DataStoreSystem).LoadPlayerData(player.UserId)
+		if (playerData.Money or 0) < totalCost then
+			return {Success = false, Error = "Dinheiro insuficiente"}
+		end
+
+		playerData.Money = (playerData.Money or 0) - totalCost
+		itemSystem.AddItem(player, itemId, count)
+		require(script.Parent.DataStoreSystem).SavePlayerData(player.UserId, playerData)
+
+		return {Success = true, ItemsBought = count, RemainingMoney = playerData.Money}
+	end)
+
+	RemoteSystem.OnServerInvoke("NPCShopSell", function(player: Player, npcId: string, itemId: string, count: number)
+		local npcSystem = require(script.Parent.NPCSystem)
+		local npc = npcSystem.GetNPC(npcId)
+		if not npc or npc.Type ~= "Shopkeeper" then return {Success = false, Error = "Not a shopkeeper"} end
+
+		local itemSystem = require(script.Parent.ItemSystem)
+		local itemConfig = Config.Items[itemId]
+		if not itemConfig then return {Success = false, Error = "Item not found"} end
+
+		local sellPrice = math.floor(itemConfig.Price * 0.5) -- 50% sell value
+		local totalEarned = sellPrice * count
+
+		if not itemSystem.RemoveItem(player, itemId, count) then
+			return {Success = false, Error = "Item não encontrado no inventário"}
+		end
+
+		local playerData = require(script.Parent.DataStoreSystem).LoadPlayerData(player.UserId)
+		playerData.Money = (playerData.Money or 0) + totalEarned
+		require(script.Parent.DataStoreSystem).SavePlayerData(player.UserId, playerData)
+
+		return {Success = true, ItemsSold = count, MoneyEarned = totalEarned, RemainingMoney = playerData.Money}
+	end)
+
+	-- Quests
+	RemoteSystem.OnServerInvoke("GetQuests", function(player: Player, npcId: string?)
+		local questSystem = require(script.Parent.QuestSystem)
+		if npcId then
+			return questSystem.GetAvailableQuests(player, npcId)
+		else
+			return questSystem.GetActiveQuests(player)
+		end
+	end)
+
+	RemoteSystem.OnServerInvoke("AcceptQuest", function(player: Player, questId: string)
+		local questSystem = require(script.Parent.QuestSystem)
+		return questSystem.AcceptQuest(player, questId)
+	end)
+
+	RemoteSystem.OnServerInvoke("TurnInQuest", function(player: Player, questId: string)
+		local questSystem = require(script.Parent.QuestSystem)
+		return questSystem.TurnInQuest(player, questId)
+	end)
+
+	RemoteSystem.OnServerEvent("AbandonQuest", function(player: Player, questId: string)
+		local questSystem = require(script.Parent.QuestSystem)
+		local quests = questSystem.GetActiveQuests(player)
+		for i, quest in ipairs(quests) do
+			if quest.Id == questId then
+				table.remove(quests, i)
+				questSystem.SavePlayerQuests(player)
+				break
+			end
 		end
 	end)
 end

@@ -46,6 +46,7 @@ local KeyBindings = {
 	CameraRotateRight = {Enum.KeyCode.E, Enum.KeyCode.Period},
 	CameraZoomIn = {Enum.KeyCode.PageUp},
 	CameraZoomOut = {Enum.KeyCode.PageDown},
+	ToggleQuestTracker = {Enum.KeyCode.L}, -- L para Log de missões
 }
 
 -- Initialize
@@ -117,7 +118,12 @@ function InputController.BindActions()
 	for actionName, keys in pairs(KeyBindings) do
 		for _, key in ipairs(keys) do
 			ContextActionService:BindAction(actionName .. "_" .. key.Name, function(_, state, input)
-				InputController.HandleKey(input.KeyCode, state)
+				if actionName == "ToggleQuestTracker" and state == Enum.UserInputState.Begin then
+					local QuestController = require(script.Parent.QuestController)
+					QuestController.ToggleTracker()
+				else
+					InputController.HandleKey(input.KeyCode, state)
+				end
 			end, false, key)
 		end
 	end

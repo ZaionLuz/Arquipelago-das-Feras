@@ -151,4 +151,38 @@ function RemoteClient.HasRemote(name: string): boolean
 	return Remotes[name] ~= nil
 end
 
+-- NPC Interaction helpers
+function RemoteClient.InteractNPC(npcId: string): any?
+	return RemoteClient.Invoke("InteractNPC", npcId)
+end
+
+function RemoteClient.NPCShopBuy(npcId: string, itemId: string, count: number): any?
+	return RemoteClient.Invoke("NPCShopBuy", npcId, itemId, count)
+end
+
+function RemoteClient.NPCShopSell(npcId: string, itemId: string, count: number): any?
+	return RemoteClient.Invoke("NPCShopSell", npcId, itemId, count)
+end
+
+-- Quest helpers
+function RemoteClient.GetQuests(npcId: string?): any?
+	return RemoteClient.Invoke("GetQuests", npcId)
+end
+
+function RemoteClient.AcceptQuest(questId: string): (boolean, string?)
+	return RemoteClient.Invoke("AcceptQuest", questId)
+end
+
+function RemoteClient.TurnInQuest(questId: string): (boolean, string?)
+	return RemoteClient.Invoke("TurnInQuest", questId)
+end
+
+function RemoteClient.AbandonQuest(questId: string)
+	RemoteClient.Fire("AbandonQuest", questId)
+end
+
+function RemoteClient.OnQuestProgress(callback: (any, any) -> ())
+	return RemoteClient.On("QuestProgress", callback)
+end
+
 return RemoteClient
