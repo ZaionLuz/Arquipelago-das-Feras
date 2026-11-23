@@ -580,7 +580,7 @@ Config.Items = {
 	ShadowStone = {Id = "ShadowStone", Name = "Pedra da Sombra", Evolves = {"Shadow"}, Price = 2100},
 }
 
--- Zonas/biomas
+-- Zonas/biomas (posições alinhadas com ilhas exportadas do Blender)
 Config.Zones = {
 	StarterTown = {
 		Id = "StarterTown",
@@ -588,6 +588,8 @@ Config.Zones = {
 		Biome = "Nature",
 		LevelRange = {Min = 1, Max = 5},
 		SafeZone = true,
+		IslandPosition = Vector3.new(0, 0, 0),
+		IslandSize = 80,
 		NPCs = {
 			{
 				Id = "Professor",
@@ -648,12 +650,14 @@ Config.Zones = {
 		Biome = "Fire",
 		LevelRange = {Min = 3, Max = 12},
 		Spawns = {"CINZELO", "MAGMARAU"},
+		IslandPosition = Vector3.new(300, 0, 0),
+		IslandSize = 100,
 		NPCs = {
 			{
 				Id = "FireForest_Healer",
 				Name = "Curandeiro do Fogo",
 				Type = "Healer",
-				Position = CFrame.new(100, 10, 100),
+				Position = CFrame.new(400, 10, 100),
 				Dialogue = {
 					Greeting = "O calor da floresta cansou suas criaturas? Eu cuido delas.",
 				},
@@ -662,7 +666,7 @@ Config.Zones = {
 				Id = "FireForest_Shop",
 				Name = "Mercador das Brasas",
 				Type = "Shopkeeper",
-				Position = CFrame.new(120, 10, 80),
+				Position = CFrame.new(420, 10, 80),
 				Dialogue = {
 					Greeting = "Itens resistentes ao calor para exploradores!",
 				},
@@ -672,7 +676,7 @@ Config.Zones = {
 				Id = "FireTrainer1",
 				Name = "Treinador de Fogo Brasa",
 				Type = "Trainer",
-				Position = CFrame.new(150, 10, 150),
+				Position = CFrame.new(450, 10, 150),
 				Team = {
 					{SpeciesId = "CINZELO", Level = 8, Moves = {"Scratch", "Ember", "Fire Fang"}},
 					{SpeciesId = "MAGMARAU", Level = 10, Moves = {"Ember", "Rock Throw", "Flame Burst"}},
@@ -685,16 +689,16 @@ Config.Zones = {
 					Lose = "O fogo nunca se apaga...",
 				},
 				PatrolPoints = {
-					CFrame.new(150, 10, 150),
-					CFrame.new(170, 10, 170),
-					CFrame.new(150, 10, 190),
+					CFrame.new(450, 10, 150),
+					CFrame.new(470, 10, 170),
+					CFrame.new(450, 10, 190),
 				},
 			},
 			{
 				Id = "FireForest_Quest",
 				Name = "Guarda Florestal",
 				Type = "QuestGiver",
-				Position = CFrame.new(80, 10, 120),
+				Position = CFrame.new(380, 10, 120),
 				Dialogue = {
 					Greeting = "Preciso de ajuda para estudar as criaturas desta floresta.",
 				},
@@ -707,12 +711,14 @@ Config.Zones = {
 		Biome = "Water",
 		LevelRange = {Min = 5, Max = 15},
 		Spawns = {"HIDROSONDA", "VAPORAL"},
+		IslandPosition = Vector3.new(0, -20, 300),
+		IslandSize = 90,
 		NPCs = {
 			{
 				Id = "WaterCaves_Healer",
 				Name = "Curandeiro das Águas",
 				Type = "Healer",
-				Position = CFrame.new(-100, -20, 100),
+				Position = CFrame.new(-100, -20, 400),
 				Dialogue = {
 					Greeting = "A água cura todas as feridas. Deixe-me ajudar.",
 				},
@@ -721,7 +727,7 @@ Config.Zones = {
 				Id = "WaterCaves_Shop",
 				Name = "Mercador Submerso",
 				Type = "Shopkeeper",
-				Position = CFrame.new(-80, -20, 120),
+				Position = CFrame.new(-80, -20, 420),
 				Dialogue = {
 					Greeting = "Equipamentos para exploradores aquáticos!",
 				},
@@ -731,7 +737,7 @@ Config.Zones = {
 				Id = "WaterTrainer1",
 				Name = "Treinador das Marés",
 				Type = "Trainer",
-				Position = CFrame.new(-150, -20, 150),
+				Position = CFrame.new(-150, -20, 450),
 				Team = {
 					{SpeciesId = "HIDROSONDA", Level = 10, Moves = {"Water Gun", "Bubble", "Aqua Jet"}},
 					{SpeciesId = "VAPORAL", Level = 12, Moves = {"Water Gun", "Mist", "Brine"}},
@@ -752,12 +758,14 @@ Config.Zones = {
 		Biome = "Nature",
 		LevelRange = {Min = 2, Max = 10},
 		Spawns = {"VERDANTIS", "DRYADUS"},
+		IslandPosition = Vector3.new(-300, 0, 0),
+		IslandSize = 110,
 		NPCs = {
 			{
 				Id = "NaturePlains_Healer",
 				Name = "Druida Curandeiro",
 				Type = "Healer",
-				Position = CFrame.new(200, 5, -100),
+				Position = CFrame.new(-200, 5, 100),
 				Dialogue = {
 					Greeting = "A natureza restaura o que foi perdido.",
 				},
@@ -766,7 +774,7 @@ Config.Zones = {
 				Id = "NaturePlains_Shop",
 				Name = "Botânico Viajante",
 				Type = "Shopkeeper",
-				Position = CFrame.new(220, 5, -80),
+				Position = CFrame.new(-220, 5, 80),
 				Dialogue = {
 					Greeting = "Sementes, berries e poções naturais!",
 				},
@@ -776,7 +784,7 @@ Config.Zones = {
 				Id = "NatureTrainer1",
 				Name = "Guardião da Floresta",
 				Type = "Trainer",
-				Position = CFrame.new(250, 5, -150),
+				Position = CFrame.new(-250, 5, 150),
 				Team = {
 					{SpeciesId = "VERDANTIS", Level = 8, Moves = {"Vine Whip", "Razor Leaf", "Growth"}},
 					{SpeciesId = "DRYADUS", Level = 10, Moves = {"Absorb", "Leech Seed", "Mega Drain"}},
@@ -797,12 +805,14 @@ Config.Zones = {
 		Biome = "Earth",
 		LevelRange = {Min = 8, Max = 18},
 		Spawns = {"GRAOZINHO", "ESCORPIODRA"},
+		IslandPosition = Vector3.new(0, 0, -300),
+		IslandSize = 100,
 		NPCs = {
 			{
 				Id = "EarthDesert_Healer",
 				Name = "Xamã da Areia",
 				Type = "Healer",
-				Position = CFrame.new(-200, 5, -200),
+				Position = CFrame.new(-100, 5, -400),
 				Dialogue = {
 					Greeting = "A areia do tempo cura todas as feridas.",
 				},
@@ -811,7 +821,7 @@ Config.Zones = {
 				Id = "EarthDesert_Shop",
 				Name = "Comerciante Nômade",
 				Type = "Shopkeeper",
-				Position = CFrame.new(-180, 5, -220),
+				Position = CFrame.new(-80, 5, -420),
 				Dialogue = {
 					Greeting = "Proteção contra tempestades de areia!",
 				},
@@ -821,7 +831,7 @@ Config.Zones = {
 				Id = "EarthTrainer1",
 				Name = "Mestre das Dunas",
 				Type = "Trainer",
-				Position = CFrame.new(-250, 5, -250),
+				Position = CFrame.new(-150, 5, -450),
 				Team = {
 					{SpeciesId = "GRAOZINHO", Level = 12, Moves = {"Rock Throw", "Harden", "Rock Tomb"}},
 					{SpeciesId = "ESCORPIODRA", Level = 15, Moves = {"Poison Sting", "Rock Slide", "Earthquake"}},
@@ -842,12 +852,14 @@ Config.Zones = {
 		Biome = "Air",
 		LevelRange = {Min = 10, Max = 20},
 		Spawns = {"PENUGEM", "VENTANIL"},
+		IslandPosition = Vector3.new(200, 150, 200),
+		IslandSize = 80,
 		NPCs = {
 			{
 				Id = "AirPeaks_Healer",
 				Name = "Sacerdote dos Ventos",
 				Type = "Healer",
-				Position = CFrame.new(0, 200, 300),
+				Position = CFrame.new(200, 200, 300),
 				Dialogue = {
 					Greeting = "Os ventos levam embora a dor e o cansaço.",
 				},
@@ -856,7 +868,7 @@ Config.Zones = {
 				Id = "AirPeaks_Shop",
 				Name = "Mercador Alado",
 				Type = "Shopkeeper",
-				Position = CFrame.new(20, 200, 320),
+				Position = CFrame.new(220, 200, 320),
 				Dialogue = {
 					Greeting = "Leve como uma pena, forte como uma tempestade!",
 				},
@@ -866,7 +878,7 @@ Config.Zones = {
 				Id = "AirTrainer1",
 				Name = "Mestre dos Céus",
 				Type = "Trainer",
-				Position = CFrame.new(50, 210, 350),
+				Position = CFrame.new(250, 210, 350),
 				Team = {
 					{SpeciesId = "PENUGEM", Level = 15, Moves = {"Peck", "Gust", "Wing Attack"}},
 					{SpeciesId = "VENTANIL", Level = 18, Moves = {"Air Slash", "Tailwind", "Hurricane"}},
@@ -887,12 +899,14 @@ Config.Zones = {
 		Biome = "Shadow",
 		LevelRange = {Min = 12, Max = 22},
 		Spawns = {"LODINHO", "CAUDALUME"},
+		IslandPosition = Vector3.new(-200, -20, -200),
+		IslandSize = 85,
 		NPCs = {
 			{
 				Id = "ShadowRuins_Healer",
 				Name = "Curandeiro do Vazio",
 				Type = "Healer",
-				Position = CFrame.new(-100, 5, 300),
+				Position = CFrame.new(-300, -20, -300),
 				Dialogue = {
 					Greeting = "Mesmo nas sombras mais profundas, há luz.",
 				},
@@ -901,7 +915,7 @@ Config.Zones = {
 				Id = "ShadowRuins_Shop",
 				Name = "Mercador das Trevas",
 				Type = "Shopkeeper",
-				Position = CFrame.new(-80, 5, 320),
+				Position = CFrame.new(-280, -20, -320),
 				Dialogue = {
 					Greeting = "Itens para quem não teme a escuridão.",
 				},
@@ -911,7 +925,7 @@ Config.Zones = {
 				Id = "ShadowTrainer1",
 				Name = "Mestre das Sombras",
 				Type = "Trainer",
-				Position = CFrame.new(-150, 5, 350),
+				Position = CFrame.new(-350, -20, -350),
 				Team = {
 					{SpeciesId = "LODINHO", Level = 18, Moves = {"Shadow Claw", "Night Shade", "Spite"}},
 					{SpeciesId = "CAUDALUME", Level = 20, Moves = {"Dark Pulse", "Phantom Force", "Nasty Plot"}},
@@ -922,6 +936,53 @@ Config.Zones = {
 					Greeting = "As sombras sussurram seu nome...",
 					Win = "Você brilha mesmo na escuridão.",
 					Lose = "A escuridão o engoliu por completo...",
+				},
+			},
+		},
+	},
+	VolcanoIsle = {
+		Id = "VolcanoIsle",
+		Name = "Ilha Vulcânica",
+		Biome = "Fire",
+		LevelRange = {Min = 20, Max = 35},
+		Spawns = {"CINZELO", "MAGMARAU", "FENIXFULIGEM", "VULCANODRAGO"},
+		IslandPosition = Vector3.new(350, 0, 350),
+		IslandSize = 60,
+		NPCs = {
+			{
+				Id = "VolcanoIsle_Healer",
+				Name = "Guardião do Vulcão",
+				Type = "Healer",
+				Position = CFrame.new(400, 10, 400),
+				Dialogue = {
+					Greeting = "O fogo purifica tudo. Suas criaturas renascerão das cinzas.",
+				},
+			},
+			{
+				Id = "VolcanoIsle_Shop",
+				Name = "Ferreira do Núcleo",
+				Type = "Shopkeeper",
+				Position = CFrame.new(380, 10, 380),
+				Dialogue = {
+					Greeting = "Forjados no fogo, para quem domina as chamas!",
+				},
+				ShopInventory = {"UltraBall", "MasterBall", "MaxPotion", "FullHeal", "Revive", "FireStone"},
+			},
+			{
+				Id = "VolcanoTrainer1",
+				Name = "Mestre Vulcânico",
+				Type = "Trainer",
+				Position = CFrame.new(420, 15, 420),
+				Team = {
+					{SpeciesId = "FENIXFULIGEM", Level = 30, Moves = {"Flare Blitz", "Brave Bird", "Sacred Fire", "Roost"}},
+					{SpeciesId = "MAGMARAU", Level = 28, Moves = {"Flare Blitz", "Earthquake", "Stone Edge", "Fire Blast"}},
+				},
+				RewardMoney = 5000,
+				RewardItems = {"FireStone", "MaxRevive"},
+				Dialogue = {
+					Greeting = "Apenas os fortes sobrevivem ao vulcão!",
+					Win = "Suas chamas rivalizam com o núcleo da terra!",
+					Lose = "A lava consome tudo...",
 				},
 			},
 		},
@@ -3902,14 +3963,24 @@ function NPCSystem.SpawnNPC(npcData: Types.NPCData, zoneId: string)
 	humanoid.WalkSpeed = 0 -- Stationary by default
 	humanoid.Parent = model
 
-	-- Root part
+	-- Root part - adjust position relative to island center if needed
+	local zoneData = Config.Zones[zoneId]
+	local npcPosition = npcData.Position
+	if zoneData and zoneData.IslandPosition then
+		-- If NPC position is relative to zone center, adjust
+		local isRelative = (npcPosition.Position - zoneData.IslandPosition).Magnitude &lt; 500
+		if isRelative then
+			npcPosition = CFrame.new(zoneData.IslandPosition + npcPosition.Position)
+		end
+	end
+
 	local rootPart = Instance.new("Part")
 	rootPart.Name = "HumanoidRootPart"
 	rootPart.Size = Vector3.new(2, 2, 1)
 	rootPart.Transparency = 1
 	rootPart.CanCollide = false
 	rootPart.Anchored = true
-	rootPart.CFrame = npcData.Position
+	rootPart.CFrame = npcPosition
 	rootPart.Parent = model
 
 	model.PrimaryPart = rootPart
@@ -5716,7 +5787,7 @@ SpawnSystem.OnCreatureDespawned = Signal.New()
 -- Spawn configuration
 local SpawnConfig = {
 	MaxCreaturesPerZone = 15,
-	SpawnRadius = 100,
+	BaseSpawnRadius = 80,
 	DespawnRadius = 150,
 	SpawnInterval = 10, -- seconds
 	DespawnTime = 300, -- 5 minutes
@@ -5773,15 +5844,26 @@ function SpawnSystem.GenerateSpawnPoints(zoneId: string, count: number): {Vector
 	local zoneData = Config.Zones[zoneId]
 
 	-- In a real game, these would be placed manually or generated from terrain
-	-- For now, generate random points around zone center
+	-- For now, generate random points around zone center using island size
 	local center = SpawnSystem.GetZoneCenter(zoneId)
+	local islandSize = zoneData and zoneData.IslandSize or 80
+	local spawnRadius = islandSize * 0.7 -- 70% of island radius
 
 	for i = 1, count do
 		local angle = math.random() * 2 * math.pi
-		local distance = math.random() * SpawnConfig.SpawnRadius * 0.8
+		local distance = math.random() * spawnRadius
 		local x = center.X + math.cos(angle) * distance
 		local z = center.Z + math.sin(angle) * distance
-		local y = center.Y + math.random(-5, 5)
+		-- Vary Y based on biome
+		local yOffset = 0
+		if zoneData and zoneData.Biome == "Air" then
+			yOffset = math.random(0, 30)
+		elseif zoneData and zoneData.Biome == "Water" then
+			yOffset = math.random(-15, 5)
+		else
+			yOffset = math.random(-5, 5)
+		end
+		local y = center.Y + yOffset
 
 		table.insert(points, Vector3.new(x, y, z))
 	end
@@ -5789,20 +5871,13 @@ function SpawnSystem.GenerateSpawnPoints(zoneId: string, count: number): {Vector
 	return points
 end
 
--- Get zone center (placeholder - would use actual zone positions)
+-- Get zone center (uses Config.Zones island positions)
 function SpawnSystem.GetZoneCenter(zoneId: string): Vector3
-	-- Default centers for each zone
-	local centers = {
-		StarterTown = Vector3.new(0, 5, 0),
-		FireForest = Vector3.new(200, 10, 0),
-		WaterCaves = Vector3.new(-200, -20, 0),
-		NaturePlains = Vector3.new(0, 10, 200),
-		EarthDesert = Vector3.new(-200, 15, -200),
-		AirPeaks = Vector3.new(200, 50, 200),
-		ShadowRuins = Vector3.new(0, 5, -200),
-	}
-
-	return centers[zoneId] or Vector3.new(0, 5, 0)
+	local zoneData = Config.Zones[zoneId]
+	if zoneData and zoneData.IslandPosition then
+		return zoneData.IslandPosition + Vector3.new(0, 5, 0)
+	end
+	return Vector3.new(0, 5, 0)
 end
 
 -- Initial spawn for all zones
@@ -11961,12 +12036,22 @@ local SpawnedCreatures = {} :: {[string]: {Creature: Types.CreatureData, Model: 
 local CurrentZone: Types.ZoneData?
 local CurrentWeather: Types.WeatherType = "Clear"
 local CurrentTimeOfDay: "Dawn" | "Day" | "Dusk" | "Night" = "Day"
-local RenderDistance = 200
-local DespawnDistance = 250
+local RenderDistance = 300
+local DespawnDistance = 350
+
+-- Island models
+local IslandModels = {} :: {[string]: Model}
+local IslandConfig = {}
 
 -- Initialize
 function WorldController.Initialize()
 	print("[WorldController] Initializing...")
+
+	-- Load island configurations
+	WorldController.LoadIslandConfig()
+
+	-- Load island models from ReplicatedStorage
+	WorldController.LoadIslandModels()
 
 	-- Setup time/weather cycle
 	WorldController.StartTimeCycle()
@@ -11976,6 +12061,249 @@ function WorldController.Initialize()
 	-- (Handled via RemoteClient in init.client.luau)
 
 	print("[WorldController] Initialized")
+end
+
+-- Load island configuration (aligned with server Config.Zones)
+function WorldController.LoadIslandConfig()
+	IslandConfig = {
+		StarterTown = {
+			Id = "StarterTown",
+			Name = "Vila Inicial",
+			Biome = "Nature",
+			Position = Vector3.new(0, 0, 0),
+			Size = 80,
+			SafeZone = true,
+			LevelRange = {Min = 1, Max = 5},
+		},
+		FireForest = {
+			Id = "FireForest",
+			Name = "Floresta de Brasas",
+			Biome = "Fire",
+			Position = Vector3.new(300, 0, 0),
+			Size = 100,
+			LevelRange = {Min = 3, Max = 12},
+		},
+		WaterCaves = {
+			Id = "WaterCaves",
+			Name = "Cavernas Aquáticas",
+			Biome = "Water",
+			Position = Vector3.new(0, -20, 300),
+			Size = 90,
+			LevelRange = {Min = 5, Max = 15},
+		},
+		NaturePlains = {
+			Id = "NaturePlains",
+			Name = "Planícies Verdentes",
+			Biome = "Nature",
+			Position = Vector3.new(-300, 0, 0),
+			Size = 110,
+			LevelRange = {Min = 2, Max = 10},
+		},
+		EarthDesert = {
+			Id = "EarthDesert",
+			Name = "Deserto de Dunas",
+			Biome = "Earth",
+			Position = Vector3.new(0, 0, -300),
+			Size = 100,
+			LevelRange = {Min = 8, Max = 18},
+		},
+		AirPeaks = {
+			Id = "AirPeaks",
+			Name = "Picos Ventosos",
+			Biome = "Air",
+			Position = Vector3.new(200, 150, 200),
+			Size = 80,
+			LevelRange = {Min = 10, Max = 20},
+		},
+		ShadowRuins = {
+			Id = "ShadowRuins",
+			Name = "Ruínas Sombrias",
+			Biome = "Shadow",
+			Position = Vector3.new(-200, -20, -200),
+			Size = 85,
+			LevelRange = {Min = 12, Max = 22},
+		},
+		VolcanoIsle = {
+			Id = "VolcanoIsle",
+			Name = "Ilha Vulcânica",
+			Biome = "Fire",
+			Position = Vector3.new(350, 0, 350),
+			Size = 60,
+			LevelRange = {Min = 20, Max = 35},
+		},
+	}
+end
+
+-- Load island models from ReplicatedStorage.Assets.Islands
+function WorldController.LoadIslandModels()
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	local islandsFolder = assets and assets:FindFirstChild("Islands")
+
+	if not islandsFolder then
+		warn("[WorldController] Assets.Islands folder not found in ReplicatedStorage!")
+		warn("[WorldController] Import island FBX files and place them in ReplicatedStorage.Assets.Islands")
+		WorldController.CreatePlaceholderIslands()
+		return
+	end
+
+	for islandId, config in pairs(IslandConfig) do
+		local islandModel = islandsFolder:FindFirstChild(islandId)
+			or islandsFolder:FindFirstChild("Island_" .. islandId)
+			or islandsFolder:FindFirstChild(islandId:lower())
+
+		if islandModel then
+			local clone = islandModel:Clone()
+			clone.Name = islandId
+			clone.Parent = Workspace
+
+			-- Ensure primary part
+			if not clone.PrimaryPart then
+				local center = clone:FindFirstChild("IslandCenter")
+					or clone:FindFirstChildWhichIsA("BasePart")
+				if center then
+					clone.PrimaryPart = center
+				end
+			end
+
+			-- Position at island location
+			if clone.PrimaryPart then
+				clone:PivotTo(CFrame.new(config.Position))
+			end
+
+			-- Anchor all parts
+			for _, part in ipairs(clone:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.Anchored = true
+				end
+			end
+
+			IslandModels[islandId] = clone
+			print(`[WorldController] Loaded island model: {islandId}`)
+		else
+			warn(`[WorldController] Island model not found: {islandId}`)
+			WorldController.CreatePlaceholderIsland(islandId, config)
+		end
+	end
+
+	-- Load bridges
+	WorldController.LoadBridges(islandsFolder)
+end
+
+function WorldController.LoadBridges(islandsFolder)
+	local bridgesFolder = islandsFolder:FindFirstChild("Bridges")
+	if not bridgesFolder then return end
+
+	for _, bridgeModel in ipairs(bridgesFolder:GetChildren()) do
+		if bridgeModel:IsA("Model") or bridgeModel:IsA("BasePart") then
+			local clone = bridgeModel:Clone()
+			clone.Name = bridgeModel.Name
+			clone.Parent = Workspace
+
+			if not clone.PrimaryPart and clone:IsA("Model") then
+				clone.PrimaryPart = clone:FindFirstChildWhichIsA("BasePart")
+			end
+
+			for _, part in ipairs(clone:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.Anchored = true
+					part.CanCollide = true
+				end
+			end
+
+			IslandModels[bridgeModel.Name] = clone
+			print(`[WorldController] Loaded bridge: {bridgeModel.Name}`)
+		end
+	end
+end
+
+-- Create placeholder islands if models not available
+function WorldController.CreatePlaceholderIslands()
+	for islandId, config in pairs(IslandConfig) do
+		WorldController.CreatePlaceholderIsland(islandId, config)
+	end
+end
+
+function WorldController.CreatePlaceholderIsland(islandId: string, config: any)
+	local model = Instance.new("Model")
+	model.Name = islandId
+	model.Parent = Workspace
+
+	-- Main terrain base
+	local terrain = Instance.new("Part")
+	terrain.Name = "Terrain"
+	terrain.Size = Vector3.new(config.Size * 2, 5, config.Size * 2)
+	terrain.Position = config.Position + Vector3.new(0, -2.5, 0)
+	terrain.Anchored = true
+	terrain.CanCollide = true
+	terrain.Material = WorldController.GetBiomeMaterial(config.Biome)
+	terrain.Color = WorldController.GetBiomeColor(config.Biome)
+	terrain.Parent = model
+
+	model.PrimaryPart = terrain
+
+	-- Add some decorative elements
+	WorldController.AddIslandProps(model, config)
+
+	IslandModels[islandId] = model
+	print(`[WorldController] Created placeholder island: {islandId}`)
+end
+
+function WorldController.GetBiomeMaterial(biome: string): Enum.Material
+	local materials = {
+		Nature = Enum.Material.Grass,
+		Fire = Enum.Material.Basalt,
+		Water = Enum.Material.Sand,
+		Earth = Enum.Material.Sandstone,
+		Air = Enum.Material.SmoothPlastic,
+		Shadow = Enum.Material.Slate,
+	}
+	return materials[biome] or Enum.Material.Grass
+end
+
+function WorldController.GetBiomeColor(biome: string): Color3
+	local colors = {
+		Nature = Color3.fromRGB(60, 140, 60),
+		Fire = Color3.fromRGB(80, 40, 30),
+		Water = Color3.fromRGB(194, 178, 128),
+		Earth = Color3.fromRGB(140, 120, 90),
+		Air = Color3.fromRGB(220, 230, 255),
+		Shadow = Color3.fromRGB(40, 30, 60),
+	}
+	return colors[biome] or Color3.fromRGB(100, 100, 100)
+end
+
+function WorldController.AddIslandProps(model: Model, config: any)
+	local center = config.Position
+	local count = 20
+
+	for i = 1, count do
+		local angle = math.random() * 2 * math.pi
+		local dist = math.random(config.Size * 0.3, config.Size * 0.7)
+		local pos = center + Vector3.new(math.cos(angle), 0, math.sin(angle)) * dist
+		pos = pos + Vector3.new(0, 3, 0)
+
+		local prop = Instance.new("Part")
+		prop.Name = "Prop_" .. i
+		prop.Size = Vector3.new(math.random(3, 8), math.random(5, 15), math.random(3, 8))
+		prop.Position = pos
+		prop.Anchored = true
+		prop.CanCollide = false
+		prop.Material = Enum.Material.Neon
+		prop.Color = WorldController.GetBiomeAccentColor(config.Biome)
+		prop.Parent = model
+	end
+end
+
+function WorldController.GetBiomeAccentColor(biome: string): Color3
+	local colors = {
+		Nature = Color3.fromRGB(80, 200, 80),
+		Fire = Color3.fromRGB(255, 100, 50),
+		Water = Color3.fromRGB(50, 150, 255),
+		Earth = Color3.fromRGB(180, 140, 80),
+		Air = Color3.fromRGB(180, 200, 255),
+		Shadow = Color3.fromRGB(120, 60, 180),
+	}
+	return colors[biome] or Color3.fromRGB(200, 200, 200)
 end
 
 -- Update loop
@@ -11988,6 +12316,16 @@ function WorldController.Update(deltaTime: number)
 
 	-- Update time of day visuals
 	WorldController.UpdateTimeVisuals(deltaTime)
+
+	-- Check player zone
+	WorldController.CheckPlayerZone()
+end
+
+function WorldController.CheckPlayerZone()
+	local player = Players.LocalPlayer
+	if not player.Character or not player.Character.PrimaryPart then return end
+
+	WorldController.CheckZoneFromPosition(player.Character.PrimaryPart.Position)
 end
 
 -- Spawn a creature in the world
@@ -12564,10 +12902,104 @@ end
 function WorldController.ShowZoneNotification(zoneName: string)
 	-- Would show a nice UI notification
 	print(`[WorldController] Entered zone: {zoneName}`)
+
+	-- Show zone name on screen (could be enhanced with UI)
+	local player = Players.LocalPlayer
+	if player.PlayerGui then
+		local gui = player.PlayerGui:FindFirstChild("ZoneNotification")
+		if not gui then
+			gui = Instance.new("ScreenGui")
+			gui.Name = "ZoneNotification"
+			gui.ResetOnSpawn = false
+			gui.Parent = player.PlayerGui
+
+			local frame = Instance.new("Frame")
+			frame.Name = "ZoneFrame"
+			frame.Size = UDim2.new(0, 400, 0, 80)
+			frame.Position = UDim2.new(0.5, -200, 0.1, 0)
+			frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+			frame.BackgroundTransparency = 0.2
+			frame.BorderSizePixel = 0
+			frame.Parent = gui
+
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0, 12)
+			corner.Parent = frame
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = Color3.fromRGB(100, 200, 255)
+			stroke.Thickness = 2
+			stroke.Parent = frame
+
+			local label = Instance.new("TextLabel")
+			label.Name = "ZoneLabel"
+			label.Size = UDim2.new(1, -40, 1, 0)
+			label.Position = UDim2.new(0, 20, 0, 0)
+			label.BackgroundTransparency = 1
+			label.Text = zoneName
+			label.TextColor3 = Color3.fromRGB(255, 255, 255)
+			label.TextScaled = true
+			label.Font = Enum.Font.GothamBold
+			label.TextStrokeTransparency = 0.5
+			label.Parent = frame
+		else
+			local label = gui.ZoneFrame.ZoneLabel
+			label.Text = zoneName
+		end
+
+		-- Animate in/out
+		local frame = gui.ZoneFrame
+		frame.Size = UDim2.new(0, 0, 0, 80)
+		local tweenIn = TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Size = UDim2.new(0, 400, 0, 80)
+		})
+		tweenIn:Play()
+
+		task.delay(3, function()
+			if gui and gui.Parent then
+				local tweenOut = TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+					Size = UDim2.new(0, 0, 0, 80)
+				})
+				tweenOut:Play()
+				tweenOut.Completed:Wait()
+				gui:Destroy()
+			end
+		end)
+	end
 end
 
 function WorldController.GetCurrentZone(): Types.ZoneData?
 	return CurrentZone
+end
+
+-- Check which zone player is in based on position
+function WorldController.CheckZoneFromPosition(position: Vector3)
+	local player = Players.LocalPlayer
+	if not player.Character or not player.Character.PrimaryPart then return end
+
+	local closestZone = nil
+	local closestDist = math.huge
+
+	for islandId, config in pairs(IslandConfig) do
+		local dist = (position - config.Position).Magnitude
+		if dist &lt; config.Size and dist &lt; closestDist then
+			closestDist = dist
+			closestZone = config
+		end
+	end
+
+	if closestZone and (not CurrentZone or CurrentZone.Id ~= closestZone.Id) then
+		-- Convert to ZoneData format
+		local zoneData: Types.ZoneData = {
+			Id = closestZone.Id,
+			Name = closestZone.Name,
+			Biome = closestZone.Biome,
+			LevelRange = closestZone.LevelRange,
+			SafeZone = closestZone.SafeZone or false,
+			Position = closestZone.Position,
+		}
+		WorldController.SetCurrentZone(zoneData)
+	end
 end
 
 function WorldController.GetCurrentWeather(): Types.WeatherType

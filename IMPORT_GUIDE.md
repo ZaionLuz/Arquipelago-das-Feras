@@ -1,7 +1,10 @@
-# Guia de Importação de Modelos - Arquipélago das Feras
+# Guia de Importação Completo - Arquipélago das Feras
 
 ## Visão Geral
-Este guia explica como importar os 27 modelos de criaturas (FBX/GLB) para o Roblox Studio e configurá-los para uso no jogo.
+Este guia explica como importar:
+- **27 modelos de criaturas** (FBX/GLB) 
+- **8 modelos de ilhas** (FBX)
+para o Roblox Studio e configurá-los para uso no jogo.
 
 ## Arquivos Disponíveis
 Localizados em: `assets/models/`
@@ -306,6 +309,114 @@ selene src/
 
 # Formatar código (StyLua)
 stylua src/
+```
+
+---
+
+# GUIA DE IMPORTAÇÃO DAS ILHAS
+
+## Arquivos Disponíveis
+Localizados em: `assets/islands/`
+- 8 arquivos `.fbx` (um por ilha)
+- 1 arquivo `All_Islands.fbx` (todas combinadas)
+- Total: 9 arquivos
+
+### Ilhas por Bioma
+
+| Ilha | Arquivo | Bioma | Posição | Tamanho |
+|------|---------|-------|---------|---------|
+| StarterTown | `Island_StarterTown.fbx` | Nature | (0, 0, 0) | 80 |
+| FireForest | `Island_FireForest.fbx` | Fire | (300, 0, 0) | 100 |
+| WaterCaves | `Island_WaterCaves.fbx` | Water | (0, -20, 300) | 90 |
+| NaturePlains | `Island_NaturePlains.fbx` | Nature | (-300, 0, 0) | 110 |
+| EarthDesert | `Island_EarthDesert.fbx` | Earth | (0, 0, -300) | 100 |
+| AirPeaks | `Island_AirPeaks.fbx` | Air | (200, 150, 200) | 80 |
+| ShadowRuins | `Island_ShadowRuins.fbx` | Shadow | (-200, -20, -200) | 85 |
+| VolcanoIsle | `Island_VolcanoIsle.fbx` | Fire | (350, 0, 350) | 60 |
+
+---
+
+## Método de Importação (Igual às Criaturas)
+
+### 1. Asset Manager
+1. View > Asset Manager
+2. Import > Import 3D
+3. Selecione os 8 arquivos `Island_*.fbx`
+4. Configurações:
+   ```
+   Scale: 1.0
+   Import Materials: ✓ ON
+   Generate Collision: ✗ OFF (faremos manual)
+   ```
+
+### 2. Organize no ReplicatedStorage
+```
+ReplicatedStorage
+  Assets
+    Islands
+      StarterTown
+      FireForest
+      WaterCaves
+      NaturePlains
+      EarthDesert
+      AirPeaks
+      ShadowRuins
+      VolcanoIsle
+```
+
+---
+
+## Configuração Pós-Importação das Ilhas
+
+### 1. PrimaryPart e Ancoragem
+```lua
+-- Execute para cada ilha no Command Bar:
+local islands = game.ReplicatedStorage.Assets.Islands
+for _, model in ipairs(islands:GetChildren()) do
+    -- Definir PrimaryPart (procure por "IslandCenter", "Terrain" ou similar)
+    local primaryPart = model:FindFirstChild("IslandCenter") 
+        or model:FindFirstChild("Terrain")
+        or model:FindFirstChildWhichIsA("BasePart")
+    if primaryPart then
+        model.PrimaryPart = primaryPart
+    end
+    
+    -- Ancorar tudo
+    for _, part in ipairs(model:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.Anchored = true
+            -- Colisão para chão/rochas
+            local name = part.Name:lower()
+            if name:find("terrain") or name:find("ground") or name:find("rock") 
+               or name:find("floor") or name:find("path") or name:find("bridge") then
+                part.CanCollide = true
+                part.CanTouch = true
+            else
+                part.CanCollide = false
+            end
+        end
+    end
+end
+```
+
+### 2. Materials por Bioma
+| Bioma | Material | Cor | Detalhes |
+|-------|----------|-----|----------|
+| Nature | Grass, Forest | RGB(60,140,60) | Grama, folhagem |
+| Fire | Basalt, Slate, Neon | RGB(80,40,30) + Neon laranja | Lava, rocha vulcânica |
+| Water | Sand, SmoothPlastic | RGB(194,178,128) / Azul | Areia, água |
+| Earth | Sandstone, Slate | RGB(140,120,90) | Dunas, rochas |
+| Air | SmoothPlastic, ForceField, Neon | RGB(220,230,255) | Nuvens, plataformas |
+| Shadow | Slate, Basalt, Neon | RGB(40,30,60) + Neon roxo | Ruínas, névoa |
+
+---
+
+## Teste Rápido
+```lua
+-- No Command Bar após importar:
+local WorldController = require(game.ReplicatedStorage.Client.Controllers.WorldController)
+WorldController.LoadIslandModels()
+print("Ilhas carregadas:", #game.Workspace.Islands:GetChildren())
 ```
 
 ---

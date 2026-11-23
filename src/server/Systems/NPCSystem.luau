@@ -67,14 +67,24 @@ function NPCSystem.SpawnNPC(npcData: Types.NPCData, zoneId: string)
 	humanoid.WalkSpeed = 0 -- Stationary by default
 	humanoid.Parent = model
 
-	-- Root part
+	-- Root part - adjust position relative to island center if needed
+	local zoneData = Config.Zones[zoneId]
+	local npcPosition = npcData.Position
+	if zoneData and zoneData.IslandPosition then
+		-- If NPC position is relative to zone center, adjust
+		local isRelative = (npcPosition.Position - zoneData.IslandPosition).Magnitude < 500
+		if isRelative then
+			npcPosition = CFrame.new(zoneData.IslandPosition + npcPosition.Position)
+		end
+	end
+
 	local rootPart = Instance.new("Part")
 	rootPart.Name = "HumanoidRootPart"
 	rootPart.Size = Vector3.new(2, 2, 1)
 	rootPart.Transparency = 1
 	rootPart.CanCollide = false
 	rootPart.Anchored = true
-	rootPart.CFrame = npcData.Position
+	rootPart.CFrame = npcPosition
 	rootPart.Parent = model
 
 	model.PrimaryPart = rootPart

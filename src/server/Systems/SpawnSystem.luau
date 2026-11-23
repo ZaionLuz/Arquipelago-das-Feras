@@ -21,7 +21,7 @@ SpawnSystem.OnCreatureDespawned = Signal.New()
 -- Spawn configuration
 local SpawnConfig = {
 	MaxCreaturesPerZone = 15,
-	SpawnRadius = 100,
+	BaseSpawnRadius = 80,
 	DespawnRadius = 150,
 	SpawnInterval = 10, -- seconds
 	DespawnTime = 300, -- 5 minutes
@@ -78,15 +78,26 @@ function SpawnSystem.GenerateSpawnPoints(zoneId: string, count: number): {Vector
 	local zoneData = Config.Zones[zoneId]
 
 	-- In a real game, these would be placed manually or generated from terrain
-	-- For now, generate random points around zone center
+	-- For now, generate random points around zone center using island size
 	local center = SpawnSystem.GetZoneCenter(zoneId)
+	local islandSize = zoneData and zoneData.IslandSize or 80
+	local spawnRadius = islandSize * 0.7 -- 70% of island radius
 
 	for i = 1, count do
 		local angle = math.random() * 2 * math.pi
-		local distance = math.random() * SpawnConfig.SpawnRadius * 0.8
+		local distance = math.random() * spawnRadius
 		local x = center.X + math.cos(angle) * distance
 		local z = center.Z + math.sin(angle) * distance
-		local y = center.Y + math.random(-5, 5)
+		-- Vary Y based on biome
+		local yOffset = 0
+		if zoneData and zoneData.Biome == "Air" then
+			yOffset = math.random(0, 30)
+		elseif zoneData and zoneData.Biome == "Water" then
+			yOffset = math.random(-15, 5)
+		else
+			yOffset = math.random(-5, 5)
+		end
+		local y = center.Y + yOffset
 
 		table.insert(points, Vector3.new(x, y, z))
 	end
@@ -94,20 +105,13 @@ function SpawnSystem.GenerateSpawnPoints(zoneId: string, count: number): {Vector
 	return points
 end
 
--- Get zone center (placeholder - would use actual zone positions)
+-- Get zone center (uses Config.Zones island positions)
 function SpawnSystem.GetZoneCenter(zoneId: string): Vector3
-	-- Default centers for each zone
-	local centers = {
-		StarterTown = Vector3.new(0, 5, 0),
-		FireForest = Vector3.new(200, 10, 0),
-		WaterCaves = Vector3.new(-200, -20, 0),
-		NaturePlains = Vector3.new(0, 10, 200),
-		EarthDesert = Vector3.new(-200, 15, -200),
-		AirPeaks = Vector3.new(200, 50, 200),
-		ShadowRuins = Vector3.new(0, 5, -200),
-	}
-
-	return centers[zoneId] or Vector3.new(0, 5, 0)
+	local zoneData = Config.Zones[zoneId]
+	if zoneData and zoneData.IslandPosition then
+		return zoneData.IslandPosition + Vector3.new(0, 5, 0)
+	end
+	return Vector3.new(0, 5, 0)
 end
 
 -- Initial spawn for all zones

@@ -26,12 +26,22 @@ local SpawnedCreatures = {} :: {[string]: {Creature: Types.CreatureData, Model: 
 local CurrentZone: Types.ZoneData?
 local CurrentWeather: Types.WeatherType = "Clear"
 local CurrentTimeOfDay: "Dawn" | "Day" | "Dusk" | "Night" = "Day"
-local RenderDistance = 200
-local DespawnDistance = 250
+local RenderDistance = 300
+local DespawnDistance = 350
+
+-- Island models
+local IslandModels = {} :: {[string]: Model}
+local IslandConfig = {}
 
 -- Initialize
 function WorldController.Initialize()
 	print("[WorldController] Initializing...")
+
+	-- Load island configurations
+	WorldController.LoadIslandConfig()
+
+	-- Load island models from ReplicatedStorage
+	WorldController.LoadIslandModels()
 
 	-- Setup time/weather cycle
 	WorldController.StartTimeCycle()
@@ -41,6 +51,249 @@ function WorldController.Initialize()
 	-- (Handled via RemoteClient in init.client.luau)
 
 	print("[WorldController] Initialized")
+end
+
+-- Load island configuration (aligned with server Config.Zones)
+function WorldController.LoadIslandConfig()
+	IslandConfig = {
+		StarterTown = {
+			Id = "StarterTown",
+			Name = "Vila Inicial",
+			Biome = "Nature",
+			Position = Vector3.new(0, 0, 0),
+			Size = 80,
+			SafeZone = true,
+			LevelRange = {Min = 1, Max = 5},
+		},
+		FireForest = {
+			Id = "FireForest",
+			Name = "Floresta de Brasas",
+			Biome = "Fire",
+			Position = Vector3.new(300, 0, 0),
+			Size = 100,
+			LevelRange = {Min = 3, Max = 12},
+		},
+		WaterCaves = {
+			Id = "WaterCaves",
+			Name = "Cavernas Aquáticas",
+			Biome = "Water",
+			Position = Vector3.new(0, -20, 300),
+			Size = 90,
+			LevelRange = {Min = 5, Max = 15},
+		},
+		NaturePlains = {
+			Id = "NaturePlains",
+			Name = "Planícies Verdentes",
+			Biome = "Nature",
+			Position = Vector3.new(-300, 0, 0),
+			Size = 110,
+			LevelRange = {Min = 2, Max = 10},
+		},
+		EarthDesert = {
+			Id = "EarthDesert",
+			Name = "Deserto de Dunas",
+			Biome = "Earth",
+			Position = Vector3.new(0, 0, -300),
+			Size = 100,
+			LevelRange = {Min = 8, Max = 18},
+		},
+		AirPeaks = {
+			Id = "AirPeaks",
+			Name = "Picos Ventosos",
+			Biome = "Air",
+			Position = Vector3.new(200, 150, 200),
+			Size = 80,
+			LevelRange = {Min = 10, Max = 20},
+		},
+		ShadowRuins = {
+			Id = "ShadowRuins",
+			Name = "Ruínas Sombrias",
+			Biome = "Shadow",
+			Position = Vector3.new(-200, -20, -200),
+			Size = 85,
+			LevelRange = {Min = 12, Max = 22},
+		},
+		VolcanoIsle = {
+			Id = "VolcanoIsle",
+			Name = "Ilha Vulcânica",
+			Biome = "Fire",
+			Position = Vector3.new(350, 0, 350),
+			Size = 60,
+			LevelRange = {Min = 20, Max = 35},
+		},
+	}
+end
+
+-- Load island models from ReplicatedStorage.Assets.Islands
+function WorldController.LoadIslandModels()
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	local islandsFolder = assets and assets:FindFirstChild("Islands")
+
+	if not islandsFolder then
+		warn("[WorldController] Assets.Islands folder not found in ReplicatedStorage!")
+		warn("[WorldController] Import island FBX files and place them in ReplicatedStorage.Assets.Islands")
+		WorldController.CreatePlaceholderIslands()
+		return
+	end
+
+	for islandId, config in pairs(IslandConfig) do
+		local islandModel = islandsFolder:FindFirstChild(islandId)
+			or islandsFolder:FindFirstChild("Island_" .. islandId)
+			or islandsFolder:FindFirstChild(islandId:lower())
+
+		if islandModel then
+			local clone = islandModel:Clone()
+			clone.Name = islandId
+			clone.Parent = Workspace
+
+			-- Ensure primary part
+			if not clone.PrimaryPart then
+				local center = clone:FindFirstChild("IslandCenter")
+					or clone:FindFirstChildWhichIsA("BasePart")
+				if center then
+					clone.PrimaryPart = center
+				end
+			end
+
+			-- Position at island location
+			if clone.PrimaryPart then
+				clone:PivotTo(CFrame.new(config.Position))
+			end
+
+			-- Anchor all parts
+			for _, part in ipairs(clone:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.Anchored = true
+				end
+			end
+
+			IslandModels[islandId] = clone
+			print(`[WorldController] Loaded island model: {islandId}`)
+		else
+			warn(`[WorldController] Island model not found: {islandId}`)
+			WorldController.CreatePlaceholderIsland(islandId, config)
+		end
+	end
+
+	-- Load bridges
+	WorldController.LoadBridges(islandsFolder)
+end
+
+function WorldController.LoadBridges(islandsFolder)
+	local bridgesFolder = islandsFolder:FindFirstChild("Bridges")
+	if not bridgesFolder then return end
+
+	for _, bridgeModel in ipairs(bridgesFolder:GetChildren()) do
+		if bridgeModel:IsA("Model") or bridgeModel:IsA("BasePart") then
+			local clone = bridgeModel:Clone()
+			clone.Name = bridgeModel.Name
+			clone.Parent = Workspace
+
+			if not clone.PrimaryPart and clone:IsA("Model") then
+				clone.PrimaryPart = clone:FindFirstChildWhichIsA("BasePart")
+			end
+
+			for _, part in ipairs(clone:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.Anchored = true
+					part.CanCollide = true
+				end
+			end
+
+			IslandModels[bridgeModel.Name] = clone
+			print(`[WorldController] Loaded bridge: {bridgeModel.Name}`)
+		end
+	end
+end
+
+-- Create placeholder islands if models not available
+function WorldController.CreatePlaceholderIslands()
+	for islandId, config in pairs(IslandConfig) do
+		WorldController.CreatePlaceholderIsland(islandId, config)
+	end
+end
+
+function WorldController.CreatePlaceholderIsland(islandId: string, config: any)
+	local model = Instance.new("Model")
+	model.Name = islandId
+	model.Parent = Workspace
+
+	-- Main terrain base
+	local terrain = Instance.new("Part")
+	terrain.Name = "Terrain"
+	terrain.Size = Vector3.new(config.Size * 2, 5, config.Size * 2)
+	terrain.Position = config.Position + Vector3.new(0, -2.5, 0)
+	terrain.Anchored = true
+	terrain.CanCollide = true
+	terrain.Material = WorldController.GetBiomeMaterial(config.Biome)
+	terrain.Color = WorldController.GetBiomeColor(config.Biome)
+	terrain.Parent = model
+
+	model.PrimaryPart = terrain
+
+	-- Add some decorative elements
+	WorldController.AddIslandProps(model, config)
+
+	IslandModels[islandId] = model
+	print(`[WorldController] Created placeholder island: {islandId}`)
+end
+
+function WorldController.GetBiomeMaterial(biome: string): Enum.Material
+	local materials = {
+		Nature = Enum.Material.Grass,
+		Fire = Enum.Material.Basalt,
+		Water = Enum.Material.Sand,
+		Earth = Enum.Material.Sandstone,
+		Air = Enum.Material.SmoothPlastic,
+		Shadow = Enum.Material.Slate,
+	}
+	return materials[biome] or Enum.Material.Grass
+end
+
+function WorldController.GetBiomeColor(biome: string): Color3
+	local colors = {
+		Nature = Color3.fromRGB(60, 140, 60),
+		Fire = Color3.fromRGB(80, 40, 30),
+		Water = Color3.fromRGB(194, 178, 128),
+		Earth = Color3.fromRGB(140, 120, 90),
+		Air = Color3.fromRGB(220, 230, 255),
+		Shadow = Color3.fromRGB(40, 30, 60),
+	}
+	return colors[biome] or Color3.fromRGB(100, 100, 100)
+end
+
+function WorldController.AddIslandProps(model: Model, config: any)
+	local center = config.Position
+	local count = 20
+
+	for i = 1, count do
+		local angle = math.random() * 2 * math.pi
+		local dist = math.random(config.Size * 0.3, config.Size * 0.7)
+		local pos = center + Vector3.new(math.cos(angle), 0, math.sin(angle)) * dist
+		pos = pos + Vector3.new(0, 3, 0)
+
+		local prop = Instance.new("Part")
+		prop.Name = "Prop_" .. i
+		prop.Size = Vector3.new(math.random(3, 8), math.random(5, 15), math.random(3, 8))
+		prop.Position = pos
+		prop.Anchored = true
+		prop.CanCollide = false
+		prop.Material = Enum.Material.Neon
+		prop.Color = WorldController.GetBiomeAccentColor(config.Biome)
+		prop.Parent = model
+	end
+end
+
+function WorldController.GetBiomeAccentColor(biome: string): Color3
+	local colors = {
+		Nature = Color3.fromRGB(80, 200, 80),
+		Fire = Color3.fromRGB(255, 100, 50),
+		Water = Color3.fromRGB(50, 150, 255),
+		Earth = Color3.fromRGB(180, 140, 80),
+		Air = Color3.fromRGB(180, 200, 255),
+		Shadow = Color3.fromRGB(120, 60, 180),
+	}
+	return colors[biome] or Color3.fromRGB(200, 200, 200)
 end
 
 -- Update loop
@@ -53,6 +306,16 @@ function WorldController.Update(deltaTime: number)
 
 	-- Update time of day visuals
 	WorldController.UpdateTimeVisuals(deltaTime)
+
+	-- Check player zone
+	WorldController.CheckPlayerZone()
+end
+
+function WorldController.CheckPlayerZone()
+	local player = Players.LocalPlayer
+	if not player.Character or not player.Character.PrimaryPart then return end
+
+	WorldController.CheckZoneFromPosition(player.Character.PrimaryPart.Position)
 end
 
 -- Spawn a creature in the world
@@ -629,10 +892,104 @@ end
 function WorldController.ShowZoneNotification(zoneName: string)
 	-- Would show a nice UI notification
 	print(`[WorldController] Entered zone: {zoneName}`)
+
+	-- Show zone name on screen (could be enhanced with UI)
+	local player = Players.LocalPlayer
+	if player.PlayerGui then
+		local gui = player.PlayerGui:FindFirstChild("ZoneNotification")
+		if not gui then
+			gui = Instance.new("ScreenGui")
+			gui.Name = "ZoneNotification"
+			gui.ResetOnSpawn = false
+			gui.Parent = player.PlayerGui
+
+			local frame = Instance.new("Frame")
+			frame.Name = "ZoneFrame"
+			frame.Size = UDim2.new(0, 400, 0, 80)
+			frame.Position = UDim2.new(0.5, -200, 0.1, 0)
+			frame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+			frame.BackgroundTransparency = 0.2
+			frame.BorderSizePixel = 0
+			frame.Parent = gui
+
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0, 12)
+			corner.Parent = frame
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Color = Color3.fromRGB(100, 200, 255)
+			stroke.Thickness = 2
+			stroke.Parent = frame
+
+			local label = Instance.new("TextLabel")
+			label.Name = "ZoneLabel"
+			label.Size = UDim2.new(1, -40, 1, 0)
+			label.Position = UDim2.new(0, 20, 0, 0)
+			label.BackgroundTransparency = 1
+			label.Text = zoneName
+			label.TextColor3 = Color3.fromRGB(255, 255, 255)
+			label.TextScaled = true
+			label.Font = Enum.Font.GothamBold
+			label.TextStrokeTransparency = 0.5
+			label.Parent = frame
+		else
+			local label = gui.ZoneFrame.ZoneLabel
+			label.Text = zoneName
+		end
+
+		-- Animate in/out
+		local frame = gui.ZoneFrame
+		frame.Size = UDim2.new(0, 0, 0, 80)
+		local tweenIn = TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			Size = UDim2.new(0, 400, 0, 80)
+		})
+		tweenIn:Play()
+
+		task.delay(3, function()
+			if gui and gui.Parent then
+				local tweenOut = TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+					Size = UDim2.new(0, 0, 0, 80)
+				})
+				tweenOut:Play()
+				tweenOut.Completed:Wait()
+				gui:Destroy()
+			end
+		end)
+	end
 end
 
 function WorldController.GetCurrentZone(): Types.ZoneData?
 	return CurrentZone
+end
+
+-- Check which zone player is in based on position
+function WorldController.CheckZoneFromPosition(position: Vector3)
+	local player = Players.LocalPlayer
+	if not player.Character or not player.Character.PrimaryPart then return end
+
+	local closestZone = nil
+	local closestDist = math.huge
+
+	for islandId, config in pairs(IslandConfig) do
+		local dist = (position - config.Position).Magnitude
+		if dist < config.Size and dist < closestDist then
+			closestDist = dist
+			closestZone = config
+		end
+	end
+
+	if closestZone and (not CurrentZone or CurrentZone.Id ~= closestZone.Id) then
+		-- Convert to ZoneData format
+		local zoneData: Types.ZoneData = {
+			Id = closestZone.Id,
+			Name = closestZone.Name,
+			Biome = closestZone.Biome,
+			LevelRange = closestZone.LevelRange,
+			SafeZone = closestZone.SafeZone or false,
+			Position = closestZone.Position,
+		}
+		WorldController.SetCurrentZone(zoneData)
+	end
 end
 
 function WorldController.GetCurrentWeather(): Types.WeatherType
